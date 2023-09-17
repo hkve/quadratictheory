@@ -4,8 +4,11 @@ import numpy as np
 
 
 class TestBasis(Basis):
-    def __init__(self, L, N, restricted=False, dtype=float):
+    __test__ = False
+
+    def __init__(self, L, N, restricted=False, dtype=float, seed=42):
         super().__init__(L, N, restricted, dtype=dtype)
+        np.random.seed(seed)
 
     def setup(self):
         self.h = np.random.uniform(low=-1, high=1, size=self.h.shape)
@@ -17,3 +20,5 @@ class TestBasis(Basis):
         self.s = np.random.uniform(low=-1, high=1, size=self.s.shape)
         self.s = self.s.T @ self.s
         np.fill_diagonal(self.s, 1)
+
+        return self
