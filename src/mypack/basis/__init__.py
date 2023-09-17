@@ -1,1 +1,2 @@
-from mypack.basis.testbasis import Basis, TestBasis
+from mypack.basis.basis import Basis
+from mypack.basis.testbasis import TestBasis
