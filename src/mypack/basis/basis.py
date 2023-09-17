@@ -1,6 +1,7 @@
 import numpy as np
 
-class Basis():
+
+class Basis:
     def __init__(self, L, N) -> None:
         self._L = L
         self._N = N
