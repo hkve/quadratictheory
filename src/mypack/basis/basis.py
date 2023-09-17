@@ -61,13 +61,11 @@ class Basis(ABC):
         if inverse:
             C = C.conj().T
 
-        h, u, f, s = None, None, None, None
-
         obj = self if inplace else self.copy()
 
-        h = obj._change_basis_one_body(h, C)
-        u = obj._change_basis_two_body(h, C)
-        s = obj._change_basis_one_body(s, C)
+        obj.h = obj._change_basis_one_body(obj.h, C)
+        obj.u = obj._change_basis_two_body(obj.u, C)
+        obj.s = obj._change_basis_one_body(obj.s, C)
         obj._calculate_fock_matrix()
 
         return obj
