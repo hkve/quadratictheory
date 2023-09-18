@@ -6,7 +6,7 @@ from scipy.linalg import eigh
 
 
 class HartreeFock(ABC):
-    def __init__(self, basis: Basis):
+    def __init__(self, basis: Basis) -> None:
         self.basis = basis
         self.has_run = False
         self.converged = False
