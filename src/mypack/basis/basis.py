@@ -26,12 +26,17 @@ class Basis(ABC):
         self._o = slice(0, self.L)
         self._v = slice(self.N, self.L)
 
-        self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
-        self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
-        self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
-        self._s = np.eye(self.L, dtype=dtype)
+        self._energy_shift = 0
+        # self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
+        # self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
+        # self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
+        # self._s = np.eye(self.L, dtype=dtype)
+        self._h = None
+        self._u = None
+        self._f = None
+        self._s = None
 
-    def _calculate_fock_matrix(self):
+    def calculate_fock_matrix(self):
         h, u, o, v = self.h, self.u, self.o, self.v
         self.f = self.h + np.einsum("piqi->pq", u[:, o, :, o])
 
@@ -52,7 +57,7 @@ class Basis(ABC):
         new_basis.h = self.h.copy()
         new_basis.u = self.u.copy()
         new_basis.s = self.s.copy()
-        new_basis._calculate_fock_matrix()
+        new_basis.calculate_fock_matrix()
 
         return new_basis
 
@@ -67,7 +72,7 @@ class Basis(ABC):
         obj.h = obj._change_basis_one_body(obj.h, C)
         obj.u = obj._change_basis_two_body(obj.u, C)
         obj.s = obj._change_basis_one_body(obj.s, C)
-        obj._calculate_fock_matrix()
+        obj.calculate_fock_matrix()
 
         return obj
 
@@ -117,7 +122,7 @@ class Basis(ABC):
 
         self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
-        self._calculate_fock_matrix()
+        self.calculate_fock_matrix()
 
     @property
     def M(self) -> int:
