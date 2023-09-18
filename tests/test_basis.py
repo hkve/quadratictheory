@@ -30,6 +30,19 @@ class TestBasisProperties(TestCase):
         self.assertTrue(np.allclose(new_basis.h, basis.h))
         self.assertTrue(np.allclose(new_basis.s, basis.s))
 
+    def test_ints(self):
+        rbasis = self.rbasis.copy()
+
+        self.assertEqual(rbasis.L, self.rbasis.L)
+        self.assertEqual(rbasis.N, self.rbasis.N)
+        self.assertEqual(rbasis.M, self.rbasis.M)
+
+        rbasis.N = 2 * rbasis.N + 2
+
+        self.assertEqual(rbasis.L, self.rbasis.L)
+        self.assertEqual(rbasis.N, 2 + 1)
+        self.assertEqual(rbasis.M, 3 - 1)
+
     def test_add_spin(self):
         basis = self.rbasis.copy()
 

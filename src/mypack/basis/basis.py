@@ -98,9 +98,30 @@ class Basis(ABC):
 
         return obj
 
+    # Getters and setters for ints (L,N) and slices (o,v)
     @property
     def L(self) -> int:
         return self._L
+
+    @property
+    def N(self) -> int:
+        return self._N
+
+    @N.setter
+    def N(self, N: int) -> int:
+        assert N % 2 == 0, "#Particles must be even in restricted scheme"
+        N = N // self._degeneracy
+        assert N <= self.L, f"#Particles = {N} must be larger than #Basis functions = {self.L}"
+        self._N = N
+        self._M = self.L - self.N
+
+        self._o = slice(0, self.N)
+        self._v = slice(self.N, self.L)
+        self._calculate_fock_matrix()
+
+    @property
+    def M(self) -> int:
+        return self._M
 
     @property
     def o(self) -> slice:
@@ -110,20 +131,7 @@ class Basis(ABC):
     def v(self) -> slice:
         return self._v
 
-    @property
-    def N(self) -> int:
-        return self._N
-
-    @N.setter
-    def N(self, N: int) -> int:
-        N = N // self._degeneracy
-        assert N <= self.L, f"#Particles = {N} must be larger than #Basis functions = {self.L}"
-        self._N = N // self._degeneracy
-
-        self._o = slice(0, self.N)
-        self._v = slice(self.N, self.L)
-        self._calculate_fock_matrix()
-
+    # Getters and setters for matricies h, u, f and s
     @property
     def h(self) -> np.ndarray:
         return self._h
