@@ -10,7 +10,7 @@ class TestBasisProperties(TestCase):
         self.rbasis = TestBasis(L=10, N=4, restricted=True).setup()
 
     def test_transform_copy(self):
-        basis = self.gbasis
+        basis = self.gbasis.copy()
         L = basis.L
 
         # Make orthogonal transformation
@@ -20,7 +20,7 @@ class TestBasisProperties(TestCase):
 
         h_old, s_old = basis.h.copy(), basis.s.copy()
 
-        new_basis = basis.change_basis(C)
+        new_basis = basis.change_basis(C, inplace=False)
 
         self.assertTrue(np.array_equal(h_old, basis.h))
         self.assertTrue(np.array_equal(s_old, basis.s))
@@ -29,3 +29,22 @@ class TestBasisProperties(TestCase):
 
         self.assertTrue(np.allclose(new_basis.h, basis.h))
         self.assertTrue(np.allclose(new_basis.s, basis.s))
+
+    def test_add_spin(self):
+        basis = self.rbasis.copy()
+
+        old_diag = np.diag(basis.h)
+
+        basis._add_spin()
+        new_diag = np.diag(basis.h)
+
+        self.assertEqual(2 * old_diag.sum(), new_diag.sum())
+
+    def test_from_restricted(self):
+        basis = self.rbasis
+
+        gbasis = basis.from_restricted(inplace=False)
+
+        self.assertTrue(np.allclose(gbasis.u, -gbasis.u.transpose(1, 0, 3, 2)))
+        self.assertEqual(2 * basis.L, gbasis.L)
+        self.assertEqual(2 * basis.N, gbasis.N)

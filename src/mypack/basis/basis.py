@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Basis(ABC):
-    def __init__(self, L: int, N: int, restricted: bool = False, dtype=float) -> None:
+    def __init__(self, L: int, N: int, restricted: bool = False, dtype=float):
         # If restricted scheme is used, all sp states are doubly occupied
         if restricted:
             self._degeneracy = 2
@@ -14,9 +14,9 @@ class Basis(ABC):
         else:
             self._degeneracy = 1
 
-        self._restricted = restricted
-        self._orthonormal = True
-        self._antisymmetric = False
+        self.restricted = restricted
+        self.orthonormal = True
+        self.antisymmetric = False
 
         self.dtype = dtype
         self._L = L // self._degeneracy
@@ -35,28 +35,29 @@ class Basis(ABC):
         h, u, o, v = self.h, self.u, self.o, self.v
         self.f = self.h + np.einsum("piqi->pq", u[:, o, :, o])
 
-    def _change_basis_one_body(self, operator, C):
+    def _change_basis_one_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
         return np.einsum("ai,bj,ab->ij", C.conj(), C, operator, optimize=True)
 
-    def _change_basis_two_body(self, operator, C):
+    def _change_basis_two_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
         return np.einsum(
             "ai,bj,gk,dl,abgd->ijkl", C.conj(), C.conj(), C, C, operator, optimize=True
         )
 
-    def copy(self):
-        new_basis = Basis(L=self.L, N=self.N, restricted=self._restricted, dtype=self.dtype)
-
-        new_basis._orthonormal = self._orthonormal
-        new_basis._antisymmetric = self._antisymmetric
+    def copy(self) -> Basis:
+        L, N = self._degeneracy * self.L, self._degeneracy * self.N
+        new_basis = Basis(L=L, N=N, restricted=self.restricted, dtype=self.dtype)
+        new_basis.orthonormal = self.orthonormal
+        new_basis.antisymmetric = self.antisymmetric
 
         new_basis.h = self.h.copy()
         new_basis.u = self.u.copy()
         new_basis.s = self.s.copy()
+        new_basis._calculate_fock_matrix()
 
         return new_basis
 
     def change_basis(
-        self, C: np.ndarray, inplace: bool = False, inverse: bool = False
+        self, C: np.ndarray, inplace: bool = True, inverse: bool = False
     ) -> Optional[Basis]:
         if inverse:
             C = C.conj().T
@@ -67,6 +68,33 @@ class Basis(ABC):
         obj.u = obj._change_basis_two_body(obj.u, C)
         obj.s = obj._change_basis_one_body(obj.s, C)
         obj._calculate_fock_matrix()
+
+        return obj
+
+    def _antisymmetrize(self):
+        self.antisymmetric = True
+        self.u = self.u - self.u.transpose(1, 0, 3, 2)
+
+    def _add_spin(self):
+        self.restricted = False
+        self._degeneracy = 1
+
+        I = np.eye(2)
+        I2 = np.einsum("pr, qs -> pqrs", I, I)
+
+        self.h = np.kron(self.h, I)
+        self.u = np.kron(self.u, I2)
+        self.f = np.kron(self.f, I)
+        self.s = np.kron(self.s, I)
+
+        self._L = 2 * self._L
+        self.N = 2 * self.N
+
+    def from_restricted(self, inplace: bool = True):
+        obj = self if inplace else self.copy()
+
+        obj._add_spin()
+        obj._antisymmetrize()
 
         return obj
 

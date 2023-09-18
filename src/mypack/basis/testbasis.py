@@ -6,7 +6,9 @@ import numpy as np
 class TestBasis(Basis):
     __test__ = False
 
-    def __init__(self, L, N, restricted=False, dtype=float, seed=42):
+    def __init__(
+        self, L: int, N: int, restricted: bool = False, dtype: type = float, seed: int = 42
+    ):
         super().__init__(L, N, restricted, dtype=dtype)
         np.random.seed(seed)
 
