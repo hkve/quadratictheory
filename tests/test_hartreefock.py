@@ -6,6 +6,28 @@ import pyscf
 
 
 class TestHartreeFock(TestCase):
+    def is_diagonal(self, f):
+        all_elms = np.sum(f**2)
+        diag_elms = np.sum(np.diag(f**2).sum())
+
+        return abs(diag_elms - all_elms) < 1e-7
+
+    def test_diagonal_fock_matrix(self):
+        rbasis = PyscfBasis(atom="He 0 0 0", basis="cc-pVDZ")
+        rbasis.calculate_fock_matrix()
+
+        tol = 1e-8
+        rhf = HF(rbasis).run(tol=tol)
+
+        gbasis = rbasis.from_restricted(inplace=False)
+        ghf = HF(gbasis).run(tol=tol)
+
+        rbasis.change_basis(rhf.C)
+        gbasis.change_basis(ghf.C)
+
+        self.assertTrue(self.is_diagonal(rbasis.f))
+        self.assertTrue(self.is_diagonal(gbasis.f))
+
     def compare_with_pyscf(self, atom, basis):
         basis = PyscfBasis(atom=atom, basis=basis, restricted=True)
 
