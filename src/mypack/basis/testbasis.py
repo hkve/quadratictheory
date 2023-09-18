@@ -13,13 +13,16 @@ class TestBasis(Basis):
         np.random.seed(seed)
 
     def setup(self):
-        self.h = np.random.uniform(low=-1, high=1, size=self.h.shape)
+        ob_shape = self._one_body_shape
+        tb_shape = self._two_body_shape
+
+        self.h = np.random.uniform(low=-1, high=1, size=ob_shape)
         self.h = self.h.T @ self.h
 
-        self.u = np.random.uniform(low=-1, high=1, size=self.u.shape)
+        self.u = np.random.uniform(low=-1, high=1, size=tb_shape)
         self.u = self.u.transpose(1, 0, 3, 2)
 
-        self.s = np.random.uniform(low=-1, high=1, size=self.s.shape)
+        self.s = np.random.uniform(low=-1, high=1, size=ob_shape)
         self.s = self.s.T @ self.s
         np.fill_diagonal(self.s, 1)
 

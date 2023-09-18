@@ -27,6 +27,9 @@ class Basis(ABC):
         self._v = slice(self.N, self.L)
 
         self._energy_shift = 0
+        self._one_body_shape = (self.L, self.L)
+        self._two_body_shape = (self.L, self.L, self.L, self.L)
+
         # self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
         # self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
         # self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
