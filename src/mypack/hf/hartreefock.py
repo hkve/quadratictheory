@@ -43,12 +43,7 @@ class HartreeFock(ABC):
         diff = 1
 
         while (iters < maxiters) and (diff > tol):
-            HFmat = self.evaluate_fock_matrix(
-                rho,
-                basis.h,
-                basis.u,
-            )
-
+            HFmat = self.evaluate_fock_matrix(rho)
             eps_hf_new, C = eigh(HFmat, basis.s)
 
             rho = self.density_matrix(C)
@@ -69,3 +64,13 @@ class HartreeFock(ABC):
         self.C = C
 
         return self
+
+    def energy(self):
+        self._check_state()
+        return self.evaluate_energy_scheme()
+
+    def _check_state(self):
+        if not self.has_run:
+            raise RuntimeError("No Hartree-Fock calculation has been run. Perform .run() first.")
+        if not self.converged:
+            raise RuntimeWarning("Hartree-Fock calculation has not converged")

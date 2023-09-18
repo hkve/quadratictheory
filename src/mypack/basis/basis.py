@@ -23,7 +23,7 @@ class Basis(ABC):
         self._N = N // self._degeneracy
         self._M = L - N
 
-        self._o = slice(0, self.L)
+        self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
 
         self._energy_shift = 0
@@ -81,7 +81,7 @@ class Basis(ABC):
 
     def _antisymmetrize(self):
         self.antisymmetric = True
-        self.u = self.u - self.u.transpose(1, 0, 3, 2)
+        self.u = self.u - self.u.transpose(0, 1, 3, 2)
 
     def _add_spin(self):
         self.restricted = False
@@ -92,8 +92,9 @@ class Basis(ABC):
 
         self.h = np.kron(self.h, I)
         self.u = np.kron(self.u, I2)
-        self.f = np.kron(self.f, I)
         self.s = np.kron(self.s, I)
+        if self.f is not None:
+            self.f = np.kron(self.f, I)
 
         self._L = 2 * self._L
         self.N = 2 * self.N

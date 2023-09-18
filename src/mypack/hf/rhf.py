@@ -8,7 +8,7 @@ class RHF(HartreeFock):
         assert basis.restricted, "Basis must be restricted"
         super().__init__(basis)
 
-    def evaluate_energy_scheme(self):
+    def evaluate_energy_scheme(self) -> float:
         h, u = self.basis.h, self.basis.u
         rho = self.rho
         dE = self.basis._energy_shift
@@ -20,5 +20,6 @@ class RHF(HartreeFock):
 
         return E_OB + E_TB + dE
 
-    def evaluate_fock_matrix(self, rho, h, u):
+    def evaluate_fock_matrix(self, rho: np.ndarray) -> float:
+        h, u = self.basis.h, self.basis.u
         return h + np.einsum("gd,agbd->ab", rho, u) - 0.5 * np.einsum("gd,agdb->ab", rho, u)
