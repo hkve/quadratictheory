@@ -20,7 +20,7 @@ class TestBasis(Basis):
         self.h = self.h.T @ self.h
 
         self.u = np.random.uniform(low=-1, high=1, size=tb_shape)
-        self.u = self.u.transpose(1, 0, 3, 2)
+        self.u = self.u + self.u.transpose(1, 0, 3, 2)
 
         self.s = np.random.uniform(low=-1, high=1, size=ob_shape)
         self.s = self.s.T @ self.s

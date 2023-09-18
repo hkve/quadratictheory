@@ -6,8 +6,8 @@ from mypack.basis import TestBasis
 
 class TestBasisProperties(TestCase):
     def setUp(self) -> None:
-        self.gbasis = TestBasis(L=10, N=4, restricted=False).setup()
-        self.rbasis = TestBasis(L=10, N=4, restricted=True).setup()
+        self.gbasis = TestBasis(L=6, N=2, restricted=False).setup()
+        self.rbasis = TestBasis(L=6, N=2, restricted=True).setup()
 
     def test_transform_copy(self):
         basis = self.gbasis.copy()
@@ -40,8 +40,8 @@ class TestBasisProperties(TestCase):
         rbasis.N = 2 * rbasis.N + 2
 
         self.assertEqual(rbasis.L, self.rbasis.L)
-        self.assertEqual(rbasis.N, 2 + 1)
-        self.assertEqual(rbasis.M, 3 - 1)
+        self.assertEqual(rbasis.N, 1 + 1)
+        self.assertEqual(rbasis.M, 2 - 1)
 
     def test_add_spin(self):
         basis = self.rbasis.copy()
@@ -56,8 +56,11 @@ class TestBasisProperties(TestCase):
     def test_from_restricted(self):
         basis = self.rbasis
 
+        self.assertTrue(np.allclose(basis.u, basis.u.transpose(1, 0, 3, 2)))
+
         gbasis = basis.from_restricted(inplace=False)
 
-        self.assertTrue(np.allclose(gbasis.u, -gbasis.u.transpose(1, 0, 3, 2)))
+        self.assertTrue(np.allclose(gbasis.u, -gbasis.u.transpose(0, 1, 3, 2)))
+        self.assertTrue(np.allclose(gbasis.u, gbasis.u.transpose(1, 0, 3, 2)))
         self.assertEqual(2 * basis.L, gbasis.L)
         self.assertEqual(2 * basis.N, gbasis.N)
