@@ -1,5 +1,6 @@
 from __future__ import annotations
 from mypack.basis.basis import Basis
+from mypack.mix import Mixer, AlphaMixer
 from abc import ABC, abstractmethod
 import numpy as np
 from scipy.linalg import eigh
@@ -10,6 +11,7 @@ class HartreeFock(ABC):
         self.basis = basis
         self.has_run = False
         self.converged = False
+        self.mixer = AlphaMixer(alpha=0.0)
 
     def density_matrix(self, C: np.ndarray) -> np.ndarray:
         d = self.basis._degeneracy
@@ -42,13 +44,22 @@ class HartreeFock(ABC):
         iters = 0
         diff = 1
 
+        old_fock = None
         while (iters < maxiters) and (diff > tol):
-            HFmat = self.evaluate_fock_matrix(rho)
-            eps_hf_new, C = eigh(HFmat, basis.s)
+            new_fock = self.evaluate_fock_matrix(rho)
 
+            if iters == 0:
+                old_fock = new_fock
+
+            new_fock = self.mixer(old_fock, new_fock)
+            old_fock = new_fock.copy()
+
+            eps_hf_new, C = eigh(new_fock, basis.s)
             rho = self.density_matrix(C)
+
             diff = np.mean(np.abs(eps_hf_new - eps_hf_old))
             eps_hf_old = eps_hf_new
+
             iters += 1
 
             if vocal:
