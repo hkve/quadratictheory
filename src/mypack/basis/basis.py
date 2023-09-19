@@ -30,14 +30,14 @@ class Basis(ABC):
         self._one_body_shape = (self.L, self.L)
         self._two_body_shape = (self.L, self.L, self.L, self.L)
 
-        # self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
-        # self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
-        # self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
-        # self._s = np.eye(self.L, dtype=dtype)
-        self._h = None
-        self._u = None
-        self._f = None
-        self._s = None
+        self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
+        self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
+        self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
+        self._s = np.eye(self.L, dtype=dtype)
+        # self._h = None
+        # self._u = None
+        # self._f = None
+        # self._s = None
 
     def calculate_fock_matrix(self):
         h, u, o, v = self.h, self.u, self.o, self.v
@@ -106,6 +106,20 @@ class Basis(ABC):
         obj._antisymmetrize()
 
         return obj
+
+    def energy(self):
+        h, u = self.h, self.u
+        o, v = self.o, self.v
+
+        E_OB = self._degeneracy * h[o, o].trace()
+        E_TB = 0
+
+        if self.restricted:
+            E_TB = 2 * np.einsum("ijij", u[o, o, o, o]) - np.einsum("ijji", u[o, o, o, o])
+        else:
+            E_TB = 0.5 * np.einsum("ijij", u[o, o, o, o])
+
+        return E_OB + E_TB + self._energy_shift
 
     # Getters and setters for ints (L,N) and slices (o,v)
     @property
