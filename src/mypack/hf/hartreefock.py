@@ -12,6 +12,12 @@ class HartreeFock(ABC):
         self.has_run = False
         self.converged = False
         self.mixer = AlphaMixer(alpha=0.0)
+        self.guess = "I"
+
+        self._available_coefficient_guesses = {
+            "I": _identity_guess,
+            "core": _core_guess,
+        }
 
     def density_matrix(self, C: np.ndarray) -> np.ndarray:
         d = self.basis._degeneracy
@@ -35,7 +41,7 @@ class HartreeFock(ABC):
 
         L, N = basis.L, basis.N
 
-        C = np.eye(L, L)
+        C = self._available_coefficient_guesses[self.guess](basis)
         rho = self.density_matrix(C)
 
         eps_hf_old = np.zeros_like(np.diag(basis.h))
@@ -44,12 +50,9 @@ class HartreeFock(ABC):
         iters = 0
         diff = 1
 
-        old_fock = None
+        old_fock = np.zeros_like(C)
         while (iters < maxiters) and (diff > tol):
             new_fock = self.evaluate_fock_matrix(rho)
-
-            if iters == 0:
-                old_fock = new_fock
 
             new_fock = self.mixer(old_fock, new_fock)
             old_fock = new_fock.copy()
@@ -85,3 +88,12 @@ class HartreeFock(ABC):
             raise RuntimeError("No Hartree-Fock calculation has been run. Perform .run() first.")
         if not self.converged:
             raise RuntimeWarning("Hartree-Fock calculation has not converged")
+
+
+def _identity_guess(basis: Basis) -> np.ndarray:
+    return np.eye(basis.L, basis.L)
+
+
+def _core_guess(basis: Basis) -> np.ndarray:
+    _, C = np.linalg.eigh(basis.h)
+    return C

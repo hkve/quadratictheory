@@ -14,9 +14,7 @@ class DIISMixer(Mixer):
         self.coeffs = deque([None] * n_vectors)
         self.vectors = deque([None] * n_vectors)
 
-        self.cnt = 0
-
-    def __call__(self, old, new):
+    def __call__(self, old: np.ndarray, new: np.ndarray) -> np.ndarray:
         self.n_stored += 1
 
         if self.n_stored > self.n_vectors:
@@ -37,7 +35,9 @@ class DIISMixer(Mixer):
         B = np.zeros(shape=(self.n_stored + 1, self.n_stored + 1))
 
         for i in range(self.n_stored):
-            for j in range(i, self.n_stored):
+            B[i, i] = np.dot(self.errors[i], self.errors[i])
+        for i in range(self.n_stored):
+            for j in range(i + 1, self.n_stored):
                 B[i, j] = np.dot(self.errors[i], self.errors[j])
                 B[j, i] = B[i, j]
 
@@ -56,9 +56,5 @@ class DIISMixer(Mixer):
 
         for i in range(self.n_stored):
             mixed_vector += c[i] * self.vectors[i]
-
-        # self.cnt += 1
-        # if self.cnt >= 10:
-        #     exit()
 
         return mixed_vector.reshape(shape)
