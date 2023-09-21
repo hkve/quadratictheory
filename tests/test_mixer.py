@@ -1,6 +1,6 @@
-from mypack.basis import PyscfBasis
-from mypack.mix import AlphaMixer, DIISMixer
-from mypack.hf import HF
+from clusterfock.basis import PyscfBasis
+from clusterfock.mix import AlphaMixer, DIISMixer
+from clusterfock.hf import HF
 from unittest import TestCase
 
 

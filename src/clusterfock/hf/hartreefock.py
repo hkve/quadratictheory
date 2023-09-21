@@ -1,6 +1,6 @@
 from __future__ import annotations
-from mypack.basis.basis import Basis
-from mypack.mix import Mixer, AlphaMixer
+from clusterfock.basis.basis import Basis
+from clusterfock.mix import Mixer, AlphaMixer
 from abc import ABC, abstractmethod
 import numpy as np
 from scipy.linalg import eigh

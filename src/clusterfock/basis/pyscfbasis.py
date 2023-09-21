@@ -1,4 +1,4 @@
-from mypack.basis import Basis
+from clusterfock.basis import Basis
 import pyscf
 
 

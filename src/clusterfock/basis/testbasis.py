@@ -1,4 +1,4 @@
-from mypack.basis.basis import Basis
+from clusterfock.basis.basis import Basis
 
 import numpy as np
 

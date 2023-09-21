@@ -1,4 +1,4 @@
-from mypack.mix import Mixer
+from clusterfock.mix import Mixer
 
 
 class AlphaMixer(Mixer):

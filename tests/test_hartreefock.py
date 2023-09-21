@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
-from mypack.hf import HF
-from mypack.basis import PyscfBasis
+from clusterfock.hf import HF
+from clusterfock.basis import PyscfBasis
 import pyscf
 
 

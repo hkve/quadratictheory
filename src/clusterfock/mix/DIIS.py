@@ -1,4 +1,4 @@
-from mypack.mix import Mixer
+from clusterfock.mix import Mixer
 from collections import deque
 import numpy as np
 from scipy.linalg import solve

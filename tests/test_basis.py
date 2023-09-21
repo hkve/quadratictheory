@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 
-from mypack.basis import TestBasis
+from clusterfock.basis import TestBasis
 
 
 class TestBasisProperties(TestCase):

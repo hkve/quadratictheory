@@ -1,5 +1,5 @@
-from mypack.basis import Basis
-from mypack.hf.hartreefock import HartreeFock
+from clusterfock.basis import Basis
+from clusterfock.hf.hartreefock import HartreeFock
 import numpy as np
 
 
