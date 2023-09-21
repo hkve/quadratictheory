@@ -21,7 +21,7 @@ class Basis(ABC):
         self.dtype = dtype
         self._L = L // self._degeneracy
         self._N = N // self._degeneracy
-        self._M = L - N
+        self._M = self._L - self._N
 
         self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
