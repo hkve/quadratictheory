@@ -2,7 +2,7 @@ from clusterfock.mix import Mixer
 import numpy as np
 
 
-class AlphaMixer(Mixer):
+class RelaxedMixer(Mixer):
     def __init__(self, alpha: float):
         self.alpha = alpha
 
