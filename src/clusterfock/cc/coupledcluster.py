@@ -54,6 +54,7 @@ class CoupledCluster(ABC):
 
         self._t_amplitudes = t_next
         self.has_run = True
+        self.iters = iters
         if iters < maxiters:
             self.converged = True
 
