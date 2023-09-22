@@ -1,6 +1,6 @@
 from __future__ import annotations
 from clusterfock.basis import Basis
-from clusterfock.mix import AlphaMixer
+from clusterfock.mix import DIISMixer
 from abc import ABC, abstractmethod
 from functools import reduce
 import operator
@@ -15,7 +15,7 @@ class CoupledCluster(ABC):
 
         self.has_run = False
         self.converged = False
-        self.mixer = AlphaMixer(alpha=0)
+        self.mixer = DIISMixer(n_vectors=8)
 
         self._order_map = {"S": 1, "D": 2, "T": 3}
         self._t_amplitudes_orders = t_amp

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from clusterfock.basis.basis import Basis
-from clusterfock.mix import Mixer, AlphaMixer
+from clusterfock.mix import Mixer, DIISMixer
 from abc import ABC, abstractmethod
 import numpy as np
 from scipy.linalg import eigh
@@ -11,7 +11,7 @@ class HartreeFock(ABC):
         self.basis = basis
         self.has_run = False
         self.converged = False
-        self.mixer = AlphaMixer(alpha=0.0)
+        self.mixer = DIISMixer(n_vectors=8)
         self.guess = "I"
 
         self._available_coefficient_guesses = {
