@@ -1,13 +1,13 @@
 import numpy as np
 
 
-def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
-    r2 = np.zeros_like(t)
+def amplitudes_intermediates_ccd(t2, u, f_pp_o, f_hh_o, v, o):
+    r2 = np.zeros_like(t2)
     M, _, N, _ = r2.shape
 
     tau0 = np.zeros((N, N, M, M))
 
-    tau0 += np.einsum("ki,abjk->ijab", f_hh_o, t, optimize=True)
+    tau0 += np.einsum("ki,abjk->ijab", f_hh_o, t2, optimize=True)
 
     r2 = np.zeros((M, M, N, N))
 
@@ -19,7 +19,7 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau1 = np.zeros((N, N, M, M))
 
-    tau1 += np.einsum("ac,bcij->ijab", f_pp_o, t, optimize=True)
+    tau1 += np.einsum("ac,bcij->ijab", f_pp_o, t2, optimize=True)
 
     tau6 = np.zeros((N, N, M, M))
 
@@ -29,11 +29,11 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau2 = np.zeros((M, M))
 
-    tau2 -= np.einsum("acji,jicb->ab", t, u[o, o, v, v], optimize=True)
+    tau2 -= np.einsum("acji,jicb->ab", t2, u[o, o, v, v], optimize=True)
 
     tau3 = np.zeros((N, N, M, M))
 
-    tau3 += np.einsum("bc,acij->ijab", tau2, t, optimize=True)
+    tau3 += np.einsum("bc,acij->ijab", tau2, t2, optimize=True)
 
     tau2 = None
 
@@ -43,11 +43,11 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau4 = np.zeros((N, N, M, M))
 
-    tau4 += np.einsum("acik,jkbc->ijab", t, u[o, o, v, v], optimize=True)
+    tau4 += np.einsum("acik,jkbc->ijab", t2, u[o, o, v, v], optimize=True)
 
     tau5 = np.zeros((N, N, M, M))
 
-    tau5 += np.einsum("acik,jkbc->ijab", t, tau4, optimize=True)
+    tau5 += np.einsum("acik,jkbc->ijab", t2, tau4, optimize=True)
 
     tau4 = None
 
@@ -63,11 +63,11 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau7 = np.zeros((N, N))
 
-    tau7 -= np.einsum("baik,kjba->ij", t, u[o, o, v, v], optimize=True)
+    tau7 -= np.einsum("baik,kjba->ij", t2, u[o, o, v, v], optimize=True)
 
     tau8 = np.zeros((N, N, M, M))
 
-    tau8 += np.einsum("jk,abik->ijab", tau7, t, optimize=True)
+    tau8 += np.einsum("jk,abik->ijab", tau7, t2, optimize=True)
 
     tau7 = None
 
@@ -79,7 +79,7 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau9 = np.zeros((N, N, M, M))
 
-    tau9 += np.einsum("acik,kbjc->ijab", t, u[o, v, o, v], optimize=True)
+    tau9 += np.einsum("acik,kbjc->ijab", t2, u[o, v, o, v], optimize=True)
 
     r2 -= np.einsum("ijab->abij", tau9, optimize=True)
 
@@ -95,14 +95,14 @@ def amplitudes_intermediates_ccd(t, u, f_pp_o, f_hh_o, v, o):
 
     tau10 += 2 * np.einsum("jilk->ijkl", u[o, o, o, o], optimize=True)
 
-    tau10 += np.einsum("balk,jiba->ijkl", t, u[o, o, v, v], optimize=True)
+    tau10 += np.einsum("balk,jiba->ijkl", t2, u[o, o, v, v], optimize=True)
 
-    r2 += np.einsum("bakl,klji->abij", t, tau10, optimize=True) / 4
+    r2 += np.einsum("bakl,klji->abij", t2, tau10, optimize=True) / 4
 
     tau10 = None
 
     r2 += np.einsum("baji->abij", u[v, v, o, o], optimize=True)
 
-    r2 += np.einsum("dcji,badc->abij", t, u[v, v, v, v], optimize=True) / 2
+    r2 += np.einsum("dcji,badc->abij", t2, u[v, v, v, v], optimize=True) / 2
 
     return r2

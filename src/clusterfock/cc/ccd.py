@@ -3,10 +3,11 @@ from clusterfock.basis import Basis
 from clusterfock.cc.coupledcluster import CoupledCluster
 
 from clusterfock.cc.rhs.t_CCD import amplitudes_ccd
+from clusterfock.cc.rhs.t_inter_CCD import amplitudes_intermediates_ccd
 
 
 class CCD(CoupledCluster):
-    def __init__(self, basis: Basis):
+    def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
 
         t_amplitude_orders = ["D"]
@@ -19,10 +20,12 @@ class CCD(CoupledCluster):
         np.fill_diagonal(self.f_hh_o, 0)
         np.fill_diagonal(self.f_pp_o, 0)
 
+        self.rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
+
     def _next_t_iteration(self, amplitudes: dict) -> dict:
         basis = self.basis
 
-        t2_next = amplitudes_ccd(
+        t2_next = self.rhs(
             t2=amplitudes["D"],
             u=basis.u,
             f_hh_o=self.f_hh_o,
