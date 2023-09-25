@@ -13,6 +13,7 @@ class GCCSD(CoupledCluster):
         t_amplitude_orders = ["S", "D"]
         super().__init__(basis, t_amplitude_orders)
         np.fill_diagonal(self._f, 0)
+        # self._f.fill(0)
 
         self.rhs = amplitudes_intermediates_ccsd if intermediates else amplitudes_ccsd
 
