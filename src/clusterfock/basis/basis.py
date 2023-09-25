@@ -41,7 +41,14 @@ class Basis(ABC):
 
     def calculate_fock_matrix(self):
         h, u, o, v = self.h, self.u, self.o, self.v
-        self.f = self.h + np.einsum("piqi->pq", u[:, o, :, o])
+
+        self.f = h.copy()
+        if self.restricted:
+            D = np.einsum("piqi->pq", u[:, o, :, o], optimize=True)
+            E = np.einsum("piiq->pq", u[:, o, o, :], optimize=True)
+            self.f += 2 * D - E
+        else:
+            self.f += np.einsum("piqi->pq", u[:, o, :, o])
 
     def _change_basis_one_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
         return np.einsum("ai,bj,ab->ij", C.conj(), C, operator, optimize=True)

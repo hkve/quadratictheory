@@ -50,7 +50,7 @@ class CoupledCluster(ABC):
             iters += 1
 
             if vocal:
-                print(f"i = {iters}, {corr_energy = :.4e}, {diff = :.4f}")
+                print(f"i = {iters}, {corr_energy = :.4e}, {diff = :.4e}")
 
         self._t_amplitudes = t_next
         self.has_run = True

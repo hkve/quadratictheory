@@ -11,7 +11,6 @@ class DIISMixer(Mixer):
         self.iter = 0
 
         self.errors = deque([None] * n_vectors)
-        self.coeffs = deque([None] * n_vectors)
         self.vectors = deque([None] * n_vectors)
 
     def __call__(self, old: np.ndarray, new: np.ndarray) -> np.ndarray:
@@ -20,7 +19,6 @@ class DIISMixer(Mixer):
         if self.n_stored > self.n_vectors:
             self.n_stored = self.n_vectors
             self.errors.rotate(-1)
-            self.coeffs.rotate(-1)
             self.vectors.rotate(-1)
 
         pos = self.n_stored - 1
@@ -32,11 +30,10 @@ class DIISMixer(Mixer):
         self.errors[pos] = new - old
         self.vectors[pos] = new
 
-        B = np.zeros(shape=(self.n_stored + 1, self.n_stored + 1))
+        B = np.zeros(shape=(self.n_stored + 1, self.n_stored + 1), dtype=new.dtype)
 
         for i in range(self.n_stored):
             B[i, i] = np.dot(self.errors[i], self.errors[i])
-        for i in range(self.n_stored):
             for j in range(i + 1, self.n_stored):
                 B[i, j] = np.dot(self.errors[i], self.errors[j])
                 B[j, i] = B[i, j]
