@@ -6,6 +6,45 @@ import numpy as np
 
 class Basis(ABC):
     def __init__(self, L: int, N: int, restricted: bool = False, dtype=float):
+        """
+        Initializes an instance of a quantum many-body system with specified parameters.
+
+        Parameters:
+        - L (int): The total number of single-particle states (sp states).
+        - N (int): The total number of particles.
+        - restricted (bool, optional): Whether to use a restricted scheme where all sp states are doubly occupied. Defaults to False.
+        - dtype (type, optional): The data type for internal arrays (e.g., float64). Defaults to float.
+
+        Notes:
+        - If 'restricted' is True, the system follows the restricted scheme, and both 'L' and 'N' must be even.
+        - 'restricted' determines the degeneracy of sp states (2 for restricted, 1 for unrestricted).
+        - The instance will have various attributes related to the basis set, symmetry, and matrix elements.
+        - Internal arrays 'h', 'u', 'f', and 's' are initialized with zeros.
+        - 'C' is initialized as an identity matrix.
+
+        Attributes:
+        - restricted (bool): Indicates whether the restricted scheme is used.
+        - orthonormal (bool): Indicates if the basis states are orthonormal (True by default).
+        - antisymmetric (bool): Indicates if the wave function is antisymmetric (False by default).
+        - dtype (type): The data type used for internal arrays.
+        - _L (int): Effective basis size considering degeneracy and 'L'.
+        - _N (int): Effective particle number considering degeneracy and 'N'.
+        - _M (int): Number of unoccupied states (_L - _N).
+        - _o (slice): Slice for occupied states.
+        - _v (slice): Slice for unoccupied states.
+        - _energy_shift (float): Constant to add to energy, mostly relevant for Molecules proton repulsion.
+        - _one_body_shape (tuple): Shape of the one-body operator matrix.
+        - _two_body_shape (tuple): Shape of the two-body operator matrix.
+        - _h (ndarray): One-body operator matrix.
+        - _u (ndarray): Two-body operator matrix.
+        - _f (ndarray): Fock operator matrix.
+        - _s (ndarray): Overlap matrix.
+        - _C (ndarray): Coefficient matrix.
+
+        Raises:
+        - AssertionError: If 'restricted' is True but 'L' or 'N' is not even.
+        """
+
         # If restricted scheme is used, all sp states are doubly occupied
         if restricted:
             self._degeneracy = 2
@@ -14,11 +53,13 @@ class Basis(ABC):
         else:
             self._degeneracy = 1
 
+        # Booleans, checks sp scheme, overlap and symmetries of u and type of matrix elements
         self.restricted = restricted
         self.orthonormal = True
         self.antisymmetric = False
-
         self.dtype = dtype
+
+        # Store basis set sizes
         self._L = L // self._degeneracy
         self._N = N // self._degeneracy
         self._M = self._L - self._N
@@ -26,6 +67,7 @@ class Basis(ABC):
         self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
 
+        #
         self._energy_shift = 0
         self._one_body_shape = (self.L, self.L)
         self._two_body_shape = (self.L, self.L, self.L, self.L)
@@ -35,12 +77,11 @@ class Basis(ABC):
         self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
         self._s = np.eye(self.L, dtype=dtype)
         self._C = np.eye(self.L, dtype=dtype)
-        # self._h = None
-        # self._u = None
-        # self._f = None
-        # self._s = None
 
     def calculate_fock_matrix(self):
+        """
+        Calculates the fock matrix and stores as attribute
+        """
         h, u, o, v = self.h, self.u, self.o, self.v
 
         self.f = h.copy()
@@ -52,14 +93,43 @@ class Basis(ABC):
             self.f += np.einsum("piqi->pq", u[:, o, :, o])
 
     def _change_basis_one_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
+        """
+        Perform basis change on a one body operator
+
+        Parameters:
+            - operator (ndarray): (L,L) matrix to transform
+            - C (ndarray): (L,L) matrix used to perform transformation
+
+        Returns:
+            - operator_transformed (ndarray): (L,L) matrix with the new operator
+        """
+
         return np.einsum("ai,bj,ab->ij", C.conj(), C, operator, optimize=True)
 
     def _change_basis_two_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
+        """
+        Perform basis change on a two body operator
+
+        Parameters:
+            - operator (ndarray): (L,L,L,L) matrix to transform
+            - C (ndarray): (L,L) matrix used to perform transformation
+
+        Returns:
+            - operator_transformed (ndarray): (L,L,L,L) matrix with the new operator
+        """
+
         return np.einsum(
             "ai,bj,gk,dl,abgd->ijkl", C.conj(), C.conj(), C, C, operator, optimize=True
         )
 
     def copy(self) -> Basis:
+        """
+        Copies self to another Basis object. Useful i.e. if a transformation of basis is
+        wanted but the orginal representation should not be destroyed
+
+        Returns:
+            - new_basis (Basis): The new copy of self
+        """
         L, N = self._degeneracy * self.L, self._degeneracy * self.N
         new_basis = Basis(L=L, N=N, restricted=self.restricted, dtype=self.dtype)
         new_basis.orthonormal = self.orthonormal
@@ -68,6 +138,7 @@ class Basis(ABC):
         new_basis.h = self.h.copy()
         new_basis.u = self.u.copy()
         new_basis.s = self.s.copy()
+        new_basis.C = self.C.copy()
         new_basis.calculate_fock_matrix()
 
         return new_basis
@@ -75,6 +146,18 @@ class Basis(ABC):
     def change_basis(
         self, C: np.ndarray, inplace: bool = True, inverse: bool = False
     ) -> Optional[Basis]:
+        """
+        Perform basis change on a basis object. This method can work both in place and
+        also perform inverse transformation.
+
+        Parameters:
+            - C (ndarray): The (L,L) matrix to use for basis change
+            - inplace (bool): Whether to perform the basis transformation on self or return a new object
+            - inverse (bool): Whether to perform the inverse transformation
+
+        Returns:
+            - obj (Basis): The basis with transformation applied. If inplace is true, this is not needed
+        """
         if inverse:
             C = C.conj().T
 
@@ -89,10 +172,17 @@ class Basis(ABC):
         return obj
 
     def _antisymmetrize(self):
+        """
+        Antisymmetrizes two body u in place
+        """
         self.antisymmetric = True
         self.u = self.u - self.u.transpose(0, 1, 3, 2)
 
     def _add_spin(self):
+        """
+        Add spins when going from restriced to scheme. One body operators go from (L,L) to (2L, 2L),
+        while two body (L,L,L,L) to (2L,2L,2L,2L). Also fixes new L and N numbers and degeneracy
+        """
         self.restricted = False
         self._degeneracy = 1
 
@@ -110,6 +200,15 @@ class Basis(ABC):
         self.N = 2 * self.N
 
     def from_restricted(self, inplace: bool = True):
+        """
+        Go from restricted to non-restricted scheme. Expands matricies and performs antisymmetrization.
+
+        Parameters:
+            - inplace (bool): Whether to work on this object or return new
+
+        Returns:
+            - obj (Basis): The object in non-restricted scheme. If inpalce is True, this is not needed.
+        """
         obj = self if inplace else self.copy()
 
         obj._add_spin()
@@ -117,7 +216,13 @@ class Basis(ABC):
 
         return obj
 
-    def energy(self):
+    def energy(self) -> float:
+        """
+        Calcualtes the energy expectation value of state.
+
+        Returns:
+            - Energy (float): The energy expectation value
+        """
         h, u = self.h, self.u
         o, v = self.o, self.v
 
@@ -131,7 +236,11 @@ class Basis(ABC):
 
         return E_OB + E_TB + self._energy_shift
 
-    # Getters and setters for ints (L,N) and slices (o,v)
+    """
+    Getters and setters for ints (L,N) and slices (o,v). N also performs tweaking on M
+    as this is easiest to understand (adding particles reduces the number of viritual states if L is const).
+    """
+
     @property
     def L(self) -> int:
         return self._L
@@ -200,7 +309,7 @@ class Basis(ABC):
     @property
     def C(self) -> np.ndarray:
         return self._C
-    
+
     @C.setter
     def C(self, C: np.ndarray):
         self._C = C.astype(self.dtype)
