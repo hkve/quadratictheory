@@ -169,3 +169,10 @@ def amplitudes_CCSD_t2(t1, t2, u, f, v, o):
     r2 += np.einsum("ak,bl,cj,klic->abij", t1, t1, t1, u[o, o, o, v], optimize=True)
 
     return r2
+
+
+def amplitudes_ccsd(t1, t2, u, f, v, o):
+    r1 = amplitudes_CCSD_t1(t1, t2, u, f, v, o)
+    r2 = amplitudes_CCSD_t2(t1, t2, u, f, v, o)
+
+    return r1, r2

@@ -17,8 +17,9 @@ class CoupledCluster(ABC):
         self.converged = False
         self.mixer = DIISMixer(n_vectors=8)
 
-        self._order_map = {"S": 1, "D": 2, "T": 3}
+        self._order_map = {"S": 1, "D": 2}
         self._t_amplitudes_orders = t_amp
+        self.eps_diag = np.diag(self._f).copy()
 
     def run(self, tol: float = 1e-8, maxiters: int = 1000, vocal: bool = False) -> CoupledCluster:
         basis = self.basis
@@ -88,8 +89,8 @@ class CoupledCluster(ABC):
     def _allocate_epsinv(self, amps: dict) -> dict:
         N, M = self.basis.N, self.basis.M
 
-        eps_v = np.diag(self._f)[N:]
-        eps_o = np.diag(self._f)[:N]
+        eps_v = self.eps_diag[N:]
+        eps_o = self.eps_diag[:N]
         epsinv = {}
 
         if "S" in amps:
@@ -114,8 +115,10 @@ class CoupledCluster(ABC):
         sizes = [0] + [prod(shape) for shape in amp_shapes.values()]
 
         amplitudes = {}
+        offset = 0
         for i, order in enumerate(amp_shapes.keys()):
-            order_slice = slice(sizes[i], sizes[i + 1])
+            order_slice = slice(sizes[i], offset + sizes[i + 1])
+            offset += sizes[i + 1]
             order_shape = amp_shapes[order]
             amplitudes[order] = amp_array[order_slice].reshape(order_shape)
 

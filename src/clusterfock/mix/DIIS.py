@@ -4,7 +4,9 @@ import numpy as np
 from scipy.linalg import solve
 
 import warnings
+
 warnings.filterwarnings("ignore")
+
 
 class DIISMixer(Mixer):
     def __init__(self, n_vectors: int = 4):

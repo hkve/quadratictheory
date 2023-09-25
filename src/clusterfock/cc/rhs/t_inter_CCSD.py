@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def amplitudes_CCSD_t1_t2(t1, t2, u, f, v, o):
+def amplitudes_intermediates_ccsd(t1, t2, u, f, v, o):
     M, N = t1.shape
 
     tau0 = np.zeros((N, N, M, M))
