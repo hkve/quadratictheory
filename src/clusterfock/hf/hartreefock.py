@@ -81,7 +81,10 @@ class HartreeFock(ABC):
 
     def energy(self):
         self._check_state()
-        return self.evaluate_energy_scheme()
+        if np.allclose(self.C, self.basis.C):
+            return self.basis.energy()
+        else:
+            return self.evaluate_energy_scheme()
 
     def _check_state(self):
         if not self.has_run:

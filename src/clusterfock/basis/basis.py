@@ -34,6 +34,7 @@ class Basis(ABC):
         self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
         self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
         self._s = np.eye(self.L, dtype=dtype)
+        self._C = np.eye(self.L, dtype=dtype)
         # self._h = None
         # self._u = None
         # self._f = None
@@ -82,6 +83,7 @@ class Basis(ABC):
         obj.h = obj._change_basis_one_body(obj.h, C)
         obj.u = obj._change_basis_two_body(obj.u, C)
         obj.s = obj._change_basis_one_body(obj.s, C)
+        obj.C = C
         obj.calculate_fock_matrix()
 
         return obj
@@ -100,6 +102,7 @@ class Basis(ABC):
         self.h = np.kron(self.h, I)
         self.u = np.kron(self.u, I2)
         self.s = np.kron(self.s, I)
+        self.C = np.kron(self.C, I)
         if self.f is not None:
             self.f = np.kron(self.f, I)
 
@@ -191,5 +194,13 @@ class Basis(ABC):
         return self._s
 
     @s.setter
-    def s(self, s: np.ndarray) -> np.ndarray:
+    def s(self, s: np.ndarray):
         self._s = s.astype(self.dtype)
+
+    @property
+    def C(self) -> np.ndarray:
+        return self._C
+    
+    @C.setter
+    def C(self, C: np.ndarray):
+        self._C = C.astype(self.dtype)
