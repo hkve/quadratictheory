@@ -10,6 +10,9 @@ class PyscfBasis(Basis):
 
         super().__init__(L=2 * mol.nao, N=mol.nelectron, restricted=True)
 
+        self._atom_string = atom
+        self._basis_string = basis
+
         L = self.L
         self._energy_shift = mol.energy_nuc()
         self.s = mol.intor_symmetric("int1e_ovlp")
