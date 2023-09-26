@@ -47,7 +47,7 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     b.from_restricted()
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
-    ccsd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
+    ccsd_pyscf = pyscfCCSD(hf_pyscf).run(verbose=0, tol=tol)
 
     print(
         f"""
