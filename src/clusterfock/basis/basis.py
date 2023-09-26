@@ -97,11 +97,11 @@ class Basis(ABC):
         Perform basis change on a one body operator
 
         Parameters:
-            - operator (ndarray): (L,L) matrix to transform
-            - C (ndarray): (L,L) matrix used to perform transformation
+        - operator (ndarray): (L,L) matrix to transform
+        - C (ndarray): (L,L) matrix used to perform transformation
 
         Returns:
-            - operator_transformed (ndarray): (L,L) matrix with the new operator
+        - operator_transformed (ndarray): (L,L) matrix with the new operator
         """
 
         return np.einsum("ai,bj,ab->ij", C.conj(), C, operator, optimize=True)
@@ -111,11 +111,11 @@ class Basis(ABC):
         Perform basis change on a two body operator
 
         Parameters:
-            - operator (ndarray): (L,L,L,L) matrix to transform
-            - C (ndarray): (L,L) matrix used to perform transformation
+        - operator (ndarray): (L,L,L,L) matrix to transform
+        - C (ndarray): (L,L) matrix used to perform transformation
 
         Returns:
-            - operator_transformed (ndarray): (L,L,L,L) matrix with the new operator
+        - operator_transformed (ndarray): (L,L,L,L) matrix with the new operator
         """
 
         return np.einsum(
@@ -128,7 +128,7 @@ class Basis(ABC):
         wanted but the orginal representation should not be destroyed
 
         Returns:
-            - new_basis (Basis): The new copy of self
+        - new_basis (Basis): The new copy of self
         """
         L, N = self._degeneracy * self.L, self._degeneracy * self.N
         new_basis = Basis(L=L, N=N, restricted=self.restricted, dtype=self.dtype)
@@ -151,12 +151,12 @@ class Basis(ABC):
         also perform inverse transformation.
 
         Parameters:
-            - C (ndarray): The (L,L) matrix to use for basis change
-            - inplace (bool): Whether to perform the basis transformation on self or return a new object
-            - inverse (bool): Whether to perform the inverse transformation
+        - C (ndarray): The (L,L) matrix to use for basis change
+        - inplace (bool): Whether to perform the basis transformation on self or return a new object
+        - inverse (bool): Whether to perform the inverse transformation
 
         Returns:
-            - obj (Basis): The basis with transformation applied. If inplace is true, this is not needed
+        - obj (Basis): The basis with transformation applied. If inplace is true, this is not needed
         """
         if inverse:
             C = C.conj().T
@@ -204,10 +204,10 @@ class Basis(ABC):
         Go from restricted to non-restricted scheme. Expands matricies and performs antisymmetrization.
 
         Parameters:
-            - inplace (bool): Whether to work on this object or return new
+        - inplace (bool): Whether to work on this object or return new
 
         Returns:
-            - obj (Basis): The object in non-restricted scheme. If inpalce is True, this is not needed.
+        - obj (Basis): The object in non-restricted scheme. If inpalce is True, this is not needed.
         """
         obj = self if inplace else self.copy()
 
@@ -221,7 +221,7 @@ class Basis(ABC):
         Calcualtes the energy expectation value of state.
 
         Returns:
-            - Energy (float): The energy expectation value
+        - Energy (float): The energy expectation value
         """
         h, u = self.h, self.u
         o, v = self.o, self.v
