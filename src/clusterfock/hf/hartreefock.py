@@ -71,9 +71,9 @@ class HartreeFock(ABC):
         self.has_run = True
         if iters < maxiters:
             self.converged = True
-            self._iters = iters
-            self._diff = diff
 
+        self._diff = diff
+        self.iters = iters
         self.rho = rho
         self.C = C
 
