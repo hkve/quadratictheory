@@ -13,9 +13,9 @@ def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
     print(
         f"""
         Hartree_fock for {basis._atom_string} with {basis._basis_string}
-        E = {hf.energy():.6f}
-        pyscf = {hf_pyscf.e_tot:.6f}
-        cccbdb = {db_results['hf']:.6f}          
+        clufo  = {hf.energy():>20.6f}
+        pyscf  = {hf_pyscf.e_tot:>20.6f}
+        cccbdb = {db_results['hf']:>20.6f}          
           """
     )
 
@@ -35,9 +35,9 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     print(
         f"""
         CCD for {b._atom_string} with {b._basis_string}
-        E = {ccd.energy():.6f}
-        pyscf = {ccd_pyscf.e_tot:.6f}
-        cccbdb = {db_results['ccd']:.6f}
+        clufo  = {ccd.energy():>20.6f}
+        pyscf  = {ccd_pyscf.e_tot:>20.6f}
+        cccbdb = {db_results['ccd']:>20.6f}
         """
     )
 
@@ -52,9 +52,9 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     print(
         f"""
         CCSD for {b._atom_string} with {b._basis_string}
-        E = {ccsd.energy():.6f}
-        pyscf = {ccsd_pyscf.e_tot:.6f}
-        cccbdb = {db_results['ccsd']:.6f}
+        clufo  = {ccsd.energy():>20.6f}
+        pyscf  = {ccsd_pyscf.e_tot:>20.6f}
+        cccbdb = {db_results['ccsd']:>20.6f}
         """
     )
 
@@ -92,3 +92,11 @@ if __name__ == "__main__":
         "ccsd": "H 0 0 0; H 0 0 0.7609",
     }
     run(atom=H2_atom, basis="cc-pVDZ", db_results=H2)
+
+    N2 = {"hf": -108.955559, "ccd": -109.260854, "ccsd": -109.263578}
+    N2_atom = {
+            "hf": "N 0 0 0; N 0 0 1.0773", 
+            "ccd": "N 0 0 0; N 0 0 1.1108", 
+            "ccsd": "N 0 0 0; N 0 0 1.1128",
+               }
+    run(atom=N2_atom, basis="cc-pVDZ", db_results=N2)
