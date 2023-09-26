@@ -18,26 +18,22 @@ def get_dissociation(df):
 
     return df_diss, E0
 
-def run_CCD_pyscf(r):
-    atom, basis = f"N 0 0 0; N 0 0 {r}", "sto-3g"
-
+def run_CCD_pyscf(atom, basis, tol=1e-8):
     basis = cf.PyscfBasis(atom, basis, restricted=True)
-    hf_pyscf = pyscf.scf.HF(basis.mol).run(verbose=0, tol=1e-8)
-    ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=1e-8)
+    hf_pyscf = pyscf.scf.HF(basis.mol).run(verbose=0, tol=tol)
+    ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
 
-    print(f"r = {r} hf? {hf_pyscf.converged} after {hf_pyscf.iter} ccd? {ccd_pyscf.converged}")
+    print(f"{atom} hf? {hf_pyscf.converged} ccd? {ccd_pyscf.converged}")
     return ccd_pyscf.e_tot
 
-def run_CCD(r):
-    atom, basis = f"N 0 0 0; N 0 0 {r}", "sto-3g"
-
+def run_CCD(atom, basis, tol=1e-8):
     basis = cf.PyscfBasis(atom, basis, restricted=True)
     hf = cf.HF(basis).run()
 
     basis.change_basis(hf.C)
     basis.from_restricted()
 
-    ccd = cf.CCD(basis).run(vocal=False, tol=1e-8, maxiters=100)
+    ccd = cf.CCD(basis).run(vocal=False, tol=tol, maxiters=100)
 
     energy = 0
     if not ccd.converged:
@@ -45,7 +41,7 @@ def run_CCD(r):
     else:
         energy = ccd.energy()
 
-    print(f"{r = }, hf? = {hf.converged} after {hf._iters}, ccd? {ccd.converged} after {ccd.iters}")
+    print(f"{atom}, hf? = {hf.converged} after {hf.iters}, ccd? {ccd.converged} after {ccd.iters}")
     return energy
 
 
@@ -55,16 +51,39 @@ def plot_N2():
     df_diss, E0 = get_dissociation(df)
 
     fig, ax = plt.subplots()
-    for col in ["CCD", "QCCD", "VCCD", "FCI"]:
+    for col in ["CCD", "FCI"]:
         ax.scatter(df_diss.R, df_diss[col], label=col)
 
-    my_CCD = np.zeros_like(df.R.to_numpy())
+    cf_CCD = np.zeros_like(df.R.to_numpy())
     for i, r in enumerate(df_diss.R):
-        my_CCD[i] = run_CCD_pyscf(r) - E0
+        cf_CCD[i] = run_CCD(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
 
-    ax.scatter(df_diss.R, my_CCD, label="fidosfos")
+    ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
+    ax.legend()
+    plt.show()
+
+
+def plot_HF():
+    df = pd.read_csv("vanvoorhis_headgordon/hf.txt", sep=" ", skiprows=5, header=0, index_col=False)
+
+    df_diss = df    
+    df_diss, E0 = get_dissociation(df)
+
+    fig, ax = plt.subplots()
+    for col in ["CCD", "FCI"]:
+        ax.scatter(df_diss.R, df_diss[col], label=col)
+
+    cf_CCD = np.zeros_like(df.R.to_numpy())
+    pyscf_CCD = np.zeros_like(df.R.to_numpy())
+    for i, r in enumerate(df_diss.R):
+        cf_CCD[i] = run_CCD(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
+        pyscf_CCD[i] = run_CCD_pyscf(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
+    print(cf_CCD)
+    ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
+    ax.scatter(df_diss.R, pyscf_CCD, label="cf.CCD")
     ax.legend()
     plt.show()
 
 if __name__ == '__main__':
-    plot_N2()
+    # plot_N2()
+    plot_HF()
