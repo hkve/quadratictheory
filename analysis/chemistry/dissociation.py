@@ -54,12 +54,16 @@ def plot_N2():
     for col in ["CCD", "FCI"]:
         ax.scatter(df_diss.R, df_diss[col], label=col)
 
-    cf_CCD = np.zeros_like(df.R.to_numpy())
-    for i, r in enumerate(df_diss.R):
+    cf_CCD = np.zeros_like(df.R.to_numpy())*np.nan
+    pyscf_CCD = np.zeros_like(df.R.to_numpy())*np.nan
+    for i, r in enumerate(df_diss.R[:-2]):
         cf_CCD[i] = run_CCD(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
+        pyscf_CCD[i] = run_CCD_pyscf(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
 
     ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
+    ax.scatter(df_diss.R, pyscf_CCD, label="pyscf.CCD")
     ax.legend()
+    ax.set(xlabel=r"$\Delta R$", ylabel=r"$E(N_2) - 2E(N)$")
     plt.show()
 
 
@@ -73,17 +77,18 @@ def plot_HF():
     for col in ["CCD", "FCI"]:
         ax.scatter(df_diss.R, df_diss[col], label=col)
 
-    cf_CCD = np.zeros_like(df.R.to_numpy())
-    pyscf_CCD = np.zeros_like(df.R.to_numpy())
+    cf_CCD = np.zeros_like(df.R.to_numpy())*np.nan
+    pyscf_CCD = np.zeros_like(df.R.to_numpy())*np.nan
     for i, r in enumerate(df_diss.R):
         cf_CCD[i] = run_CCD(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
         pyscf_CCD[i] = run_CCD_pyscf(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
-    print(cf_CCD)
+
     ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
-    ax.scatter(df_diss.R, pyscf_CCD, label="cf.CCD")
+    ax.scatter(df_diss.R, pyscf_CCD, label="pyscf.CCD")
     ax.legend()
+    ax.set(xlabel=r"$\Delta R$", ylabel=r"$E(HF) - E(H) - E(F)$")
     plt.show()
 
 if __name__ == '__main__':
-    # plot_N2()
-    plot_HF()
+    plot_N2()
+    # plot_HF()
