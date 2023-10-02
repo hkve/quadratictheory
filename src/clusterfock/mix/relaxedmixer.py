@@ -6,5 +6,6 @@ class RelaxedMixer(Mixer):
     def __init__(self, alpha: float):
         self.alpha = alpha
 
-    def __call__(self, old: np.ndarray, new: np.ndarray) -> np.ndarray:
-        return (1 - self.alpha) * new + self.alpha * old
+    def __call__(self, t: np.ndarray, dt: np.ndarray) -> np.ndarray:
+        t_next = t + dt
+        return (1 - self.alpha) * t_next + self.alpha * t

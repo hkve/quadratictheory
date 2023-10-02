@@ -105,7 +105,7 @@ class HartreeFock(ABC):
         while (iters < maxiters) and (diff > tol):
             new_fock = self.evaluate_fock_matrix(rho)
 
-            new_fock = self.mixer(old_fock, new_fock)
+            new_fock = self.mixer(old_fock, new_fock-old_fock)
             old_fock = new_fock.copy()
 
             eps_hf_new, C = eigh(new_fock, basis.s)

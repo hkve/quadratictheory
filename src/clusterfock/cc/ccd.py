@@ -18,14 +18,13 @@ class GCCD(CoupledCluster):
 
         self.f_hh_o = self._f[o, o].copy()
         self.f_pp_o = self._f[v, v].copy()
-        np.fill_diagonal(self.f_hh_o, 0)
-        np.fill_diagonal(self.f_pp_o, 0)
 
         self.rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
 
     def _next_t_iteration(self, amplitudes: dict) -> dict:
         basis = self.basis
 
+        print(f"T2 in {np.linalg.norm(amplitudes['D'])}")
         t2_next = self.rhs(
             t2=amplitudes["D"],
             u=basis.u,
@@ -34,7 +33,7 @@ class GCCD(CoupledCluster):
             v=basis.v,
             o=basis.o,
         )
-
+        print(f"T2 out {np.linalg.norm(t2_next)}")
         return {"D": t2_next * self._epsinv["D"]}
 
     def _evaluate_cc_energy(self, t_amplitudes: np.ndarray) -> float:

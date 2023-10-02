@@ -37,10 +37,10 @@ class CoupledCluster(ABC):
 
         t = self._t_amplitudes
         while (iters < maxiters) and (diff > tol):
-            t_next = self._next_t_iteration(t)
+            dt = self._next_t_iteration(t)
 
-            t_next_flat = self.mixer(self._flatten_amplitudes(t), self._flatten_amplitudes(t_next))
-
+            print(np.linalg.norm(dt["D"]))
+            t_next_flat = self.mixer(self._flatten_amplitudes(t), self._flatten_amplitudes(dt))
             t_next = self._deflatten_amplitudes(t_next_flat, self._t_shapes)
 
             corr_energy_next = self._evaluate_cc_energy(t_next)
@@ -48,12 +48,13 @@ class CoupledCluster(ABC):
 
             corr_energy = corr_energy_next
             t = t_next
+
             iters += 1
 
             if vocal:
                 print(f"i = {iters}, {corr_energy = :.4e}, {diff = :.4e}")
 
-        self._t_amplitudes = t_next
+        self._t_amplitudes = t
         self.has_run = True
         self.iters = iters
         if iters < maxiters:
