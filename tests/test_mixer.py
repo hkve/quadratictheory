@@ -37,8 +37,8 @@ class TestMixer(TestCase):
     def test_alpha_mixer(self):
         mixer = RelaxedMixer(alpha=0.1)
 
-        old, new = 1, 10
-        expected = 0.1 + 9
-        calculated = mixer(old, new)
+        p, dp = 10, 1
+        expected = 0.9 + 10
+        calculated = mixer(p, dp)
 
         self.assertEqual(expected, calculated)

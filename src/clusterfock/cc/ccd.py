@@ -17,9 +17,6 @@ class GCCD(CoupledCluster):
 
         o, v = self.basis.o, self.basis.v
 
-        self.f_hh_o = self._f[o, o].copy()
-        self.f_pp_o = self._f[v, v].copy()
-
         self.rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
@@ -28,8 +25,7 @@ class GCCD(CoupledCluster):
         rhs2 = self.rhs(
             t2=t[2],
             u=basis.u,
-            f_hh_o=self.f_hh_o,
-            f_pp_o=self.f_pp_o,
+            f=self._f,
             v=basis.v,
             o=basis.o,
         )
@@ -75,8 +71,7 @@ class RCCD(CoupledCluster):
         rhs2 = self.rhs(
             t2=t[2],
             u=basis.u,
-            f_hh_o=self.f_hh_o,
-            f_pp_o=self.f_pp_o,
+            f=self._f,
             v=basis.v,
             o=basis.o,
         )

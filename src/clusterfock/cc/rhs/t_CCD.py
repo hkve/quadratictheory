@@ -1,15 +1,15 @@
 import numpy as np
 
 
-def amplitudes_ccd(t2, u, f_hh_o, f_pp_o, v, o):
+def amplitudes_ccd(t2, u, f, v, o):
     res = np.zeros_like(t2)
 
     res += u[v, v, o, o]  # v_abij
 
-    tp = np.einsum("bc,acij->abij", f_pp_o, t2, optimize=True)
+    tp = np.einsum("bc,acij->abij", f[v,v], t2, optimize=True)
     res += tp - tp.transpose(1, 0, 2, 3)
 
-    tp = np.einsum("kj,abik->abij", f_hh_o, t2, optimize=True)
+    tp = np.einsum("kj,abik->abij", f[o,o], t2, optimize=True)
     res -= tp - tp.transpose(0, 1, 3, 2)
 
     # Two first sums, over cd and kl

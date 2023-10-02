@@ -1,13 +1,13 @@
 import numpy as np
 
 
-def amplitudes_intermediates_ccd(t2, u, f_pp_o, f_hh_o, v, o):
+def amplitudes_intermediates_ccd(t2, u, f, v, o):
     r2 = np.zeros_like(t2)
     M, _, N, _ = r2.shape
 
     tau0 = np.zeros((N, N, M, M))
 
-    tau0 += np.einsum("ki,abjk->ijab", f_hh_o, t2, optimize=True)
+    tau0 += np.einsum("ki,abjk->ijab", f[o,o], t2, optimize=True)
 
     r2 = np.zeros((M, M, N, N))
 
@@ -19,7 +19,7 @@ def amplitudes_intermediates_ccd(t2, u, f_pp_o, f_hh_o, v, o):
 
     tau1 = np.zeros((N, N, M, M))
 
-    tau1 += np.einsum("ac,bcij->ijab", f_pp_o, t2, optimize=True)
+    tau1 += np.einsum("ac,bcij->ijab", f[v,v], t2, optimize=True)
 
     tau6 = np.zeros((N, N, M, M))
 

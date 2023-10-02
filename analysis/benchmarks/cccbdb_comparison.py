@@ -3,6 +3,7 @@ import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
 from pyscf.cc.ccsd import CCSD as pyscfCCSD
 
+from pyscf.cc import GCCSD
 
 def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
     basis = cf.PyscfBasis(atom=atom["hf"], basis=basis, restricted=restricted)
@@ -16,7 +17,7 @@ def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
         clufo  = {hf.energy():>20.6f}
         pyscf  = {hf_pyscf.e_tot:>20.6f}
         cccbdb = {db_results['hf']:>20.6f}          
-          """
+        """
     )
 
 
@@ -28,6 +29,7 @@ def run_cc(atom, basis, db_results, tol=1e-8):
 
     ccd = cf.CCD(b, intermediates=True).run(tol=tol)
     ccsd = cf.CCSD(b, intermediates=True).run(tol=tol)
+
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
@@ -47,7 +49,7 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     b.from_restricted()
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
-    ccsd_pyscf = pyscfCCSD(hf_pyscf).run(verbose=0, tol=tol)
+    ccsd_pyscf = GCCSD(hf_pyscf).run(verbose=0, tol=tol)
 
     print(
         f"""
