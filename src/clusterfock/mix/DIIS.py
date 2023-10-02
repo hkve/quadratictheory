@@ -17,7 +17,7 @@ class DIISMixer(Mixer):
         self.errors = deque([None] * n_vectors)
         self.vectors = deque([None] * n_vectors)
 
-    def __call__(self, t: np.ndarray, dt: np.ndarray) -> np.ndarray:
+    def __call__(self, p: np.ndarray, dp: np.ndarray) -> np.ndarray:
         self.n_stored += 1
 
         if self.n_stored > self.n_vectors:
@@ -27,8 +27,8 @@ class DIISMixer(Mixer):
 
         pos = self.n_stored - 1
 
-        new = t + dt
-        old = t
+        new = p + dp
+        old = p
 
         shape = new.shape
         new = new.ravel()

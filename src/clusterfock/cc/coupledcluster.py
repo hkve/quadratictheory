@@ -1,6 +1,7 @@
 from __future__ import annotations
 from clusterfock.basis import Basis
 from clusterfock.mix import DIISMixer
+from clusterfock.cc.parameter import CoupledClusterParameter
 from abc import ABC, abstractmethod
 from functools import reduce
 import operator
@@ -8,7 +9,7 @@ import numpy as np
 
 
 class CoupledCluster(ABC):
-    def __init__(self, basis: Basis, t_amp: list):
+    def __init__(self, basis: Basis, orders: list):
         self.basis = basis
         basis.calculate_fock_matrix()
         self._f = self.basis.f
@@ -17,15 +18,14 @@ class CoupledCluster(ABC):
         self.converged = False
         self.mixer = DIISMixer(n_vectors=8)
 
-        self._order_map = {"S": 1, "D": 2}
-        self._t_amplitudes_orders = t_amp
-        self.eps_diag = np.diag(self._f).copy()
+        self._t = CoupledClusterParameter(orders, basis.N, basis.M)
+        self._epsinv = CoupledClusterParameter(orders, basis.N, basis.M)
 
     def run(self, tol: float = 1e-8, maxiters: int = 1000, vocal: bool = False) -> CoupledCluster:
         basis = self.basis
 
-        self._t_amplitudes, self._t_shapes = self._allocate_amplitudes(self._t_amplitudes_orders)
-        self._epsinv = self._allocate_epsinv(self._t_amplitudes_orders)
+        self._t.initialize_zero(dtype=self.basis.dtype)
+        self._epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
 
         self._iterate(tol, maxiters, vocal)
 
@@ -35,33 +35,34 @@ class CoupledCluster(ABC):
         iters, diff = 0, 1000
         corr_energy = 0
 
-        t = self._t_amplitudes
-        while (iters < maxiters) and (diff > tol):
-            dt = self._next_t_iteration(t)
+        t, epsinv = self._t, self._epsinv
+        converged = False
 
-            print(np.linalg.norm(dt["D"]))
-            t_next_flat = self.mixer(self._flatten_amplitudes(t), self._flatten_amplitudes(dt))
-            t_next = self._deflatten_amplitudes(t_next_flat, self._t_shapes)
+        while (iters < maxiters) and not converged:
+            rhs = self._next_t_iteration(t)
 
-            corr_energy_next = self._evaluate_cc_energy(t_next)
-            diff = np.abs(corr_energy_next - corr_energy)
+            rhs_norms = rhs.norm()
 
-            corr_energy = corr_energy_next
-            t = t_next
+            if np.all(np.array(list(rhs_norms.values())) < tol):
+                converged = True
 
+            t_next_flat = self.mixer(t.to_flat(), (rhs*epsinv).to_flat())
+            t.from_flat(t_next_flat)
+            
+            corr_energy = self._evaluate_cc_energy(t)
             iters += 1
 
             if vocal:
-                print(f"i = {iters}, {corr_energy = :.4e}, {diff = :.4e}")
+                print(f"i = {iters}, {corr_energy = :.6e}, rhs_norms = {rhs_norms}")
 
-        self._t_amplitudes = t
+        self._t = t
         self.has_run = True
         self.iters = iters
         if iters < maxiters:
             self.converged = True
 
     @abstractmethod
-    def _next_t_iteration(self, t: np.ndarray) -> np.ndarray:
+    def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         pass
 
     # @abstractmethod
@@ -69,64 +70,11 @@ class CoupledCluster(ABC):
     #     pass
 
     @abstractmethod
-    def _evaluate_cc_energy(self, t: np.ndarray) -> float:
+    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
         pass
 
-    def _allocate_amplitudes(self, amps: dict | None) -> dict:
-        if amps is None:
-            return None
+    def energy(self, t: CoupledClusterParameter = None) -> float:
+        if t is None:
+            t = self._t
 
-        N, M = self.basis.N, self.basis.M
-
-        amplitudes, amplitudes_shape = {}, {}
-        for order_name in amps:
-            order = self._order_map[order_name]
-            shape = tuple([M] * order + [N] * order)
-            amplitudes_shape[order_name] = shape
-            amplitudes[order_name] = np.zeros(shape, dtype=self.basis.dtype)
-
-        return amplitudes, amplitudes_shape
-
-    def _allocate_epsinv(self, amps: dict) -> dict:
-        N, M = self.basis.N, self.basis.M
-
-        eps_v = self.eps_diag[N:]
-        eps_o = self.eps_diag[:N]
-        epsinv = {}
-
-        if "S" in amps:
-            eps = -eps_v[:, None] + eps_o[None, :]
-            epsinv["S"] = 1 / eps
-        if "D" in amps:
-            eps = (
-                -eps_v[:, None, None, None]
-                - eps_v[None, :, None, None]
-                + eps_o[None, None, :, None]
-                + eps_o[None, None, None, :]
-            )
-            epsinv["D"] = 1 / eps
-
-        return epsinv
-
-    def _flatten_amplitudes(self, amplitudes):
-        return np.concatenate(tuple(t.ravel() for t in amplitudes.values()))
-
-    def _deflatten_amplitudes(self, amp_array, amp_shapes):
-        prod = lambda shape: reduce(operator.mul, shape, 1)
-        sizes = [0] + [prod(shape) for shape in amp_shapes.values()]
-
-        amplitudes = {}
-        offset = 0
-        for i, order in enumerate(amp_shapes.keys()):
-            order_slice = slice(sizes[i], offset + sizes[i + 1])
-            offset += sizes[i + 1]
-            order_shape = amp_shapes[order]
-            amplitudes[order] = amp_array[order_slice].reshape(order_shape)
-
-        return amplitudes
-
-    def energy(self, t_amplitudes: np.ndarray = None) -> float:
-        if t_amplitudes is None:
-            t_amplitudes = self._t_amplitudes
-
-        return self._evaluate_cc_energy(t_amplitudes) + self.basis.energy()
+        return self._evaluate_cc_energy(t) + self.basis.energy()

@@ -4,7 +4,7 @@ from functools import reduce
 import operator
 
 class CoupledClusterParameter():
-    def __init__(self, orders, N, M) -> None:
+    def __init__(self, orders: list, N: int, M: int):
         self.orders = orders
         
         self.N, self.M = N, M
@@ -31,14 +31,14 @@ class CoupledClusterParameter():
             self._flat_slices[order] = order_slice
             offset += sizes[i + 1]
 
-    def initialize_zero(self, dtype=float):
+    def initialize_zero(self, dtype=float) -> CoupledClusterParameter:
         for order in self.orders:
             shape = self._data_shape[order]
             self._data[order] = np.zeros(shape, dtype=dtype)
 
         return self
 
-    def initialize_epsilon(self, epsilon, inv = True):
+    def initialize_epsilon(self, epsilon, inv = True) -> CoupledClusterParameter:
         eps_v = epsilon[self.N:]
         eps_o = epsilon[:self.N]
 
@@ -58,19 +58,19 @@ class CoupledClusterParameter():
 
         return self
 
-    def initialize_dicts(self, data):
+    def initialize_dicts(self, data) -> CoupledClusterParameter:
         assert self.orders == list(data.keys())
         self._data = data
 
         return self
 
-    def norm(self):
+    def norm(self) -> list:
         return {o: np.linalg.norm(t) for o, t in self._data.items()}   
 
-    def to_flat(self):
+    def to_flat(self) -> np.ndarray:
         return np.concatenate(tuple(d.ravel() for d in self._data.values()))
 
-    def from_flat(self, flat):
+    def from_flat(self, flat: np.ndarray):
         prod = lambda shape: reduce(operator.mul, shape, 1)
         sizes = [0] + [prod(shape) for shape in self._data_shape.values()]
 
@@ -81,10 +81,10 @@ class CoupledClusterParameter():
             order_shape = self._data_shape[order]
             self._data[order] = flat[order_slice].reshape(order_shape)
 
-    def __getitem__(self, order):
+    def __getitem__(self, order) -> np.ndarray:
         return self._data[order]
 
-    def __mul__(self, other):
+    def __mul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         assert type(other) == type(self)
         assert other.orders == self.orders
 
@@ -92,5 +92,6 @@ class CoupledClusterParameter():
 
         return CoupledClusterParameter(self.orders, self.N, self.M).initialize_dicts(product)
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         return self.__mul__(other)
+    

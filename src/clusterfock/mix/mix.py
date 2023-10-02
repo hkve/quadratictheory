@@ -7,5 +7,5 @@ class Mixer(ABC):
         pass
 
     @abstractmethod
-    def __call__(self, t: np.ndarray, dt: np.ndarray):
+    def __call__(self, p: np.ndarray, dp: np.ndarray):
         pass
