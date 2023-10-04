@@ -93,31 +93,31 @@ class HartreeFock(ABC):
         L, N = basis.L, basis.N
 
         C = self._available_coefficient_guesses[self.guess](basis)
-        rho = self.density_matrix(C)
-
-        eps_hf_old = np.zeros_like(np.diag(basis.h))
-        eps_hf_new = np.zeros_like(np.diag(basis.h))
+        new_rho = self.density_matrix(C)
+        old_rho = new_rho.copy()
+        hf_sp_energies = np.diag(basis.h).copy()
 
         iters = 0
         diff = 1
 
         old_fock = np.zeros_like(C)
         while (iters < maxiters) and (diff > tol):
-            new_fock = self.evaluate_fock_matrix(rho)
+            new_fock = self.evaluate_fock_matrix(new_rho)
 
             new_fock = self.mixer(old_fock, new_fock-old_fock)
             old_fock = new_fock.copy()
 
-            eps_hf_new, C = eigh(new_fock, basis.s)
-            rho = self.density_matrix(C)
+            hf_sp_energies, C = eigh(new_fock, basis.s)
+            
+            old_rho = new_rho.copy()
+            new_rho = self.density_matrix(C)
 
-            diff = np.mean(np.abs(eps_hf_new - eps_hf_old))
-            eps_hf_old = eps_hf_new
+            diff = np.linalg.norm(np.abs(new_rho - old_rho))
 
             iters += 1
 
             if vocal:
-                print(f"i = {iters}, mo = {eps_hf_new}")
+                print(f"i = {iters}, mo = {hf_sp_energies}")
 
         self.has_run = True
         if iters < maxiters:
@@ -125,7 +125,7 @@ class HartreeFock(ABC):
 
         self._diff = diff
         self.iters = iters
-        self.rho = rho
+        self.rho = new_rho
         self.C = C
 
         return self
