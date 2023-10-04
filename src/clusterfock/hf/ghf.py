@@ -6,16 +6,15 @@ import numpy as np
 class GHF(HartreeFock):
     def __init__(self, basis: Basis) -> None:
         """
-        Generalized Hartree-Fock (GHF) class for electronic structure calculations.GHF extends the Hartree-Fock (HF) method to handle systems with unrestricted electron spin,
-        allowing for alpha and beta electrons to have different spatial orbitals. GHF is suitable for
-        systems with open-shell electronic configurations.
+        Generalized Hartree-Fock (GHF). GHF is suitable for
+        systems with both closed and open-shell configurations.
 
         Attributes:
-            basis (Basis): The basis set used for electronic structure calculations.
+            basis (Basis): The basis set used for calculations.
 
         See Also:
             HartreeFock: The base class for Hartree-Fock calculations.
-            Basis: The basis set class defining the molecular system.
+            Basis: The basis set class defining the system.
 
         Examples:
             # Create a GHF instance with a basis set and compute the GHF energy.
