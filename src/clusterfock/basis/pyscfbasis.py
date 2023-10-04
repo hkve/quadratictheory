@@ -21,3 +21,15 @@ class PyscfBasis(Basis):
 
         if not restricted:
             self.from_restricted()
+
+    def pyscf_hartree_fock(self, tol=1e-8, inplace=True):
+        """
+        Uses pyscf to perform hf basis and changes to this basis
+        """
+
+        # Make and run mean field object
+        self.mf = pyscf.scf.HF(self.mol)
+        self.mf.run(verbose=0, tol=tol)
+
+        return self.change_basis(self.mf.mo_coeff, inplace=inplace)
+
