@@ -1,9 +1,29 @@
+import numpy as np
+
 import clusterfock as cf
 import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
-from pyscf.cc.ccsd import CCSD as pyscfCCSD
+from pyscf.cc import GCCSD as pyscfCCSD
 
-from pyscf.cc import GCCSD
+from quantum_systems import construct_pyscf_system_rhf
+from coupled_cluster import CCSD as HyCCSD
+from coupled_cluster import CCD as HyCCD
+
+def angstrom_to_bohr(input_string):
+    c = 1.8897259886
+
+    atoms = input_string.split(";")
+    for i in range(len(atoms)):
+        atom = atoms[i].split(" ")
+        for j in range(len(atom)):
+            try:
+                atom[j] = f"{float(atom[j])*c:.6f}"
+            except:
+                pass
+        
+        atoms[i] = " ".join(atom)
+    
+    return ";".join(atoms)
 
 def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
     basis = cf.PyscfBasis(atom=atom["hf"], basis=basis, restricted=restricted)
@@ -34,11 +54,17 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
 
+    system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom["ccd"]), basis=basis)
+    ccd_hyqd = HyCCSD(system)
+    ccd_hyqd.compute_ground_state(t_kwargs={"tol": tol})
+    E_ccd_hyqd = ccd_hyqd.compute_energy().real
+
     print(
         f"""
         CCD for {b._atom_string} with {b._basis_string}
         clufo  = {ccd.energy():>20.6f}
         pyscf  = {ccd_pyscf.e_tot:>20.6f}
+        hyqd   = {E_ccd_hyqd:>20.6f}
         cccbdb = {db_results['ccd']:>20.6f}
         """
     )
@@ -49,13 +75,19 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     b.from_restricted()
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
-    ccsd_pyscf = GCCSD(hf_pyscf).run(verbose=0, tol=tol)
+    ccsd_pyscf = pyscfCCSD(hf_pyscf).run(verbose=0, tol=tol)
+
+    system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom["ccsd"]), basis=basis)
+    ccsd_hyqd = HyCCSD(system)
+    ccsd_hyqd.compute_ground_state(t_kwargs={"tol": tol})
+    E_ccsd_hyqd = ccsd_hyqd.compute_energy().real
 
     print(
         f"""
         CCSD for {b._atom_string} with {b._basis_string}
         clufo  = {ccsd.energy():>20.6f}
         pyscf  = {ccsd_pyscf.e_tot:>20.6f}
+        hyqd  =  {E_ccsd_hyqd:>20.6f}
         cccbdb = {db_results['ccsd']:>20.6f}
         """
     )
@@ -75,9 +107,11 @@ def run(atom, basis, db_results, restricted=False, mode=0, tol=1e-8):
 
 
 if __name__ == "__main__":
+    mode = 2
+    
     He = {"hf": -2.855160, "ccd": -2.887592, "ccsd": -2.887595}
     He_atom = {"hf": "He 0 0 0", "ccd": "He 0 0 0", "ccsd": "He 0 0 0"}
-    run(atom=He_atom, basis="cc-pVDZ", db_results=He)
+    run(atom=He_atom, basis="cc-pVDZ", db_results=He, mode=mode)
 
     LiH = {"hf": -7.983686, "ccd": -8.014079, "ccsd": -8.014421}
     LiH_atom = {
@@ -85,7 +119,7 @@ if __name__ == "__main__":
         "ccd": "Li 0 0 0; H 0 0 1.6167",
         "ccsd": "Li 0 0 0; H 0 0 1.6191",
     }
-    run(atom=LiH_atom, basis="cc-pVDZ", db_results=LiH)
+    run(atom=LiH_atom, basis="cc-pVDZ", db_results=LiH, mode=mode)
 
     H2 = {"hf": -1.128746, "ccd": -1.163530, "ccsd": -1.163673}
     H2_atom = {
@@ -93,7 +127,7 @@ if __name__ == "__main__":
         "ccd": "H 0 0 0; H 0 0 0.7602",
         "ccsd": "H 0 0 0; H 0 0 0.7609",
     }
-    run(atom=H2_atom, basis="cc-pVDZ", db_results=H2)
+    run(atom=H2_atom, basis="cc-pVDZ", db_results=H2, mode=mode)
 
     N2 = {"hf": -108.955559, "ccd": -109.260854, "ccsd": -109.263578}
     N2_atom = {
@@ -101,4 +135,4 @@ if __name__ == "__main__":
             "ccd": "N 0 0 0; N 0 0 1.1108", 
             "ccsd": "N 0 0 0; N 0 0 1.1128",
                }
-    run(atom=N2_atom, basis="cc-pVDZ", db_results=N2)
+    run(atom=N2_atom, basis="cc-pVDZ", db_results=N2, mode=mode)
