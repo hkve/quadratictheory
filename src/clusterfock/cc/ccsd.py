@@ -45,4 +45,4 @@ class GCCSD(CoupledCluster):
         e += np.einsum("abij,ijab->", t2, u[o, o, v, v], optimize=True) / 4
         e += np.einsum("ai,bj,ijab->", t1, t1, u[o, o, v, v], optimize=True) / 2
 
-        return 0.25 * np.einsum("ijab,abij", u[o, o, v, v], t2)
+        return e
