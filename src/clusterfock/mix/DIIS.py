@@ -17,6 +17,13 @@ class DIISMixer(Mixer):
         self.errors = deque([None] * n_vectors)
         self.vectors = deque([None] * n_vectors)
 
+    def reset(self):
+        self.n_stored = 0
+        self.iter = 0
+
+        self.errors = deque([None] * self.n_vectors)
+        self.vectors = deque([None] * self.n_vectors)
+
     def __call__(self, p: np.ndarray, dp: np.ndarray) -> np.ndarray:
         self.n_stored += 1
 
