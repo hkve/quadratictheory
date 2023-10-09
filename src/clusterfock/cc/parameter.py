@@ -5,6 +5,8 @@ import operator
 
 class CoupledClusterParameter():
     def __init__(self, orders: list, N: int, M: int):
+        if orders is None:
+            return None
         self.orders = orders
         
         self.N, self.M = N, M
