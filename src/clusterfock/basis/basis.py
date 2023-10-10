@@ -121,6 +121,30 @@ class Basis(ABC):
         return np.einsum(
             "ai,bj,gk,dl,abgd->ijkl", C.conj(), C.conj(), C, C, operator, optimize=True
         )
+    
+    def _add_spin_one_body(self, operator: np.ndarray) -> np.ndarray:
+        """
+        Adds spin to a one-body operator
+
+        Parameters:
+        - operator (ndarray): (L,L) matrix where spin should be added
+        
+        Returns:
+        - operator_transformed (ndarray): (2L,2L) matrix where spin is added
+        """
+        return np.kron(operator, np.eye(2))
+    
+    def _add_spin_two_body(self, operator: np.ndarray) -> np.ndarray:
+        """
+        Adds spin to a two-body operator
+
+        Parameters:
+        - operator (ndarray): (L,L,L,L) matrix where spin should be added
+        
+        Returns:
+        - operator_transformed (ndarray): (2L,2L,2L,2L) matrix where spin is added
+        """
+        return np.kron(operator, np.einsum("pr, qs -> pqrs", np.eye(2), np.eye(2)))
 
     def copy(self) -> Basis:
         """
@@ -186,15 +210,12 @@ class Basis(ABC):
         self.restricted = False
         self._degeneracy = 1
 
-        I = np.eye(2)
-        I2 = np.einsum("pr, qs -> pqrs", I, I)
-
-        self.h = np.kron(self.h, I)
-        self.u = np.kron(self.u, I2)
-        self.s = np.kron(self.s, I)
-        self.C = np.kron(self.C, I)
+        self.h = self._add_spin_one_body(self.h)
+        self.u = self._add_spin_two_body(self.u)
+        self.s = self._add_spin_one_body(self.s)
+        self.C = self._add_spin_one_body(self.C)
         if self.f is not None:
-            self.f = np.kron(self.f, I)
+            self.f = self._add_spin_one_body(self.f)
 
         self._L = 2 * self._L
         self.N = 2 * self.N
@@ -313,3 +334,7 @@ class Basis(ABC):
     @C.setter
     def C(self, C: np.ndarray):
         self._C = C.astype(self.dtype)
+
+    @property
+    def r(self) -> np.ndarray:
+        raise NotImplementedError(f"{type(self)} does not implement posistion expectation values")

@@ -1,4 +1,5 @@
 from clusterfock.basis import Basis
+import numpy as np
 import pyscf
 
 
@@ -14,12 +15,18 @@ class PyscfBasis(Basis):
         self._basis_string = basis
 
         L = self.L
-        self._energy_shift = mol.energy_nuc()
-        self.s = mol.intor_symmetric("int1e_ovlp")
-        self.h = mol.intor_symmetric("int1e_kin") + mol.intor_symmetric("int1e_nuc")
-        self.u = mol.intor("int2e").reshape(L, L, L, L).transpose(0, 2, 1, 3)
 
-        if not restricted:
+        self.restricted = restricted
+        self.setup()
+
+    def setup(self):
+        L = self.L
+        self._energy_shift = self.mol.energy_nuc()
+        self.s = self.mol.intor_symmetric("int1e_ovlp")
+        self.h = self.mol.intor_symmetric("int1e_kin") + self.mol.intor_symmetric("int1e_nuc")
+        self.u = self.mol.intor("int2e").reshape(L, L, L, L).transpose(0, 2, 1, 3)
+
+        if not self.restricted:
             self.from_restricted()
 
     def pyscf_hartree_fock(self, tol=1e-8, inplace=True):
@@ -32,3 +39,18 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0, tol=tol)
 
         return self.change_basis(self.mf.mo_coeff, inplace=inplace)
+
+    @property
+    def r(self) -> np.ndarray:
+        r = self.mol.intor("int1e_r")
+
+        print(self.restricted)
+        if not self.restricted:
+            r = self._add_spin_one_body(r)
+
+        if not np.trace(self.C) == self.L:
+            for i in range(3):
+                r[i] = self._change_basis_one_body(r[i], self.C)
+
+
+        return r
