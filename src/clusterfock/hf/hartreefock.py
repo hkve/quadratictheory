@@ -39,6 +39,7 @@ class HartreeFock(ABC):
         self._available_coefficient_guesses = {
             "I": _identity_guess,
             "core": _core_guess,
+            "custom": _custom_guess,
         }
 
     def density_matrix(self, C: np.ndarray) -> np.ndarray:
@@ -169,3 +170,8 @@ def _core_guess(basis: Basis) -> np.ndarray:
     # Guess that diagonolizes the sp hamiltonian, presumably closer to the HF coef matrix than identity
     _, C = np.linalg.eigh(basis.h)
     return C
+
+
+def _custom_guess(basis: Basis) -> np.ndarray:
+    # Reqiers that the Basis has a function called custom_hf_guess
+    return basis.custom_hf_guess()
