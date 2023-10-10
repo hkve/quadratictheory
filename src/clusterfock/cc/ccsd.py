@@ -29,10 +29,7 @@ class GCCSD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(t.orders, t.N, t.M)
-        rhs.initialize_dicts({
-            1: rhs1,
-            2: rhs2
-        })
+        rhs.initialize_dicts({1: rhs1, 2: rhs2})
 
         return rhs
 

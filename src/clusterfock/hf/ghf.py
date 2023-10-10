@@ -28,7 +28,7 @@ class GHF(HartreeFock):
     def evaluate_energy_scheme(self) -> float:
         """
         Calculate the GHF energy, transforming the computational basis to HF basis.
-    
+
         Returns:
             float: The GHF energy.
         """

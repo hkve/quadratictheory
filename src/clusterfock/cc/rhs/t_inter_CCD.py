@@ -7,7 +7,7 @@ def amplitudes_intermediates_ccd(t2, u, f, v, o):
 
     tau0 = np.zeros((N, N, M, M))
 
-    tau0 += np.einsum("ki,abjk->ijab", f[o,o], t2, optimize=True)
+    tau0 += np.einsum("ki,abjk->ijab", f[o, o], t2, optimize=True)
 
     r2 = np.zeros((M, M, N, N))
 
@@ -19,7 +19,7 @@ def amplitudes_intermediates_ccd(t2, u, f, v, o):
 
     tau1 = np.zeros((N, N, M, M))
 
-    tau1 += np.einsum("ac,bcij->ijab", f[v,v], t2, optimize=True)
+    tau1 += np.einsum("ac,bcij->ijab", f[v, v], t2, optimize=True)
 
     tau6 = np.zeros((N, N, M, M))
 

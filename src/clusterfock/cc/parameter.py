@@ -3,14 +3,15 @@ import numpy as np
 from functools import reduce
 import operator
 
-class CoupledClusterParameter():
+
+class CoupledClusterParameter:
     def __init__(self, orders: list, N: int, M: int):
         if orders is None:
             return None
         self.orders = orders
-        
+
         self.N, self.M = N, M
-    
+
         self._data = {}
         self._data_shape = {}
 
@@ -21,7 +22,7 @@ class CoupledClusterParameter():
         for order in self.orders:
             shape = tuple([self.M] * order + [self.N] * order)
             self._data_shape[order] = shape
-  
+
         # Now get sizes and flat slices
         prod = lambda shape: reduce(operator.mul, shape, 1)
         sizes = [0] + [prod(shape) for shape in self._data_shape.values()]
@@ -40,9 +41,9 @@ class CoupledClusterParameter():
 
         return self
 
-    def initialize_epsilon(self, epsilon, inv = True) -> CoupledClusterParameter:
-        eps_v = epsilon[self.N:]
-        eps_o = epsilon[:self.N]
+    def initialize_epsilon(self, epsilon, inv=True) -> CoupledClusterParameter:
+        eps_v = epsilon[self.N :]
+        eps_o = epsilon[: self.N]
 
         if 1 in self.orders:
             self._data[1] = -eps_v[:, None] + eps_o[None, :]
@@ -67,7 +68,7 @@ class CoupledClusterParameter():
         return self
 
     def norm(self) -> list:
-        return {o: np.linalg.norm(t) for o, t in self._data.items()}   
+        return {o: np.linalg.norm(t) for o, t in self._data.items()}
 
     def to_flat(self) -> np.ndarray:
         return np.concatenate(tuple(d.ravel() for d in self._data.values()))
@@ -90,10 +91,9 @@ class CoupledClusterParameter():
         assert type(other) == type(self)
         assert other.orders == self.orders
 
-        product = {o: self[o]*other[o] for o in self.orders}
+        product = {o: self[o] * other[o] for o in self.orders}
 
         return CoupledClusterParameter(self.orders, self.N, self.M).initialize_dicts(product)
 
     def __rmul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         return self.__mul__(other)
-    

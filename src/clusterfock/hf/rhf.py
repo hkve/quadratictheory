@@ -28,10 +28,10 @@ class RHF(HartreeFock):
     def evaluate_energy_scheme(self) -> float:
         """
         Calculate the RHF energy, transforming the computational basis to HF basis.
-    
+
         Returns:
             float: The RHF energy.
-        """        
+        """
         h, u = self.basis.h, self.basis.u
         rho = self.rho
         dE = self.basis._energy_shift

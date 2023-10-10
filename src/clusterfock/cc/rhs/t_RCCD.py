@@ -6,8 +6,8 @@ def amplitudes_ccd_restricted(t2, u, f, v, o):
     # Here we have a long permutation term, so we collect all sums and then perform the permutation
 
     # Fock terms, single sum
-    res += np.einsum("bc,acij->abij", f[v,v], t2, optimize=True)
-    res -= np.einsum("kj,abik->abij", f[o,o], t2, optimize=True)
+    res += np.einsum("bc,acij->abij", f[v, v], t2, optimize=True)
+    res -= np.einsum("kj,abik->abij", f[o, o], t2, optimize=True)
 
     # virvir and occocc sums
     res += 0.5 * np.einsum("abcd,cdij->abij", u[v, v, v, v], t2, optimize=True)

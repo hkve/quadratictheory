@@ -34,13 +34,13 @@ class GCCD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(t.orders, t.N, t.M)
-        rhs.initialize_dicts({
-            2: rhs2
-        })
+        rhs.initialize_dicts({2: rhs2})
 
         return rhs
 
-    def _next_l_iteration(self, t: CoupledClusterParameter, l: CoupledClusterParameter) -> CoupledClusterParameter:
+    def _next_l_iteration(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
         basis = self.basis
 
         rhs2 = self.l_rhs(
@@ -53,10 +53,7 @@ class GCCD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(l.orders, l.N, l.M)
-        rhs.initialize_dicts({
-            2: rhs2
-        })
-
+        rhs.initialize_dicts({2: rhs2})
 
         return rhs
 
@@ -100,8 +97,6 @@ class RCCD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(t.orders, t.N, t.M)
-        rhs.initialize_dicts({
-            2: rhs2
-        })
+        rhs.initialize_dicts({2: rhs2})
 
         return rhs

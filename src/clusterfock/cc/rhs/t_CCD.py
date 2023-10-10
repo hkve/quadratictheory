@@ -6,10 +6,10 @@ def amplitudes_ccd(t2, u, f, v, o):
 
     res += u[v, v, o, o]  # v_abij
 
-    tp = np.einsum("bc,acij->abij", f[v,v], t2, optimize=True)
+    tp = np.einsum("bc,acij->abij", f[v, v], t2, optimize=True)
     res += tp - tp.transpose(1, 0, 2, 3)
 
-    tp = np.einsum("kj,abik->abij", f[o,o], t2, optimize=True)
+    tp = np.einsum("kj,abik->abij", f[o, o], t2, optimize=True)
     res -= tp - tp.transpose(0, 1, 3, 2)
 
     # Two first sums, over cd and kl

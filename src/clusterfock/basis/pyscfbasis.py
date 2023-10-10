@@ -32,4 +32,3 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0, tol=tol)
 
         return self.change_basis(self.mf.mo_coeff, inplace=inplace)
-
