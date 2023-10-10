@@ -44,7 +44,6 @@ class PyscfBasis(Basis):
     def r(self) -> np.ndarray:
         r = self.mol.intor("int1e_r")
 
-        print(self.restricted)
         if not self.restricted:
             r = self._add_spin_one_body(r)
 

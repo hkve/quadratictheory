@@ -4,7 +4,7 @@ import numpy as np
 
 class Lipkin(Basis):
     def __init__(
-        self, N: int, eps: float = 1.0, V: float = 1.0, W: float = 1.0, dtype: type = float
+        self, N: int, eps: float = 1.0, V: float = 0.25, W: float = 0.25, dtype: type = float
     ):
         super().__init__(L=2 * N, N=N, restricted=False, dtype=dtype)
         self.eps = eps
@@ -72,3 +72,14 @@ class Lipkin(Basis):
                         u[b, bp, a, ap] = self.W * dspin * (pos_direct - pos_exchange)
 
         return u
+
+    def custom_hf_guess(self):
+        C_mm = np.sqrt(0.5 - self.eps / (6 * self.V + self.W)) * np.ones(self.N)
+        C_pp = np.sqrt(0.5 + self.eps / (6 * self.V + self.W)) * np.ones(self.N)
+
+        C = np.diag(np.r_[C_mm, C_pp])
+        o, v = self.o, self.v
+        C[o, v] = np.diag(C_mm)
+        C[v, o] = np.diag(C_pp)
+
+        return C
