@@ -97,14 +97,14 @@ class Basis(ABC):
         Perform basis change on a one body operator
 
         Parameters:
-        - operator (ndarray): (L,L) matrix to transform
+        - operator (ndarray): (...,L,L) matrix to transform
         - C (ndarray): (L,L) matrix used to perform transformation
 
         Returns:
         - operator_transformed (ndarray): (L,L) matrix with the new operator
         """
 
-        return np.einsum("ai,bj,ab->ij", C.conj(), C, operator, optimize=True)
+        return np.einsum("ai,bj,...ab->...ij", C.conj(), C, operator, optimize=True)
 
     def _change_basis_two_body(self, operator: np.ndarray, C: np.ndarray) -> np.ndarray:
         """
