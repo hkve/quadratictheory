@@ -38,6 +38,7 @@ class HartreeFock(ABC):
 
         self._available_coefficient_guesses = {
             "I": _identity_guess,
+            "S": _overlap_guess,
             "core": _core_guess,
             "custom": _custom_guess,
         }
@@ -167,8 +168,14 @@ def _identity_guess(basis: Basis) -> np.ndarray:
 
 
 def _core_guess(basis: Basis) -> np.ndarray:
-    # Guess that diagonolizes the sp hamiltonian, presumably closer to the HF coef matrix than identity
+    # Guess the diagonolizes matrix of sp hamiltonian, presumably closer to the HF coef matrix than identity
     _, C = np.linalg.eigh(basis.h)
+    return C
+
+
+def _overlap_guess(basis: Basis) -> np.ndarray:
+    # Guess the diagonolization matrix of S
+    _, C = np.linalg.eigh(basis.s)
     return C
 
 
