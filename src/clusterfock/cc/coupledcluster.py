@@ -23,6 +23,9 @@ class CoupledCluster(ABC):
         self._l = CoupledClusterParameter(l_orders, basis.N, basis.M)
         self._epsinv = CoupledClusterParameter(t_orders, basis.N, basis.M)
 
+        self._t_info = {"run": None, "converged": False, "iters": 0}
+        self._l_info = self._t_info.copy()
+
     def run(
         self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
     ) -> CoupledCluster:
@@ -69,10 +72,10 @@ class CoupledCluster(ABC):
                 print(f"i = {iters}, {corr_energy = :.6e}, rhs_norms = {rhs_norms}")
 
         self._t = t
-        self.has_run = True
-        self.iters = iters
+        self._t_info["run"] = True
+        self._t_info["iters"] = iters
         if iters < maxiters:
-            self.converged = True
+            self._t_info["converged"] = True
 
     def _iterate_l(self, tol: float, maxiters: int, vocal: bool):
         iters, diff = 0, 1000
@@ -97,10 +100,10 @@ class CoupledCluster(ABC):
                 print(f"i = {iters}, rhs_norms = {rhs_norms}")
 
         self._l = l
-        self.has_run = True
-        self.iters = iters
+        self._l_info["run"] = True
+        self._l_info["iters"] = iters
         if iters < maxiters:
-            self.converged = True
+            self._l_info["converged"] = True
 
     @abstractmethod
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
@@ -115,8 +118,41 @@ class CoupledCluster(ABC):
     def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
         pass
 
+    def _calculated_one_body_density(self) -> np.ndarray:
+        raise NotImplementedError("This scheme does not implement one body densities")
+
+    def _calculated_one_body_density(self) -> np.ndarray:
+        raise NotImplementedError("This scheme does not implement two body densities")
+
+    def calculate_density(self):
+        if self._l is None:
+            raise RuntimeError("Expectation values without lambdas has not been implemented")
+        if not self.l_info["run"]:
+            raise RuntimeError("No lambda computation has been run. Perform .run() first.")
+        if not self.l_info["converged"]:
+            raise RuntimeWarning("Lambda computation did not converge")
+
+        self.rho_ob = self._calculated_one_body_density()
+        # self.rho_tb = self._calculated_two_body_density()
+
     def energy(self, t: CoupledClusterParameter = None) -> float:
         if t is None:
             t = self._t
 
         return self._evaluate_cc_energy(t) + self.basis.energy()
+
+    @property
+    def t_info(self):
+        return self._t_info
+
+    @property
+    def l_info(self):
+        return self._l_info
+
+    @property
+    def info(self):
+        merged = {
+            **{"t_" + k: v for k, v in self.t_info.items()},
+            **{"l_" + k: v for k, v in self.l_info.items()},
+        }
+        return merged
