@@ -51,5 +51,4 @@ class PyscfBasis(Basis):
             print("In a changed basis")
             r = self._change_basis_one_body(r, self.C)
 
-
         return r

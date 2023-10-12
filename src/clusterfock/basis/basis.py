@@ -121,26 +121,26 @@ class Basis(ABC):
         return np.einsum(
             "ai,bj,gk,dl,abgd->ijkl", C.conj(), C.conj(), C, C, operator, optimize=True
         )
-    
+
     def _add_spin_one_body(self, operator: np.ndarray) -> np.ndarray:
         """
         Adds spin to a one-body operator
 
         Parameters:
         - operator (ndarray): (L,L) matrix where spin should be added
-        
+
         Returns:
         - operator_transformed (ndarray): (2L,2L) matrix where spin is added
         """
         return np.kron(operator, np.eye(2))
-    
+
     def _add_spin_two_body(self, operator: np.ndarray) -> np.ndarray:
         """
         Adds spin to a two-body operator
 
         Parameters:
         - operator (ndarray): (L,L,L,L) matrix where spin should be added
-        
+
         Returns:
         - operator_transformed (ndarray): (2L,2L,2L,2L) matrix where spin is added
         """
