@@ -1,6 +1,17 @@
 from sympy import (Symbol, IndexedBase)
 import drudge
 from dummy_spark import SparkContext
+import pathlib as pl
+
+MAIN_PATH = pl.Path(__file__).parent
+HTML_RAW_PATH = MAIN_PATH / "html_raw"
+HTML_FORMATTED_PATH = MAIN_PATH / "html_formatted"
+
+def pack_as_list(x):
+    if type(x) not in [list, tuple]:
+        x = [x]
+    
+    return x
 
 def get_particle_hole_drudge():
     DEFAULT_PART_DUMMS = tuple(Symbol(i) for i in 'abcdefg') + tuple(
@@ -38,10 +49,8 @@ def get_secondquant_operators(dr):
     return c_, c_dag
 
 def get_X(dr, order, o_dums, v_dums):
-    if type(o_dums) not in [list, tuple]:
-        o_dums = [o_dums]
-    if type(v_dums) not in [list, tuple]:
-        v_dums = [v_dums]
+    o_dums = pack_as_list(o_dums)
+    v_dums = pack_as_list(v_dums)
 
     assert len(o_dums) == order and len(v_dums) == order
 
@@ -55,10 +64,8 @@ def get_X(dr, order, o_dums, v_dums):
     return X
 
 def get_Y(dr, order, o_dums, v_dums):
-    if type(o_dums) not in [list, tuple]:
-        o_dums = [o_dums]
-    if type(v_dums) not in [list, tuple]:
-        v_dums = [v_dums]
+    o_dums = pack_as_list(o_dums)
+    v_dums = pack_as_list(v_dums)
 
     assert len(o_dums) == order and len(v_dums) == order
 
@@ -106,7 +113,25 @@ def similarity_transform(tensor, clusters):
         curr.cache()
         tensor_bar += curr
 
+    tensor_bar.repartition(cache=True)
+
     return tensor_bar
+
+def save_html(dr, filename, equations, titles = None):
+    if not filename.endswith(".html"):
+        filename = filename + ".html"
+
+    filename = HTML_RAW_PATH / filename
+    
+    equations = pack_as_list(equations)
+    titles = pack_as_list(titles)
+
+    if titles == [None]:
+        titles = [f"equation {i+1}" for i in range(len(equations))]
+
+    with dr.report(str(filename), filename.stem) as rep:
+        for title, equation in zip(titles, equations):
+            rep.add(title, equation)
 
 if __name__ == '__main__':
     dr = get_particle_hole_drudge()
