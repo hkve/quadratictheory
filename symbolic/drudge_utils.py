@@ -117,6 +117,41 @@ def similarity_transform(tensor, clusters):
 
     return tensor_bar
 
+def get_ob_density_blocks(dr, o_dums, v_dums):
+    assert len(o_dums) == 2 and len(v_dums) == 2
+
+    i, j = o_dums
+    a, b = v_dums
+    c_, c_dag = get_secondquant_operators(dr)
+
+    blocks = [
+        c_dag[i]*c_[j],
+        c_dag[a]*c_[b],
+        c_dag[i]*c_[a]
+    ]
+    block_names = ["oo", "vv", "ov"]
+
+    return blocks, block_names
+
+def get_tb_density_blocks(dr, o_dums, v_dums):
+    assert len(o_dums) == 4 and len(v_dums) == 4
+
+    i, j, k, l = o_dums
+    a, b, c, d = v_dums
+    c_, c_dag = get_secondquant_operators(dr)
+
+    blocks = [
+        c_dag[i]*c_dag[j]*c_[l]*c_[k], # ijkl
+        c_dag[a]*c_dag[b]*c_[d]*c_[c], # abcd
+        c_dag[i]*c_dag[j]*c_[b]*c_[a], # ijab
+        c_dag[a]*c_dag[b]*c_[j]*c_[i], # abij
+        c_dag[i]*c_dag[a]*c_[b]*c_[j], # iajb 
+    ]
+    block_names = ["oooo", "vvvv", "oovv", "vvoo", "ovov"]
+
+    return blocks, block_names
+
+
 def save_html(dr, filename, equations, titles = None):
     if not filename.endswith(".html"):
         filename = filename + ".html"
