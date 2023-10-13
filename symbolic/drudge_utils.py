@@ -2,10 +2,35 @@ from sympy import (Symbol, IndexedBase)
 import drudge
 from dummy_spark import SparkContext
 import pathlib as pl
+import functools
+import time
 
 MAIN_PATH = pl.Path(__file__).parent
 HTML_RAW_PATH = MAIN_PATH / "html_raw"
 HTML_FORMATTED_PATH = MAIN_PATH / "html_formatted"
+
+class Time(drudge.Stopwatch):
+    def __init__(self, vocal, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.vocal = vocal
+
+    def tock(self, label):
+        if self.vocal:
+            super().tock(label)
+
+timer = Time(vocal=False)
+
+def timeme(func):
+    @functools.wraps(func)
+    def wrapper_timeme(*args, **kwargs):
+        print(f"Starting {func.__name__!r} ...\n")
+        start_time = time.perf_counter()
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        run_time = end_time - start_time
+        print(f"Finished {func.__name__!r} in {run_time:.4f} secs\n")
+        return value
+    return wrapper_timeme
 
 def pack_as_list(x):
     if type(x) not in [list, tuple]:
@@ -105,6 +130,8 @@ def make_rk2(dr, symbol):
     return t
 
 def similarity_transform(tensor, clusters):
+    stopwatch = None
+
     curr = tensor
     tensor_bar = tensor
 
@@ -112,6 +139,7 @@ def similarity_transform(tensor, clusters):
         curr = (curr | clusters).simplify() / (order + 1)
         curr.cache()
         tensor_bar += curr
+        timer.tock(f"Commutator at order {order+1}")
 
     tensor_bar.repartition(cache=True)
 
