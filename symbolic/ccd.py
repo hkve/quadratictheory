@@ -24,7 +24,8 @@ def T_equations(dr):
     e, t2 = drutils.define_rk0_rhs(dr, energy_eq), drutils.define_rk2_rhs(dr, amplitude_t2_eq)
 
     grutils.einsum_raw(dr, "ccd_energy_t2", [e, t2])
-
+    eval_seq = grutils.optimize_equations(dr, t2)
+    grutils.einsum_raw(dr, "ccd_t2_optimized", eval_seq)
 
 @drutils.timeme
 def L_equations(dr):
@@ -65,8 +66,6 @@ def _run_blocks(dr, blocks, block_names):
 
 @drutils.timeme
 def L_densities(dr):
-    # Get T2 and L2 operator, excitation and sim transform commutator
-
     # One body
     o_dums, v_dums = drutils.get_indicies(dr, num=2)
     blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
@@ -84,10 +83,9 @@ def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
-    T_equations(dr)
+    # T_equations(dr)
     # L_equations(dr)
     # L_densities(dr)
-
 
 if __name__ == "__main__":
     main()

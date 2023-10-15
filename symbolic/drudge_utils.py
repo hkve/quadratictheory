@@ -144,13 +144,13 @@ def define_rk0_rhs(dr, equation):
 
 def define_rk1_rhs(dr, equation):
     i, a = get_indicies(dr, num=1)
-    r1 = make_rk1(dr, "r", exponent=False)
+    r1 = make_rk1(dr, "r")
     return dr.define(r1[a, i], equation)
 
 
 def define_rk2_rhs(dr, equation):
     (i, j), (a, b) = get_indicies(dr, num=2)
-    r2 = make_rk2(dr, "r", exponent=False)
+    r2 = make_rk2(dr, "r")
     return dr.define(r2[a, b, i, j], equation)
 
 

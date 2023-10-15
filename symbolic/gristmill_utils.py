@@ -2,6 +2,7 @@ import gristmill
 from sympy import IndexedBase, Symbol
 import drudge
 import drudge_utils as utils
+from einsum_print_fixer import fix
 
 EINSUM_RAW_PATH = utils.MAIN_PATH / "einsum_raw"
 EINSUM_FORMATTED_PATH = utils.MAIN_PATH / "einsum_formatted"
@@ -19,22 +20,44 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
             e = Symbol("e")
             working_eq = dr.define(e, equation)
         if rank == 1:
-            r = utils.make_rk1(dr, "r1")
+            # r = utils.make_rk1(dr, "r")
             working_eq = dr.define(r[a, i], equation)
         if rank == 2:
-            r = utils.make_rk2(dr, "r2")
+            r = utils.make_rk2(dr, "r")
             working_eq = dr.define(r[a, b, i, j], equation)
 
         working_eqs.append(working_eq)
 
     return working_eqs
 
+def optimize_equations(dr, equations):
+    equations = utils.pack_as_list(equations)
+
+    orig_cost = gristmill.get_flop_cost(equations, leading=True)
+    print(f"Cost before optimazation {orig_cost}")
+
+
+    eval_seq = gristmill.optimize(
+        equations, 
+        substs={dr.names.nv: 5000, dr.names.no: 1000}, 
+        contr_strat=gristmill.ContrStrat.EXHAUST,
+    )
+
+    opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
+    print(f"Cost after optimization {opt_cost}")
+
+    return eval_seq
 
 def einsum_raw(dr, filename, working_eqs):
+    working_eqs = utils.pack_as_list(working_eqs)
+
     if not filename.endswith(".txt"):
         filename += ".txt"
-    filename = EINSUM_RAW_PATH / filename
+    rfilename = EINSUM_RAW_PATH / filename
 
     printer = gristmill.EinsumPrinter()
-    with open(str(filename), "w") as outfile:
+    with open(str(rfilename), "w") as outfile:
         outfile.write(printer.doprint(working_eqs))
+
+    ffilename = EINSUM_FORMATTED_PATH / filename
+    fix(rfilename, ffilename)
