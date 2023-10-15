@@ -9,6 +9,7 @@ from quantum_systems import construct_pyscf_system_rhf
 from coupled_cluster import CCSD as HyCCSD
 from coupled_cluster import CCD as HyCCD
 
+
 def angstrom_to_bohr(input_string):
     c = 1.8897259886
 
@@ -20,10 +21,11 @@ def angstrom_to_bohr(input_string):
                 atom[j] = f"{float(atom[j])*c:.6f}"
             except:
                 pass
-        
+
         atoms[i] = " ".join(atom)
-    
+
     return ";".join(atoms)
+
 
 def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
     basis = cf.PyscfBasis(atom=atom["hf"], basis=basis, restricted=restricted)
@@ -49,7 +51,6 @@ def run_cc(atom, basis, db_results, tol=1e-8):
 
     ccd = cf.CCD(b, intermediates=True).run(tol=tol)
     ccsd = cf.CCSD(b, intermediates=True).run(tol=tol)
-
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
@@ -108,7 +109,7 @@ def run(atom, basis, db_results, restricted=False, mode=0, tol=1e-8):
 
 if __name__ == "__main__":
     mode = 2
-    
+
     He = {"hf": -2.855160, "ccd": -2.887592, "ccsd": -2.887595}
     He_atom = {"hf": "He 0 0 0", "ccd": "He 0 0 0", "ccsd": "He 0 0 0"}
     run(atom=He_atom, basis="cc-pVDZ", db_results=He, mode=mode)
@@ -131,8 +132,8 @@ if __name__ == "__main__":
 
     N2 = {"hf": -108.955559, "ccd": -109.260854, "ccsd": -109.263578}
     N2_atom = {
-            "hf": "N 0 0 0; N 0 0 1.0773", 
-            "ccd": "N 0 0 0; N 0 0 1.1108", 
-            "ccsd": "N 0 0 0; N 0 0 1.1128",
-               }
+        "hf": "N 0 0 0; N 0 0 1.0773",
+        "ccd": "N 0 0 0; N 0 0 1.1108",
+        "ccsd": "N 0 0 0; N 0 0 1.1128",
+    }
     run(atom=N2_atom, basis="cc-pVDZ", db_results=N2, mode=mode)
