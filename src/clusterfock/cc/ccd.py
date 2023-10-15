@@ -6,6 +6,7 @@ from clusterfock.cc.parameter import CoupledClusterParameter
 from clusterfock.cc.rhs.t_CCD import amplitudes_ccd
 from clusterfock.cc.rhs.l_CCD import lambda_amplitudes_ccd
 from clusterfock.cc.rhs.t_inter_CCD import amplitudes_intermediates_ccd
+from clusterfock.cc.rhs.l_inter_CCD import lambda_amplitudes_intermediates_ccd
 from clusterfock.cc.rhs.t_RCCD import amplitudes_ccd_restricted
 
 from clusterfock.cc.densities.l_CCD import one_body_density
@@ -22,7 +23,7 @@ class GCCD(CoupledCluster):
         o, v = self.basis.o, self.basis.v
 
         self.t_rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
-        self.l_rhs = lambda_amplitudes_ccd
+        self.l_rhs = lambda_amplitudes_intermediates_ccd if intermediates else lambda_amplitudes_ccd
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis

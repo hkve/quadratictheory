@@ -48,7 +48,6 @@ class PyscfBasis(Basis):
             r = self._add_spin_one_body(r)
 
         if not np.trace(self.C) == self.L:
-            print("In a changed basis")
             r = self._change_basis_one_body(r, self.C)
 
         return r
