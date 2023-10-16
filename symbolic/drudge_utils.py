@@ -142,15 +142,15 @@ def define_rk0_rhs(dr, equation):
     return dr.define(Symbol("e"), equation)
 
 
-def define_rk1_rhs(dr, equation):
+def define_rk1_rhs(dr, equation, symbol="r"):
     i, a = get_indicies(dr, num=1)
-    r1 = make_rk1(dr, "r")
+    r1 = make_rk1(dr, symbol)
     return dr.define(r1[a, i], equation)
 
 
-def define_rk2_rhs(dr, equation):
+def define_rk2_rhs(dr, equation, symbol="r"):
     (i, j), (a, b) = get_indicies(dr, num=2)
-    r2 = make_rk2(dr, "r")
+    r2 = make_rk2(dr, symbol)
     return dr.define(r2[a, b, i, j], equation)
 
 
@@ -202,6 +202,25 @@ def get_tb_density_blocks(dr, o_dums, v_dums):
 
     return blocks, block_names
 
+def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
+    assert len(o_dums) == 4 and len(v_dums) == 4
+    
+    i, j, k, l = o_dums
+    a, b, c, d = v_dums
+
+    rs = [IndexedBase(f"\rho_{name}") for name  in block_names]
+    for r in rs:
+        dr.set_dbbar_base(r, 2)
+
+    blocks = [
+        rs[0][i, j, k, l],
+        rs[1][a, b, c, d],
+        rs[2][i, j, a, b],
+        rs[3][a, b, i, j],
+        rs[4][i, a, j, b]
+    ]
+
+    return [dr.define(rhs, term) for rhs, term in zip(blocks, rho)]
 
 def save_html(dr, filename, equations, titles=None):
     if not filename.endswith(".html"):
