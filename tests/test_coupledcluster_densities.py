@@ -16,8 +16,8 @@ class TestCoupledClusterDensities(TestCase):
         raw_ccd = GCCD(gbasis, intermediates=False).run(tol=tol, include_l=True)
         inter_ccd = GCCD(gbasis, intermediates=True).run(tol=tol, include_l=True)
 
-        raw_ccd.calculate_density()
-        inter_ccd.calculate_density()
+        raw_ccd.densities()
+        inter_ccd.densities()
 
         raw_rho = raw_ccd.rho_ob
         inter_rho = inter_ccd.rho_ob
@@ -25,6 +25,13 @@ class TestCoupledClusterDensities(TestCase):
         N = gbasis.N
         self.assertAlmostEqual(np.trace(raw_rho), N, places=6)
         self.assertAlmostEqual(np.trace(inter_rho), N, places=6)
+
+        diff = np.abs(raw_rho - inter_rho).ravel()
+        all_close = np.all(diff < 1e-6)
+        self.assertTrue(all_close, msg=f"Difference between intermediate and raw results for densities max(diff) {diff.max()} > 1e-6")
+
+        raw_rho = raw_ccd.rho_tb
+        inter_rho = inter_ccd.rho_tb
 
         diff = np.abs(raw_rho - inter_rho).ravel()
         all_close = np.all(diff < 1e-6)
