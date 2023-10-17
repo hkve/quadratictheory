@@ -51,3 +51,17 @@ class PyscfBasis(Basis):
             r = self._change_basis_one_body(r, self.C)
 
         return r
+
+    def density(self, rho, r=None):
+        if r is None:
+            N = 10
+            x_ = np.linspace(-4, 4, N)
+            x, y, z = np.meshgrid(x_, x_, x_, indexing="ij")
+            r = np.c_[x.reshape(N**3), y.reshape(N**3), z.reshape(N**3)]
+
+        phi = self.mol.eval_ao("GTOval_sph", r).T
+
+        if not self.restricted:
+            phi = np.repeat(phi, repeats=2, axis=0)
+
+        return np.einsum("px,pq,qx->x", phi, rho, phi)
