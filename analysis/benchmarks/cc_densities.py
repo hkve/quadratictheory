@@ -11,12 +11,12 @@ import numpy as np
 
 
 def ccd(atom, basis, tol=1e-4):
-    b = PyscfBasis(atom="H 0 0 0; Li 0 0 1.2", basis=basis, restricted=False)
+    b = PyscfBasis(atom=atom, basis=basis, restricted=False)
 
     hf = HF(b).run()
     b.change_basis(hf.C)
     ccd = CCD(b, intermediates=False).run(include_l=True, tol=1e-8)
-    ccd.calculate_density()
+    ccd.one_body_density()
     rho_cf = ccd.rho_ob
 
     system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom), basis=basis)
@@ -31,8 +31,8 @@ def ccd(atom, basis, tol=1e-4):
 
     for index in indicies:
         i, j = index
-        if i >= j:
-            print(f"CF: {rho_cf[i,j]:.4e}, HYQD: {rho_hyqd[i,j]:.4e}, (i,j) = ({i},{j})")
+        # if i >= j:
+        print(f"CF: {rho_cf[i,j]:.4e}, HYQD: {rho_hyqd[i,j]:.4e}, (i,j) = ({i},{j})")
 
     print(f"Missmatched {len(indicies)}/{rho_cf.size}")
 
@@ -43,6 +43,8 @@ def ccsd(atom, basis):
 
 def main():
     ccd("Li 0 0 0; H 0 0 1.2", "cc-pVDZ")
+    # ccd("He 0 0 0", basis="cc-pVDZ")
+    # ccd("Be 0 0 0", basis="cc-pVDZ")
 
 
 if __name__ == "__main__":
