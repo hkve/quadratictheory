@@ -26,6 +26,9 @@ class CoupledCluster(ABC):
         self._t_info = {"run": None, "converged": False, "iters": 0}
         self._l_info = self._t_info.copy()
 
+        self.rho_ob = None
+        self.rho_tb = None
+
     def run(
         self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
     ) -> CoupledCluster:
@@ -124,7 +127,7 @@ class CoupledCluster(ABC):
     def _calculated_one_body_density(self) -> np.ndarray:
         raise NotImplementedError("This scheme does not implement two body densities")
 
-    def calculate_density(self):
+    def _check_valid_for_densities(self):
         if self._l is None:
             raise RuntimeError("Expectation values without lambdas has not been implemented")
         if not self.l_info["run"]:
@@ -132,8 +135,17 @@ class CoupledCluster(ABC):
         if not self.l_info["converged"]:
             raise RuntimeWarning("Lambda computation did not converge")
 
+    def one_body_density(self):
         self.rho_ob = self._calculated_one_body_density()
-        # self.rho_tb = self._calculated_two_body_density()
+
+    def two_body_density(self):
+        self.rho_tb = self._calculated_two_body_density()
+
+    def densities(self):
+        self._check_valid_for_densities()
+
+        self.one_body_density()
+        self.two_body_density()
 
     def energy(self, t: CoupledClusterParameter = None) -> float:
         if t is None:

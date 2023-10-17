@@ -9,7 +9,7 @@ from clusterfock.cc.rhs.t_inter_CCD import amplitudes_intermediates_ccd
 from clusterfock.cc.rhs.l_inter_CCD import lambda_amplitudes_intermediates_ccd
 from clusterfock.cc.rhs.t_RCCD import amplitudes_ccd_restricted
 
-from clusterfock.cc.densities.l_CCD import one_body_density
+from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 
 
 class GCCD(CoupledCluster):
@@ -77,7 +77,15 @@ class GCCD(CoupledCluster):
         return rho
 
     def _calculated_two_body_density(self) -> np.ndarray:
-        pass
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
+
+        l, t = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = two_body_density(rho, t, l, o, v)
+
+        return rho
 
 
 class RCCD(CoupledCluster):
