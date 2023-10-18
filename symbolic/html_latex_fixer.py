@@ -1,6 +1,13 @@
 import pathlib as pl
 import re
 
+from sympy import symbols, IndexedBase
+from sympy.physics.secondquant import (
+    AntiSymmetricTensor, simplify_index_permutations, PermutationOperator
+)
+from sympy import (
+    print_latex, Rational, Symbol, Dummy
+)
 
 def read_HTMLFixer(path):
     string = ""
@@ -14,26 +21,162 @@ def write_HTMLFixer(path, string):
     with open(path, "w") as file:
         file.write(string)
 
-def get_sympy_expr(expr):
-    pass
+def find_rational(term, sign):
+    rational = 0
+    frac = re.findall(r"\\frac{(.*?)}{(.*?)}", term)
 
-def fix_sympy_expr(expr):
-    pass
+    if frac != []:
+        up, down = map(int, frac[0])
+        rational = Rational(up, down)
+    else:
+        rational = 1
 
+    if sign == "+":
+        sign = 1
+    else:
+        sign = -1
+
+    return sign*rational
+
+def find_one_body_tensors(tex_term, im, tensors=["f", "t", r"\\lambda"]):
+    one_body = {}
+    for tensor in tensors:
+        pat = rf"{tensor}" + r"_{(.*?)}"
+        x = re.findall(pat, tex_term)
+        
+        if x != []:
+            one_body[tensor] = list(x[0])
+
+    term = 1
+    for tensor, indicies in one_body.items():
+        sym_tensor = IndexedBase(tensor)
+        p, q = indicies
+        term *= sym_tensor[im[p],im[q]]
+
+    return term
+
+def find_two_body_tensors(tex_term, im, tensors=["u","t",r"\\lambda"]):
+    two_body = {}
+    for tensor in tensors:
+        pat = rf"{tensor}" + r"\^{(.*?)}_{(.*?)}"
+        x = re.findall(pat, tex_term)
+        
+        if x != []:
+            two_body[tensor] = {"upper": list(x[0][0]), "lower": list(x[0][1])}
+
+    term = 1
+    for tensor, indicies in two_body.items():
+        p, q = indicies["upper"]
+        r, s = indicies["lower"]
+        sym_tensor = AntiSymmetricTensor(tensor, (im[p], im[q]), (im[r], im[s]))
+        term *= sym_tensor
+
+    return term
+
+def count_index_occurrences(string):
+    raw_indicies = re.findall(r"{[a-z]{2}}", string)
+    indicies = []
+
+    for pair in raw_indicies:
+        pair = pair.replace("{", "").replace("}", "")
+        indicies += list(pair)
+
+    unique_indicies = list(set(indicies))
+    counts = [0]*len(unique_indicies)
+
+    for i, unique in enumerate(unique_indicies):
+        counts[i] = indicies.count(unique)
+
+    return unique_indicies,counts
+
+def get_indicies(tex_term):
+    unique_indicies, counts = count_index_occurrences(tex_term)
+    upper = "abcdefg"
+
+    index_map = {}
+    for index, count in zip(unique_indicies, counts):
+        cls = Dummy if count == 2 else Symbol
+        above_fermi = True if index in upper else False
+        
+        index_map[index] = symbols(index, above_fermi=above_fermi, cls=cls)
+
+    return index_map
+
+def get_free_indicies(tex_string):
+    unique_indices, counts = count_index_occurrences(tex_string)
+    
+    free = {"upper": [], "lower": []}
+    upper = "abcdefg"
+
+    for index, count in zip(unique_indices, counts):
+        if count == 1:
+            above_fermi = index in upper
+            free[above_fermi*"upper" + (1-above_fermi)*"lower"].append(symbols(index, above_fermi=above_fermi))
+
+    return free
+
+def add_sympy_term(tex_term):
+    if not tex_term.startswith("+") and not tex_term.startswith("-"):
+        tex_term = "+" + tex_term
+
+    index_map = get_indicies(tex_term)
+
+    sign = tex_term[0]
+    rational = find_rational(tex_term, sign)
+    one_body_tensors = find_one_body_tensors(tex_term, index_map)
+    two_body_tensors = find_two_body_tensors(tex_term, index_map)
+
+    return rational*one_body_tensors*two_body_tensors
+
+def get_sympy_expr(tex_string):
+    tex_string = re.sub(r"\\sum_{.*?}", "", tex_string)
+    tex_string = re.sub(r"t\^{\d}_{(.*?),(.*?),(.*?),(.*?)}", r"t^{\1\2}_{\3\4}", tex_string)
+    tex_string = re.sub(r"u_{(.*?),(.*?),(.*?),(.*?)}", r"u^{\1\2}_{\3\4}", tex_string)
+    tex_string = re.sub(r"f_{(.*?),(.*?)}", r"f_{\1\2}", tex_string).strip()
+
+    matches = [match.start() for match in re.finditer(r"[+-]", tex_string)]
+    matches = [0] + matches + [len(tex_string)]
+
+    free_indicies = get_free_indicies(tex_string[matches[0] : matches[1]])
+
+    eq = 0
+    for i in range(len(matches)-1):
+        tex_term = tex_string[matches[i] : matches[i+1]]
+        term = add_sympy_term(tex_term)
+        eq += term
+
+    return eq, free_indicies
+
+def fix_sympy_expr(expr, fix_sympy_expr):
+    permutation_operators = []
+
+    for index in fix_sympy_expr.values():
+        if index !=  []:
+            permutation_operators.append(
+                PermutationOperator(index[0], index[1])
+            )
+    print(permutation_operators)
+    print(expr)
+
+    if permutation_operators != []:
+        expr = simplify_index_permutations(expr, permutation_operators)
+    
+    print(expr)
 def get_new_tex_string(expr):
     pass
 
 def fix_pipeline(string):
     new_string = string
-    tex_strings = re.findall(r"<p>(.*?)</p>", string)
+    tex_strings = re.findall(r"\\\[(.*?)\\\]", string)
 
     for tex_string in tex_strings:
-        sympy_expr = get_sympy_expr(tex_string)
-        sympy_expr = fix_sympy_expr(sympy_expr)
-        new_tex_string = get_new_tex_string(sympy_expr)
-
-        new_string = new_string.replace(tex_string, "heihei")
-
+        sympy_expr, free_indicies = get_sympy_expr(tex_string)
+        sympy_expr = fix_sympy_expr(sympy_expr, free_indicies)
+        # print(sympy_expr)
+        # new_tex_string = get_new_tex_string(sympy_expr)
+        
+        # new_string = new_string.replace(tex_string, sympy_expr)
+    exit()
     return new_string
 
 def fix(readpath, writepath):
