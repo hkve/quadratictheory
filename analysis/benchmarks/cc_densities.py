@@ -38,6 +38,8 @@ def ccd(atom, basis, tol=1e-4):
     indicies = np.argwhere(diff > tol)
 
     print(f"For {atom}")
+    print(f"rho_cf_trace = {np.trace(rho_cf)}")
+    print(f"rho_hyqd_trace = {np.trace(rho_hyqd)}")
     print(f"Missmatched {len(indicies)}/{rho_cf.size}")
     for index in indicies:
         i, j = index
@@ -63,13 +65,14 @@ def ccsd(atom, basis):
 
 
 def main():
-    # ccd("He 0 0 0", basis="cc-pVDZ")
-    # ccd("Be 0 0 0", basis="cc-pVDZ")
-    # ccd("Li 0 0 0; H 0 0 1.2", "cc-pVDZ")
+    ccd("He 0 0 0", basis="cc-pVDZ")
+    ccd("Be 0 0 0", basis="cc-pVDZ")
+    ccd("Li 0 0 0; H 0 0 1.2", "cc-pVDZ")
 
-    ccd_expvals("He 0 0 0", basis="cc-pVDZ")
-    ccd_expvals("Be 0 0 0", basis="cc-pVDZ")
-    ccd_expvals("Li 0 0 0; H 0 0 1.2", "cc-pVDZ")
+    # ccd_expvals("He 0 0 0", basis="cc-pVDZ")
+    # ccd_expvals("Be 0 0 0", basis="cc-pVDZ")
+    # ccd_expvals("Li 0 0 0; H 0 0 1.2", "cc-pVDZ")
+    # ccd_expvals("N 0 0 0; N 0 0 1.2", "cc-pVDZ")
 
 
 if __name__ == "__main__":

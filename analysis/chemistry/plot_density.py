@@ -37,11 +37,19 @@ def plot_density(basis, rho, log=True):
 
 
 if __name__ == "__main__":
-    basis = PyscfBasis(atom="N 0 0 -0.6; N 0 0 0.6", basis="cc-pVDZ", restricted=False)
+    # atom = """
+    # O	0.000	 0.000	 0.434;
+    # O	0.000	 1.064	-0.217;
+    # O	0.000	-1.064	-0.217;
+    # """
+    atom = "N 0 0 -0.6; N 0 0 0.6"
+    basis = PyscfBasis(atom=atom, basis="cc-pVDZ", restricted=False)
     hf = HF(basis).run()
+    print(hf.energy())
     basis.change_basis(hf.C)
 
     ccd = CCD(basis).run(include_l=True)
+    print(ccd.energy())
     ccd.densities()
 
     plot_density(basis, ccd.rho_ob)
