@@ -35,10 +35,15 @@ class PyscfBasis(Basis):
         """
 
         # Make and run mean field object
-        self.mf = pyscf.scf.HF(self.mol)
-        self.mf.run(verbose=0, tol=tol)
+        self.mf = pyscf.scf.RHF(self.mol)
+        self.mf.run(verbose=0)
 
-        return self.change_basis(self.mf.mo_coeff, inplace=inplace)
+        self.C = self.mf.mo_coeff
+        
+        if not self.restricted:
+            self.C = self._add_spin_one_body(self.C)   
+
+        return self.change_basis(self.C, inplace=inplace)
 
     @property
     def r(self) -> np.ndarray:
