@@ -1,0 +1,85 @@
+    \rho_oooo = zeros((no, no, no, no))
+
+    \rho_oooo += KroneckerDelta(j, l) * einsum(
+        "abmk,abim->ijkl", \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo += KroneckerDelta(i, l) * einsum(
+        "abmk,abmj->ijkl", \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= KroneckerDelta(j, k) * einsum(
+        "abml,abim->ijkl", \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= KroneckerDelta(i, k) * einsum(
+        "abml,abmj->ijkl", \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo += KroneckerDelta(i, k)*KroneckerDelta(j, l) * einsum(
+        "->ijkl", 
+    )
+
+    \rho_oooo -= KroneckerDelta(i, l)*KroneckerDelta(j, k) * einsum(
+        "->ijkl", 
+    )
+
+    \rho_oooo += einsum(
+        "abkl,abij->ijkl", \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv = zeros((nv, nv, nv, nv))
+
+    \rho_vvvv += einsum(
+        "abij,cdij->abcd", \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv = zeros((no, no, nv, nv))
+
+    \rho_oovv += einsum(
+        "cdkl,ackj,bdil->ijab", \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cdkl,ablj,cdik->ijab", \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdkl,adij,bckl->ijab", \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdkl,acik,bdlj->ijab", \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cdkl,abil,cdkj->ijab", \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdkl,ackl,bdij->ijab", \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdkl,abkl,cdij->ijab", \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "abij->ijab", t^2
+    )
+
+    \rho_vvoo = zeros((nv, nv, no, no))
+
+    \rho_vvoo += einsum(
+        "abij->abij", \lambda^2
+    )
+
+    \rho_ovov = zeros((no, nv, no, nv))
+
+    \rho_ovov += KroneckerDelta(i, j) * einsum(
+        "ackl,bckl->iajb", \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "ackj,bcik->iajb", \lambda^2, t^2
+    )

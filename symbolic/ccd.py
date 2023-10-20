@@ -72,10 +72,10 @@ def _run_blocks(dr, blocks, block_names):
 @drutils.timeme
 def L_densities(dr):
     # One body
-    o_dums, v_dums = drutils.get_indicies(dr, num=2)
-    blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
-    rho = _run_blocks(dr, blocks, block_names)
-    drutils.save_html(dr, "ccd_ob_density", rho, block_names)
+    # o_dums, v_dums = drutils.get_indicies(dr, num=2)
+    # blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
+    # rho = _run_blocks(dr, blocks, block_names)
+    # drutils.save_html(dr, "ccd_ob_density", rho, block_names)
 
     # Two body
     o_dums, v_dums = drutils.get_indicies(dr, num=4)
@@ -83,14 +83,17 @@ def L_densities(dr):
     rho = _run_blocks(dr, blocks, block_names)
     drutils.save_html(dr, "ccd_tb_density", rho, block_names)
 
+    rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
+    grutils.einsum_raw(dr, "ccd_l_2b_density", rho_eqs)
+
 
 def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
     # T_equations(dr)
-    L_equations(dr)
-    # L_densities(dr)
+    # L_equations(dr)
+    L_densities(dr)
 
 if __name__ == "__main__":
     main()
