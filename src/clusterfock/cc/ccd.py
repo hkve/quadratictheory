@@ -20,8 +20,6 @@ class GCCD(CoupledCluster):
         l_orders = [2]
         super().__init__(basis, t_orders, l_orders)
 
-        o, v = self.basis.o, self.basis.v
-
         self.t_rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
         self.l_rhs = lambda_amplitudes_intermediates_ccd if intermediates else lambda_amplitudes_ccd
 

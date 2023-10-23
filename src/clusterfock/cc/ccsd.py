@@ -4,22 +4,28 @@ from clusterfock.cc.coupledcluster import CoupledCluster
 from clusterfock.cc.parameter import CoupledClusterParameter
 
 from clusterfock.cc.rhs.t_CCSD import amplitudes_ccsd
+from clusterfock.cc.rhs.l_CCSD import lambda_amplitudes_ccsd
 from clusterfock.cc.rhs.t_inter_CCSD import amplitudes_intermediates_ccsd
+from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
 
-        orders = [1, 2]
-        super().__init__(basis, orders)
+        t_orders = [1, 2]
+        l_orders = [1, 2]
+        super().__init__(basis, t_orders, l_orders)
 
-        self.rhs = amplitudes_intermediates_ccsd if intermediates else amplitudes_ccsd
+        self.t_rhs = amplitudes_intermediates_ccsd if intermediates else amplitudes_ccsd
+        self.l_rhs = (
+            lambda_amplitudes_intermediates_ccsd if intermediates else lambda_amplitudes_ccsd
+        )
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> dict:
         basis = self.basis
 
-        rhs1, rhs2 = self.rhs(
+        rhs1, rhs2 = self.t_rhs(
             t1=t[1],
             t2=t[2],
             u=basis.u,
@@ -29,6 +35,27 @@ class GCCSD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(t.orders, t.N, t.M)
+        rhs.initialize_dicts({1: rhs1, 2: rhs2})
+
+        return rhs
+
+    def _next_l_iteration(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        basis = self.basis
+
+        rhs1, rhs2 = self.l_rhs(
+            t1=t[1],
+            t2=t[2],
+            l1=l[1],
+            l2=l[2],
+            u=basis.u,
+            f=self._f,
+            v=basis.v,
+            o=basis.o,
+        )
+
+        rhs = CoupledClusterParameter(l.orders, l.N, l.M)
         rhs.initialize_dicts({1: rhs1, 2: rhs2})
 
         return rhs
