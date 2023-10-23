@@ -38,7 +38,7 @@ def T_equations(dr):
 @drutils.timeme
 def L_equations(dr):
     # Get T2 and L2 operator, excitation and sim transform commutator
-    T1, L1 = drutils.get_clusters_2(dr)
+    T1, L1 = drutils.get_clusters_1(dr)
     T2, L2 = drutils.get_clusters_2(dr)
     T = (T1 + T2).simplify()
     L = (L1 + L2).simplify()
@@ -68,8 +68,16 @@ def L_equations(dr):
     drutils.timer.tock("L2 B term")
 
     amplitude_l2_eq = (A + B).simplify()
-    
+
     drutils.save_html(dr, "ccsd_l", [amplitude_l1_eq, amplitude_l2_eq], ["l1 = 0", "l2 = 0"])
+    
+    l1 = drutils.define_rk1_rhs(dr, amplitude_l1_eq).simplify()
+    l2 = drutils.define_rk2_rhs(dr, amplitude_l2_eq).simplify()
+
+    grutils.einsum_raw(dr, "ccsd_l", [l1, l2])
+    eval_seq = grutils.optimize_equations(dr, [l1,l2])
+    grutils.einsum_raw(dr, "ccsd_l_optimized", eval_seq)
+
 
 
 def _run_blocks(dr, blocks, block_names):
@@ -110,9 +118,9 @@ def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
-    T_equations(dr)
+    # T_equations(dr)
     # L_equations(dr)
-    # L_densities(dr)
+    L_densities(dr)
 
 if __name__ == "__main__":
     main()
