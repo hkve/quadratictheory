@@ -39,9 +39,9 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0)
 
         self.C = self.mf.mo_coeff
-        
+
         if not self.restricted:
-            self.C = self._add_spin_one_body(self.C)   
+            self.C = self._add_spin_one_body(self.C)
 
         return self.change_basis(self.C, inplace=inplace)
 

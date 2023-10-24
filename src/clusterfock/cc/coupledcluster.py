@@ -144,7 +144,7 @@ class CoupledCluster(ABC):
         self.rho_tb = self._calculate_two_body_density()
 
         return self.rho_tb
-    
+
     def densities(self):
         self._check_valid_for_densities()
 

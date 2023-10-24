@@ -42,6 +42,7 @@ def one_body_density(rho, t1, t2, l1, l2, o, v):
 
     return rho
 
+
 def two_body_density_oooo(rho, t1, t2, l1, l2, o, v):
     I = np.eye(o.stop)
 
@@ -77,8 +78,8 @@ def two_body_density_vvvv(rho, t1, t2, l1, l2, o, v):
 
     rho[v, v, v, v] += np.einsum("ci,dj,abij->abcd", t1, t1, l2, optimize=True)
 
-
     return rho
+
 
 def two_body_density_oovv(rho, t1, t2, l1, l2, o, v):
     rho[o, o, v, v] += np.einsum("ck,ak,bcij->ijab", l1, t1, t2, optimize=True)
@@ -154,13 +155,15 @@ def two_body_density_oovv(rho, t1, t2, l1, l2, o, v):
     rho[o, o, v, v] -= np.einsum("bj,ci,cdkl,adkl->ijab", t1, t1, l2, t2, optimize=True) / 2
 
     rho[o, o, v, v] += np.einsum("ak,bl,ci,dj,cdkl->ijab", t1, t1, t1, t1, l2, optimize=True)
-    
+
     return rho
+
 
 def two_body_density_vvoo(rho, t1, t2, l1, l2, o, v):
     rho[v, v, o, o] += np.einsum("abij->abij", l2, optimize=True)
 
     return rho
+
 
 def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
     I = np.eye(o.stop)
@@ -175,9 +178,101 @@ def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
 
     rho[o, v, o, v] += np.einsum("ij,ak,bk->iajb", I, l1, t1, optimize=True)
 
-    rho[o, v, v, o] = -rho[o, v, o, v].transpose(0,1,3,2)
-    rho[v, o, o, v] = -rho[o, v, o, v].transpose(1,0,2,3)
-    rho[v, o, v, o] = rho[o, v, o, v].transpose(1,0,3,2)
+    rho[o, v, v, o] = -rho[o, v, o, v].transpose(0, 1, 3, 2)
+    rho[v, o, o, v] = -rho[o, v, o, v].transpose(1, 0, 2, 3)
+    rho[v, o, v, o] = rho[o, v, o, v].transpose(1, 0, 3, 2)
+
+    return rho
+
+
+def two_body_density_ooov(rho, t1, t2, l1, l2, o, v):
+    I = np.eye(o.stop)
+
+    rho[o, o, o, v] -= np.einsum("jk,bl,abil->ijka", I, l1, t2, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("ik,bl,ablj->ijka", I, l1, t2, optimize=True)
+
+    rho[o, o, o, v] += np.einsum("jk,bl,al,bi->ijka", I, l1, t1, t1, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("ik,bl,al,bj->ijka", I, l1, t1, t1, optimize=True)
+
+    rho[o, o, o, v] += np.einsum("jk,al,bclm,bcim->ijka", I, t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] += np.einsum("ik,al,bclm,bcmj->ijka", I, t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] += np.einsum("jk,bi,bclm,aclm->ijka", I, t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] -= np.einsum("ik,bj,bclm,aclm->ijka", I, t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] += np.einsum("ik,aj->ijka", I, t1, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("jk,ai->ijka", I, t1, optimize=True)
+
+    rho[o, o, o, v] += np.einsum("ai,bclk,bclj->ijka", t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] += np.einsum("aj,bclk,bcil->ijka", t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] -= np.einsum("bi,bclk,aclj->ijka", t1, l2, t2, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("bj,bclk,acil->ijka", t1, l2, t2, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("al,bclk,bcij->ijka", t1, l2, t2, optimize=True) / 2
+
+    rho[o, o, o, v] -= np.einsum("al,bi,cj,bclk->ijka", t1, t1, t1, l2, optimize=True)
+
+    rho[o, o, o, v] += np.einsum("bk,abij->ijka", l1, t2, optimize=True)
+
+    rho[o, o, o, v] += np.einsum("bk,ai,bj->ijka", l1, t1, t1, optimize=True)
+
+    rho[o, o, o, v] -= np.einsum("bk,aj,bi->ijka", l1, t1, t1, optimize=True)
+
+    rho[o, o, v, o] = -rho[o, o, o, v].transpose(0, 1, 3, 2)
+
+    return rho
+
+
+def two_body_density_ovoo(rho, t1, t2, l1, l2, o, v):
+    I = np.eye(o.stop)
+
+    rho[o, v, o, o] += np.einsum("ij,ak->iajk", I, l1, optimize=True)
+
+    rho[o, v, o, o] -= np.einsum("ik,aj->iajk", I, l1, optimize=True)
+
+    rho[o, v, o, o] += np.einsum("bi,abjk->iajk", t1, l2, optimize=True)
+
+    rho[v, o, o, o] = -rho[o, v, o, o].transpose(1, 0, 2, 3)
+
+    return rho
+
+
+def two_body_density_vvvo(rho, t1, t2, l1, l2, o, v):
+    rho[v, v, v, o] -= np.einsum("cj,abij->abci", t1, l2, optimize=True)
+
+    rho[v, v, o, v] = -rho[v, v, v, o].transpose(0, 1, 3, 2)
+
+    return rho
+
+
+def two_body_density_vovv(rho, t1, t2, l1, l2, o, v):
+    rho[v, o, v, v] += np.einsum("bj,adjk,cdik->aibc", t1, l2, t2, optimize=True)
+
+    rho[v, o, v, v] += np.einsum("ci,adjk,bdjk->aibc", t1, l2, t2, optimize=True) / 2
+
+    rho[v, o, v, v] -= np.einsum("cj,adjk,bdik->aibc", t1, l2, t2, optimize=True)
+
+    rho[v, o, v, v] -= np.einsum("bi,adjk,cdjk->aibc", t1, l2, t2, optimize=True) / 2
+
+    rho[v, o, v, v] -= np.einsum("di,adjk,bcjk->aibc", t1, l2, t2, optimize=True) / 2
+
+    rho[v, o, v, v] -= np.einsum("bj,ck,di,adjk->aibc", t1, t1, t1, l2, optimize=True)
+
+    rho[v, o, v, v] -= np.einsum("aj,bcij->aibc", l1, t2, optimize=True)
+
+    rho[v, o, v, v] += np.einsum("aj,bj,ci->aibc", l1, t1, t1, optimize=True)
+
+    rho[v, o, v, v] -= np.einsum("aj,bi,cj->aibc", l1, t1, t1, optimize=True)
+
+    rho[o, v, v, v] = -rho[v, o, v, v].transpose(1, 0, 2, 3)
 
     return rho
 
@@ -188,5 +283,9 @@ def two_body_density(rho, t1, t2, l1, l2, o, v):
     rho = two_body_density_oovv(rho, t1, t2, l1, l2, o, v)
     rho = two_body_density_vvoo(rho, t1, t2, l1, l2, o, v)
     rho = two_body_density_ovov(rho, t1, t2, l1, l2, o, v)
+    rho = two_body_density_ooov(rho, t1, t2, l1, l2, o, v)
+    rho = two_body_density_ovoo(rho, t1, t2, l1, l2, o, v)
+    rho = two_body_density_vvvo(rho, t1, t2, l1, l2, o, v)
+    rho = two_body_density_vovv(rho, t1, t2, l1, l2, o, v)
 
     return rho
