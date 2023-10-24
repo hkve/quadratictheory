@@ -155,13 +155,17 @@ def fix_sympy_expr(expr, fix_sympy_expr):
             permutation_operators.append(
                 PermutationOperator(index[0], index[1])
             )
-    print(permutation_operators)
-    print(expr)
-
-    if permutation_operators != []:
-        expr = simplify_index_permutations(expr, permutation_operators)
     
-    print(expr)
+    if permutation_operators != []:
+        for arg in expr.args:
+            print(arg)
+        expr2 = simplify_index_permutations(expr, permutation_operators)
+        
+        print("--------- FIXED")
+        for arg in expr2.args:
+            print(arg)
+    
+
 def get_new_tex_string(expr):
     pass
 
@@ -196,6 +200,27 @@ def fix(readpath, writepath):
     write_HTMLFixer(writepath, new_string)
 
 if __name__ == "__main__":
+    a, b = symbols("a,b", above_fermi=True)
+    i, j = symbols("i,j", above_fermi=True)
+
+    c, d = symbols("c,d", above_fermi=True, cls=Dummy)
+    k, l = symbols("k,l", above_fermi=False, cls=Dummy)
+
+    f = IndexedBase("f")
+    t1 = AntiSymmetricTensor("t", (a,c), (i,j))
+    t2 = AntiSymmetricTensor("t", (b,c), (i,j))
+
+    P = PermutationOperator(a, b)
+
+    expr = f[b,c]*t1  - f[b,c]*t1*t2 - f[a,c]*t2
+    for arg in expr.args:
+        print(arg)
+    print("-------- FIXED")
+    expr2 = simplify_index_permutations(expr, [P])
+    for arg in expr2.args:
+        print(arg)
+    print("\n\n")
+    
     readpath = "html_raw/ccd_energy_and_t2.html"
     writepath  = "html_formatted/ccd_energy_and_t"
 
