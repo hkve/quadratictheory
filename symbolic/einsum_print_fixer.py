@@ -101,15 +101,15 @@ def fix_kron_deltas(string):
     indicies = [""]
     hit, hit_index = False, -1
     for line_i, line in enumerate(string.split("\n")):
-        if "\\rho_" in line and "zeros" in line:
+        if "\rho_" in line and "zeros" in line:
             line = ""
 
-        if "einsum" in line and "\\rho" in line:
+        if "einsum" in line and "\rho" in line:
             subscript = line.find("_")
             blocks = line[subscript+1:subscript+5]
             b1, b2, b3, b4 = blocks
             new_blocks = f"[{b1},{b2},{b3},{b4}]"
-            line = line.replace("\\rho", "rho")
+            line = line.replace("\rho", "rho")
             line = line.replace(blocks, new_blocks)
             line = line.replace("_", "")
 

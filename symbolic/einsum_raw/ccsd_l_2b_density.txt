@@ -2,46 +2,6 @@
     ho_oooo = zeros((no, no, no, no))
 
     
-    ho_oooo += KroneckerDelta(i, l) * einsum(
-        "ak,aj->ijkl", \lambda^1, t^1
-    )
-
-    
-    ho_oooo += KroneckerDelta(j, k) * einsum(
-        "al,ai->ijkl", \lambda^1, t^1
-    )
-
-    
-    ho_oooo -= KroneckerDelta(j, l) * einsum(
-        "ak,ai->ijkl", \lambda^1, t^1
-    )
-
-    
-    ho_oooo -= KroneckerDelta(i, k) * einsum(
-        "al,aj->ijkl", \lambda^1, t^1
-    )
-
-    
-    ho_oooo += KroneckerDelta(i, k)*KroneckerDelta(j, l) * einsum(
-        "->ijkl", 
-    )
-
-    
-    ho_oooo -= KroneckerDelta(i, l)*KroneckerDelta(j, k) * einsum(
-        "->ijkl", 
-    )
-
-    
-    ho_oooo += einsum(
-        "abkl,abij->ijkl", \lambda^2, t^2
-    ) / 2
-
-    
-    ho_oooo += einsum(
-        "ai,bj,abkl->ijkl", t^1, t^1, \lambda^2
-    )
-
-    
     ho_oooo += KroneckerDelta(j, l) * einsum(
         "abmk,abim->ijkl", \lambda^2, t^2
     ) / 2
@@ -62,6 +22,46 @@
     ) / 2
 
     
+    ho_oooo += KroneckerDelta(i, k)*KroneckerDelta(j, l) * einsum(
+        "->ijkl", 
+    )
+
+    
+    ho_oooo -= KroneckerDelta(i, l)*KroneckerDelta(j, k) * einsum(
+        "->ijkl", 
+    )
+
+    
+    ho_oooo += KroneckerDelta(i, l) * einsum(
+        "ak,aj->ijkl", \lambda^1, t^1
+    )
+
+    
+    ho_oooo += KroneckerDelta(j, k) * einsum(
+        "al,ai->ijkl", \lambda^1, t^1
+    )
+
+    
+    ho_oooo -= KroneckerDelta(j, l) * einsum(
+        "ak,ai->ijkl", \lambda^1, t^1
+    )
+
+    
+    ho_oooo -= KroneckerDelta(i, k) * einsum(
+        "al,aj->ijkl", \lambda^1, t^1
+    )
+
+    
+    ho_oooo += einsum(
+        "abkl,abij->ijkl", \lambda^2, t^2
+    ) / 2
+
+    
+    ho_oooo += einsum(
+        "ai,bj,abkl->ijkl", t^1, t^1, \lambda^2
+    )
+
+    
     ho_vvvv = zeros((nv, nv, nv, nv))
 
     
@@ -76,81 +76,6 @@
 
     
     ho_oovv = zeros((no, no, nv, nv))
-
-    
-    ho_oovv += einsum(
-        "ck,ak,bcij->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv += einsum(
-        "ck,bi,ackj->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv += einsum(
-        "ck,bj,acik->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,ai,bckj->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,aj,bcik->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,bk,acij->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,ci,abkj->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,cj,abik->ijab", \lambda^1, t^1, t^2
-    )
-
-    
-    ho_oovv += einsum(
-        "ck,aj,bk,ci->ijab", \lambda^1, t^1, t^1, t^1
-    )
-
-    
-    ho_oovv += einsum(
-        "ck,ak,bi,cj->ijab", \lambda^1, t^1, t^1, t^1
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,ai,bk,cj->ijab", \lambda^1, t^1, t^1, t^1
-    )
-
-    
-    ho_oovv -= einsum(
-        "ck,ak,bj,ci->ijab", \lambda^1, t^1, t^1, t^1
-    )
-
-    
-    ho_oovv += einsum(
-        "ai,bj->ijab", t^1, t^1
-    )
-
-    
-    ho_oovv -= einsum(
-        "aj,bi->ijab", t^1, t^1
-    )
-
-    
-    ho_oovv += einsum(
-        "abij->ijab", t^2
-    )
 
     
     ho_oovv += einsum(
@@ -263,6 +188,81 @@
     )
 
     
+    ho_oovv += einsum(
+        "ai,bj->ijab", t^1, t^1
+    )
+
+    
+    ho_oovv -= einsum(
+        "aj,bi->ijab", t^1, t^1
+    )
+
+    
+    ho_oovv += einsum(
+        "abij->ijab", t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "ck,ak,bcij->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "ck,bi,ackj->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "ck,bj,acik->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,ai,bckj->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,aj,bcik->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,bk,acij->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,ci,abkj->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,cj,abik->ijab", \lambda^1, t^1, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "ck,aj,bk,ci->ijab", \lambda^1, t^1, t^1, t^1
+    )
+
+    
+    ho_oovv += einsum(
+        "ck,ak,bi,cj->ijab", \lambda^1, t^1, t^1, t^1
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,ai,bk,cj->ijab", \lambda^1, t^1, t^1, t^1
+    )
+
+    
+    ho_oovv -= einsum(
+        "ck,ak,bj,ci->ijab", \lambda^1, t^1, t^1, t^1
+    )
+
+    
     ho_vvoo = zeros((nv, nv, no, no))
 
     
@@ -284,16 +284,188 @@
     )
 
     
+    ho_ovov += KroneckerDelta(i, j) * einsum(
+        "ackl,bckl->iajb", \lambda^2, t^2
+    ) / 2
+
+    
     ho_ovov -= einsum(
         "aj,bi->iajb", \lambda^1, t^1
     )
 
     
     ho_ovov += KroneckerDelta(i, j) * einsum(
-        "ackl,bckl->iajb", \lambda^2, t^2
+        "ak,bk->iajb", \lambda^1, t^1
+    )
+
+    
+    ho_ooov = zeros((no, no, no, nv))
+
+    
+    ho_ooov -= KroneckerDelta(j, k) * einsum(
+        "bl,abil->ijka", \lambda^1, t^2
+    )
+
+    
+    ho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bl,ablj->ijka", \lambda^1, t^2
+    )
+
+    
+    ho_ooov += KroneckerDelta(j, k) * einsum(
+        "bl,al,bi->ijka", \lambda^1, t^1, t^1
+    )
+
+    
+    ho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bl,al,bj->ijka", \lambda^1, t^1, t^1
+    )
+
+    
+    ho_ooov += KroneckerDelta(j, k) * einsum(
+        "al,bclm,bcim->ijka", t^1, \lambda^2, t^2
     ) / 2
 
     
-    ho_ovov += KroneckerDelta(i, j) * einsum(
-        "ak,bk->iajb", \lambda^1, t^1
+    ho_ooov += KroneckerDelta(i, k) * einsum(
+        "al,bclm,bcmj->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov += KroneckerDelta(j, k) * einsum(
+        "bi,bclm,aclm->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bj,bclm,aclm->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov += KroneckerDelta(i, k) * einsum(
+        "aj->ijka", t^1
+    )
+
+    
+    ho_ooov -= KroneckerDelta(j, k) * einsum(
+        "ai->ijka", t^1
+    )
+
+    
+    ho_ooov += einsum(
+        "ai,bclk,bclj->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov += einsum(
+        "aj,bclk,bcil->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov -= einsum(
+        "bi,bclk,aclj->ijka", t^1, \lambda^2, t^2
+    )
+
+    
+    ho_ooov -= einsum(
+        "bj,bclk,acil->ijka", t^1, \lambda^2, t^2
+    )
+
+    
+    ho_ooov -= einsum(
+        "al,bclk,bcij->ijka", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_ooov -= einsum(
+        "al,bi,cj,bclk->ijka", t^1, t^1, t^1, \lambda^2
+    )
+
+    
+    ho_ooov += einsum(
+        "bk,abij->ijka", \lambda^1, t^2
+    )
+
+    
+    ho_ooov += einsum(
+        "bk,ai,bj->ijka", \lambda^1, t^1, t^1
+    )
+
+    
+    ho_ooov -= einsum(
+        "bk,aj,bi->ijka", \lambda^1, t^1, t^1
+    )
+
+    
+    ho_ovoo = zeros((no, nv, no, no))
+
+    
+    ho_ovoo += KroneckerDelta(i, j) * einsum(
+        "ak->iajk", \lambda^1
+    )
+
+    
+    ho_ovoo -= KroneckerDelta(i, k) * einsum(
+        "aj->iajk", \lambda^1
+    )
+
+    
+    ho_ovoo += einsum(
+        "bi,abjk->iajk", t^1, \lambda^2
+    )
+
+    
+    ho_vvvo = zeros((nv, nv, nv, no))
+
+    
+    ho_vvvo -= einsum(
+        "cj,abij->abci", t^1, \lambda^2
+    )
+
+    
+    ho_vovv = zeros((nv, no, nv, nv))
+
+    
+    ho_vovv += einsum(
+        "bj,adjk,cdik->aibc", t^1, \lambda^2, t^2
+    )
+
+    
+    ho_vovv += einsum(
+        "ci,adjk,bdjk->aibc", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_vovv -= einsum(
+        "cj,adjk,bdik->aibc", t^1, \lambda^2, t^2
+    )
+
+    
+    ho_vovv -= einsum(
+        "bi,adjk,cdjk->aibc", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_vovv -= einsum(
+        "di,adjk,bcjk->aibc", t^1, \lambda^2, t^2
+    ) / 2
+
+    
+    ho_vovv -= einsum(
+        "bj,ck,di,adjk->aibc", t^1, t^1, t^1, \lambda^2
+    )
+
+    
+    ho_vovv -= einsum(
+        "aj,bcij->aibc", \lambda^1, t^2
+    )
+
+    
+    ho_vovv += einsum(
+        "aj,bj,ci->aibc", \lambda^1, t^1, t^1
+    )
+
+    
+    ho_vovv -= einsum(
+        "aj,bi,cj->aibc", \lambda^1, t^1, t^1
     )
