@@ -8,6 +8,7 @@ from clusterfock.cc.rhs.l_CCSD import lambda_amplitudes_ccsd
 from clusterfock.cc.rhs.t_inter_CCSD import amplitudes_intermediates_ccsd
 from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 
+from clusterfock.cc.densities.l_CCSD import one_body_density
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -70,3 +71,15 @@ class GCCSD(CoupledCluster):
         e += np.einsum("ai,bj,ijab->", t1, t1, u[o, o, v, v], optimize=True) / 2
 
         return e
+
+    def _calculated_one_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
+
+        l1, t1 = self._l[1], self._t[1]
+        l2, t2 = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = one_body_density(rho, t1, t2, l1, l2, o, v)
+
+        return rho
