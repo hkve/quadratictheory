@@ -43,6 +43,7 @@ if __name__ == "__main__":
     O	0.000	-1.064	-0.217;
     """
     # atom = "N 0 0 -0.6; N 0 0 0.6"
+    # atom = "Li 0 0 -0.5; H 0 0 0.5"
     basis = PyscfBasis(atom=atom, basis="cc-pVDZ", restricted=False)
     hf = HF(basis).run()
     print(hf.energy())
@@ -52,4 +53,5 @@ if __name__ == "__main__":
     print(ccd.energy())
     ccd.densities()
 
-    plot_density(basis, hf.rho)
+    rho_in_hf_basis = np.einsum("ap,pq,bq->ab", basis.C, ccd.rho_ob, basis.C)
+    plot_density(basis, rho_in_hf_basis)
