@@ -136,11 +136,15 @@ class CoupledCluster(ABC):
             raise RuntimeWarning("Lambda computation did not converge")
 
     def one_body_density(self):
-        self.rho_ob = self._calculated_one_body_density()
+        self.rho_ob = self._calculate_one_body_density()
+
+        return self.rho_ob
 
     def two_body_density(self):
-        self.rho_tb = self._calculated_two_body_density()
+        self.rho_tb = self._calculate_two_body_density()
 
+        return self.rho_tb
+    
     def densities(self):
         self._check_valid_for_densities()
 

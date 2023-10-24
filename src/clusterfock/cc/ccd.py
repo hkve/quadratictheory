@@ -63,7 +63,7 @@ class GCCD(CoupledCluster):
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         return 0.25 * np.einsum("ijab,abij", u[o, o, v, v], t2)
 
-    def _calculated_one_body_density(self) -> np.ndarray:
+    def _calculate_one_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
 
@@ -74,7 +74,7 @@ class GCCD(CoupledCluster):
 
         return rho
 
-    def _calculated_two_body_density(self) -> np.ndarray:
+    def _calculate_two_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
 
