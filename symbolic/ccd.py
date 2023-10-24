@@ -81,7 +81,7 @@ def L_densities(dr):
     o_dums, v_dums = drutils.get_indicies(dr, num=4)
     blocks, block_names = drutils.get_tb_density_blocks(dr, o_dums, v_dums)
     rho = _run_blocks(dr, blocks, block_names)
-    drutils.save_html(dr, "ccd_tb_density", rho, block_names)
+    drutils.save_html(dr, "ccd_2b_density", rho, block_names)
 
     rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
     grutils.einsum_raw(dr, "ccd_l_2b_density", rho_eqs)

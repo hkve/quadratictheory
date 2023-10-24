@@ -197,8 +197,12 @@ def get_tb_density_blocks(dr, o_dums, v_dums):
         c_dag[i] * c_dag[j] * c_[b] * c_[a],  # ijab
         c_dag[a] * c_dag[b] * c_[j] * c_[i],  # abij
         c_dag[i] * c_dag[a] * c_[b] * c_[j],  # iajb
+        c_dag[i] * c_dag[j] * c_[a] * c_[k], # ijka
+        c_dag[i] * c_dag[a] * c_[k] * c_[j], # iajk
+        c_dag[a] * c_dag[b] * c_[i] * c_[c], # abci
+        c_dag[a] * c_dag[i] * c_[c] * c_[b], # aibc
     ]
-    block_names = ["oooo", "vvvv", "oovv", "vvoo", "ovov"]
+    block_names = ["oooo", "vvvv", "oovv", "vvoo", "ovov", "ooov", "ovoo", "vvvo", "vovv"]
 
     return blocks, block_names
 
@@ -217,7 +221,11 @@ def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
         rs[1][a, b, c, d],
         rs[2][i, j, a, b],
         rs[3][a, b, i, j],
-        rs[4][i, a, j, b]
+        rs[4][i, a, j, b],
+        rs[5][i, j, k, a],
+        rs[6][i, a, j, k],
+        rs[7][a, b, c, i],
+        rs[8][a, i, b, c],
     ]
 
     return [dr.define(rhs, term) for rhs, term in zip(blocks, rho)]

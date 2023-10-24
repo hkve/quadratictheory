@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ccsd_2b_density</title>
+
+    <!-- MathJAX intialization -->
+    <script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			"HTML-CSS": { linebreaks: { automatic: true } },
+			SVG: { linebreaks: { automatic: true } }
+		});
+	</script>
+	<script type="text/javascript"
+		src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+    <!-- Boostrap initialization -->
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>ccsd_2b_density</h1>
+    </div>
+
+    <div class="row">
+        <!-- The main content -->
+        <div class="col-sm-9 col-lg-10">
+            <div class="page-header" id="sect-1">
+                <h2>oooo</h2>
+            </div>
+            <p>\[ \sum_{a \in V} \delta_{i l} \lambda^1_{a,k}  t^{1}_{a,j}   + \sum_{a \in V} \delta_{j k} \lambda^1_{a,l}  t^{1}_{a,i}  - \sum_{a \in V}  \delta_{j l} \lambda^1_{a,k}  t^{1}_{a,i}  - \sum_{a \in V}  \delta_{i k} \lambda^1_{a,l}  t^{1}_{a,j}   + \delta_{i k} \delta_{j l}  -  \delta_{i l} \delta_{j k}   + \sum_{a \in V} \sum_{b \in V} \frac{1}{2} \lambda^2_{a,b,k,l}  t^{2}_{a,b,i,j}   + \sum_{a \in V} \sum_{b \in V} t^{1}_{a,i}  t^{1}_{b,j}  \lambda^2_{a,b,k,l}   + \sum_{m \in O} \sum_{a \in V} \sum_{b \in V} \frac{\delta_{j l}}{2} \lambda^2_{a,b,m,k}  t^{2}_{a,b,i,m}   + \sum_{m \in O} \sum_{a \in V} \sum_{b \in V} \frac{\delta_{i l}}{2} \lambda^2_{a,b,m,k}  t^{2}_{a,b,m,j}  - \sum_{m \in O} \sum_{a \in V} \sum_{b \in V}  \frac{\delta_{j k}}{2} \lambda^2_{a,b,m,l}  t^{2}_{a,b,i,m}  - \sum_{m \in O} \sum_{a \in V} \sum_{b \in V}  \frac{\delta_{i k}}{2} \lambda^2_{a,b,m,l}  t^{2}_{a,b,m,j}  \]</p>
+            <div class="page-header" id="sect-2">
+                <h2>vvvv</h2>
+            </div>
+            <p>\[ \sum_{i \in O} \sum_{j \in O} \frac{1}{2} \lambda^2_{a,b,i,j}  t^{2}_{c,d,i,j}   + \sum_{i \in O} \sum_{j \in O} t^{1}_{c,i}  t^{1}_{d,j}  \lambda^2_{a,b,i,j}  \]</p>
+            <div class="page-header" id="sect-3">
+                <h2>oovv</h2>
+            </div>
+            <p>\[ \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,k}  t^{2}_{b,c,i,j}   + \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{b,i}  t^{2}_{a,c,k,j}   + \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{b,j}  t^{2}_{a,c,i,k}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,i}  t^{2}_{b,c,k,j}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,j}  t^{2}_{b,c,i,k}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{b,k}  t^{2}_{a,c,i,j}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{c,i}  t^{2}_{a,b,k,j}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{c,j}  t^{2}_{a,b,i,k}   + \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,j}  t^{1}_{b,k}  t^{1}_{c,i}   + \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,k}  t^{1}_{b,i}  t^{1}_{c,j}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,i}  t^{1}_{b,k}  t^{1}_{c,j}  - \sum_{k \in O} \sum_{c \in V} \lambda^1_{c,k}  t^{1}_{a,k}  t^{1}_{b,j}  t^{1}_{c,i}   + t^{1}_{a,i}  t^{1}_{b,j}  - t^{1}_{a,j}  t^{1}_{b,i}   + t^{2}_{a,b,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \lambda^2_{c,d,k,l}  t^{2}_{a,c,k,j}  t^{2}_{b,d,i,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} \lambda^2_{c,d,k,l}  t^{2}_{a,b,l,j}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} \lambda^2_{c,d,k,l}  t^{2}_{a,d,i,j}  t^{2}_{b,c,k,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \lambda^2_{c,d,k,l}  t^{2}_{a,c,i,k}  t^{2}_{b,d,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} \lambda^2_{c,d,k,l}  t^{2}_{a,b,i,l}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} \lambda^2_{c,d,k,l}  t^{2}_{a,c,k,l}  t^{2}_{b,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} \lambda^2_{c,d,k,l}  t^{2}_{a,b,k,l}  t^{2}_{c,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{1}_{a,k}  t^{1}_{c,i}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,l,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{1}_{a,k}  t^{1}_{c,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,i,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{a,i}  t^{1}_{b,k}  \lambda^2_{c,d,k,l}  t^{2}_{c,d,l,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{a,j}  t^{1}_{b,k}  \lambda^2_{c,d,k,l}  t^{2}_{c,d,i,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{a,j}  t^{1}_{c,i}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,k,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{a,k}  t^{1}_{b,l}  \lambda^2_{c,d,k,l}  t^{2}_{c,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{b,i}  t^{1}_{c,j}  \lambda^2_{c,d,k,l}  t^{2}_{a,d,k,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{1}_{c,i}  t^{1}_{d,j}  \lambda^2_{c,d,k,l}  t^{2}_{a,b,k,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{1}_{b,k}  t^{1}_{c,i}  \lambda^2_{c,d,k,l}  t^{2}_{a,d,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{1}_{b,k}  t^{1}_{c,j}  \lambda^2_{c,d,k,l}  t^{2}_{a,d,i,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{1}_{a,i}  t^{1}_{c,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,k,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{1}_{a,k}  t^{1}_{b,i}  \lambda^2_{c,d,k,l}  t^{2}_{c,d,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{1}_{a,k}  t^{1}_{b,j}  \lambda^2_{c,d,k,l}  t^{2}_{c,d,i,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{1}_{b,j}  t^{1}_{c,i}  \lambda^2_{c,d,k,l}  t^{2}_{a,d,k,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{1}_{a,k}  t^{1}_{b,l}  t^{1}_{c,i}  t^{1}_{d,j}  \lambda^2_{c,d,k,l}  \]</p>
+            <div class="page-header" id="sect-4">
+                <h2>vvoo</h2>
+            </div>
+            <p>\[ \lambda^2_{a,b,i,j}  \]</p>
+            <div class="page-header" id="sect-5">
+                <h2>ovov</h2>
+            </div>
+            <p>\[ \sum_{k \in O} \sum_{c \in V} \lambda^2_{a,c,k,j}  t^{2}_{b,c,i,k}  - \sum_{k \in O} \sum_{c \in V} t^{1}_{b,k}  t^{1}_{c,i}  \lambda^2_{a,c,k,j}  - \lambda^1_{a,j}  t^{1}_{b,i}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \frac{\delta_{i j}}{2} \lambda^2_{a,c,k,l}  t^{2}_{b,c,k,l}   + \sum_{k \in O} \delta_{i j} \lambda^1_{a,k}  t^{1}_{b,k}  \]</p>
+        </div>
+
+        <!-- The navigation -->
+        <div class="col-sm-3 col-lg-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#sect-1">oooo</a></li>
+                <li ><a href="#sect-2">vvvv</a></li>
+                <li ><a href="#sect-3">oovv</a></li>
+                <li ><a href="#sect-4">vvoo</a></li>
+                <li ><a href="#sect-5">ovov</a></li>
+            </ul>
+        </div>
+    </div> <!-- end the main row -->
+
+    <!-- The footer -->
+    <div class="row">
+        <footer class="footer">
+            <p class="small text-center">Automatically generated by drudge symbolic algebra system.</p>
+            <p class="small text-center">By Jinmo Zhao and Gustavo E Scuseria, Rice Univ, Houston, TX, USA</p>
+        </footer>
+    </div>
+</div> <!-- end the main fluid container -->
+</body>
+</html>

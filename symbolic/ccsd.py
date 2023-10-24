@@ -82,7 +82,7 @@ def L_equations(dr):
 
 def _run_blocks(dr, blocks, block_names):
     # Get clusters
-    T1, L1 = drutils.get_clusters_2(dr)
+    T1, L1 = drutils.get_clusters_1(dr)
     T2, L2 = drutils.get_clusters_2(dr)
     T = (T1 + T2).simplify()
     L = (L1 + L2).simplify()
@@ -103,16 +103,18 @@ def _run_blocks(dr, blocks, block_names):
 @drutils.timeme
 def L_densities(dr):
     # One body
-    o_dums, v_dums = drutils.get_indicies(dr, num=2)
-    blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
-    rho = _run_blocks(dr, blocks, block_names)
-    drutils.save_html(dr, "ccsd_ob_density", rho, block_names)
+    # o_dums, v_dums = drutils.get_indicies(dr, num=2)
+    # blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
+    # rho = _run_blocks(dr, blocks, block_names)
+    # drutils.save_html(dr, "ccsd_1b_density", rho, block_names)
 
     # Two body
     o_dums, v_dums = drutils.get_indicies(dr, num=4)
     blocks, block_names = drutils.get_tb_density_blocks(dr, o_dums, v_dums)
     rho = _run_blocks(dr, blocks, block_names)
-    drutils.save_html(dr, "ccsd_tb_density", rho, block_names)
+    drutils.save_html(dr, "ccsd_2b_density", rho, block_names)
+    rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
+    grutils.einsum_raw(dr, "ccsd_l_2b_density", rho_eqs)
 
 def main():
     dr = drutils.get_particle_hole_drudge()
