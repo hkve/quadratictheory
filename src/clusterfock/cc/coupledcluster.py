@@ -135,12 +135,12 @@ class CoupledCluster(ABC):
         if not self.l_info["converged"]:
             raise RuntimeWarning("Lambda computation did not converge")
 
-    def one_body_density(self):
+    def one_body_density(self) -> np.ndarray:
         self.rho_ob = self._calculate_one_body_density()
 
         return self.rho_ob
 
-    def two_body_density(self):
+    def two_body_density(self) -> np.ndarray:
         self.rho_tb = self._calculate_two_body_density()
 
         return self.rho_tb
@@ -156,6 +156,15 @@ class CoupledCluster(ABC):
             t = self._t
 
         return self._evaluate_cc_energy(t) + self.basis.energy()
+
+    def one_body_expval(self, operator: np.ndarray) -> np.ndarray:
+        if self.rho_ob is None: self.one_body_density()
+        return np.einsum("...pq,pq->...", operator, self.rho_ob)
+
+    def two_body_expval(self, operator: np.ndarray) -> np.ndarray:
+        if self.rho_tb is None: self.two_body_density()
+        asym = 1 if self.basis.restricted else 0.5
+        return asym*np.einsum("...pqrs,pqrs->...", operator, self.rho_tb)
 
     @property
     def t_info(self):
