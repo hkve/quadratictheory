@@ -1,6 +1,5 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Optional
 import numpy as np
 
 
@@ -167,9 +166,7 @@ class Basis(ABC):
 
         return new_basis
 
-    def change_basis(
-        self, C: np.ndarray, inplace: bool = True, inverse: bool = False
-    ) -> Optional[Basis]:
+    def change_basis(self, C: np.ndarray, inplace: bool = True, inverse: bool = False) -> Basis:
         """
         Perform basis change on a basis object. This method can work both in place and
         also perform inverse transformation.
