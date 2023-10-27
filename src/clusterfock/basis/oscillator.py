@@ -5,7 +5,7 @@ from scipy import special
 
 class FunctionsODHO(FiniteDifferenceBasisFunctions):
     def __init__(self, omega: float):
-        super().__init__(eigenfunction=True, orthogonal=True)
+        super().__init__(eigenfunction=True, orthonormal=False)
         self._omega = omega
 
     def _raw(self, n, x):
@@ -25,6 +25,6 @@ class HarmonicOscillatorOneDimension(FiniteDifferenceBasis):
     def __init__(self, L: int, N: int, restricted: bool = True, omega=1.0):
         phi = FunctionsODHO(omega=omega)
         super().__init__(L=L, N=N, phi=phi, restricted=True)
-        self.x = np.linspace(-10, 10, 1000)
+        self.x = np.linspace(-5, 5, 10000)
         self.omega = omega
         self.setup()
