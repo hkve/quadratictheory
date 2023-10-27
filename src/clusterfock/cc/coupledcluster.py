@@ -158,13 +158,15 @@ class CoupledCluster(ABC):
         return self._evaluate_cc_energy(t) + self.basis.energy()
 
     def one_body_expval(self, operator: np.ndarray) -> np.ndarray:
-        if self.rho_ob is None: self.one_body_density()
+        if self.rho_ob is None:
+            self.one_body_density()
         return np.einsum("...pq,pq->...", operator, self.rho_ob)
 
     def two_body_expval(self, operator: np.ndarray) -> np.ndarray:
-        if self.rho_tb is None: self.two_body_density()
+        if self.rho_tb is None:
+            self.two_body_density()
         asym = 1 if self.basis.restricted else 0.5
-        return asym*np.einsum("...pqrs,pqrs->...", operator, self.rho_tb)
+        return asym * np.einsum("...pqrs,pqrs->...", operator, self.rho_tb)
 
     @property
     def t_info(self):
