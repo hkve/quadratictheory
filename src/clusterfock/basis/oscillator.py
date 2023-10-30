@@ -1,7 +1,7 @@
 from clusterfock.basis import FiniteDifferenceBasis, FiniteDifferenceBasisFunctions
 import numpy as np
 from scipy import special
-
+import numba
 
 class FunctionsODHO(FiniteDifferenceBasisFunctions):
     def __init__(self, omega: float):
@@ -11,7 +11,7 @@ class FunctionsODHO(FiniteDifferenceBasisFunctions):
     def _raw(self, n, x):
         o = self._omega
         return np.exp(-o / 2 * x**2) * special.hermite(n)(np.sqrt(o) * x)
-
+    
     def _normalization(self, n):
         o = self._omega
         return (o / np.pi) ** (0.25) / np.sqrt(2**n * special.factorial(n))
@@ -23,7 +23,7 @@ class HarmonicOscillatorOneDimension(FiniteDifferenceBasis):
         defaults.update(kwargs)
 
         phi = FunctionsODHO(omega=omega)
-        super().__init__(L=L, N=N, phi=phi, restricted=True, x=defaults["x"])
+        super().__init__(L=L, N=N, phi=phi, restricted=restricted, x=defaults["x"])
         self._omega = omega
         self._a = a
         self.setup()

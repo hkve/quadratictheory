@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 import numpy as np
 from clusterfock.basis import Basis
 
-
 class FiniteDifferenceBasisFunctions(ABC):
     def __init__(self, eigenfunction: bool, orthonormal: bool):
         self._eigenfunction = eigenfunction
@@ -34,8 +33,9 @@ class FiniteDifferenceBasis(Basis):
     ):
         self.x = x
         self._phi = phi
-        super().__init__(L, N, restricted, dtype)
-        self._L_spatial = self.L if self.restricted else self.L // 2
+        self._L_spatial = L if restricted else L // 2
+        self._restricted_dummy = restricted
+        super().__init__(L, N, True, dtype)
 
     def setup(self):
         orthonormal = self._phi._orthonormal
@@ -63,7 +63,7 @@ class FiniteDifferenceBasis(Basis):
         self.u = u
         self.s = s
 
-        if not self.restricted:
+        if not self._restricted_dummy:
             self.from_restricted()
 
     def _add_normalization_one_body(self, operator, n):
@@ -146,13 +146,14 @@ class FiniteDifferenceBasis(Basis):
         L = self._L_spatial
         u = np.zeros((L, L, L, L), dtype=self.dtype)
         X, Y = np.meshgrid(self.x, self.x)
-        v_tilde = self._interaction(X, Y)
+        v_tilde = self._interaction(X,Y)
+    
         phi = self._phi
 
         for q in range(L):
-            phi_q = phi._raw(q, Y).conj()
+            phi_q = phi._raw(q, self.x[:,None]).conj()
             for s in range(L):
-                phi_s = phi._raw(s, Y)
+                phi_s = phi._raw(s, self.x[:,None])
                 inner = np.trapz(phi_q * v_tilde * phi_s, dx=self._dx, axis=0)
 
                 for p in range(q, L):
