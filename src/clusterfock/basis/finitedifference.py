@@ -28,7 +28,7 @@ class FiniteDifferenceBasis(Basis):
         L: int,
         N: int,
         phi: FiniteDifferenceBasisFunctions,
-        x=(-5,5,5000),
+        x=(-10, 10, 5000),
         restricted: bool = False,
         dtype=float,
     ):
@@ -52,17 +52,25 @@ class FiniteDifferenceBasis(Basis):
         else:
             h = self._fill_h_all()
 
-
         u = self._fill_u_all()
 
-        h = h * normalization
-        u = np.einsum("pq,pqpq->pqpq", normalization, u)
-        s = s if orthonormal else s * normalization
+        h = self._add_normalization_one_body(h, normalization)
+        u = self._add_normalization_two_body(u, normalization)
 
-        self.s = s
+        s = s if orthonormal else self._add_normalization_one_body(s, normalization)
+
         self.h = h
+        self.u = u
+        self.s = s
 
-        self.from_restricted()
+        if not self.restricted:
+            self.from_restricted()
+
+    def _add_normalization_one_body(self, operator, n):
+        return np.einsum("p,q,pq->pq", n.conj(), n, operator)
+
+    def _add_normalization_two_body(self, operator, n):
+        return np.einsum("p,q,r,s,pqrs->pqrs", n.conj(), n.conj(), n, n, operator)
 
     def _double_derivative(self, y: np.ndarray) -> np.ndarray:
         return np.gradient(np.gradient(y, self.x), self.x)
@@ -82,16 +90,11 @@ class FiniteDifferenceBasis(Basis):
     def _fill_normalization(self):
         L_spatial = self._L_spatial
 
-        normalization = np.zeros((L_spatial, L_spatial), dtype=self.dtype)
+        normalization = np.zeros(L_spatial, dtype=self.dtype)
         phi = self._phi
 
         for p in range(L_spatial):
-            p_norm = phi._normalization(p)
-            normalization[p, p] = np.abs(p_norm) ** 2
-            for q in range(p + 1, L_spatial):
-                q_norm = phi._normalization(q)
-                normalization[p, q] = p_norm.conj() * q_norm
-                normalization[q, p] = normalization[p, q].conj()
+            normalization[p] = phi._normalization(p)
 
         return normalization
 
@@ -141,26 +144,26 @@ class FiniteDifferenceBasis(Basis):
 
     def _fill_u_all(self):
         L = self._L_spatial
-        u = np.zeros((L,L,L,L), dtype=self.dtype)
-        x, y = np.meshgrid(self.x, self.x)
-        v_tilde = self._interaction(x, y)
+        u = np.zeros((L, L, L, L), dtype=self.dtype)
+        X, Y = np.meshgrid(self.x, self.x)
+        v_tilde = self._interaction(X, Y)
         phi = self._phi
 
-        iters = 0
         for q in range(L):
-            phi_q = phi._raw(q, x).conj()
+            phi_q = phi._raw(q, Y).conj()
             for s in range(L):
-                phi_s = phi._raw(s, x)
-                inner = np.trapz(phi_q*v_tilde*phi_s, dx=self._dx, axis=0)
+                phi_s = phi._raw(s, Y)
+                inner = np.trapz(phi_q * v_tilde * phi_s, dx=self._dx, axis=0)
+
                 for p in range(q, L):
                     phi_p = phi._raw(p, self.x).conj()
                     for r in range(L):
-                        if(p == q and r > s):
+                        if p == q and r > s:
                             continue
 
                         phi_r = phi._raw(r, self.x)
-                        u[p,q,r,s] = np.trapz(phi_p*inner*phi_r, dx=self._dx)
-                        u[q,p,s,r] = u[p,q,r,s]
+                        u[p, q, r, s] = np.trapz(phi_p * inner * phi_r, dx=self._dx, axis=0)
+                        u[q, p, s, r] = u[p, q, r, s]
 
         return u
 
@@ -176,7 +179,7 @@ class FiniteDifferenceBasis(Basis):
     def x(self, x):
         if type(x) == tuple:
             self._x = np.linspace(*x)
-            self._dx = x[1] - x[0] 
+            self._dx = self._x[1] - self._x[0]
         elif type(x) == np.ndarray:
             self._x = x
             if np.all(np.isclose(x, x[0])):
