@@ -1,7 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
-
 from clusterfock.basis import Basis
 
 
@@ -18,10 +17,6 @@ class FiniteDifferenceBasisFunctions(ABC):
     def _normalization(self, p):
         raise NotImplementedError
 
-    @abstractmethod
-    def _potential(self, x):
-        raise NotImplementedError
-
     def __getitem__(self, p):
         func = lambda x: self._normalization(p) * self._raw(p, x)
         return func
@@ -33,10 +28,11 @@ class FiniteDifferenceBasis(Basis):
         L: int,
         N: int,
         phi: FiniteDifferenceBasisFunctions,
+        x=(-5,5,5000),
         restricted: bool = False,
         dtype=float,
     ):
-        self._x = None
+        self.x = x
         self._phi = phi
         super().__init__(L, N, restricted, dtype)
         self._L_spatial = self.L if self.restricted else self.L // 2
@@ -56,7 +52,11 @@ class FiniteDifferenceBasis(Basis):
         else:
             h = self._fill_h_all()
 
+
+        u = self._fill_u_all()
+
         h = h * normalization
+        u = np.einsum("pq,pqpq->pqpq", normalization, u)
         s = s if orthonormal else s * normalization
 
         self.s = s
@@ -69,13 +69,13 @@ class FiniteDifferenceBasis(Basis):
 
     def _calculate_h_diagonal_element(self, phi_p):
         kin_integrand = -0.5 * phi_p.conj() * self._double_derivative(phi_p)
-        pot_integrand = self._phi._potential(self.x) * np.abs(phi_p) ** 2
+        pot_integrand = self._potential(self.x) * np.abs(phi_p) ** 2
 
         return np.trapz(kin_integrand + pot_integrand, self.x)
 
     def _calculate_h_offdiagonal_element(self, phi_p, phi_q):
         kin_integrand = -0.5 * phi_p.conj() * self._double_derivative(phi_q)
-        pot_integrand = self._phi._potential(self.x) * phi_p.conj() * phi_q
+        pot_integrand = self._potential(self.x) * phi_p.conj() * phi_q
 
         return np.trapz(kin_integrand + pot_integrand, self.x)
 
@@ -139,10 +139,49 @@ class FiniteDifferenceBasis(Basis):
 
         return h
 
+    def _fill_u_all(self):
+        L = self._L_spatial
+        u = np.zeros((L,L,L,L), dtype=self.dtype)
+        x, y = np.meshgrid(self.x, self.x)
+        v_tilde = self._interaction(x, y)
+        phi = self._phi
+
+        iters = 0
+        for q in range(L):
+            phi_q = phi._raw(q, x).conj()
+            for s in range(L):
+                phi_s = phi._raw(s, x)
+                inner = np.trapz(phi_q*v_tilde*phi_s, dx=self._dx, axis=0)
+                for p in range(q, L):
+                    phi_p = phi._raw(p, self.x).conj()
+                    for r in range(L):
+                        if(p == q and r > s):
+                            continue
+
+                        phi_r = phi._raw(r, self.x)
+                        u[p,q,r,s] = np.trapz(phi_p*inner*phi_r, dx=self._dx)
+                        u[q,p,s,r] = u[p,q,r,s]
+
+        return u
+
+    @abstractmethod
+    def _potential(self, x):
+        raise NotImplementedError
+
     @property
     def x(self):
         return self._x
 
     @x.setter
     def x(self, x):
-        self._x = x
+        if type(x) == tuple:
+            self._x = np.linspace(*x)
+            self._dx = x[1] - x[0] 
+        elif type(x) == np.ndarray:
+            self._x = x
+            if np.all(np.isclose(x, x[0])):
+                self._dx = x[1] - x[0]
+            else:
+                self._dx = None
+        else:
+            raise ValueError("The grid must either be a tuple for linspace or an array")
