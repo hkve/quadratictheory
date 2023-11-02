@@ -1,0 +1,65 @@
+    e = 0
+
+    e += einsum(
+        "abij,ijkl,abkl->", t^2, u, conjugate(t^2)
+    ) / 8
+
+    e += einsum(
+        "ab,bcij,acij->", f, t^2, conjugate(t^2)
+    ) / 8
+
+    e += einsum(
+        "abij,abij->", u, conjugate(t^2)
+    ) / 8
+
+    e += einsum(
+        "ab,bcij,acij->", f, t^2, conjugate(t^2)
+    ) / 8
+
+    e -= einsum(
+        "abij,jckb,acik->", t^2, u, conjugate(t^2)
+    ) / 4
+
+    e += einsum(
+        "ab,bcij,acij->", f, t^2, conjugate(t^2)
+    ) / 8
+
+    e -= einsum(
+        "ij,abik,abjk->", f, t^2, conjugate(t^2)
+    ) / 4
+
+    e += einsum(
+        "ab,bcij,acij->", f, t^2, conjugate(t^2)
+    ) / 8
+
+    e += einsum(
+        "abij,cdab,cdij->", t^2, u, conjugate(t^2)
+    ) / 16
+
+    e -= einsum(
+        "abij,jckb,acik->", t^2, u, conjugate(t^2)
+    ) / 4
+
+    e += einsum(
+        "abij,cdab,cdij->", t^2, u, conjugate(t^2)
+    ) / 16
+
+    e += einsum(
+        "abij,ijab->", t^2, u
+    ) / 4
+
+    e -= einsum(
+        "abij,jckb,acik->", t^2, u, conjugate(t^2)
+    ) / 4
+
+    e += einsum(
+        "abij,abij->", u, conjugate(t^2)
+    ) / 8
+
+    e -= einsum(
+        "abij,jckb,acik->", t^2, u, conjugate(t^2)
+    ) / 4
+
+    e -= einsum(
+        "ij,abik,abjk->", f, t^2, conjugate(t^2)
+    ) / 4

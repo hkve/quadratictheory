@@ -160,7 +160,7 @@ def similarity_transform(tensor, clusters):
     curr = tensor
     tensor_bar = tensor
 
-    for order in range(0, 4):
+    for order in range(0, 2):
         curr = (curr | clusters).simplify() / (order + 1)
         curr.cache()
         tensor_bar += curr
