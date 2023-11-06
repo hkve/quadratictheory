@@ -24,7 +24,12 @@ def T_equations(dr):
     amplitude_t2_eq = (Y2 * ham_bar).eval_fermi_vev().simplify()
     drutils.timer.tock("T2 amplitude equation")
 
-    drutils.save_html(dr, "ccsd_energy_and_t", [energy_eq, amplitude_t1_eq, amplitude_t2_eq], ["E", "t1 = 0", "t2 = 0"])
+    drutils.save_html(
+        dr,
+        "ccsd_energy_and_t",
+        [energy_eq, amplitude_t1_eq, amplitude_t2_eq],
+        ["E", "t1 = 0", "t2 = 0"],
+    )
 
     e = drutils.define_rk0_rhs(dr, energy_eq)
     t1 = drutils.define_rk1_rhs(dr, amplitude_t1_eq)
@@ -57,7 +62,7 @@ def L_equations(dr):
     drutils.timer.tock("L1 B term")
 
     amplitude_l1_eq = (A + B).simplify()
-    
+
     comm = dr.ham | X2
     comm_sim = drutils.similarity_transform(comm, T)
 
@@ -70,14 +75,13 @@ def L_equations(dr):
     amplitude_l2_eq = (A + B).simplify()
 
     drutils.save_html(dr, "ccsd_l", [amplitude_l1_eq, amplitude_l2_eq], ["l1 = 0", "l2 = 0"])
-    
+
     l1 = drutils.define_rk1_rhs(dr, amplitude_l1_eq).simplify()
     l2 = drutils.define_rk2_rhs(dr, amplitude_l2_eq).simplify()
 
     grutils.einsum_raw(dr, "ccsd_l", [l1, l2])
-    eval_seq = grutils.optimize_equations(dr, [l1,l2])
+    eval_seq = grutils.optimize_equations(dr, [l1, l2])
     grutils.einsum_raw(dr, "ccsd_l_optimized", eval_seq)
-
 
 
 def _run_blocks(dr, blocks, block_names):
@@ -116,6 +120,7 @@ def L_densities(dr):
     rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
     grutils.einsum_raw(dr, "ccsd_l_2b_density", rho_eqs)
 
+
 def main():
     dr = drutils.get_particle_hole_drudge()
 
@@ -123,6 +128,7 @@ def main():
     # T_equations(dr)
     # L_equations(dr)
     L_densities(dr)
+
 
 if __name__ == "__main__":
     main()

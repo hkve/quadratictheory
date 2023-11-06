@@ -1,13 +1,15 @@
-import pathlib as pl 
+import pathlib as pl
 import re
+
 
 def read_EinsumPrinted(path):
     string = ""
     with open(path, "r") as file:
         for line in file:
-            string += line        
+            string += line
 
     return string
+
 
 def find_einsum_args(string):
     # Store einsum strings and the relevant tensors
@@ -20,21 +22,22 @@ def find_einsum_args(string):
             keep_next = True
         elif keep_next:
             # Separate tensor index strings and tensors
-            
-            # Start by getting the string and storing 
-            einsum_string, = re.findall(r'"(.*?)"', line)
+
+            # Start by getting the string and storing
+            (einsum_string,) = re.findall(r'"(.*?)"', line)
             indims, outdims = einsum_string.split("->")
             indims = indims.split(",")
 
             einsum_strings.append(indims + [outdims])
-    
+
             # Then get the tensors
             tensors = re.findall('(?:(?<=, )|^)([^",\s]+)(?=(?:, [^",\s]+)*$)', line.strip())
             einsum_tensors.append(tensors)
 
             keep_next = False
-    
+
     return einsum_strings, einsum_tensors
+
 
 def create_tensor_slice(s, t):
     # Makes tensor (t) go from "u" to "u[o, v, o, v]" based on Einsum idicies
@@ -42,7 +45,6 @@ def create_tensor_slice(s, t):
     occ = ["i", "j", "k", "l", "m", "n"]
     vir_slice = "v"
     occ_slice = "o"
-
 
     slices = []
 
@@ -58,6 +60,7 @@ def create_tensor_slice(s, t):
     slices = f"{t}[" + ", ".join(slices) + "]"
 
     return slices
+
 
 def construct_old(strings, tensors):
     # Constructs the old einsum arguments based on indicies and tensors
@@ -96,6 +99,7 @@ def create_einsum_args(einsum_strings, einsum_tensors, tensor_slice):
 
     return old, new
 
+
 def fix_kron_deltas(string):
     new_string = ""
     indicies = [""]
@@ -106,7 +110,7 @@ def fix_kron_deltas(string):
 
         if "einsum" in line and "\rho" in line:
             subscript = line.find("_")
-            blocks = line[subscript+1:subscript+5]
+            blocks = line[subscript + 1 : subscript + 5]
             b1, b2, b3, b4 = blocks
             new_blocks = f"[{b1},{b2},{b3},{b4}]"
             line = line.replace("\rho", "rho")
@@ -116,37 +120,37 @@ def fix_kron_deltas(string):
         if "KroneckerDelta" in line:
             hit, hit_index = True, line_i
             n = line.count("KroneckerDelta")
-            indicies = [""]*n
+            indicies = [""] * n
 
             for k in range(n):
                 m = re.search("KroneckerDelta\(., .\)", line)
-                i, j = line[m.end()-5], line[m.end()-2]
-                indicies[k] = i+j
+                i, j = line[m.end() - 5], line[m.end() - 2]
+                indicies[k] = i + j
                 line = line.replace(f"KroneckerDelta({i}, {j})", "")
                 line = line.replace(" *", "")
-            
-        if hit and line_i == hit_index+1:
+
+        if hit and line_i == hit_index + 1:
             hit, hit_index = False, -1
-            
+
             new_indicies = ",".join(indicies)
             new_tensors = ", ".join(["I" for _ in range(len(indicies))])
 
             first_quote = line.find('"')
-            if not line[first_quote+1:first_quote+3] == "->":
+            if not line[first_quote + 1 : first_quote + 3] == "->":
                 new_indicies += ","
                 new_tensors += ", "
 
-            line = line[:first_quote+1] + new_indicies + line[first_quote+1:]
-            
+            line = line[: first_quote + 1] + new_indicies + line[first_quote + 1 :]
+
             eins_string_done = line.find('",')
-            line = line[:eins_string_done+3] + new_tensors + line[eins_string_done+3:]
+            line = line[: eins_string_done + 3] + new_tensors + line[eins_string_done + 3 :]
 
         new_string += line + "\n"
 
     return new_string
 
-def reformat_EinsumPrinted(string, **kwargs):
 
+def reformat_EinsumPrinted(string, **kwargs):
     options = {
         "tensor_slice": ["u", "f"],
         "import_as": None,
@@ -164,12 +168,12 @@ def reformat_EinsumPrinted(string, **kwargs):
     string = string.replace("nv", options["sizes"][1], -1)
 
     # Change del statements to None for deallocation
-    string = re.sub(r"del (\w+)", r"\1 = None",string)
+    string = re.sub(r"del (\w+)", r"\1 = None", string)
 
     # Find all intermediates, based a var named defined with a specific (4d) size
     intermediates = re.findall(r"(\w+) = zeros\(\((\w+), (\w+), (\w+), (\w+)\)\)", string)
 
-    # Fix Kronecker  deltas to be inside Einsum 
+    # Fix Kronecker  deltas to be inside Einsum
     string = fix_kron_deltas(string)
 
     # Find arguments for each einsum line
@@ -181,12 +185,13 @@ def reformat_EinsumPrinted(string, **kwargs):
         for function in options["functions"]:
             string = re.sub(rf"{function}", rf"{import_as}.{function}", string)
 
-
     # Parse the arguments set into einsum
     einsum_strings, einsum_tensors = find_einsum_args(string)
 
     # Create and recreate the new and old arguments
-    einsum_old, einsum_new = create_einsum_args(einsum_strings, einsum_tensors, options["tensor_slice"])
+    einsum_old, einsum_new = create_einsum_args(
+        einsum_strings, einsum_tensors, options["tensor_slice"]
+    )
 
     # Swap them all out!
     for old, new in zip(einsum_old, einsum_new):
@@ -199,6 +204,7 @@ def write_EinsumPrinted(filename, new_string):
     with open(filename, "w+") as file:
         file.write(new_string)
 
+
 def fix(readpath, writepath):
     path = pl.Path(readpath)
 
@@ -209,6 +215,7 @@ def fix(readpath, writepath):
     new_string = reformat_EinsumPrinted(string, import_as="np", tensor_slice=["u", "f"])
 
     write_EinsumPrinted(writepath, new_string)
+
 
 if __name__ == "__main__":
     fix("einsum_raw/ccd_l_2b_density.txt", "einsum_formatted/ccd_l_2b_density.txt")

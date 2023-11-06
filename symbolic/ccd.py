@@ -27,6 +27,7 @@ def T_equations(dr):
     eval_seq = grutils.optimize_equations(dr, t2)
     grutils.einsum_raw(dr, "ccd_t2_optimized", eval_seq)
 
+
 @drutils.timeme
 def L_equations(dr):
     # Get T2 and L2 operator, excitation and sim transform commutator
@@ -94,6 +95,7 @@ def main():
     # T_equations(dr)
     # L_equations(dr)
     L_densities(dr)
+
 
 if __name__ == "__main__":
     main()

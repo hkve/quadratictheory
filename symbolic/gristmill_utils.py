@@ -30,23 +30,24 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
 
     return working_eqs
 
+
 def optimize_equations(dr, equations):
     equations = utils.pack_as_list(equations)
 
-    orig_cost = gristmill.get_flop_cost(equations, leading=True)
-    print(f"Cost before optimazation {orig_cost}")
-
+    # orig_cost = gristmill.get_flop_cost(equations, leading=True)
+    # print(f"Cost before optimazation {orig_cost}")
 
     eval_seq = gristmill.optimize(
-        equations, 
-        substs={dr.names.nv: 5000, dr.names.no: 1000}, 
+        equations,
+        substs={dr.names.nv: 5000, dr.names.no: 1000},
         contr_strat=gristmill.ContrStrat.EXHAUST,
     )
 
-    opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
-    print(f"Cost after optimization {opt_cost}")
+    # opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
+    # print(f"Cost after optimization {opt_cost}")
 
     return eval_seq
+
 
 def einsum_raw(dr, filename, working_eqs):
     working_eqs = utils.pack_as_list(working_eqs)
