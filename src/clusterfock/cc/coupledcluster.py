@@ -59,7 +59,6 @@ class CoupledCluster(ABC):
 
         while (iters < maxiters) and not converged:
             rhs = self._next_t_iteration(t)
-
             rhs_norms = rhs.norm()
 
             if np.all(np.array(list(rhs_norms.values())) < tol):
@@ -69,6 +68,7 @@ class CoupledCluster(ABC):
             t.from_flat(t_next_flat)
 
             corr_energy = self._evaluate_cc_energy(t)
+
             iters += 1
 
             if vocal:
