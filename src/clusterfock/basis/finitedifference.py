@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from clusterfock.basis import Basis
 
+
 class FiniteDifferenceBasisFunctions(ABC):
     def __init__(self, eigenfunction: bool, orthonormal: bool):
         self._eigenfunction = eigenfunction
@@ -146,14 +147,14 @@ class FiniteDifferenceBasis(Basis):
         L = self._L_spatial
         u = np.zeros((L, L, L, L), dtype=self.dtype)
         X, Y = np.meshgrid(self.x, self.x)
-        v_tilde = self._interaction(X,Y)
-    
+        v_tilde = self._interaction(X, Y)
+
         phi = self._phi
 
         for q in range(L):
-            phi_q = phi._raw(q, self.x[:,None]).conj()
+            phi_q = phi._raw(q, self.x[:, None]).conj()
             for s in range(L):
-                phi_s = phi._raw(s, self.x[:,None])
+                phi_s = phi._raw(s, self.x[:, None])
                 inner = np.trapz(phi_q * v_tilde * phi_s, dx=self._dx, axis=0)
 
                 for p in range(q, L):

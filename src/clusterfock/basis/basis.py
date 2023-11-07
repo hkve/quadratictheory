@@ -279,6 +279,12 @@ class Basis(ABC):
         self._v = slice(self.N, self.L)
         self.calculate_fock_matrix()
 
+    def custom_hf_guess(self, C=None):
+        if C is None:
+            return self._custom_hf_guess
+        else:
+            self._custom_hf_guess = C
+
     @property
     def M(self) -> int:
         return self._M
