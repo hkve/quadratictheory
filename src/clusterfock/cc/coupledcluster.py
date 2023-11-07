@@ -16,7 +16,6 @@ class CoupledCluster(ABC):
         self._f = self.basis.f
 
         self.has_run = False
-        self.converged = False
         self.mixer = DIISMixer(n_vectors=8)
 
         self._t = CoupledClusterParameter(t_orders, basis.N, basis.M)
