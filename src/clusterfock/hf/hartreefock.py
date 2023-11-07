@@ -162,7 +162,9 @@ class HartreeFock(ABC):
             raise RuntimeWarning("Hartree-Fock calculation has not converged")
 
 
-def _identity_guess(basis: Basis) -> np.ndarray:
+def _identity_guess(
+    basis: Basis,
+) -> np.ndarray:
     # Static identity guess, "the standard"
     return np.eye(basis.L, basis.L)
 
