@@ -22,7 +22,7 @@ def T_equations(dr):
     drutils.timer.tock("T2 amplitude quad term")
 
     amplitude_t2_eq = (amplitude_t2_eq_linear + amplitude_t2_eq_quad).simplify()
-    drutils.save_html(dr, "ccd_energy_and_t2", [amplitude_t2_eq], ["t2 = 0"])
+    drutils.save_html(dr, "qccd_energy_and_t2", [amplitude_t2_eq], ["t2 = 0"])
 
     # e = drutils.define_rk0_rhs(dr, energy_eq)
     t2 = drutils.define_rk2_rhs(dr, amplitude_t2_eq)
