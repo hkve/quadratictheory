@@ -6,6 +6,7 @@ from clusterfock.cc.coupledcluster import CoupledCluster
 
 import numpy as np
 
+
 class QuadraticCoupledCluster(CoupledCluster):
     def __call__(self, basis: Basis, t_orders: list, l_orders: list):
         super().__init__(basis, t_orders, l_orders)
@@ -13,7 +14,6 @@ class QuadraticCoupledCluster(CoupledCluster):
     def run(
         self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
     ) -> CoupledCluster:
-    
         basis = self.basis
 
         self._t.initialize_zero(dtype=self.basis.dtype)
