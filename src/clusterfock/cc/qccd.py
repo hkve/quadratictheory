@@ -3,7 +3,10 @@ from clusterfock.basis import Basis
 from clusterfock.cc.quadcoupledcluster import QuadraticCoupledCluster
 from clusterfock.cc.parameter import CoupledClusterParameter
 
-
+from clusterfock.cc.rhs.t_QCCD import amplitudes_qccd
+from clusterfock.cc.rhs.l_QCCD import lambda_amplitudes_qccd
+from clusterfock.cc.rhs.t_inter_QCCD import amplitudes_intermediates_qccd
+from clusterfock.cc.rhs.l_inter_QCCD import lambda_amplitudes_intermediates_qccd
 
 class QCCD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = False):
@@ -13,5 +16,40 @@ class QCCD(QuadraticCoupledCluster):
         l_orders = [2]
         super().__init__(basis, t_orders, l_orders)
 
-        self.t_rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccd
-        self.l_rhs = lambda_amplitudes_intermediates_ccd if intermediates else lambda_amplitudes_ccd
+        self.t_rhs = amplitudes_intermediates_qccd if intermediates else amplitudes_qccd
+        self.l_rhs = lambda_amplitudes_intermediates_qccd if intermediates else lambda_amplitudes_qccd
+
+    def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
+        basis = self.basis
+
+        rhs2 = self.t_rhs(
+            t2=t[2],
+            u=basis.u,
+            f=self._f,
+            v=basis.v,
+            o=basis.o,
+        )
+
+        rhs = CoupledClusterParameter(t.orders, t.N, t.M)
+        rhs.initialize_dicts({2: rhs2})
+
+        return rhs
+
+    def _next_l_iteration(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        basis = self.basis
+
+        rhs2 = self.l_rhs(
+            t2=t[2],
+            l2=l[2],
+            u=basis.u,
+            f=self._f,
+            v=basis.v,
+            o=basis.o,
+        )
+
+        rhs = CoupledClusterParameter(l.orders, l.N, l.M)
+        rhs.initialize_dicts({2: rhs2})
+
+        return rhs
