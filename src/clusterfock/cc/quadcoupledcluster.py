@@ -1,7 +1,6 @@
 from __future__ import annotations
 from clusterfock.basis import Basis
-from clusterfock.mix import DIISMixer
-from clusterfock.cc.parameter import CoupledClusterParameter
+from clusterfock.cc.parameter import CoupledClusterParameter, merge_to_flat
 from clusterfock.cc.coupledcluster import CoupledCluster
 
 import numpy as np
@@ -11,9 +10,7 @@ class QuadraticCoupledCluster(CoupledCluster):
     def __call__(self, basis: Basis, t_orders: list, l_orders: list):
         super().__init__(basis, t_orders, l_orders)
 
-    def run(
-        self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
-    ) -> CoupledCluster:
+    def run(self, tol: float = 1e-8, maxiters: int = 1000, vocal: bool = False) -> CoupledCluster:
         basis = self.basis
 
         self._t.initialize_zero(dtype=self.basis.dtype)
@@ -23,8 +20,6 @@ class QuadraticCoupledCluster(CoupledCluster):
         iters, diff = 0, 1000
         t, l, epsinv = self._t, self._l, self._epsinv
         converged = False
-        self.mixer_t = DIISMixer(n_vectors=12)
-        self.mixer_l = DIISMixer(n_vectors=12)
 
         while (iters < maxiters) and not converged:
             rhs_t = self._next_t_iteration(t, l)
@@ -37,12 +32,13 @@ class QuadraticCoupledCluster(CoupledCluster):
             rhs_l_converged = np.all(np.array(list(rhs_norms_l.values())) < tol)
             converged = rhs_t_converged and rhs_l_converged
 
-            # Here i should merge instead but just testing with two mixers
-            t_next_flat = self.mixer_t(t.to_flat(), (rhs_t * epsinv).to_flat())
-            l_next_flat = self.mixer_l(l.to_flat(), (rhs_l * epsinv).to_flat())
+            tl_flat, t_slice, l_slice = merge_to_flat(t, l)
+            delta_tl_flat, _, _ = merge_to_flat(rhs_t * epsinv, rhs_l * epsinv)
 
-            t.from_flat(t_next_flat)
-            l.from_flat(l_next_flat)
+            tl_next_flat = self.mixer(tl_flat, delta_tl_flat)
+
+            t.from_flat(tl_next_flat[t_slice])
+            l.from_flat(tl_next_flat[l_slice])
 
             iters += 1
             if vocal:

@@ -4,6 +4,18 @@ from functools import reduce
 import operator
 
 
+def merge_to_flat(t: CoupledClusterParameter, l: CoupledClusterParameter) -> np.ndarray:
+    t_flat, l_flat = t.to_flat(), l.to_flat()
+    t_len, l_len = len(t_flat), len(l_flat)
+
+    t_slice = slice(0, t_len)
+    l_slice = slice(t_len, t_len + l_len)
+
+    flat = np.r_[t.to_flat(), l.to_flat()]
+
+    return flat, t_slice, l_slice
+
+
 class CoupledClusterParameter:
     def __init__(self, orders: list, N: int, M: int):
         if orders is None:
