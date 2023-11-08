@@ -23,8 +23,8 @@ class QuadraticCoupledCluster(CoupledCluster):
         iters, diff = 0, 1000
         t, l, epsinv = self._t, self._l, self._epsinv
         converged = False
-        self.mixer_t = DIISMixer(n_vectors=8)
-        self.mixer_l = DIISMixer(n_vectors=8)
+        self.mixer_t = DIISMixer(n_vectors=12)
+        self.mixer_l = DIISMixer(n_vectors=12)
 
         while (iters < maxiters) and not converged:
             rhs_t = self._next_t_iteration(t, l)
@@ -38,8 +38,8 @@ class QuadraticCoupledCluster(CoupledCluster):
             converged = rhs_t_converged and rhs_l_converged
 
             # Here i should merge instead but just testing with two mixers
-            t_next_flat = self.mixer_t(t.to_flat(), (rhs_norms_t * epsinv).to_flat())
-            l_next_flat = self.mixer_l(l.to_flat(), (rhs_norms_l * epsinv).to_flat())
+            t_next_flat = self.mixer_t(t.to_flat(), (rhs_t * epsinv).to_flat())
+            l_next_flat = self.mixer_l(l.to_flat(), (rhs_l * epsinv).to_flat())
 
             t.from_flat(t_next_flat)
             l.from_flat(l_next_flat)
