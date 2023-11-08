@@ -1,225 +1,369 @@
-    tau^0 = zeros((no, no, no, no))
+    tau^0 = zeros((no, no, nv, nv))
 
     tau^0 += einsum(
-        "baij,bakl->ijkl", \lambda^2, t^2
-    )
-
-    tau^14 = zeros((no, no, no, no))
-
-    tau^14 += einsum(
-        "mikn,njlm->ijkl", tau^0, tau^0
+        "caki,kjcb->ijab", t^2, u
     )
 
     tau^1 = zeros((no, no, nv, nv))
 
     tau^1 += einsum(
-        "caki,cbkj->ijab", \lambda^2, t^2
+        "caki,kjcb->ijab", \lambda^2, tau^0
     )
 
     tau^2 = zeros((no, no, no, no))
 
-    tau^2 += einsum(
-        "ijab,kalb->ijkl", tau^1, u
+    tau^2 -= einsum(
+        "bajk,ilab->ijkl", t^2, tau^1
+    )
+
+    del tau^1
+
+    tau^12 = zeros((no, no, nv, nv))
+
+    tau^12 += einsum(
+        "ijab->ijab", tau^0
+    )
+
+    del tau^0
+
+    tau^3 = zeros((no, no, no, no))
+
+    tau^3 += einsum(
+        "baij,bakl->ijkl", \lambda^2, t^2
+    )
+
+    tau^20 = zeros((no, no, no, no))
+
+    tau^20 -= einsum(
+        "imln,njkm->ijkl", tau^3, tau^3
+    )
+
+    tau^25 = zeros((no, no, nv, nv))
+
+    tau^25 -= einsum(
+        "jilk,lkba->ijab", tau^3, u
     )
 
     e = 0
 
     e += einsum(
-        "jilk,kjli->", tau^0, tau^2
-    ) / 2
+        "ilkj,lkji->", tau^2, tau^3
+    ) / 4
 
     del tau^2
+
+    tau^4 = zeros((no, no, no, no))
+
+    tau^4 += einsum(
+        "baij,klba->ijkl", t^2, u
+    )
+
+    tau^19 = zeros((no, no, no, no))
+
+    tau^19 += einsum(
+        "lkji->ijkl", tau^4
+    )
 
     tau^5 = zeros((no, no, nv, nv))
 
     tau^5 += einsum(
-        "caki,kjcb->ijab", t^2, tau^1
+        "caki,bcjk->ijab", \lambda^2, t^2
     )
 
-    tau^6 = zeros((no, no, no, no))
+    tau^6 = zeros((no, no, nv, nv))
 
     tau^6 += einsum(
-        "baij,klba->ijkl", \lambda^2, tau^5
+        "caki,kjcb->ijab", t^2, tau^5
+    )
+
+    tau^7 = zeros((no, no, no, no))
+
+    tau^7 -= einsum(
+        "baij,klab->ijkl", \lambda^2, tau^6
+    )
+
+    e += einsum(
+        "lkji,lkij->", tau^4, tau^7
+    ) / 8
+
+    del tau^4
+
+    e += einsum(
+        "lkij,jilk->", tau^7, u
+    ) / 4
+
+    del tau^7
+
+    tau^17 = zeros((no, no, nv, nv))
+
+    tau^17 += einsum(
+        "acik,kjbc->ijab", \lambda^2, tau^6
+    )
+
+    tau^21 = zeros((no, no, no, no))
+
+    tau^21 += einsum(
+        "ljba,ikba->ijkl", tau^6, u
+    )
+
+    del tau^6
+
+    tau^15 = zeros((no, no, nv, nv))
+
+    tau^15 -= 4 * einsum(
+        "jkcb,kcia->ijab", tau^5, u
+    )
+
+    tau^15 -= 2 * einsum(
+        "jicd,cbda->ijab", tau^5, u
+    )
+
+    tau^16 = zeros((nv, nv, nv, nv))
+
+    tau^16 += 4 * einsum(
+        "ijac,jibd->abcd", tau^5, tau^5
+    )
+
+    tau^17 -= einsum(
+        "ikcb,kjac->ijab", tau^5, tau^5
+    )
+
+    tau^18 = zeros((no, no, nv, nv))
+
+    tau^18 += 16 * einsum(
+        "jkbc,kica->ijab", tau^17, u
+    )
+
+    del tau^17
+
+    tau^20 += 4 * einsum(
+        "ilab,jkba->ijkl", tau^5, tau^5
+    )
+
+    tau^8 = zeros((no, no, nv, nv))
+
+    tau^8 += einsum(
+        "caki,jckb->ijab", \lambda^2, u
+    )
+
+    tau^9 = zeros((no, no, no, no))
+
+    tau^9 -= einsum(
+        "bajk,ilab->ijkl", t^2, tau^8
+    )
+
+    e -= einsum(
+        "lkji,ilkj->", tau^3, tau^9
+    ) / 4
+
+    del tau^9
+
+    tau^14 = zeros((no, no, nv, nv))
+
+    tau^14 += 4 * einsum(
+        "ijab->ijab", tau^8
+    )
+
+    del tau^8
+
+    tau^10 = zeros((nv, nv, nv, nv))
+
+    tau^10 += einsum(
+        "abji,cdji->abcd", \lambda^2, t^2
+    )
+
+    tau^11 = zeros((nv, nv, nv, nv))
+
+    tau^11 -= einsum(
+        "eafb,cefd->abcd", tau^10, u
+    )
+
+    tau^18 += 2 * einsum(
+        "dcij,bcda->ijab", \lambda^2, tau^11
+    )
+
+    del tau^11
+
+    tau^16 -= einsum(
+        "ebcf,fade->abcd", tau^10, tau^10
+    )
+
+    tau^18 -= einsum(
+        "abcd,jicd->ijab", tau^16, u
+    )
+
+    del tau^16
+
+    tau^12 -= einsum(
+        "jaib->ijab", u
+    )
+
+    tau^15 -= 2 * einsum(
+        "cadb,ijcd->ijab", tau^10, tau^12
+    )
+
+    del tau^10
+
+    tau^21 += 4 * einsum(
+        "lkab,ijab->ijkl", tau^12, tau^5
     )
 
     del tau^5
 
     e += einsum(
-        "lkij,jilk->", tau^6, u
-    ) / 4
-
-    del tau^6
-
-    tau^8 = zeros((nv, nv, nv, nv))
-
-    tau^8 += 4 * einsum(
-        "ijab,jcid->abcd", tau^1, u
-    )
-
-    tau^11 = zeros((no, no, nv, nv))
-
-    tau^11 += 4 * einsum(
-        "ikca,kcjb->ijab", tau^1, u
-    )
-
-    tau^11 += 2 * einsum(
-        "ijcd,cadb->ijab", tau^1, u
-    )
-
-    tau^14 += 4 * einsum(
-        "ikab,jlba->ijkl", tau^1, tau^1
-    )
-
-    del tau^1
-
-    tau^3 = zeros((no, no, nv, nv))
-
-    tau^3 += einsum(
-        "acik,jckb->ijab", \lambda^2, u
-    )
-
-    tau^4 = zeros((no, no, no, no))
-
-    tau^4 -= einsum(
-        "bajk,ilab->ijkl", t^2, tau^3
-    )
-
-    e -= einsum(
-        "lkji,ilkj->", tau^0, tau^4
-    ) / 4
-
-    del tau^0
-
-    del tau^4
-
-    tau^10 = zeros((no, no, nv, nv))
-
-    tau^10 += 4 * einsum(
-        "ijab->ijab", tau^3
-    )
-
-    tau^17 = zeros((no, no, nv, nv))
-
-    tau^17 += 4 * einsum(
-        "ijab->ijab", tau^3
-    )
+        "ijkl,ljki->", tau^21, tau^3
+    ) / 8
 
     del tau^3
 
-    tau^7 = zeros((nv, nv, nv, nv))
+    del tau^21
 
-    tau^7 += einsum(
-        "abji,cdji->abcd", \lambda^2, t^2
+    tau^24 = zeros((no, no, nv, nv))
+
+    tau^24 += einsum(
+        "caki,kjcb->ijab", \lambda^2, tau^12
     )
 
-    tau^8 -= einsum(
-        "eafc,befd->abcd", tau^7, u
+    del tau^12
+
+    tau^25 -= 8 * einsum(
+        "ijab->ijab", tau^24
     )
 
-    del tau^7
+    tau^28 = zeros((no, no, nv, nv))
 
-    tau^12 = zeros((no, no, nv, nv))
-
-    tau^12 -= einsum(
-        "cdji,bcda->ijab", \lambda^2, tau^8
+    tau^28 -= 8 * einsum(
+        "ijab->ijab", tau^24
     )
 
-    del tau^8
+    del tau^24
 
-    tau^9 = zeros((no, no, nv, nv))
+    tau^13 = zeros((no, no, nv, nv))
 
-    tau^9 += einsum(
+    tau^13 += einsum(
         "dcij,dcab->ijab", \lambda^2, u
     )
 
-    tau^10 -= einsum(
-        "jiba->ijab", tau^9
+    tau^14 -= einsum(
+        "jiba->ijab", tau^13
     )
 
-    del tau^9
-
-    tau^11 -= einsum(
-        "cakj,ikcb->ijab", t^2, tau^10
+    tau^15 += einsum(
+        "cbki,kjac->ijab", t^2, tau^14
     )
 
-    tau^12 += 2 * einsum(
-        "caki,jkcb->ijab", \lambda^2, tau^11
+    del tau^14
+
+    tau^18 -= 4 * einsum(
+        "caki,kjbc->ijab", \lambda^2, tau^15
     )
 
-    del tau^11
+    del tau^15
 
-    tau^16 = zeros((nv, nv))
-
-    tau^16 -= einsum(
-        "caij,ijcb->ab", t^2, tau^10
+    tau^25 -= 2 * einsum(
+        "jiba->ijab", tau^13
     )
 
-    del tau^10
+    del tau^13
 
-    tau^12 += 2 * einsum(
+    tau^18 += 4 * einsum(
         "jiba->ijab", u
     )
 
     e += einsum(
-        "abij,ijab->", t^2, tau^12
-    ) / 8
-
-    del tau^12
-
-    tau^13 = zeros((no, no))
-
-    tau^13 += einsum(
-        "baki,bakj->ij", \lambda^2, t^2
-    )
-
-    tau^14 -= einsum(
-        "ik,jl->ijkl", tau^13, tau^13
-    )
-
-    e += einsum(
-        "lkji,ijkl->", tau^14, u
-    ) / 8
-
-    del tau^14
-
-    tau^15 = zeros((nv, nv))
-
-    tau^15 += einsum(
-        "caji,cbji->ab", \lambda^2, t^2
-    )
-
-    tau^16 -= einsum(
-        "cd,cadb->ab", tau^15, u
-    )
-
-    tau^18 = zeros((no, no))
-
-    tau^18 += 2 * einsum(
-        "ab,jaib->ij", tau^15, u
-    )
-
-    e += einsum(
-        "ab,ab->", tau^15, tau^16
-    ) / 8
-
-    del tau^16
-
-    del tau^15
-
-    tau^17 -= einsum(
-        "balk,jilk->ijab", \lambda^2, u
-    )
-
-    tau^18 -= einsum(
-        "abki,kjab->ij", t^2, tau^17
-    )
-
-    del tau^17
-
-    e += einsum(
-        "ij,ij->", tau^13, tau^18
-    ) / 8
+        "abij,ijab->", t^2, tau^18
+    ) / 16
 
     del tau^18
 
-    del tau^13
+    tau^19 += 2 * einsum(
+        "jilk->ijkl", u
+    )
+
+    tau^28 -= einsum(
+        "bakl,jikl->ijab", \lambda^2, tau^19
+    )
+
+    e += einsum(
+        "ijkl,lkij->", tau^19, tau^20
+    ) / 16
+
+    del tau^19
+
+    del tau^20
+
+    tau^22 = zeros((nv, nv))
+
+    tau^22 += einsum(
+        "caji,cbji->ab", \lambda^2, t^2
+    )
+
+    tau^23 = zeros((no, no, nv, nv))
+
+    tau^23 += einsum(
+        "ac,jibc->ijab", tau^22, u
+    )
+
+    tau^25 += einsum(
+        "ijab->ijab", tau^23
+    )
+
+    tau^26 = zeros((nv, nv))
+
+    tau^26 -= einsum(
+        "caij,ijcb->ab", t^2, tau^25
+    )
+
+    del tau^25
+
+    tau^28 -= 4 * einsum(
+        "ijba->ijab", tau^23
+    )
+
+    del tau^23
+
+    tau^26 -= 2 * einsum(
+        "cd,cadb->ab", tau^22, u
+    )
+
+    tau^29 = zeros((no, no))
+
+    tau^29 += 4 * einsum(
+        "ab,jaib->ij", tau^22, u
+    )
+
+    e += einsum(
+        "ab,ab->", tau^22, tau^26
+    ) / 16
+
+    del tau^26
+
+    del tau^22
+
+    tau^27 = zeros((no, no))
+
+    tau^27 += einsum(
+        "baki,bakj->ij", \lambda^2, t^2
+    )
+
+    tau^28 += einsum(
+        "ik,jkba->ijab", tau^27, u
+    )
+
+    tau^29 -= einsum(
+        "abki,kjab->ij", t^2, tau^28
+    )
+
+    del tau^28
+
+    tau^29 -= 2 * einsum(
+        "kl,ljki->ij", tau^27, u
+    )
+
+    e += einsum(
+        "ij,ij->", tau^27, tau^29
+    ) / 16
+
+    del tau^27
+
+    del tau^29

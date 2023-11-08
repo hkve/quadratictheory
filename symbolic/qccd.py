@@ -45,12 +45,12 @@ def T_equations(dr):
     drutils.timer.tock("T2 amplitude quad term")
 
     amplitude_t2_eq = (amplitude_t2_eq_linear + amplitude_t2_eq_quad).simplify()
-    drutils.save_html(dr, "qccd_energy_and_t2", [amplitude_t2_eq], ["t2 = 0"])
+    drutils.save_html(dr, "qccd_t2", [amplitude_t2_eq], ["t2 = 0"])
 
     # e = drutils.define_rk0_rhs(dr, energy_eq)
     t2 = drutils.define_rk2_rhs(dr, amplitude_t2_eq)
 
-    grutils.einsum_raw(dr, "qccd_energy_t2", [t2])
+    grutils.einsum_raw(dr, "qccd_t2", [t2])
     eval_seq = grutils.optimize_equations(dr, t2)
     grutils.einsum_raw(dr, "qccd_t2_optimized", eval_seq)
 
@@ -86,8 +86,8 @@ def main():
 
     drutils.timer.vocal = True
     E_equations(dr)
-    # T_equations(dr)
-    # L_equations(dr)
+    T_equations(dr)
+    L_equations(dr)
 
 
 if __name__ == "__main__":
