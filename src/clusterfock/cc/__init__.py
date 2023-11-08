@@ -2,6 +2,7 @@ from clusterfock.basis import Basis
 from clusterfock.cc.ccd import GCCD, RCCD
 from clusterfock.cc.ccsd import GCCSD
 from clusterfock.cc.uccd import UCCD2
+from clusterfock.cc.qccd import QCCD
 
 
 def CCD(basis: Basis, intermediates=True):
