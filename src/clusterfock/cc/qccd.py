@@ -2,6 +2,7 @@ import numpy as np
 from clusterfock.basis import Basis
 from clusterfock.cc.quadcoupledcluster import QuadraticCoupledCluster
 from clusterfock.cc.parameter import CoupledClusterParameter
+from clusterfock.mix import DIISMixer
 
 from clusterfock.cc.rhs.t_QCCD import amplitudes_qccd
 from clusterfock.cc.rhs.l_QCCD import lambda_amplitudes_qccd
@@ -19,6 +20,7 @@ class QCCD(QuadraticCoupledCluster):
         l_orders = [2]
         super().__init__(basis, t_orders, l_orders)
 
+        self.mixer = DIISMixer(n_vectors=8)
         self.t_rhs = amplitudes_intermediates_qccd if intermediates else amplitudes_qccd
         self.l_rhs = (
             lambda_amplitudes_intermediates_qccd if intermediates else lambda_amplitudes_qccd
