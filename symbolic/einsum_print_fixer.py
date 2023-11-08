@@ -41,8 +41,8 @@ def find_einsum_args(string):
 
 def create_tensor_slice(s, t):
     # Makes tensor (t) go from "u" to "u[o, v, o, v]" based on Einsum idicies
-    vir = ["a", "b", "c", "d", "e", "f"]
-    occ = ["i", "j", "k", "l", "m", "n"]
+    vir = ["a", "b", "c", "d", "e", "f", "g", "h"]
+    occ = ["i", "j", "k", "l", "m", "n", "o"]
     vir_slice = "v"
     occ_slice = "o"
 
@@ -218,4 +218,14 @@ def fix(readpath, writepath):
 
 
 if __name__ == "__main__":
-    fix("einsum_raw/ccd_l_2b_density.txt", "einsum_formatted/ccd_l_2b_density.txt")
+    l = [
+        "qccd_energy_t2.txt",
+        "qccd_energy_optimized.txt",
+        "qccd_energy.txt",
+        "qccd_l2_optimized.txt",
+        "qccd_l2.txt",
+        "qccd_t2_optimized.txt",
+    ]
+
+    for x in l:
+        fix(f"einsum_raw/{x}", f"einsum_formatted/{x}")

@@ -1,6 +1,29 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
 
+@drutils.timeme
+def E_equations(dr):
+    T2, L2 = drutils.get_clusters_2(dr)
+    ham = dr.ham
+    ham_bar = drutils.similarity_transform(ham, T2)
+
+    # Free indicies for de-excitation operator
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
+
+    energy_ccd = (ham_bar).eval_fermi_vev().simplify()
+    drutils.timer.tock("CCD energy done")
+    energy_qccd_addition = (L2*L2*ham_bar).eval_fermi_vev().simplify()
+    drutils.timer.tock("QCCD energy addition done")
+
+    energy_eq = (energy_ccd - energy_qccd_addition/2).simplify()
+
+    drutils.save_html(dr, "qccd_energy", [energy_eq], ["Energy"])
+
+    e = drutils.define_rk0_rhs(dr, energy_eq)
+    grutils.einsum_raw(dr, "qccd_energy", [e])
+    eval_seq = grutils.optimize_equations(dr, e)
+    grutils.einsum_raw(dr, "qccd_energy_optimized", eval_seq)
 
 @drutils.timeme
 def T_equations(dr):
@@ -47,20 +70,23 @@ def L_equations(dr):
     drutils.timer.tock("L2, A term")
     B = (L2 * comm_sim).eval_fermi_vev().simplify()
     drutils.timer.tock("L2 B term")
+    C = (L2 * L2 * comm_sim / 2).eval_fermi_vev().simplify()
+    drutils.timer.tock("L2 C term")
 
-    amplitude_l2_eq = (A + B).simplify()
-    drutils.save_html(dr, "ccd_l2", [amplitude_l2_eq], ["l2 = 0"])
+    amplitude_l2_eq = (A + B + C).simplify()
+    drutils.save_html(dr, "qccd_l2", [amplitude_l2_eq], ["l2 = 0"])
 
     l2 = drutils.define_rk2_rhs(dr, amplitude_l2_eq)
-    grutils.einsum_raw(dr, "ccd_l2", l2)
+    grutils.einsum_raw(dr, "qccd_l2", l2)
     eval_seq = grutils.optimize_equations(dr, l2)
-    grutils.einsum_raw(dr, "ccd_l2_optimized", eval_seq)
+    grutils.einsum_raw(dr, "qccd_l2_optimized", eval_seq)
 
 def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
-    T_equations(dr)
+    E_equations(dr)
+    # T_equations(dr)
     # L_equations(dr)
 
 

@@ -34,8 +34,8 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
 def optimize_equations(dr, equations):
     equations = utils.pack_as_list(equations)
 
-    # orig_cost = gristmill.get_flop_cost(equations, leading=True)
-    # print(f"Cost before optimazation {orig_cost}")
+    orig_cost = gristmill.get_flop_cost(equations, leading=True)
+    print(f"Cost before optimazation {orig_cost}")
 
     eval_seq = gristmill.optimize(
         equations,
@@ -43,8 +43,8 @@ def optimize_equations(dr, equations):
         contr_strat=gristmill.ContrStrat.EXHAUST,
     )
 
-    # opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
-    # print(f"Cost after optimization {opt_cost}")
+    opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
+    print(f"Cost after optimization {opt_cost}")
 
     return eval_seq
 
