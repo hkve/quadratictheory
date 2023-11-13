@@ -1,6 +1,6 @@
 from __future__ import annotations
 from clusterfock.basis import Basis
-from clusterfock.cc.parameter import CoupledClusterParameter
+from clusterfock.cc.parameter import CoupledClusterParameter, merge_to_flat
 from clusterfock.cc.coupledcluster import CoupledCluster
 import numpy as np
 
@@ -14,7 +14,7 @@ class TimeDependentCoupledCluster:
         self.cc = cc
         self.basis = cc.basis
 
-        self._t_start, self._t_end, self._dt = time
+        self._t_start, self._t_end, self.dt = time
         self._integrator = integrator
 
     def run(self, vocal=False):
@@ -27,11 +27,32 @@ class TimeDependentCoupledCluster:
             cc._t.dtype = complex
             cc._l.dtype = complex
 
+        y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._l, cc._l)
+        times = self.t
+
         integrator = complex_ode(self.f)
         integrator.set_integrator(self._integrator, dt=self.dt)
+        integrator.set_initial_value(y_initial, times[0])
 
-    def f(self):
-        raise NotImplementedError("You must think before you act here :^^^^)")
+        integrator.integrate(times[1])
+        # for i, t in enumerate(times):
+        #     integrator.integrate(t)
+        #     y_next = integrator.y
+
+    def f(self, t, y):
+        # y comes in flat and should return flat, but be evaluated in the meen while
+        # it contains both t and l
+        basis, cc = self.basis, self.cc
+        cc._t.from_flat(y[self.t_slice])        
+        cc._l.from_flat(y[self.l_slice])        
+        
+        # Here I should add rhs and lhs updates to
+        t_dot = 1j*cc._next_t_iteration(cc._t)
+        l_dot = -1j*cc._next_l_iteration(cc._t, cc._l)
+
+        y, _, _ = merge_to_flat(t_dot, l_dot)
+
+        return y
 
     @property
     def dt(self):
