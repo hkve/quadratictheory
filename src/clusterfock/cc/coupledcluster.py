@@ -40,9 +40,9 @@ class CoupledCluster(ABC):
 
         self.mixer = DIISMixer(n_vectors=8)
 
-        self._t = CoupledClusterParameter(t_orders, basis.N, basis.M)
-        self._l = CoupledClusterParameter(l_orders, basis.N, basis.M)
-        self._epsinv = CoupledClusterParameter(t_orders, basis.N, basis.M)
+        self._t = CoupledClusterParameter(t_orders, basis.N, basis.M, self.basis.dtype)
+        self._l = CoupledClusterParameter(l_orders, basis.N, basis.M, self.basis.dtype)
+        self._epsinv = CoupledClusterParameter(t_orders, basis.N, basis.M, self.basis.dtype)
 
         self._t_info = {"run": None, "converged": False, "iters": 0}
         self._l_info = self._t_info.copy()
@@ -68,7 +68,7 @@ class CoupledCluster(ABC):
         """
         basis = self.basis
 
-        self._t.initialize_zero(dtype=self.basis.dtype)
+        self._t.initialize_zero()
         self._epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
 
         self._iterate_t(tol, maxiters, vocal)
@@ -78,7 +78,7 @@ class CoupledCluster(ABC):
                 self._l is not None
             ), f"This scheme does not implment lambda equations, {self._l = }"
 
-            self._l.initialize_zero(dtype=self.basis.dtype)
+            self._l.initialize_zero()
             self.mixer.reset()
             self._iterate_l(tol, maxiters, vocal)
 

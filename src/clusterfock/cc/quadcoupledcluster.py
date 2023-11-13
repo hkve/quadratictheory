@@ -13,8 +13,8 @@ class QuadraticCoupledCluster(CoupledCluster):
     def run(self, tol: float = 1e-8, maxiters: int = 1000, vocal: bool = False) -> CoupledCluster:
         basis = self.basis
 
-        self._t.initialize_zero(dtype=self.basis.dtype)
-        self._l.initialize_zero(dtype=self.basis.dtype)
+        self._t.initialize_zero()
+        self._l.initialize_zero()
         self._epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
 
         iters, diff = 0, 1000
