@@ -4,24 +4,38 @@ from clusterfock.cc.parameter import CoupledClusterParameter
 from clusterfock.cc.coupledcluster import CoupledCluster
 import numpy as np
 
-from rk4_integrator import Rk4Integrator
+from scipy.integrate import complex_ode
 
 
 class TimeDependentCoupledCluster:
-    def __init__(self, cc: CoupledCluster, dt: float = 1e-4):
+    def __init__(
+        self, cc: CoupledCluster, time: tuple = (0, 10.0, 0.1), integrator="Rk4Integrator"
+    ):
         self.cc = cc
         self.basis = cc.basis
-        self.integrator = Rk4Integrator(dt)
+
+        self._t_start, self._t_end, self._dt = time
+        self._integrator = integrator
 
     def run(self, vocal=False):
-        cc = self.cc
+        cc, basis = self.cc, self.basis
+
         if not (cc.t_info["run"] and cc.l_info["run"]):
             cc.run(include_l=True, vocal=vocal)
+        if not basis.dtype == complex:
+            pass
+
+        integrator = complex_ode(self.f)
+        integrator.set_integrator(self._integrator, self.dt)
+
+    def f(self):
+        raise NotImplementedError("You must think before you act here :^^^^)")
 
     @property
     def dt(self):
-        return self.integrator.dt
+        return self._dt
 
     @dt.setter
     def dt(self, dt):
-        self.integrator.dt = dt
+        self.t = np.arange(0, self._t_end + dt, step=dt)
+        self._dt = dt
