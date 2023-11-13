@@ -41,7 +41,7 @@ class QCCD(QuadraticCoupledCluster):
             o=basis.o,
         )
 
-        rhs = CoupledClusterParameter(t.orders, t.N, t.M)
+        rhs = CoupledClusterParameter(t.orders, t.N, t.M, dtype=t.dtype)
         rhs.initialize_dicts({2: rhs2})
 
         return rhs
@@ -60,7 +60,7 @@ class QCCD(QuadraticCoupledCluster):
             o=basis.o,
         )
 
-        rhs = CoupledClusterParameter(l.orders, l.N, l.M)
+        rhs = CoupledClusterParameter(l.orders, l.N, l.M, dtype=l.dtype)
         rhs.initialize_dicts({2: rhs2})
 
         return rhs

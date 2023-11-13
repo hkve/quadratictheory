@@ -29,7 +29,7 @@ class UCCD2(CoupledCluster):
             o=basis.o,
         )
 
-        rhs = CoupledClusterParameter(t.orders, t.N, t.M)
+        rhs = CoupledClusterParameter(t.orders, t.N, t.M, dtype=t.dtype)
         rhs.initialize_dicts({2: rhs2})
 
         return rhs
