@@ -101,10 +101,15 @@ class CoupledClusterParameter:
         return self._data[order]
 
     def __mul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
-        assert type(other) == type(self)
-        assert other.orders == self.orders
+        product = None
+        if type(other) == type(self):
+            assert other.orders == self.orders
+            product = {o: self[o] * other[o] for o in self.orders}
+        else:
+            assert type(other) == self.dtype
+            product = {o: self[o] * other for o in self.orders}
 
-        product = {o: self[o] * other[o] for o in self.orders}
+
 
         return CoupledClusterParameter(self.orders, self.N, self.M).initialize_dicts(product)
 
