@@ -23,10 +23,10 @@ class TimeDependentCoupledCluster:
         if not (cc.t_info["run"] and cc.l_info["run"]):
             cc.run(include_l=True, vocal=vocal)
         if not basis.dtype == complex:
-            pass
+            basis.dtype = complex
 
         integrator = complex_ode(self.f)
-        integrator.set_integrator(self._integrator, self.dt)
+        integrator.set_integrator(self._integrator, dt=self.dt)
 
     def f(self):
         raise NotImplementedError("You must think before you act here :^^^^)")

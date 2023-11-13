@@ -56,7 +56,7 @@ class Basis(ABC):
         self.restricted = restricted
         self.orthonormal = True
         self.antisymmetric = False
-        self.dtype = dtype
+        self._dtype = dtype
 
         # Store basis set sizes
         self._L = L // self._degeneracy
@@ -254,6 +254,12 @@ class Basis(ABC):
 
         return E_OB + E_TB + self._energy_shift
 
+    def custom_hf_guess(self, C=None):
+        if C is None:
+            return self._custom_hf_guess
+        else:
+            self._custom_hf_guess = C
+
     """
     Getters and setters for ints (L,N) and slices (o,v). N also performs tweaking on M
     as this is easiest to understand (adding particles reduces the number of viritual states if L is const).
@@ -278,12 +284,6 @@ class Basis(ABC):
         self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
         self.calculate_fock_matrix()
-
-    def custom_hf_guess(self, C=None):
-        if C is None:
-            return self._custom_hf_guess
-        else:
-            self._custom_hf_guess = C
 
     @property
     def M(self) -> int:
@@ -341,3 +341,15 @@ class Basis(ABC):
     @property
     def r(self) -> np.ndarray:
         raise NotImplementedError(f"{type(self)} does not implement posistion expectation values")
+
+    @property
+    def dtype(self):
+        return self._dtype
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._dtype = dtype
+        self.h = self.h.astype(dtype)
+        self.u = self.u.astype(dtype)
+        self.s = self.s.astype(dtype)
+        self.C = self.C.astype(dtype)
