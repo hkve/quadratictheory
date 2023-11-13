@@ -17,13 +17,14 @@ def merge_to_flat(t: CoupledClusterParameter, l: CoupledClusterParameter) -> np.
 
 
 class CoupledClusterParameter:
-    def __init__(self, orders: list, N: int, M: int):
+    def __init__(self, orders: list, N: int, M: int, dtype=float):
         if orders is None:
             return None
         self.orders = orders
 
         self.N, self.M = N, M
 
+        self._dtype = dtype
         self._data = {}
         self._data_shape = {}
 
@@ -46,10 +47,10 @@ class CoupledClusterParameter:
             self._flat_slices[order] = order_slice
             offset += sizes[i + 1]
 
-    def initialize_zero(self, dtype=float) -> CoupledClusterParameter:
+    def initialize_zero(self) -> CoupledClusterParameter:
         for order in self.orders:
             shape = self._data_shape[order]
-            self._data[order] = np.zeros(shape, dtype=dtype)
+            self._data[order] = np.zeros(shape, dtype=self.dtype)
 
         return self
 
@@ -109,3 +110,13 @@ class CoupledClusterParameter:
 
     def __rmul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         return self.__mul__(other)
+
+    @property
+    def dtype(self):
+        return self._dtype
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._dtype = dtype
+        for o, t in self._data.items():
+            self._data[o] = t.astype(dtype)

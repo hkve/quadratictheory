@@ -24,6 +24,8 @@ class TimeDependentCoupledCluster:
             cc.run(include_l=True, vocal=vocal)
         if not basis.dtype == complex:
             basis.dtype = complex
+            cc._t.dtype = complex
+            cc._l.dtype = complex
 
         integrator = complex_ode(self.f)
         integrator.set_integrator(self._integrator, dt=self.dt)
