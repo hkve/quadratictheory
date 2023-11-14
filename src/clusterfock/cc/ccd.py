@@ -85,6 +85,11 @@ class GCCD(CoupledCluster):
 
         return rho
 
+    def _overlap(self, t0, l0, t, l):
+        first = np.einsum("abij,abij->", t0[2], l[2])
+        second = np.einsum("abij,abij->", t[2], l[2])
+        return 1 + 0.25 * (first - second)
+
 
 class RCCD(CoupledCluster):
     def __init__(self, basis: Basis):

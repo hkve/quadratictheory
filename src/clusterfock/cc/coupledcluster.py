@@ -323,6 +323,12 @@ class CoupledCluster(ABC):
         asym = 1 if self.basis.restricted else 0.5
         return asym * np.einsum("...pqrs,pqrs->...", operator, self.rho_tb)
 
+    def _overlap(self, t0, l0, t, l):
+        raise NotImplementedError("This scheme does not implement overlap")
+
+    def overlap(self, t0, l0, t, l):
+        return self._overlap(t0, l0, t, l)
+
     # Property wrappers for convergence info dicts
     @property
     def t_info(self):
