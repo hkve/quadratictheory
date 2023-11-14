@@ -23,7 +23,7 @@ class GHF(HartreeFock):
             print(f"GHF Energy: {ghf.energy()}")
         """
         assert not basis.restricted, "Basis can not be restricted"
-        super().__init__(basis)
+        super().__init__(basis, False)
 
     def evaluate_energy_scheme(self) -> float:
         """

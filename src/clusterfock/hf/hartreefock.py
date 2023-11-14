@@ -7,12 +7,13 @@ from scipy.linalg import eigh
 
 
 class HartreeFock(ABC):
-    def __init__(self, basis: Basis) -> None:
+    def __init__(self, basis: Basis, restricted: bool) -> None:
         """
         Initialize a Hartree-Fock (HF) electronic structure calculation.
 
         Parameters:
         - basis (Basis): The basis set and molecular geometry for the HF calculation.
+        - restricted (bool): If the method is implemented for a restricted scheme.
 
         Attributes:
         - basis (Basis): The basis set and molecular geometry for the calculation.
@@ -33,6 +34,7 @@ class HartreeFock(ABC):
         self.basis = basis
         self.has_run = False
         self.converged = False
+        self.restricted = restricted
         self.mixer = DIISMixer(n_vectors=8)
         self.guess = "I"
 
@@ -146,7 +148,10 @@ class HartreeFock(ABC):
           using the stored coefficent matrix (which transforms from the computational basis)
         """
         self._check_state()
-        if np.allclose(self.C, self.basis.C):
+        C = self.C
+        if self.restricted and not self.basis.restricted:
+            C = self.basis._add_spin_one_body(self.C)
+        if np.allclose(C, self.basis.C):
             return self.basis.energy()
         else:
             return self.evaluate_energy_scheme()
