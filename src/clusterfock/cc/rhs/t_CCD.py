@@ -2,7 +2,7 @@ import numpy as np
 
 
 def amplitudes_ccd(t2, u, f, v, o):
-    res = np.zeros_like(t2)
+    res = np.zeros_like(t2, dtype=u.dtype)
 
     res += u[v, v, o, o]  # v_abij
 

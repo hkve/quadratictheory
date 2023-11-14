@@ -3,7 +3,7 @@ import numpy as np
 
 def lambda_amplitudes_ccd(t2, l2, u, f, v, o):
     M, _, N, _ = t2.shape
-    r2 = np.zeros((M, M, N, N))
+    r2 = np.zeros((M, M, N, N), dtype=t2.dtype)
 
     r2 += np.einsum("ackj,cdkl,ilbd->abij", l2, t2, u[o, o, v, v], optimize=True)
 
