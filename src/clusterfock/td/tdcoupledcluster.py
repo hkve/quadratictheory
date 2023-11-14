@@ -26,6 +26,7 @@ class TimeDependentCoupledCluster:
         cc, basis = self.cc, self.basis
 
         if not (cc.t_info["run"] and cc.l_info["run"]):
+            cc._f += self.external_one_body(self.t_start, basis)
             cc.run(include_l=True, vocal=vocal)
         if not basis.dtype == complex:
             basis.dtype = complex
@@ -43,22 +44,25 @@ class TimeDependentCoupledCluster:
         integrator.set_integrator(self._integrator, dt=self.dt)
         integrator.set_initial_value(y_initial, t_start)
 
-        n_time_points = int((t_end - t_start)/dt)+1
+        n_time_points = int(np.ceil((t_end - t_start)/dt))+1
         assert t_end > t_start
 
         energy = np.zeros(n_time_points, dtype=basis.dtype)
+        overlap = np.zeros(n_time_points, dtype=basis.dtype)
         energy[0] = cc.energy()
-        
+        overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
+
         t = t_start
         counter = 0
         while t < t_end:
             t += dt
+            counter += 1
             integrator.integrate(t)
             energy[counter] = cc.energy()
-
-            counter += 1
+            overlap_complex = cc.overlap(self._t0, self._l0, cc._t, cc._l)
+            overlap[counter] = overlap_complex.real**2 + overlap_complex.imag**2
         
-        return np.arange(t_start, t_end+dt, dt), energy
+        return np.arange(t_start, t_end+dt, dt), energy, overlap
     
 
     def rhs(self, t, y):
