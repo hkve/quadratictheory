@@ -116,6 +116,10 @@ class CoupledClusterParameter:
     def __rmul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         return self.__mul__(other)
 
+    def copy(self):
+        new = CoupledClusterParameter(self.orders, self.N, self.M, self.dtype)
+        return new.initialize_dicts({o: self[o].copy() for o in self.orders})
+
     @property
     def dtype(self):
         return self._dtype
