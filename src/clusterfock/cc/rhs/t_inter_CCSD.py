@@ -5,7 +5,7 @@ def amplitudes_intermediates_ccsd(t1, t2, u, f, v, o):
     M, N = t1.shape
     dtype = u.dtype
     zeros = lambda shape: np.zeros(shape, dtype=dtype)
-    
+
     tau0 = zeros((N, N, M, M))
 
     tau0 += np.einsum("baji->ijab", t2, optimize=True)

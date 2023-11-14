@@ -36,7 +36,7 @@ class CoupledCluster(ABC):
         """
         self.basis = basis
         basis.calculate_fock_matrix()
-        self._f = self.basis.f
+        self._f = self.basis.f.copy()
 
         self.mixer = DIISMixer(n_vectors=8)
 

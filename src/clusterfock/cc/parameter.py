@@ -109,8 +109,6 @@ class CoupledClusterParameter:
             assert type(other) == self.dtype
             product = {o: self[o] * other for o in self.orders}
 
-
-
         return CoupledClusterParameter(self.orders, self.N, self.M).initialize_dicts(product)
 
     def __rmul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:

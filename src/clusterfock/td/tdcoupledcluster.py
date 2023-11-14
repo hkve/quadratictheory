@@ -17,6 +17,11 @@ class TimeDependentCoupledCluster:
         self._t_start, self._t_end, self._dt = time
         self._integrator = integrator
 
+        self._has_td_ob = False
+        self._has_td_tb = False
+        self._td_ob = None
+        self._td_tb = None
+
     def run(self, vocal=False):
         cc, basis = self.cc, self.basis
 
@@ -26,30 +31,36 @@ class TimeDependentCoupledCluster:
             basis.dtype = complex
             cc._t.dtype = complex
             cc._l.dtype = complex
+            cc._f = cc._f.astype(complex)
+
+        self._t0 = cc._t.copy()
+        self._l0 = cc._l.copy()
 
         y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._l, cc._l)
         t_start, t_end, dt = self.t_start, self.t_end, self.dt
 
-        integrator = complex_ode(self.f)
+        integrator = complex_ode(self.rhs)
         integrator.set_integrator(self._integrator, dt=self.dt)
-        integrator.set_initial_value(y_initial)
+        integrator.set_initial_value(y_initial, t_start)
 
-        print(f"Running {int((t_end - t_start)/dt)+1} points")
+        n_time_points = int((t_end - t_start)/dt)+1
         assert t_end > t_start
-        
+
         t = t_start
         while t < t_end:
             t += dt
             integrator.integrate(t)
 
-
-    def f(self, t, y):
+    def rhs(self, t, y):
         # y comes in flat and should return flat, but be evaluated in the meen while
         # it contains both t and l
         basis, cc = self.basis, self.cc
         cc._t.from_flat(y[self.t_slice])        
         cc._l.from_flat(y[self.l_slice])
         
+        if self._has_td_ob:
+            cc._f = basis.f + self.external_one_body(t, basis)
+
         # Here I should add rhs and lhs updates to
         t_dot = 1j*cc._next_t_iteration(cc._t)
         l_dot = -1j*cc._next_l_iteration(cc._t, cc._l)
@@ -57,6 +68,15 @@ class TimeDependentCoupledCluster:
         y, _, _ = merge_to_flat(t_dot, l_dot)
 
         return y
+
+    @property
+    def external_one_body(self):
+        return self._td_ob
+    
+    @external_one_body.setter
+    def external_one_body(self, func_ob):
+        self._has_td_ob = True
+        self._td_ob = func_ob
 
     @property
     def dt(self):
