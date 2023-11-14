@@ -9,7 +9,7 @@ from scipy.integrate import complex_ode
 
 class TimeDependentCoupledCluster:
     def __init__(
-        self, cc: CoupledCluster, time: tuple = (0, 10.0, 0.1), integrator="Rk4Integrator"
+        self, cc: CoupledCluster, time: tuple = (0, 10.0, 0.0001), integrator="Rk4Integrator"
     ):
         self.cc = cc
         self.basis = cc.basis
@@ -34,10 +34,9 @@ class TimeDependentCoupledCluster:
         integrator.set_integrator(self._integrator, dt=self.dt)
         integrator.set_initial_value(y_initial, times[0])
 
-        integrator.integrate(times[1])
-        # for i, t in enumerate(times):
-        #     integrator.integrate(t)
-        #     y_next = integrator.y
+        n = 100000
+        for i in range(1,n):
+            integrator.integrate(times[i])
 
     def f(self, t, y):
         # y comes in flat and should return flat, but be evaluated in the meen while
