@@ -3,7 +3,7 @@ import numpy as np
 
 def lambda_amplitudes_qccd(t2, l2, u, f, o, v):
     M, _, N, _ = t2.shape
-    r2 = np.zeros((M, M, N, N))
+    r2 = np.zeros((M, M, N, N), dtype=u.dtype)
 
     r2 += np.einsum("aeil,cdkj,cgkl,debg->abij", l2, l2, t2, u[v, v, v, v], optimize=True)
 

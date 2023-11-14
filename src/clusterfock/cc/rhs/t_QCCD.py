@@ -4,7 +4,7 @@ import numpy as np
 def amplitudes_qccd(t2, l2, u, f, v, o):
     M, _, N, _ = t2.shape
 
-    r2 = np.zeros((M, M, N, N))
+    r2 = np.zeros((M, M, N, N), dtype=u.dtype)
 
     r2 += np.einsum("cdkl,agil,cekj,bdeg->abij", l2, t2, t2, u[v, v, v, v], optimize=True)
 
