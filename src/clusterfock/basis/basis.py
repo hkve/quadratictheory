@@ -353,3 +353,4 @@ class Basis(ABC):
         self.u = self.u.astype(dtype)
         self.s = self.s.astype(dtype)
         self.C = self.C.astype(dtype)
+        self.f = self.f.astype(dtype)
