@@ -13,7 +13,7 @@ from clusterfock.cc.energies.e_inter_qccd import energy_intermediates_qccd
 
 
 class QCCD(QuadraticCoupledCluster):
-    def __init__(self, basis: Basis, intermediates: bool = False):
+    def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "QCCD can not deal with restricted basis"
 
         t_orders = [2]
