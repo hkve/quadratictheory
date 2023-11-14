@@ -34,7 +34,7 @@ class FiniteDifferenceBasis(Basis):
     ):
         self.x = x
         self._phi = phi
-        self._L_spatial = L if restricted else L // 2
+        self._L_spatial = L // 2
         self._restricted_dummy = restricted
         super().__init__(L, N, True, dtype)
 
@@ -168,6 +168,20 @@ class FiniteDifferenceBasis(Basis):
                         u[q, p, s, r] = u[p, q, r, s]
 
         return u
+
+    def density(self, rho, x=None):
+        if x is None:
+            x = self.x
+
+        phi = self._phi
+        phi_x = np.zeros((self._L_spatial, *x.shape))
+        
+        for i in range(self._L_spatial):
+            phi_x[i] = phi[i](x)
+        if not self.restricted:
+            phi_x = np.repeat(phi_x, repeats=2, axis=0)
+
+        return np.einsum("px,pq,qx->x", phi_x.conj(), rho, phi_x)        
 
     @abstractmethod
     def _potential(self, x):
