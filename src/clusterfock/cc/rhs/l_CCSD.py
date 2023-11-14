@@ -3,7 +3,7 @@ import numpy as np
 
 def lambda1_amplitudes_ccsd(t1, t2, l1, l2, u, f, v, o):
     M, _, N, _ = t2.shape
-    r1 = np.zeros((M, N))
+    r1 = np.zeros((M, N), dtype=u.dtype)
 
     r1 += np.einsum("bcij,bdjk,kcad->ai", l2, t2, u[o, v, v, v], optimize=True)
 
@@ -101,7 +101,7 @@ def lambda1_amplitudes_ccsd(t1, t2, l1, l2, u, f, v, o):
 def lambda2_amplitudes_ccsd(t1, t2, l1, l2, u, f, v, o):
     M, N = t1.shape
 
-    r2 = np.zeros((M, M, N, N))
+    r2 = np.zeros((M, M, N, N), dtype=u.dtype)
 
     r2 += np.einsum("ak,ijbk->abij", l1, u[o, o, v, o], optimize=True)
 

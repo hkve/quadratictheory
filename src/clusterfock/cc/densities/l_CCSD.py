@@ -4,7 +4,7 @@ import numpy as np
 def one_body_density_oo(rho, t1, t2, l1, l2, o, v):
     N = o.stop
 
-    rho[o, o] += np.eye(N)
+    rho[o, o] += np.eye(N, dtype=rho.dtype)
     rho[o, o] -= np.einsum("aj,ai->ij", l1, t1)
     rho[o, o] += np.einsum("abkj,abik->ij", l2, t2) / 2
 
@@ -44,7 +44,7 @@ def one_body_density(rho, t1, t2, l1, l2, o, v):
 
 
 def two_body_density_oooo(rho, t1, t2, l1, l2, o, v):
-    I = np.eye(o.stop)
+    I = np.eye(o.stop, dtype=rho.dtype)
 
     rho[o, o, o, o] += np.einsum("il,ak,aj->ijkl", I, l1, t1, optimize=True)
 
@@ -166,7 +166,7 @@ def two_body_density_vvoo(rho, t1, t2, l1, l2, o, v):
 
 
 def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
-    I = np.eye(o.stop)
+    I = np.eye(o.stop, dtype=rho.dtype)
 
     rho[o, v, o, v] += np.einsum("ackj,bcik->iajb", l2, t2, optimize=True)
 
@@ -186,7 +186,7 @@ def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
 
 
 def two_body_density_ooov(rho, t1, t2, l1, l2, o, v):
-    I = np.eye(o.stop)
+    I = np.eye(o.stop, dtype=rho.dtype)
 
     rho[o, o, o, v] -= np.einsum("jk,bl,abil->ijka", I, l1, t2, optimize=True)
 
@@ -232,7 +232,7 @@ def two_body_density_ooov(rho, t1, t2, l1, l2, o, v):
 
 
 def two_body_density_ovoo(rho, t1, t2, l1, l2, o, v):
-    I = np.eye(o.stop)
+    I = np.eye(o.stop, dtype=rho.dtype)
 
     rho[o, v, o, o] += np.einsum("ij,ak->iajk", I, l1, optimize=True)
 

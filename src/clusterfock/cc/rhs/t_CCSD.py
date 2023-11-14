@@ -4,7 +4,7 @@ import numpy as np
 def amplitudes_CCSD_t1(t1, t2, u, f, v, o):
     M, N = t1.shape
 
-    r1 = np.zeros((M, N))
+    r1 = np.zeros((M, N), dtype=u.dtype)
 
     r1 += np.einsum("jb,abij->ai", f[o, v], t2, optimize=True)
 
@@ -40,7 +40,7 @@ def amplitudes_CCSD_t1(t1, t2, u, f, v, o):
 def amplitudes_CCSD_t2(t1, t2, u, f, v, o):
     M, N = t1.shape
 
-    r2 = np.zeros((M, M, N, N))
+    r2 = np.zeros((M, M, N, N), u.dtype)
 
     r2 += np.einsum("ak,bkij->abij", t1, u[v, o, o, o], optimize=True)
 
