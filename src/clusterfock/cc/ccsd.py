@@ -96,3 +96,27 @@ class GCCSD(CoupledCluster):
         rho = two_body_density(rho, t1, t2, l1, l2, o, v)
 
         return rho
+
+    def _overlap(self, t0, l0, t, l):
+        psitilde_t = 1
+        psitilde_t += np.einsum("ai,ai->", l[1], t0[1])
+        psitilde_t -= np.einsum("ai,ai->", l[1], t[1])
+
+        psitilde_t += 0.25*np.einsum("abij,abij->", l[2], t0[2])
+        psitilde_t -= 0.5*np.einsum("abij,aj,bi->", l[2], t0[1], t0[1])
+        psitilde_t -= np.einsum("abij,ai,bj->", l[2], t[1], t0[1])
+        psitilde_t -= 0.5*np.einsum("abij,aj,bi->", l[2], t[1], t[1])
+        psitilde_t -= 0.25*np.einsum("abij,abij->", l[2], t[2])
+
+        psit = 1
+        psit += np.einsum("ai,ai->", l0[1], t[1])
+        psit -= np.einsum("ai,ai->", l0[1], t0[1])
+
+        psit += 0.25*np.einsum("abij,abij->", l0[2], t[2])
+        psit -= 0.5*np.einsum("abij,aj,bi->", l0[2], t[1], t[1])
+        psit -= np.einsum("abij,ai,bj->", l0[2], t0[1], t[1])
+        psit -= 0.5*np.einsum("abij,aj,bi->", l0[2], t0[1], t0[1])
+        psit -= 0.25*np.einsum("abij,abij->", l0[2], t0[2])
+
+
+        return psit*psitilde_t
