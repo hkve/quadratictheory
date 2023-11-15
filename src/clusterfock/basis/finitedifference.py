@@ -38,6 +38,8 @@ class FiniteDifferenceBasis(Basis):
         self._restricted_dummy = restricted
         super().__init__(L, N, True, dtype)
 
+        self._r = None
+
     def setup(self):
         orthonormal = self._phi._orthonormal
         eigenfunction = self._phi._eigenfunction
@@ -87,6 +89,11 @@ class FiniteDifferenceBasis(Basis):
         pot_integrand = self._potential(self.x) * phi_p.conj() * phi_q
 
         return np.trapz(kin_integrand + pot_integrand, self.x)
+    
+    def _calculate_r_offdiagonal_element(self, phi_p, phi_q):
+        integrand = phi_p.conj() * self.x * phi_q
+
+        return np.trapz(integrand, self.x)
 
     def _fill_normalization(self):
         L_spatial = self._L_spatial
@@ -142,6 +149,23 @@ class FiniteDifferenceBasis(Basis):
                 h[q, p] = h[p, q].conj()
 
         return h
+    
+    def _fill_r_all(self):
+        L = self._L
+        L_spatial = self._L_spatial
+
+        r = np.zeros((L_spatial, L_spatial), dtype=self.dtype)
+
+        for p in range(L_spatial):
+            phi_p = self._phi._raw(p, self.x)
+            r[p, p] = self._calculate_r_offdiagonal_element(phi_p, phi_p)
+
+            for q in range(p + 1, L_spatial):
+                phi_q = self._phi._raw(q, self.x)
+                r[p, q] = self._calculate_r_offdiagonal_element(phi_p, phi_q)
+                r[q, p] = r[p, q].conj()
+
+        return r
 
     def _fill_u_all(self):
         L = self._L_spatial
@@ -182,6 +206,22 @@ class FiniteDifferenceBasis(Basis):
             phi_x = np.repeat(phi_x, repeats=2, axis=0)
 
         return np.einsum("px,pq,qx->x", phi_x.conj(), rho, phi_x)        
+
+    @property
+    def r(self):
+        if self._r is None:
+            r = self._fill_r_all()
+            normalization = self._fill_normalization()
+            r = self._add_normalization_one_body(r, normalization)
+            if not self.restricted:
+                r = self._add_spin_one_body(r)
+            self.r = r
+
+        return self._r
+
+    @r.setter
+    def r(self, r):
+        self._r = r
 
     @abstractmethod
     def _potential(self, x):
