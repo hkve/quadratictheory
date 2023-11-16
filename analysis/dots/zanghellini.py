@@ -28,5 +28,36 @@ def plot_density():
     ax.set(xlabel="x [au]", ylabel=r"$\rho(x)$")
     plt.show()
 
+def plot_time_evolution():
+    omega = 0.25
+    a = 0.25
+    electric_field_freq = 8*omega
+    eps0 = 1.0
+    L = 10
+    num_grid_points = 1000
+    grid_length = 10
+
+    basis = cf.basis.HarmonicOscillatorOneDimension(L=2*L, N=2, restricted=True, omega=omega, a=eps0, x=(-grid_length, grid_length, num_grid_points))
+
+    def electric_field(t, basis, freq=electric_field_freq, eps0=eps0):
+        return eps0*np.sin(freq*t)*basis.r
+
+    hf = cf.HF(basis).run()
+    basis.change_basis(hf.C)
+    basis.from_restricted()
+
+    cc = cf.CCSD(basis).run(include_l=True, tol=1e-6)
+    tdcc = cf.td.TimeDependentCoupledCluster(cc, time=(0, 8*np.pi/electric_field_freq, 0.01))
+    tdcc.external_one_body = electric_field
+
+    t, e, overlap = tdcc.run()
+    t *= electric_field_freq/(2*np.pi)
+
+    fig, ax = plt.subplots()
+    ax.plot(t, overlap)
+    ax.set(ylim=(0,1), xlim=(0,4), xlabel=r"$\omega t / 2\pi$", ylabel="|Overlap(t)|$^2$")
+    plt.show()
+
 if __name__ == "__main__":
-    plot_density()
+    # plot_density()
+    plot_time_evolution()
