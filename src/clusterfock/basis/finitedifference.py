@@ -215,6 +215,9 @@ class FiniteDifferenceBasis(Basis):
             r = self._add_normalization_one_body(r, normalization)
             if not self.restricted:
                 r = self._add_spin_one_body(r)
+            if np.linalg.norm(self.C - np.eye(self.L)) > 0.01:
+                r = self._change_basis_one_body(r, self.C)
+
             self.r = r
 
         return self._r
