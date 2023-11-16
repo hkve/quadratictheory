@@ -3,9 +3,9 @@ from collections import deque
 import numpy as np
 from scipy.linalg import solve
 
-import warnings
+# import warnings
 
-warnings.filterwarnings("ignore")
+# warnings.filterwarnings("ignore")
 
 
 class DIISMixer(Mixer):
@@ -58,7 +58,7 @@ class DIISMixer(Mixer):
         rhs = np.zeros(shape=self.n_stored + 1)
         rhs[-1] = 1
 
-        c = solve(B, rhs, assume_a="her")
+        c = np.linalg.solve(B, rhs)
         c = c[:-1]
 
         self.iter += 1
