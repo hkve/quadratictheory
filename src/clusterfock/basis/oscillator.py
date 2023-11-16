@@ -11,11 +11,11 @@ class FunctionsODHO(FiniteDifferenceBasisFunctions):
 
     def _raw(self, n, x):
         o = self._omega
-        return np.exp(-o / 2 * x**2) * special.hermite(n)(np.sqrt(o) * x)
+        return np.exp( (-o/2) * x**2) * special.hermite(n)(np.sqrt(o) * x)
 
     def _normalization(self, n):
         o = self._omega
-        return (o / np.pi) ** (0.25) / np.sqrt(2**n * special.factorial(n))
+        return ((o / np.pi)**0.25) / np.sqrt( (2**n) * special.factorial(n))
 
 
 class HarmonicOscillatorOneDimension(FiniteDifferenceBasis):
