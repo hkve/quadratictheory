@@ -13,6 +13,7 @@ from clusterfock.cc.ccsd import GCCSD
 from clusterfock.cc.uccd import UCCD2
 from clusterfock.cc.qccd import QCCD
 
+from clusterfock.td.tdcoupledcluster import TimeDependentCoupledCluster
 
 def HF(basis: Basis):
     return RHF(basis) if basis.restricted else GHF(basis)
