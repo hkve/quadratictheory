@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
-
+import warnings
 
 class Basis(ABC):
     def __init__(self, L: int, N: int, restricted: bool = False, dtype=float):
@@ -13,7 +13,8 @@ class Basis(ABC):
         - N (int): The total number of particles.
         - restricted (bool, optional): Whether to use a restricted scheme where all sp states are doubly occupied. Defaults to False.
         - dtype (type, optional): The data type for internal arrays (e.g., float64). Defaults to float.
-
+        - operators (dict): Dict with operator names pointing to which property. Base class assumes none
+        
         Notes:
         - If 'restricted' is True, the system follows the restricted scheme, and both 'L' and 'N' must be even.
         - 'restricted' determines the degeneracy of sp states (2 for restricted, 1 for unrestricted).
@@ -66,10 +67,11 @@ class Basis(ABC):
         self._o = slice(0, self.N)
         self._v = slice(self.N, self.L)
 
-        #
-        self._energy_shift = 0
         self._one_body_shape = (self.L, self.L)
         self._two_body_shape = (self.L, self.L, self.L, self.L)
+
+        # Constant contribution (for instance proton-proton energy)
+        self._energy_shift = 0
 
         self._h = np.zeros(shape=(self.L, self.L), dtype=dtype)
         self._u = np.zeros(shape=(self.L, self.L, self.L, self.L), dtype=dtype)
@@ -77,8 +79,6 @@ class Basis(ABC):
         self._s = np.eye(self.L, dtype=dtype)
         self._C = np.eye(self.L, dtype=dtype)
         self._computational_basis = True
-
-        self._operators = {}
 
     def calculate_fock_matrix(self):
         """
@@ -363,3 +363,26 @@ class Basis(ABC):
         self.s = self.s.astype(dtype)
         self.C = self.C.astype(dtype)
         self.f = self.f.astype(dtype)
+
+# def cache_operator(name, add_spin=True):
+#     def decorator(func):
+#         def wrapper(self):
+#             if self._operator_names is None:
+#                 warnings.warn("self._operator_names are empty, only core attributes are avalible")
+#                 return
+            
+#             if name in self._operator_cache:
+#                 return self._operator_cache[name]
+            
+#             result = func(self)
+#             if not add_spin:
+#                 return result
+#             if name in self._operator_names:
+#                 self._operator_cache[name] = result
+#                 return result
+#             else:
+#                 warnings.warn(f"Warning {name = } not in operator list")
+#                 return result
+            
+#         return wrapper
+#     return decorator

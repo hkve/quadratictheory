@@ -1,7 +1,7 @@
 from clusterfock.basis.basis import Basis
 
 import numpy as np
-
+from functools import cached_property
 
 class TestBasis(Basis):
     __test__ = False
@@ -9,8 +9,12 @@ class TestBasis(Basis):
     def __init__(
         self, L: int, N: int, restricted: bool = False, dtype: type = float, seed: int = 42
     ):
+
         super().__init__(L, N, restricted, dtype=dtype)
+        
         np.random.seed(seed)
+        self._operator_names = ["r"]
+        self.setup()
 
     def setup(self):
         ob_shape = self._one_body_shape
@@ -27,3 +31,16 @@ class TestBasis(Basis):
         np.fill_diagonal(self.s, 1)
 
         return self
+
+    def _fetch_r(self):
+        from time import sleep
+        sleep(0.01)
+        return np.random.uniform(low=-1, high=1, size=(3,*self._one_body_shape))
+
+    @cached_property
+    def r(self):
+        return self._fetch_r()
+
+    @property
+    def mu(self):
+        return 2*self.r
