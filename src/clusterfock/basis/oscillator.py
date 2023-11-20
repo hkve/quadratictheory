@@ -1,8 +1,6 @@
 from clusterfock.basis import FiniteDifferenceBasis, FiniteDifferenceBasisFunctions
 import numpy as np
 from scipy import special
-import numba
-
 
 class FunctionsODHO(FiniteDifferenceBasisFunctions):
     def __init__(self, omega: float):
