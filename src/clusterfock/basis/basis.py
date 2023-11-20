@@ -76,6 +76,9 @@ class Basis(ABC):
         self._f = np.zeros(shape=(self.L, self.L), dtype=dtype)
         self._s = np.eye(self.L, dtype=dtype)
         self._C = np.eye(self.L, dtype=dtype)
+        self._computational_basis = True
+
+        self._operators = {}
 
     def calculate_fock_matrix(self):
         """
@@ -179,10 +182,15 @@ class Basis(ABC):
         Returns:
         - obj (Basis): The basis with transformation applied. If inplace is true, this is not needed
         """
-        if inverse:
-            C = C.conj().T
-
         obj = self if inplace else self.copy()
+
+        if inverse:
+            C = np.linalg.pinv(C)
+        
+        if np.allclose(C @ obj.C, np.eye(obj.L), atol=1e-6):
+            self._computational_basis = True
+        else:
+            self._computational_basis = False    
 
         obj.h = obj._change_basis_one_body(obj.h, C)
         obj.u = obj._change_basis_two_body(obj.u, C)
@@ -190,6 +198,7 @@ class Basis(ABC):
         obj.C = C
         obj.calculate_fock_matrix()
 
+            
         return obj
 
     def _antisymmetrize(self):
