@@ -35,7 +35,10 @@ class TestBasis(Basis):
     def _fetch_r(self):
         from time import sleep
         sleep(0.01)
-        return np.random.uniform(low=-1, high=1, size=(3,*self._one_body_shape))
+
+        r = np.random.uniform(low=-1, high=1, size=(3,*self._one_body_shape))
+
+        return self._new_one_body_operator(r, add_spin=False)
 
     @cached_property
     def r(self):
