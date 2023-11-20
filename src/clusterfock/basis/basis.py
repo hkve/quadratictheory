@@ -269,6 +269,23 @@ class Basis(ABC):
         else:
             self._custom_hf_guess = C
 
+    def _new_one_body_operator(self, operator, add_spin=True):
+        operator = operator.astype(self.dtype)
+        if not self.restricted and add_spin:
+            operator = self._add_spin_one_body(operator)
+        if not self._computational_basis:
+            operator = self._change_basis_one_body(operator, self.C)
+
+        return operator
+    
+    def _new_two_body_operator(self, operator, add_spin=True):
+        operator = operator.astype(self.dtype)
+        if not self.restricted and add_spin:
+            operator = self._add_spin_one_body(operator)
+        if not self._computational_basis:
+            operator = self._change_basis_two_body(operator, self.C)
+
+        return operator
     """
     Getters and setters for ints (L,N) and slices (o,v). N also performs tweaking on M
     as this is easiest to understand (adding particles reduces the number of viritual states if L is const).
@@ -363,26 +380,3 @@ class Basis(ABC):
         self.s = self.s.astype(dtype)
         self.C = self.C.astype(dtype)
         self.f = self.f.astype(dtype)
-
-# def cache_operator(name, add_spin=True):
-#     def decorator(func):
-#         def wrapper(self):
-#             if self._operator_names is None:
-#                 warnings.warn("self._operator_names are empty, only core attributes are avalible")
-#                 return
-            
-#             if name in self._operator_cache:
-#                 return self._operator_cache[name]
-            
-#             result = func(self)
-#             if not add_spin:
-#                 return result
-#             if name in self._operator_names:
-#                 self._operator_cache[name] = result
-#                 return result
-#             else:
-#                 warnings.warn(f"Warning {name = } not in operator list")
-#                 return result
-            
-#         return wrapper
-#     return decorator
