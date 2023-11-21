@@ -13,7 +13,6 @@ class TestBasis(Basis):
         super().__init__(L, N, restricted, dtype=dtype)
         
         np.random.seed(seed)
-        self._operator_names = ["r"]
         self.setup()
 
     def setup(self):
