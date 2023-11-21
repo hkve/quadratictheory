@@ -276,7 +276,7 @@ class Basis(ABC):
         if not self._computational_basis:
             operator = self._change_basis_one_body(operator, self.C)
 
-        return operator.reshape(-1, self.L, self.L)
+        return operator
     
     def _new_two_body_operator(self, operator, add_spin=True):
         operator = operator.astype(self.dtype)
