@@ -365,10 +365,6 @@ class Basis(ABC):
         self._C = C.astype(self.dtype)
 
     @property
-    def r(self) -> np.ndarray:
-        raise NotImplementedError(f"{type(self)} does not implement posistion expectation values")
-
-    @property
     def dtype(self):
         return self._dtype
 
