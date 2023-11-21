@@ -1,4 +1,5 @@
 from clusterfock.basis import Basis
+from functools import cached_property
 import numpy as np
 import pyscf
 
@@ -45,17 +46,10 @@ class PyscfBasis(Basis):
 
         return self.change_basis(self.C, inplace=inplace)
 
-    @property
+    @cached_property
     def r(self) -> np.ndarray:
         r = self.mol.intor("int1e_r")
-
-        if not self.restricted:
-            r = self._add_spin_one_body(r)
-
-        if not np.trace(self.C) == self.L:
-            r = self._change_basis_one_body(r, self.C)
-
-        return r
+        return self._new_one_body_operator(r)
 
     def density(self, rho, r=None):
         if r is None:
