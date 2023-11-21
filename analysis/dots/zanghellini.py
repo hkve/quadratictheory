@@ -42,13 +42,18 @@ def plot_time_evolution():
     def electric_field(t, basis, freq=electric_field_freq, eps0=eps0):
         return eps0*np.sin(freq*t)*basis.r
 
+    def sampler(basis):
+        return {"r": basis.r}
+    
     hf = cf.HF(basis).run()
     basis.change_basis(hf.C)
     basis.from_restricted()
 
     cc = cf.CCSD(basis).run(include_l=True, tol=1e-6)
     tdcc = cf.td.TimeDependentCoupledCluster(cc, time=(0, 8*np.pi/electric_field_freq, 0.01))
+    
     tdcc.external_one_body = electric_field
+    tdcc.one_body_sampler = sampler
 
     t, e, overlap = tdcc.run()
     t *= electric_field_freq/(2*np.pi)
