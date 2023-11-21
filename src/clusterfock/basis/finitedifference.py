@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
 from clusterfock.basis import Basis
-
+from functools import cached_property
 
 class FiniteDifferenceBasisFunctions(ABC):
     def __init__(self, eigenfunction: bool, orthonormal: bool):
@@ -38,7 +38,6 @@ class FiniteDifferenceBasis(Basis):
         self._restricted_dummy = restricted
         super().__init__(L, N, True, dtype)
 
-        self._r = None
 
     def setup(self):
         orthonormal = self._phi._orthonormal
@@ -207,24 +206,14 @@ class FiniteDifferenceBasis(Basis):
 
         return np.einsum("px,pq,qx->x", phi_x.conj(), rho, phi_x)        
 
-    @property
+    @cached_property
     def r(self):
-        if self._r is None:
-            r = self._fill_r_all()
-            normalization = self._fill_normalization()
-            r = self._add_normalization_one_body(r, normalization)
-            if not self.restricted:
-                r = self._add_spin_one_body(r)
-            if np.linalg.norm(self.C - np.eye(self.L)) > 0.01:
-                r = self._change_basis_one_body(r, self.C)
+        r = self._fill_r_all()
 
-            self.r = r
+        normalization = self._fill_normalization()
+        r = self._add_normalization_one_body(r, normalization)
 
-        return self._r
-
-    @r.setter
-    def r(self, r):
-        self._r = r
+        return self._new_one_body_operator(r)
 
     @abstractmethod
     def _potential(self, x):
