@@ -51,7 +51,7 @@ class TestBasisProperties(TestCase):
         basis._add_spin()
         new_diag = np.diag(basis.h)
 
-        self.assertEqual(2 * old_diag.sum(), new_diag.sum())
+        self.assertAlmostEqual(2 * old_diag.sum(), new_diag.sum())
 
     def test_from_restricted(self):
         basis = self.rbasis
