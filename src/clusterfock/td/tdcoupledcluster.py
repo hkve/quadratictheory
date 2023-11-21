@@ -25,6 +25,8 @@ class TimeDependentCoupledCluster:
         self._has_one_body_sampler = False
         self._one_body_sampler = None
         self._one_body_shapes = None
+        self._one_body_results = {}
+        self._two_body_results = {}
 
     def run(self, vocal=False):
         cc, basis = self.cc, self.basis
@@ -39,6 +41,7 @@ class TimeDependentCoupledCluster:
             cc._t.dtype = complex
             cc._l.dtype = complex
             cc._f = cc._f.astype(complex)
+
 
         self._t0 = cc._t.copy()
         self._l0 = cc._l.copy()
@@ -57,6 +60,7 @@ class TimeDependentCoupledCluster:
         energy = np.zeros(n_time_points, dtype=basis.dtype)
         overlap = np.zeros(n_time_points, dtype=basis.dtype)
         
+        self._sample()
         energy[0] = cc.energy()
         overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
@@ -72,7 +76,8 @@ class TimeDependentCoupledCluster:
             
             if counter >= n_time_points:
                 break
-            
+
+            self._sample()
             energy[counter] = cc.energy()
             overlap[counter] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
             t += dt
@@ -98,6 +103,16 @@ class TimeDependentCoupledCluster:
 
         return y_dot
 
+    def _sample(self):
+        basis, cc = self.basis, self.cc
+        if self._has_one_body_sampler:
+            cc.one_body_density()
+            operators = self.one_body_sampler(basis)
+
+            for key, operator in operators.items():
+                sample = cc.one_body_expval(operator)
+                self._one_body_results[key].append(sample)
+
     @property
     def external_one_body(self):
         return self._td_one_body
@@ -115,16 +130,10 @@ class TimeDependentCoupledCluster:
     def one_body_sampler(self, sampler):
         basis = self.basis
         self._has_one_body_sampler = True
-        self._one_body_shapes = []
+        self._one_body_sampler = sampler
 
-        args = sampler(basis)
-        if type(args) is not tuple:
-            agrs = (args,)
-            sampler_wrap = lambda basis: (sampler(basis), )
-        else:
-            sampler_wrap = sampler
+        res = sampler(basis)
+        assert type(res) == dict, f"The return type of {sampler = } must be dict not {type(res) = }."
 
-        self._one_body_sampler = sampler_wrap
-
-        for arg in args:
-            print(arg.shape)
+        for key in res.keys():
+            self._one_body_results[key] = []
