@@ -166,6 +166,9 @@ class HartreeFock(ABC):
         if not self.converged:
             raise RuntimeWarning("Hartree-Fock calculation has not converged")
 
+    def one_body_expval(self, operator: np.ndarray) -> np.ndarray:
+        self._check_state()
+        return np.einsum("pq,...pq->...", self.rho, operator)
 
 def _identity_guess(
     basis: Basis,
