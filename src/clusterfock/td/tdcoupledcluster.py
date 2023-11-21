@@ -17,20 +17,23 @@ class TimeDependentCoupledCluster:
         self._t_start, self._t_end, self._dt = time
         self._integrator = integrator
 
-        self._has_td_ob = False
-        self._has_td_tb = False
-        self._td_ob = None
-        self._td_tb = None
+        self._has_td_one_body = False
+        self._has_td_two_body = False
+        self._td_one_body = None
+        self._td_two_body = None
+
+        self._has_one_body_sampler = False
+        self._one_body_sampler = None
+        self._one_body_shapes = None
 
     def run(self, vocal=False):
         cc, basis = self.cc, self.basis
 
         if not (cc.t_info["run"] or cc.l_info["run"]):
-            if self._has_td_ob:
+            if self._has_td_one_body:
                 external_contribution = self.external_one_body(self._t_start, basis)
                 cc._f += external_contribution
             cc.run(include_l=True, vocal=vocal)
-            print(f"Energy: {cc.energy()}")
         if not basis.dtype == complex:
             basis.dtype = complex
             cc._t.dtype = complex
@@ -63,11 +66,13 @@ class TimeDependentCoupledCluster:
             
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
-            
             counter += 1
-            print(f"Done {counter}/{n_time_points}, t = {t}")
+            
+            if vocal: print(f"Done {counter}/{n_time_points}, t = {t}")
+            
             if counter >= n_time_points:
                 break
+            
             energy[counter] = cc.energy()
             overlap[counter] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
             t += dt
@@ -82,7 +87,7 @@ class TimeDependentCoupledCluster:
         cc._t.from_flat(y[self.t_slice])       
         cc._l.from_flat(y[self.l_slice])
 
-        if self._has_td_ob:
+        if self._has_td_one_body:
             external_contribution = self.external_one_body(t, basis)
             cc._f = basis.f + external_contribution
 
@@ -95,9 +100,31 @@ class TimeDependentCoupledCluster:
 
     @property
     def external_one_body(self):
-        return self._td_ob
+        return self._td_one_body
     
     @external_one_body.setter
     def external_one_body(self, func_ob):
-        self._has_td_ob = True
-        self._td_ob = func_ob
+        self._has_td_one_body = True
+        self._td_one_body = func_ob
+
+    @property
+    def one_body_sampler(self):
+        return self._one_body_sampler
+    
+    @one_body_sampler.setter
+    def one_body_sampler(self, sampler):
+        basis = self.basis
+        self._has_one_body_sampler = True
+        self._one_body_shapes = []
+
+        args = sampler(basis)
+        if type(args) is not tuple:
+            agrs = (args,)
+            sampler_wrap = lambda basis: (sampler(basis), )
+        else:
+            sampler_wrap = sampler
+
+        self._one_body_sampler = sampler_wrap
+
+        for arg in args:
+            print(arg.shape)
