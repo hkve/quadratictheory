@@ -64,3 +64,24 @@ class TestBasisProperties(TestCase):
         self.assertTrue(np.allclose(gbasis.u, gbasis.u.transpose(1, 0, 3, 2)))
         self.assertEqual(2 * basis.L, gbasis.L)
         self.assertEqual(2 * basis.N, gbasis.N)
+
+    def test_basis_change(self):
+        basis_core = [self.rbasis, self.gbasis]
+
+        for b in basis_core:
+            basis = b.copy()
+            C = np.random.uniform(low=-1, high=1, size=(basis.L, basis.L))
+            h, u, s = basis.h.copy(), basis.u.copy(), basis.s.copy()
+
+            self.assertTrue(basis._computational_basis)
+
+            basis.change_basis(C)
+
+            self.assertFalse(basis._computational_basis)
+
+            basis.change_basis(C, inverse=True)
+
+            self.assertTrue(basis._computational_basis)
+            self.assertTrue(np.allclose(h, basis.h, atol=1e-6))
+            self.assertTrue(np.allclose(u, basis.u, atol=1e-6))
+            self.assertTrue(np.allclose(s, basis.s, atol=1e-6))

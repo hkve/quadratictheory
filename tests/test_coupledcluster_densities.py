@@ -4,6 +4,7 @@ from clusterfock.hf import RHF
 from clusterfock.cc import GCCD, GCCSD
 from clusterfock.basis import PyscfBasis
 
+
 class TestCoupledClusterDensities(TestCase):
     def compare_raw_vs_intermediate(self, atom, basis, CC, tol=1e-8):
         rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True)
@@ -26,20 +27,25 @@ class TestCoupledClusterDensities(TestCase):
         self.assertAlmostEqual(np.trace(raw_rho), N, places=6)
         self.assertAlmostEqual(np.trace(inter_rho), N, places=6)
 
-
         diff = np.abs(raw_rho - inter_rho).ravel()
         all_close = np.all(diff < 1e-6)
-        self.assertTrue(all_close, msg=f"Difference between intermediate and raw results for densities max(diff) {diff.max()} > 1e-6")
+        self.assertTrue(
+            all_close,
+            msg=f"Difference between intermediate and raw results for densities max(diff) {diff.max()} > 1e-6",
+        )
 
         raw_rho = raw.rho_tb
         inter_rho = inter.rho_tb
 
-        self.assertAlmostEqual(np.einsum("pqpq->", raw_rho), N*(N-1), places=6)
-        self.assertAlmostEqual(np.einsum("pqpq->", inter_rho), N*(N-1), places=6)
+        self.assertAlmostEqual(np.einsum("pqpq->", raw_rho), N * (N - 1), places=6)
+        self.assertAlmostEqual(np.einsum("pqpq->", inter_rho), N * (N - 1), places=6)
 
         diff = np.abs(raw_rho - inter_rho).ravel()
         all_close = np.all(diff < 1e-6)
-        self.assertTrue(all_close, msg=f"Difference between intermediate and raw results for densities max(diff) {diff.max()} > 1e-6")
+        self.assertTrue(
+            all_close,
+            msg=f"Difference between intermediate and raw results for densities max(diff) {diff.max()} > 1e-6",
+        )
 
     def energy_expval(self, atom, basis, CC, tol=1e-8):
         rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True)
@@ -54,12 +60,17 @@ class TestCoupledClusterDensities(TestCase):
 
         # Energy using amplitudes
         E1 = ccd.energy() - gbasis._energy_shift
-        
+
         # Energy using densities
         E2 = np.trace(ccd.rho_ob @ gbasis.h)
-        E2 += 0.25*np.einsum("pqrs,pqrs->", ccd.rho_tb, gbasis.u)
+        E2 += 0.25 * np.einsum("pqrs,pqrs->", ccd.rho_tb, gbasis.u)
 
-        self.assertAlmostEqual(E1, E2, places=6, msg=f"Energy from amplitudes {E1:.6f} does not match energy from density matricies {E2:.6f}")
+        self.assertAlmostEqual(
+            E1,
+            E2,
+            places=6,
+            msg=f"Energy from amplitudes {E1:.6f} does not match energy from density matricies {E2:.6f}",
+        )
 
     def test_ccd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)

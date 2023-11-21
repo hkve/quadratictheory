@@ -8,6 +8,7 @@ import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
 from pyscf.cc.ccsd import CCSD as pyscfCCSD
 
+
 class TestCoupledCluster(TestCase):
     def ccd_compare_with_pyscf(self, atom, basis, tol=1e-8):
         rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True)
@@ -23,10 +24,9 @@ class TestCoupledCluster(TestCase):
         gccd = GCCD(gbasis).run(tol=tol)
         Egccd = gccd.energy()
 
-        
         hf_pyscf = pyscf.scf.HF(rbasis.mol).run(verbose=0, tol=tol)
         ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
-        
+
         Eccd = ccd_pyscf.e_tot
 
         self.assertAlmostEqual(Erccd, Eccd, places=6)
@@ -46,12 +46,10 @@ class TestCoupledCluster(TestCase):
 
         hf_pyscf = pyscf.scf.HF(gbasis.mol).run(verbose=0, tol=tol)
         ccsd_pyscf = pyscfCCSD(hf_pyscf).run(verbose=0, tol=tol)
-        
+
         Eccsd = ccsd_pyscf.e_tot
 
         self.assertAlmostEqual(Egccsd, Eccsd, places=6)
-
-
 
     def test_ccd_He(self):
         self.ccd_compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
