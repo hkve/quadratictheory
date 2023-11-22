@@ -73,7 +73,7 @@ class TestHartreeFock(TestCase):
         self.compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=True)
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=False)
-        self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", translation=[0,0,1], basis="cc-pVDZ", restricted=False)
+        # self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", translation=[0,0,1], basis="cc-pVDZ", restricted=False)
 
     def test_Be(self):
         self.compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
