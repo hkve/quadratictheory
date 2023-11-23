@@ -5,10 +5,16 @@ import pyscf
 
 
 class PyscfBasis(Basis):
-    def __init__(self, atom: str, basis: str, restricted: bool = True):
+    def __init__(self, atom: str, basis: str, restricted: bool = True, center=True):
         mol = pyscf.gto.Mole()
         mol.build(atom=atom, basis=basis)
         self.mol = mol
+
+        if center:
+            charges = mol.atom_charges()
+            coords = mol.atom_coords()
+            nuc_charge_center = np.einsum("z,zx->x", charges, coords) / charges.sum()
+            mol.set_common_orig_(nuc_charge_center)
 
         super().__init__(L=2 * mol.nao, N=mol.nelectron, restricted=True)
 
