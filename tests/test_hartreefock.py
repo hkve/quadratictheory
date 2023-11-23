@@ -46,7 +46,7 @@ class TestHartreeFock(TestCase):
         self.assertAlmostEqual(E_hf, E_pyscf)
 
     def zero_posistion(self, atom, basis, restricted):
-        basis = PyscfBasis(atom=atom, basis=basis, restricted=restricted)
+        basis = PyscfBasis(atom=atom, basis=basis, restricted=restricted, center=False)
 
         hf = HF(basis).run()
 
@@ -55,25 +55,25 @@ class TestHartreeFock(TestCase):
         for i in range(3):
             self.assertAlmostEqual(r[i], 0)
 
-    def translate_posistion(self, atom, atom_translated, translation, basis, restricted):
-        first = PyscfBasis(atom=atom, basis=basis, restricted=restricted)
+    def translate_posistion(self, atom, atom_translated, basis, restricted):
+        first = PyscfBasis(atom=atom, basis=basis, restricted=restricted, center=True)
         hf = HF(first).run()
-        r = hf.one_body_expval(first.r)
+        r1 = hf.one_body_expval(first.r)
 
-        second = PyscfBasis(atom=atom_translated, basis=basis, restricted=restricted)
+        second = PyscfBasis(atom=atom_translated, basis=basis, restricted=restricted, center=True)
         hf = HF(second).run()
-        r_translated = hf.one_body_expval(second.r)
+        r2 = hf.one_body_expval(second.r)
 
-        translation_bohr = [1.8897259886*t for t in translation]
         for i in range(3):
-            self.assertAlmostEqual(r_translated[i], r[i]+translation_bohr[i])
+            self.assertAlmostEqual(r1[i], r2[i])
 
     # Atoms
     def test_He(self):
         self.compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=True)
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=False)
-        # self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", translation=[0,0,1], basis="cc-pVDZ", restricted=False)
+        self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=False)
+        self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=True)
 
     def test_Be(self):
         self.compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
@@ -93,3 +93,5 @@ class TestHartreeFock(TestCase):
     def test_LiH(self):
         self.compare_with_pyscf(atom="Li 0 0 0; H 0 0 1.619", basis="cc-pVDZ")
         self.compare_with_pyscf(atom="Li 0 0 0; H 0 0 1.511", basis="sto-3g")
+        self.translate_posistion(atom="Li 0 0 0; H 0 0 1", atom_translated="Li 0 0 1; H 0 0 2", basis="cc-pVDZ", restricted=False)
+        self.translate_posistion(atom="Li 0 0 0; H 0 0 1", atom_translated="Li 0 0 1; H 0 0 2", basis="cc-pVDZ", restricted=True)
