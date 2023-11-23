@@ -72,9 +72,26 @@ class TestCoupledClusterDensities(TestCase):
             msg=f"Energy from amplitudes {E1:.6f} does not match energy from density matricies {E2:.6f}",
         )
 
+    def zero_position(self, atom, basis, CC, tol=1e-6):
+        basis = PyscfBasis(atom, basis, restricted=True, center=False)
+        hf = RHF(basis).run()
+        basis.change_basis(hf.C)
+        basis.from_restricted()
+
+        cc = CC(basis).run(tol=tol, include_l=True)
+        cc.one_body_density()
+
+        r = cc.one_body_expval(basis.r)
+
+        for i in range(3):
+            self.assertAlmostEqual(r[i], 0)
+
     def test_ccd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
+
+        self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
+        self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
 
     def test_ccd_Be(self):
         self.compare_raw_vs_intermediate(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD)
