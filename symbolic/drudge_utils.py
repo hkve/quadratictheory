@@ -153,6 +153,17 @@ def define_rk2_rhs(dr, equation, symbol="r"):
     r2 = make_rk2(dr, symbol)
     return dr.define(r2[a, b, i, j], equation)
 
+def diff_rk2_antisym(term, var, o, v):
+    i, j = o
+    a, b = v
+
+    term_derivative = (term.diff(var[a,b,i,j])
+                     - term.diff(var[b,a,i,j]) 
+                     - term.diff(var[a,b,j,i])
+                     + term.diff(var[b,a,j,i]))/4
+    term_derivative = term_derivative.simplify()
+
+    return term_derivative
 
 def similarity_transform(tensor, clusters):
     stopwatch = None
