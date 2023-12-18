@@ -1,5 +1,6 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
+from IPython import embed
 
 def similarity_transform_order(tensor, clusters):
     stopwatch = None
@@ -21,22 +22,24 @@ def similarity_transform_order(tensor, clusters):
 def run(dr):
     T2, L2 = drutils.get_clusters_2(dr)
     ham = dr.ham
-    ham_bars = similarity_transform_order(ham, T2)
+    # ham_bars = similarity_transform_order(ham, T2)
+    ham_bar = drutils.similarity_transform(ham, T2)
 
     t2, l2 = drutils.make_rk2(dr, "t"), drutils.make_rk2(dr, "\lambda")
     (i,j), (a,b) = drutils.get_indicies(dr, num=2)
 
-    E0 = (ham).eval_fermi_vev().simplify()
-    E1 = (L2*(ham + ham_bars[1]+ham_bars[2])).eval_fermi_vev().simplify()
-    E2 = (L2*L2*(ham_bars[2] + ham_bars[3])/2).eval_fermi_vev().simplify()
+    energy_eq = ((1 + L2 + L2*L2/2)*ham_bar).eval_fermi_vev().simplify()
+    # E0 = (ham).eval_fermi_vev().simplify()
+    # E1 = (L2*(ham + ham_bars[1]+ham_bars[2])).eval_fermi_vev().simplify()
+    # E2 = (L2*L2*(ham_bars[2] + ham_bars[3])/2).eval_fermi_vev().simplify()
 
-    energy_eq = (E0+E1+E2).simplify()
+    # energy_eq = (E0+E1+E2).simplify()
     drutils.timer.tock("QCCD energy addition done")
 
-    t2_terms = drutils.diff_rk2_antisym(energy_eq, l2, (i,j), (a,b))
+    t2_terms = (4*drutils.diff_rk2_antisym(energy_eq, l2, (i,j), (a,b))).simplify()
     drutils.timer.tock("QCCD t2 done")
 
-    l2_terms = drutils.diff_rk2_antisym(energy_eq, t2, (i,j), (a,b))
+    l2_terms = (4*drutils.diff_rk2_antisym(energy_eq, t2, (i,j), (a,b))).simplify()
     drutils.timer.tock("QCCD l2 done")
 
     e = drutils.define_rk0_rhs(dr, energy_eq)
@@ -59,7 +62,10 @@ def run(dr):
     drutils.timer.tock("QCCD l2 opti done")
 
     drutils.save_html(dr, "qccd_from_lag", [energy_eq, t2_equations, l2_equations], ["Energy", "t2=0", "l2=0"])
-    drutils.save_html(dr, "qccd_opti_from_lag", [eval_seq_e, eval_seq_t2, eval_seq_l2], ["Energy", "t2=0", "l2=0"])
+
+    drutils.save_html(dr, "qccd_opti_lagrangian", eval_seq_e)
+    drutils.save_html(dr, "qccd_opti_t2", eval_seq_t2)
+    drutils.save_html(dr, "qccd_opti_l2", eval_seq_l2)
 
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge()
