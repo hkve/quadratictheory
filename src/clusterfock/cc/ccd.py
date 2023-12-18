@@ -87,14 +87,14 @@ class GCCD(CoupledCluster):
 
     def _overlap(self, t0, l0, t, l):
         psitilde_t = 1
-        psitilde_t += 0.25*np.einsum("abij,abij->", t0[2], l[2])
-        psitilde_t -= 0.25*np.einsum("abij,abij->", t[2], l[2])
+        psitilde_t += 0.25 * np.einsum("abij,abij->", t0[2], l[2])
+        psitilde_t -= 0.25 * np.einsum("abij,abij->", t[2], l[2])
 
         psit = 1
-        psit += 0.25*np.einsum("abij,abij->", t[2], l0[2])
-        psit -= 0.25*np.einsum("abij,abij->", t0[2], l0[2])
+        psit += 0.25 * np.einsum("abij,abij->", t[2], l0[2])
+        psit -= 0.25 * np.einsum("abij,abij->", t0[2], l0[2])
 
-        return psit*psitilde_t
+        return psit * psitilde_t
 
 
 class RCCD(CoupledCluster):

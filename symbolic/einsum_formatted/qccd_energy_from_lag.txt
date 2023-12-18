@@ -1,48 +1,12 @@
-import numpy as np
-
-
-def energy_qccd(t2, l2, u, f, o, v):
     e = 0
 
-    e += np.einsum(
-        "abij,abij->", l2, u[v, v, o, o], optimize=True
-    ) / 4
-
-    e += np.einsum(
-        "abij,ijab->", t2, u[o, o, v, v], optimize=True
-    ) / 4
-
-    e += np.einsum(
-        "abij,abkl,klij->", l2, t2, u[o, o, o, o], optimize=True
-    ) / 8
-
     e -= np.einsum(
-        "ac,abij,bcij->", f[v, v], l2, t2, optimize=True
-    ) / 2
+        "abij,acik,kbjc->", l2, t2, u[o, v, o, v], optimize=True
+    )
 
     e += np.einsum(
         "abij,cdij,abcd->", l2, t2, u[v, v, v, v], optimize=True
     ) / 8
-
-    e += np.einsum(
-        "ki,abij,abjk->", f[o, o], l2, t2, optimize=True
-    ) / 2
-
-    e += np.einsum(
-        "abij,acik,bdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
-    ) / 2
-
-    e -= np.einsum(
-        "abij,abik,cdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
-    ) / 4
-
-    e -= np.einsum(
-        "abij,acij,bdkl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
-    ) / 4
-
-    e += np.einsum(
-        "abij,abkl,cdij,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
-    ) / 16
 
     e -= np.einsum(
         "acjk,bdil,aejl,bgik,cdeg->", l2, l2, t2, t2, u[v, v, v, v], optimize=True
@@ -95,30 +59,6 @@ def energy_qccd(t2, l2, u, f, o, v):
     e -= np.einsum(
         "abil,cdjk,abim,cejk,mdle->", l2, l2, t2, t2, u[o, v, o, v], optimize=True
     ) / 4
-
-    e -= np.einsum(
-        "abij,acik,kbjc->", l2, t2, u[o, v, o, v], optimize=True
-    )
-
-    e -= np.einsum(
-        "abik,cdjl,acim,bdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
-    ) / 2
-
-    e -= np.einsum(
-        "abij,cdkl,abim,cdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
-    ) / 8
-
-    e += np.einsum(
-        "abij,cdkl,acim,bdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
-    ) / 4
-
-    e += np.einsum(
-        "abik,cdjl,abim,cdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
-    ) / 8
-
-    e += np.einsum(
-        "abik,cdjl,abjn,cdim,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
-    ) / 8
 
     e += np.einsum(
         "adij,bckl,abim,cejk,dgln,mneg->", l2, l2, t2, t2, t2, u[o, o, v, v], optimize=True
@@ -192,4 +132,55 @@ def energy_qccd(t2, l2, u, f, o, v):
         "acjk,bdil,abmn,cejk,dgil,mneg->", l2, l2, t2, t2, t2, u[o, o, v, v], optimize=True
     ) / 16
 
-    return e
+    e += np.einsum(
+        "abij,acik,bdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    ) / 2
+
+    e -= np.einsum(
+        "abij,abik,cdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    ) / 4
+
+    e -= np.einsum(
+        "abij,acij,bdkl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    ) / 4
+
+    e += np.einsum(
+        "abij,abkl,cdij,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    ) / 16
+
+    e -= np.einsum(
+        "ac,abij,bcij->", f[v, v], l2, t2, optimize=True
+    ) / 2
+
+    e += np.einsum(
+        "abij,abkl,klij->", l2, t2, u[o, o, o, o], optimize=True
+    ) / 8
+
+    e += np.einsum(
+        "abij,abij->", l2, u[v, v, o, o], optimize=True
+    ) / 4
+
+    e += np.einsum(
+        "ki,abij,abjk->", f[o, o], l2, t2, optimize=True
+    ) / 2
+
+    e -= np.einsum(
+        "abik,cdjl,acim,bdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
+    ) / 2
+
+    e -= np.einsum(
+        "abij,cdkl,abim,cdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
+    ) / 8
+
+    e += np.einsum(
+        "abij,cdkl,acim,bdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
+    ) / 4
+
+    e += np.einsum(
+        "abik,cdjl,abim,cdjn,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
+    ) / 8
+
+    e += np.einsum(
+        "abik,cdjl,abjn,cdim,mnkl->", l2, l2, t2, t2, u[o, o, o, o], optimize=True
+    ) / 8
+
