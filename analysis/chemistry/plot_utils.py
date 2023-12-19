@@ -56,6 +56,6 @@ plt.rc("ytick", **_ticks_default_parameters)
 # Line options
 plt.rc("lines", linewidth=2)
 
-
 # To see more paramteres, print the possible options:
 # print(plt.rcParams)
+
