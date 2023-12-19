@@ -2,10 +2,8 @@ import numpy as np
 import clusterfock as cf
 from fci_utils import run_fci_single
 
-import matplotlib.pyplot as plt
 import pathlib as pl
 import pandas as pd
-import plot_utils as pu
 
 def merge_df(df1, df2):
     df_merged = pd.merge(df1, df2, on="r", how="outer", suffixes=(None, "_new"))
@@ -105,10 +103,10 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
 
     return E
 
-def main():
+def calculate_N2():
     # distances = np.array([1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4])
-    distances = np.array([2.2, 2.4])
-    
+    distances = np.array([0.6, 0.8])
+
     basis = "sto-3g"
     atoms = make_N2(distances)
 
@@ -116,9 +114,17 @@ def main():
     df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
     save("N2.csv", df_fci)
 
-    # E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
-    # df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
-    # save("N2.csv", df_ccd)
+    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
+    save("N2.csv", df_ccd)
+
+    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
+    save("N2.csv", df_qccd)
+
+
+def main():
+    calculate_N2()
 
 if __name__ == "__main__":
     main()
