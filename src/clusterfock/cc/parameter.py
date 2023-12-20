@@ -118,6 +118,9 @@ class CoupledClusterParameter:
         new = CoupledClusterParameter(self.orders, self.N, self.M, self.dtype)
         return new.initialize_dicts({o: self[o].copy() for o in self.orders})
 
+    def is_empty(self):
+        return self._data == {}
+
     @property
     def dtype(self):
         return self._dtype
