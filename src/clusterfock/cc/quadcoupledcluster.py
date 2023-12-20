@@ -12,13 +12,14 @@ class QuadraticCoupledCluster(CoupledCluster):
 
     def run(self, tol: float = 1e-8, maxiters: int = 1000, vocal: bool = False) -> CoupledCluster:
         basis = self.basis
+        t, l, epsinv = self._t, self._l, self._epsinv
 
-        self._t.initialize_zero()
-        self._l.initialize_zero()
-        self._epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
+        if t.is_empty(): t.initialize_zero()
+        if l.is_empty(): l.initialize_zero()
+        
+        epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
 
         iters, diff = 0, 1000
-        t, l, epsinv = self._t, self._l, self._epsinv
         converged = False
 
         while (iters < maxiters) and not converged:
@@ -55,3 +56,7 @@ class QuadraticCoupledCluster(CoupledCluster):
         self._l_info = self._t_info
 
         return self
+
+    def initialize_amplitudes(self, t, l):
+        self._t = t.copy()
+        self._l = l.copy()
