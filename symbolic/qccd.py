@@ -1,94 +1,74 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
+from IPython import embed
+
+def similarity_transform_order(tensor, clusters):
+    stopwatch = None
+
+    curr = tensor
+    tensor_bar = tensor
+
+    tensors_bars = {}
+
+    for order in range(0, 4):
+        curr = (curr | clusters).simplify() / (order + 1)
+        curr.cache()
+        tensors_bars[order+1] = curr
+        drutils.timer.tock(f"Commutator at order {order+1}")
+
+    return tensors_bars
 
 @drutils.timeme
-def E_equations(dr):
+def run(dr):
     T2, L2 = drutils.get_clusters_2(dr)
     ham = dr.ham
+    # ham_bars = similarity_transform_order(ham, T2)
     ham_bar = drutils.similarity_transform(ham, T2)
 
-    # Free indicies for de-excitation operator
-    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
-    Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
+    t2, l2 = drutils.make_rk2(dr, "t"), drutils.make_rk2(dr, "\lambda")
+    (i,j), (a,b) = drutils.get_indicies(dr, num=2)
 
-    energy_ccd = (ham_bar).eval_fermi_vev().simplify()
-    drutils.timer.tock("CCD energy done")
-    energy_qccd_addition = (L2*L2*ham_bar).eval_fermi_vev().simplify()
+    energy_eq = ((1 + L2 + L2*L2/2)*ham_bar).eval_fermi_vev().simplify()
+    # E0 = (ham).eval_fermi_vev().simplify()
+    # E1 = (L2*(ham + ham_bars[1]+ham_bars[2])).eval_fermi_vev().simplify()
+    # E2 = (L2*L2*(ham_bars[2] + ham_bars[3])/2).eval_fermi_vev().simplify()
+
+    # energy_eq = (E0+E1+E2).simplify()
     drutils.timer.tock("QCCD energy addition done")
 
-    energy_eq = (energy_ccd - energy_qccd_addition/2).simplify()
+    t2_terms = (4*drutils.diff_rk2_antisym(energy_eq, l2, (i,j), (a,b))).simplify()
+    drutils.timer.tock("QCCD t2 done")
 
-    drutils.save_html(dr, "qccd_energy", [energy_eq], ["Energy"])
+    l2_terms = (4*drutils.diff_rk2_antisym(energy_eq, t2, (i,j), (a,b))).simplify()
+    drutils.timer.tock("QCCD l2 done")
 
     e = drutils.define_rk0_rhs(dr, energy_eq)
-    grutils.einsum_raw(dr, "qccd_energy", [e])
-    eval_seq = grutils.optimize_equations(dr, e)
-    grutils.einsum_raw(dr, "qccd_energy_optimized", eval_seq)
+    grutils.einsum_raw(dr, "qccd_energy_from_lag", [e])
+    eval_seq_e = grutils.optimize_equations(dr, e)
+    grutils.einsum_raw(dr, "qccd_energy_optimized_from_lag", eval_seq_e)
+    drutils.timer.tock("QCCD energy opti done")
 
-@drutils.timeme
-def T_equations(dr):
-    # Get T2 operators and sim transform ham
-    T2, L2 = drutils.get_clusters_2(dr)
-    ham = dr.ham
-    ham_bar = drutils.similarity_transform(ham, T2)
+    t2_equations = drutils.define_rk2_rhs(dr, t2_terms)
+    l2_equations = drutils.define_rk2_rhs(dr, l2_terms)
 
-    # Free indicies for de-excitation operator
-    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
-    Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
+    grutils.einsum_raw(dr, "qccd_t2_from_lag", [t2_equations])
+    eval_seq_t2 = grutils.optimize_equations(dr, t2_equations)
+    grutils.einsum_raw(dr, "qccd_t2_optimized_from_lag", eval_seq_t2)
+    drutils.timer.tock("QCCD t2 opti done")
 
-    # Calculate energy and t2 equations
-    # energy_eq = ham_bar.eval_fermi_vev().simplify()
-    # drutils.timer.tock("T2 energy equation")
-    amplitude_t2_eq_linear = (Y2 * ham_bar).eval_fermi_vev().simplify()
-    drutils.timer.tock("T2 amplitude linear term")
-    amplitude_t2_eq_quad = (Y2 * L2 * ham_bar).eval_fermi_vev().simplify()
-    drutils.timer.tock("T2 amplitude quad term")
+    grutils.einsum_raw(dr, "qccd_l2_from_lag", [l2_equations])
+    eval_seq_l2 = grutils.optimize_equations(dr, l2_equations)
+    grutils.einsum_raw(dr, "qccd_l2_optimized_from_lag", eval_seq_l2)
+    drutils.timer.tock("QCCD l2 opti done")
 
-    amplitude_t2_eq = (amplitude_t2_eq_linear + amplitude_t2_eq_quad).simplify()
-    drutils.save_html(dr, "qccd_t2", [amplitude_t2_eq], ["t2 = 0"])
+    drutils.save_html(dr, "qccd_from_lag", [energy_eq, t2_equations, l2_equations], ["Energy", "t2=0", "l2=0"])
 
-    # e = drutils.define_rk0_rhs(dr, energy_eq)
-    t2 = drutils.define_rk2_rhs(dr, amplitude_t2_eq)
+    drutils.save_html(dr, "qccd_opti_lagrangian", eval_seq_e)
+    drutils.save_html(dr, "qccd_opti_t2", eval_seq_t2)
+    drutils.save_html(dr, "qccd_opti_l2", eval_seq_l2)
 
-    grutils.einsum_raw(dr, "qccd_t2", [t2])
-    eval_seq = grutils.optimize_equations(dr, t2)
-    grutils.einsum_raw(dr, "qccd_t2_optimized", eval_seq)
-
-
-@drutils.timeme
-def L_equations(dr):
-    # Get T2 and L2 operator, excitation and sim transform commutator
-    T2, L2 = drutils.get_clusters_2(dr)
-    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
-    X2 = drutils.get_X(dr, 2, (i, j), (a, b))
-
-    comm = dr.ham | X2
-    comm_sim = drutils.similarity_transform(comm, T2)
-
-    # Calculate A(t) and B(t, l) term
-    A = comm_sim.eval_fermi_vev().simplify()
-    drutils.timer.tock("L2, A term")
-    B = (L2 * comm_sim).eval_fermi_vev().simplify()
-    drutils.timer.tock("L2 B term")
-    C = (L2 * L2 * comm_sim / 2).eval_fermi_vev().simplify()
-    drutils.timer.tock("L2 C term")
-
-    amplitude_l2_eq = (A + B + C).simplify()
-    drutils.save_html(dr, "qccd_l2", [amplitude_l2_eq], ["l2 = 0"])
-
-    l2 = drutils.define_rk2_rhs(dr, amplitude_l2_eq)
-    grutils.einsum_raw(dr, "qccd_l2", l2)
-    eval_seq = grutils.optimize_equations(dr, l2)
-    grutils.einsum_raw(dr, "qccd_l2_optimized", eval_seq)
-
-def main():
+if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
-    E_equations(dr)
-    T_equations(dr)
-    L_equations(dr)
-
-
-if __name__ == "__main__":
-    main()
+    run(dr)
