@@ -31,7 +31,12 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
     return working_eqs
 
 
-def optimize_equations(dr, equations):
+def optimize_equations(dr, equations, **kwargs):
+    options = {
+        "contr_strat": gristmill.ContrStrat.EXHAUST,
+    }
+    options.update(kwargs)
+    
     equations = utils.pack_as_list(equations)
 
     orig_cost = gristmill.get_flop_cost(equations, leading=True)
@@ -40,7 +45,7 @@ def optimize_equations(dr, equations):
     eval_seq = gristmill.optimize(
         equations,
         substs={dr.names.nv: 5000, dr.names.no: 1000},
-        contr_strat=gristmill.ContrStrat.EXHAUST,
+        **options
     )
 
     opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
