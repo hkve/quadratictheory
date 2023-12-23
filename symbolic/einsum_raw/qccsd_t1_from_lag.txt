@@ -1,0 +1,933 @@
+    r^1 = zeros((nv, no))
+
+    r^1 += einsum(
+        "bl,abjk,iljk->ai", t^1, \lambda^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "aj,bk,bl,iljk->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bj,bcjk,ikac->ai", \lambda^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "cj,abjk,ibkc->ai", t^1, \lambda^2, u
+    )
+
+    r^1 += einsum(
+        "ic,abjk,bcjk->ai", f, \lambda^2, t^2
+    ) / 2
+
+    r^1 += einsum(
+        "ka,bcij,bcjk->ai", f, \lambda^2, t^2
+    ) / 2
+
+    r^1 -= einsum(
+        "bk,bcij,kcaj->ai", t^1, \lambda^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bcjk,ikbc->ai", \lambda^1, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,bcjk,jkac->ai", \lambda^1, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "aj,bk,ic,bcjk->ai", \lambda^1, \lambda^1, f, t^2
+    )
+
+    r^1 += einsum(
+        "aj,bk,cj,ibkc->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bi,cj,ka,bcjk->ai", \lambda^1, \lambda^1, f, t^2
+    )
+
+    r^1 += einsum(
+        "bi,cj,ck,kbaj->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,ck,ibjc->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,bj,ck,ikbc->ai", \lambda^1, t^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,bk,kcaj->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bi,bj,ck,jkac->ai", \lambda^1, t^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bj,bk,cj,ikac->ai", \lambda^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bj,bm,ackl,cdjk,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cl,cdik,bdjm,lmak->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,dj,ackl,bckm,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,dk,ackl,bclm,imjd->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "aj,dk,bckl,bcjm,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,bl,cdjk,cdjm,lmak->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,bl,cdik,cdkm,lmaj->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,bm,ackl,cdkl,imjd->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bm,bckl,cdjk,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bi,cl,cdjk,bdjm,lmak->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cl,cdik,bdkm,lmaj->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cm,ackl,bdjk,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,dk,ackl,bcjm,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bm,bckl,cdkl,imjd->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,dj,bckl,bckm,imld->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,dk,bckl,bclm,imjd->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,bl,cdik,cdjm,lmak->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cm,ackl,bdkl,imjd->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "aj,bckl,bckm,imjl->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,ackl,bcjm,imkl->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,ackl,bckm,imjl->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bckl,bcjm,imkl->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "aj,ij->ai", \lambda^1, f
+    )
+
+    r^1 += einsum(
+        "bi,cdjk,bcjl,ldak->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ackl,bdjk,icld->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cdik,bckl,ldaj->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cdjk,cdjl,lbak->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,ackl,bdkl,icjd->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,cdik,cdkl,lbaj->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bl,bcjk,cdjk,ilad->ai", t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "dj,bcjk,bckl,ilad->ai", t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bckl,bdjk,icld->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,ackl,cdjk,ibld->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cdik,bcjl,ldak->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bk,bcij,cdjl,klad->ai", t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "cj,abjk,bdkl,ilcd->ai", t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bckl,bdkl,icjd->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,ackl,cdkl,ibjd->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cdik,cdjl,lbak->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "cl,abjk,bdjk,ilcd->ai", t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "dk,bcij,bcjl,klad->ai", t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bl,abjk,cdjk,ilcd->ai", t^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "dj,bcij,bckl,klad->ai", t^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "aj,bk,ck,bdjl,ilcd->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cj,ck,bdjl,klad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ck,bl,cdjk,ilad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ck,dj,bckl,ilad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "aj,bk,bl,cdjk,ilcd->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,cj,dj,bckl,klad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bk,cl,dj,bcij,klad->ai", t^1, t^1, t^1, \lambda^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bl,cj,dk,abjk,ilcd->ai", t^1, t^1, t^1, \lambda^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bk,cj,bdkl,ilcd->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,cl,bdjk,ilcd->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,bk,cdjl,klad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,dk,bcjl,klad->ai", \lambda^1, \lambda^1, t^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "aj,bk,bl,cj,dk,ilcd->ai", \lambda^1, \lambda^1, t^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bi,cj,bk,cl,dj,klad->ai", \lambda^1, \lambda^1, t^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bcij,bcaj->ai", \lambda^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,cj,bcaj->ai", \lambda^1, \lambda^1, u
+    )
+
+    r^1 += einsum(
+        "bj,cj,ibac->ai", \lambda^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,jbac->ai", \lambda^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bj,ibaj->ai", \lambda^1, u
+    )
+
+    r^1 += einsum(
+        "bj,ijab->ai", t^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,ib,bj->ai", \lambda^1, f, t^1
+    )
+
+    r^1 -= einsum(
+        "bi,ja,bj->ai", \lambda^1, f, t^1
+    )
+
+    r^1 += einsum(
+        "aj,dk,bckl,bejl,icde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,bl,cdik,cejk,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cl,cdik,dejk,lbae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,dk,ackl,cejl,ibde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ej,cdik,bckl,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cl,cdjk,bejk,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,dj,ackl,bekl,icde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,ej,cdik,cdkl,lbae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,ej,cdjk,bckl,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cl,cdik,bejk,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,dk,ackl,bejl,icde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,ek,cdik,bcjl,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,dj,bckl,bekl,icde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,bl,cdjk,cejk,ldae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,cl,cdjk,dejk,lbae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,ej,cdjk,cdkl,lbae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,dj,ackl,cekl,ibde->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,ek,cdik,cdjl,lbae->ai", \lambda^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "ia->ai", f
+    )
+
+    r^1 += einsum(
+        "aj,bckl,bdjk,celm,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cdjk,bcjl,dekm,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ackl,belm,cdjk,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cdik,bdkm,cejl,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "aj,bckl,bdkl,cejm,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,cdjk,bekm,cdjl,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,ackl,bclm,dejk,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,ackl,bejm,cdkl,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,cdik,bclm,dejk,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,cdik,bejm,cdkl,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,ackl,bdjk,celm,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cdik,bcjl,dekm,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cdkl,bdlm,cejk,imae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,ackl,bdkl,cejm,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cdik,bekm,cdjl,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cdkl,bdjm,cekl,imae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cdkl,bejl,cdkm,imae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bckl,bclm,dejk,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "aj,bckl,bcjm,dekl,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 8
+
+    r^1 -= einsum(
+        "bi,cdjk,bejk,cdlm,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 8
+
+    r^1 += einsum(
+        "bi,cdjk,bdlm,cejk,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bj,ackl,bcjm,dekl,imde->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bj,cdik,bejk,cdlm,lmae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bj,cdkl,bekl,cdjm,imae->ai", \lambda^1, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "aj,bm,dk,bckl,cejl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cl,ej,cdjk,bdkm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,bl,cm,cdik,dejk,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cl,ek,cdik,bdjm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,cm,dk,ackl,bejl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,dj,ek,ackl,bclm,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,bl,ej,cdik,cdkm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,bm,dj,ackl,cekl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,cl,dm,cdik,bejk,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,dk,el,ackl,bcjm,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,bm,dk,ackl,cejl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,cl,ej,cdik,bdkm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bm,dj,bckl,cekl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,dj,ek,bckl,bclm,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,bl,cm,cdjk,dejk,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bi,bl,ej,cdjk,cdkm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,bl,ek,cdik,cdjm,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cm,dj,ackl,bekl,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,dk,el,bckl,bcjm,imde->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "bi,cl,dm,cdjk,bejk,lmae->ai", \lambda^1, t^1, t^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bn,adlm,bcjk,cejl,dgkm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "dm,bcjk,deil,bgjl,cekn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "el,adlm,bcjk,bgjm,cdkn,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "gj,bcjk,deil,bdkm,celn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bm,bcjk,deil,celn,dgjk,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "dn,adlm,bcjk,bejl,cgkm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "ej,adlm,bcjk,bcln,dgkm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "gl,bcjk,deil,bdjm,cekn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bm,bcjk,deil,cekn,dgjl,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "ej,adlm,bcjk,bgkl,cdmn,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bm,bcjk,deil,cgkl,dejn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "dm,bcjk,deil,bcjn,egkl,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "dm,bcjk,deil,bgjk,celn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "ej,adlm,bcjk,bglm,cdkn,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "el,adlm,bcjk,bcjn,dgkm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "el,adlm,bcjk,bgjk,cdmn,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bm,bcjk,deil,cgjk,deln,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "bn,adlm,bcjk,cejk,dglm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "dm,bcjk,deil,bcln,egjk,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "dn,adlm,bcjk,bejk,cglm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "ej,adlm,bcjk,bckn,dglm,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "el,adlm,bcjk,bcmn,dgjk,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "gj,bcjk,deil,bckm,deln,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "gj,bcjk,deil,bcln,dekm,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "gl,bcjk,deil,bcjm,dekn,mnag->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bn,adlm,bcjk,cglm,dejk,ineg->ai", t^1, \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bi,ba->ai", \lambda^1, f
+    )
+
+    r^1 += einsum(
+        "abjk,bcjl,ilkc->ai", \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bcjk,bcjl,ilak->ai", \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bcij,bckl,klaj->ai", \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "aj,bk,bcjl,ilkc->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "bi,cj,bckl,klaj->ai", \lambda^1, \lambda^1, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bk,cl,bcij,klaj->ai", t^1, t^1, \lambda^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bk,bckl,iljc->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bj,ck,bcjl,ilak->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bl,cj,abjk,ilkc->ai", t^1, t^1, \lambda^2, u
+    )
+
+    r^1 += einsum(
+        "aj,bk,bl,ck,iljc->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bi,cj,bk,cl,klaj->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,bl,cj,ilkc->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "dj,bcij,bcad->ai", t^1, \lambda^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,cj,dj,bcad->ai", \lambda^1, \lambda^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bcij,bdjk,kcad->ai", \lambda^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bcjk,bdjk,icad->ai", \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "abjk,cdjk,ibcd->ai", \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bi,cj,bdjk,kcad->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 += einsum(
+        "bj,ck,bdjk,icad->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,cdjk,kbad->ai", \lambda^1, \lambda^1, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bk,dj,bcij,kcad->ai", t^1, t^1, \lambda^2, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,cdjk,ibcd->ai", \lambda^1, \lambda^1, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "cj,dk,abjk,ibcd->ai", t^1, t^1, \lambda^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bi,cj,ck,dj,kbad->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,cj,dk,ibcd->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bi,cj,bk,dj,kcad->ai", \lambda^1, \lambda^1, t^1, t^1, u
+    )
+
+    r^1 += einsum(
+        "bi,cdjk,cejk,bdae->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bj,cdik,bejk,cdae->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bj,cdik,cejk,bdae->ai", \lambda^1, \lambda^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bi,cdjk,bejk,cdae->ai", \lambda^1, \lambda^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bejl,dgkm,iceg->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bcjk,deil,bekm,dgjl,mcag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "bcjk,deil,bcjm,dgkl,meag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bcjk,deil,bgjk,cdlm,meag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bcjk,deil,bgkl,dejm,mcag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bcjk,deil,bgjl,cdkm,meag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "adlm,bcjk,bejl,cgkm,ideg->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bcjk,deil,belm,dgjk,mcag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "adlm,bcjk,bejk,dglm,iceg->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bejk,cglm,ideg->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bglm,dejk,iceg->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bcjk,deil,bclm,dgjk,meag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bcjk,deil,bgjk,delm,mcag->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bejl,cdmn,inke->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 += einsum(
+        "adlm,bcjk,bcjn,dekl,inme->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "adlm,bcjk,bejk,cdln,inme->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "adlm,bcjk,belm,cdjn,inke->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "bcjk,deil,bdjm,cekn,mnal->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "adlm,bcjk,bejl,cdkn,inme->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "bcjk,deil,bdjm,celn,mnak->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    r^1 -= einsum(
+        "adlm,bcjk,bcln,dejm,inke->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "bcjk,deil,bcjm,dekn,mnal->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bcjn,delm,inke->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "adlm,bcjk,bcln,dejk,inme->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bcjk,deil,bcjm,deln,mnak->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 += einsum(
+        "bcjk,deil,bcln,dejm,mnak->ai", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 4
+
+    r^1 -= einsum(
+        "abjk,ibjk->ai", \lambda^2, u
+    ) / 2
+
+    r^1 -= einsum(
+        "aj,bk,ibjk->ai", \lambda^1, \lambda^1, u
+    )
+
+    r^1 -= einsum(
+        "aj,bk,ikjb->ai", \lambda^1, t^1, u
+    )
+
+    r^1 -= einsum(
+        "bj,bk,ikaj->ai", \lambda^1, t^1, u
+    )
