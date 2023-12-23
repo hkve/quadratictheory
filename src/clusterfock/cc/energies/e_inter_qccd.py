@@ -3,26 +3,28 @@ import numpy as np
 
 def energy_intermediates_qccd(t2, l2, u, f, o, v):
     M, _, N, _ = t2.shape
+    dtype = u.dtype
+    zeros = lambda shape: np.zeros(shape, dtype=dtype)
 
-    tau0 = np.zeros((M, M))
+    tau0 = zeros((M, M))
 
     tau0 += np.einsum(
         "caji,cbji->ab", l2, t2, optimize=True
     )
 
-    tau25 = np.zeros((N, N, M, M))
+    tau25 = zeros((N, N, M, M))
 
     tau25 -= np.einsum(
         "ac,ijbc->ijab", tau0, u[o, o, v, v], optimize=True
     )
 
-    tau28 = np.zeros((N, N, M, M))
+    tau28 = zeros((N, N, M, M))
 
     tau28 -= np.einsum(
         "ijab->ijab", tau25, optimize=True
     )
 
-    tau30 = np.zeros((N, N, M, M))
+    tau30 = zeros((N, N, M, M))
 
     tau30 -= 4 * np.einsum(
         "ijba->ijab", tau25, optimize=True
@@ -30,13 +32,13 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau25 = None
 
-    tau29 = np.zeros((M, M))
+    tau29 = zeros((M, M))
 
     tau29 -= 2 * np.einsum(
         "cd,cadb->ab", tau0, u[v, v, v, v], optimize=True
     )
 
-    tau31 = np.zeros((N, N))
+    tau31 = zeros((N, N))
 
     tau31 += 4 * np.einsum(
         "ab,jaib->ij", tau0, u[o, v, o, v], optimize=True
@@ -48,7 +50,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "ba,ba->", f[v, v], tau0, optimize=True
     ) / 2
 
-    tau1 = np.zeros((N, N))
+    tau1 = zeros((N, N))
 
     tau1 += np.einsum(
         "baki,bakj->ij", l2, t2, optimize=True
@@ -66,25 +68,25 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "ij,ji->", f[o, o], tau1, optimize=True
     ) / 2
 
-    tau2 = np.zeros((N, N, M, M))
+    tau2 = zeros((N, N, M, M))
 
     tau2 += np.einsum(
         "caki,jckb->ijab", l2, u[o, v, o, v], optimize=True
     )
 
-    tau3 = np.zeros((N, N, N, N))
+    tau3 = zeros((N, N, N, N))
 
     tau3 -= np.einsum(
         "bajk,ilab->ijkl", t2, tau2, optimize=True
     )
 
-    tau19 = np.zeros((N, N, M, M))
+    tau19 = zeros((N, N, M, M))
 
     tau19 += 4 * np.einsum(
         "ijab->ijab", tau2, optimize=True
     )
 
-    tau21 = np.zeros((N, N, M, M))
+    tau21 = zeros((N, N, M, M))
 
     tau21 += 8 * np.einsum(
         "ijab->ijab", tau2, optimize=True
@@ -92,13 +94,13 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau2 = None
 
-    tau4 = np.zeros((N, N, N, N))
+    tau4 = zeros((N, N, N, N))
 
     tau4 += np.einsum(
         "baij,bakl->ijkl", l2, t2, optimize=True
     )
 
-    tau23 = np.zeros((N, N, N, N))
+    tau23 = zeros((N, N, N, N))
 
     tau23 -= np.einsum(
         "jilk->ijkl", tau4, optimize=True
@@ -118,19 +120,19 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau3 = None
 
-    tau5 = np.zeros((N, N, M, M))
+    tau5 = zeros((N, N, M, M))
 
     tau5 += np.einsum(
         "caki,bcjk->ijab", l2, t2, optimize=True
     )
 
-    tau6 = np.zeros((N, N, M, M))
+    tau6 = zeros((N, N, M, M))
 
     tau6 += np.einsum(
         "acik,kjcb->ijab", t2, tau5, optimize=True
     )
 
-    tau7 = np.zeros((N, N, N, N))
+    tau7 = zeros((N, N, N, N))
 
     tau7 += np.einsum(
         "baij,klba->ijkl", l2, tau6, optimize=True
@@ -140,13 +142,13 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "lkij,jilk->", tau7, u[o, o, o, o], optimize=True
     ) / 4
 
-    tau14 = np.zeros((N, N, M, M))
+    tau14 = zeros((N, N, M, M))
 
     tau14 += 2 * np.einsum(
         "ijab->ijab", tau6, optimize=True
     )
 
-    tau24 = np.zeros((N, N, N, N))
+    tau24 = zeros((N, N, N, N))
 
     tau24 += np.einsum(
         "ljab,ikba->ijkl", tau6, u[o, o, v, v], optimize=True
@@ -154,25 +156,25 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau6 = None
 
-    tau13 = np.zeros((M, M, M, M))
+    tau13 = zeros((M, M, M, M))
 
     tau13 += 4 * np.einsum(
         "ijac,jibd->abcd", tau5, tau5, optimize=True
     )
 
-    tau15 = np.zeros((N, N, M, M))
+    tau15 = zeros((N, N, M, M))
 
     tau15 += 2 * np.einsum(
         "ikcb,kjac->ijab", tau5, tau5, optimize=True
     )
 
-    tau17 = np.zeros((M, M, M, M))
+    tau17 = zeros((M, M, M, M))
 
     tau17 -= 4 * np.einsum(
         "ijda,jbic->abcd", tau5, u[o, v, o, v], optimize=True
     )
 
-    tau20 = np.zeros((N, N, M, M))
+    tau20 = zeros((N, N, M, M))
 
     tau20 += 4 * np.einsum(
         "jkcb,kcia->ijab", tau5, u[o, v, o, v], optimize=True
@@ -190,19 +192,19 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "ijab,kalb->ijkl", tau5, u[o, v, o, v], optimize=True
     )
 
-    tau8 = np.zeros((N, N, M, M))
+    tau8 = zeros((N, N, M, M))
 
     tau8 += np.einsum(
         "caki,jkbc->ijab", t2, u[o, o, v, v], optimize=True
     )
 
-    tau9 = np.zeros((N, N, M, M))
+    tau9 = zeros((N, N, M, M))
 
     tau9 += np.einsum(
         "caki,kjcb->ijab", l2, tau8, optimize=True
     )
 
-    tau10 = np.zeros((N, N, N, N))
+    tau10 = zeros((N, N, N, N))
 
     tau10 -= np.einsum(
         "bajk,ilab->ijkl", t2, tau9, optimize=True
@@ -228,7 +230,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau4 = None
 
-    tau26 = np.zeros((N, N, M, M))
+    tau26 = zeros((N, N, M, M))
 
     tau26 += np.einsum(
         "ijab->ijab", tau8, optimize=True
@@ -236,13 +238,13 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau8 = None
 
-    tau11 = np.zeros((N, N, N, N))
+    tau11 = zeros((N, N, N, N))
 
     tau11 += np.einsum(
         "baij,klba->ijkl", t2, u[o, o, v, v], optimize=True
     )
 
-    tau22 = np.zeros((N, N, N, N))
+    tau22 = zeros((N, N, N, N))
 
     tau22 += np.einsum(
         "lkji->ijkl", tau11, optimize=True
@@ -256,7 +258,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau7 = None
 
-    tau12 = np.zeros((M, M, M, M))
+    tau12 = zeros((M, M, M, M))
 
     tau12 += np.einsum(
         "abji,cdji->abcd", l2, t2, optimize=True
@@ -266,7 +268,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "ebcf,fade->abcd", tau12, tau12, optimize=True
     )
 
-    tau16 = np.zeros((N, N, M, M))
+    tau16 = zeros((N, N, M, M))
 
     tau16 -= np.einsum(
         "cdji,dcab->ijab", t2, tau13, optimize=True
@@ -322,7 +324,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
 
     tau17 = None
 
-    tau18 = np.zeros((N, N, M, M))
+    tau18 = zeros((N, N, M, M))
 
     tau18 += np.einsum(
         "dcij,dcab->ijab", l2, u[v, v, v, v], optimize=True
@@ -376,7 +378,7 @@ def energy_intermediates_qccd(t2, l2, u, f, o, v):
         "jaib->ijab", u[o, v, o, v], optimize=True
     )
 
-    tau27 = np.zeros((N, N, M, M))
+    tau27 = zeros((N, N, M, M))
 
     tau27 += np.einsum(
         "caki,kjcb->ijab", l2, tau26, optimize=True
