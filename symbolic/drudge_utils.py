@@ -1,6 +1,8 @@
 from sympy import Symbol, IndexedBase
 import drudge
 from dummy_spark import SparkContext
+
+import pickle
 import pathlib as pl
 import functools
 import time
@@ -8,7 +10,7 @@ import time
 MAIN_PATH = pl.Path(__file__).parent
 HTML_RAW_PATH = MAIN_PATH / "html_raw"
 HTML_FORMATTED_PATH = MAIN_PATH / "html_formatted"
-
+PICKLE_RAW_PATH = MAIN_PATH / "pickle_results"
 
 class Time(drudge.Stopwatch):
     def __init__(self, vocal, *args, **kwargs):
@@ -259,6 +261,27 @@ def save_html(dr, filename, equations, titles=None):
         for title, equation in zip(titles, equations):
             rep.add(title, equation)
 
+
+def save_to_pickle(terms, filename):
+    if not filename.endswith(".pickle"): 
+        filename = filename + ".pickle"
+
+    filename = PICKLE_RAW_PATH / filename
+
+    with open(filename, "wb") as file:
+        pickle.dump(terms, file)
+
+def load_from_pickle(dr, filename):
+    if not filename.endswith(".pickle"): 
+        filename = filename + ".pickle"
+
+    filename = PICKLE_RAW_PATH / filename
+
+    with dr.pickle_env():
+        with open(filename, "rb") as file:
+            terms_loaded = pickle.load(file)
+
+    return terms_loaded
 
 if __name__ == "__main__":
     dr = get_particle_hole_drudge()
