@@ -35,6 +35,9 @@ class TimeDependentCoupledCluster:
             return {"r": basis.r}
 
         is valid, if the basis instance contains functionality that allows for calculating r.
+        
+        Note that the ENERGY observable is always calculated, in addition to the time dependent
+        overlap with the ground state.
         """
         self.cc = cc
         self.basis = cc.basis
@@ -53,7 +56,7 @@ class TimeDependentCoupledCluster:
         self._one_body_results = {}
         self._two_body_results = {}
 
-    def run(self, vocal=False):
+    def run(self, vocal: bool = False):
         cc, basis = self.cc, self.basis
 
         if not (cc.t_info["run"] or cc.l_info["run"]):
@@ -107,6 +110,8 @@ class TimeDependentCoupledCluster:
             overlap[counter] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
             t += dt
 
+        self.results = self._construct_results(energy, overlap)
+
         return np.arange(t_start, t_end+dt, dt), energy, overlap
     
 
@@ -137,6 +142,24 @@ class TimeDependentCoupledCluster:
             for key, operator in operators.items():
                 sample = cc.one_body_expval(operator)
                 self._one_body_results[key].append(sample)
+
+    def _construct_results(self, energy, overlap):
+        t_start, t_end, dt = self._t_start, self._t_end, self._dt
+        time = np.arange(t_start, t_end+dt, dt)
+
+        results = {"t": time, "energy": energy, "overlap": overlap}
+
+        if self._has_one_body_sampler:
+            for k, v in self._one_body_results.items():
+                self._one_body_results[k] = np.array(v)
+        # if self._has_two_body_sampler:
+        #     for k, v in self._two_body_results.items():
+        #         self._two_body_results[k] = np.array(v)
+
+        results.update(self._one_body_results)
+        results.update(self._two_body_results)
+
+        return results
 
     @property
     def external_one_body(self):
