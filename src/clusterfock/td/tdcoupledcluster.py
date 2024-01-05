@@ -11,6 +11,31 @@ class TimeDependentCoupledCluster:
     def __init__(
         self, cc: CoupledCluster, time: tuple = (0, 1.0, 0.0001), integrator="Rk4Integrator"
     ):
+        """
+        Constructor for time propegation using a cc calculation. Supports scipy-type integrators.
+        For dynamics, time dependent one and two body potentials can be set using 
+
+        instance.external_one_body = f(t, basis)
+        instance.external_two_body = g(t, basis)
+
+        The functions f and g will then be called for each intergration (sub-)step. They
+        must return a (L,L) or (L,L,L,L) ndarray, which is added to the one or two body
+        hamiltonian respectively. 
+
+        Similarly to save expectation values during calculations, a sampler function can also
+        be set. This is set using the 'one_body_sampler' property.
+
+        instance.one_body_sampler = sampler1(basis)
+        instance.two_body_sampler = sampler2(basis)
+
+        The functions sampler1 and sampler2 must return a dictionary with key matching the observables
+        name in basis, and the corresponding observable matrix. For instance, to sample posistions
+
+        def sampler1(basis)
+            return {"r": basis.r}
+
+        is valid, if the basis instance contains functionality that allows for calculating r.
+        """
         self.cc = cc
         self.basis = cc.basis
 
