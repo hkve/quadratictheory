@@ -5,7 +5,7 @@ from IPython import embed
 
 dt = 0.01
 F_str = 0.2
-time = (0,225,dt)
+time = (0,0.5,dt) # 225
 
 def delta_kick(t, basis, dt=dt, F_str=F_str, u=np.array([0,0,1])):
     if 0 < t < dt:
@@ -38,7 +38,7 @@ def run_helium_test():
     basis.change_basis(hf.C)
     basis.from_restricted()
 
-    cc = cf.CCD(basis)
+    cc = cf.CCSD(basis)
     tdcc = cf.td.TimeDependentCoupledCluster(cc, time=time)
     tdcc.external_one_body = pulse_li_et_al #delta_kick
     tdcc.one_body_sampler = sampler
@@ -60,7 +60,7 @@ def plot(results):
     # plt.show()
 
     fig, ax = plt.subplots()
-    ax.plot(results["t"], results["r"].real)
+    ax.plot(results["t"][1:], -results["r"].real)
     print("Shows pos")
     plt.show()
 

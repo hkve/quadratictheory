@@ -93,22 +93,23 @@ class TimeDependentCoupledCluster:
         overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
         t, counter = dt, 0
-        while integrator.successful() and t < t_end:
+        while integrator.successful() and t < t_end + dt:
+            if counter > n_time_points:
+                break
+
             integrator.integrate(t) # Integrates to y(t)
             
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
             counter += 1
             
-            if vocal: print(f"Done {counter}/{n_time_points}, t = {t}")
+            if vocal: print(f"Done {counter}/{n_time_points-1}, t = {t}")
             
-            if counter >= n_time_points:
-                break
-
             self._sample()
             energy[counter] = cc.energy()
             overlap[counter] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
             t += dt
+        
 
         self.results = self._construct_results(energy, overlap)
 
