@@ -54,7 +54,7 @@ def optimize(dr, all_raw_eqs):
     # Creating intermediates, saving einsums and intermediate algebraic equations
     opti_strat = {
         "contr_strat": gristmill.ContrStrat.OPT,
-        # "drop_cutoff": 4,
+        "req_an_opt": True,
     }
     energy_eq, t1_equations, l1_equations, t2_equations, l2_equations = all_raw_eqs
 
