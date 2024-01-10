@@ -5,28 +5,29 @@ from IPython import embed
 
 dt = 0.01
 F_str = 0.2
-time = (0,0.5,dt) # 225
+time = (0,125,dt) # 225
 
 def delta_kick(t, basis, dt=dt, F_str=F_str, u=np.array([0,0,1])):
     if 0 < t < dt:
         return F_str*np.einsum("xij,x->ij", basis.r, u)
     else:
         return 0
+
+
+def f(t, omega, Em):
+    ot = omega*t
+
+    if ot < 2*np.pi:
+        return ot/(2*np.pi)*Em
+    elif 2*np.pi < ot < 4*np.pi:
+        return Em
+    elif 4*np.pi < ot < 6*np.pi:
+        return (3-ot/(2*np.pi))*Em
+    else:
+        return 0
     
 def pulse_li_et_al(t, basis, omega=0.1, Em=0.07):
-    ot = omega*t
-    
-    def f(t):
-        if ot < 2*np.pi:
-            return ot/(2*np.pi)*Em
-        elif 2*np.pi < ot < 4*np.pi:
-            return Em
-        elif 4*np.pi < ot < 6*np.pi:
-            return (3-ot/(2*np.pi))*Em
-        else:
-            return 0
-
-    return -basis.r[2]*f(t)
+    return -basis.r[2]*f(t, omega, Em)*np.sin(omega*t)
 
 def sampler(basis):
     return {"r": basis.r[2]}
@@ -46,6 +47,19 @@ def run_helium_test():
 
     return tdcc.results
 
+def plot_E_field():
+    omega, Em = 0.1, 0.07
+
+    t = np.arange(*time)
+    E = np.zeros_like(t)
+
+    for i in range(len(t)):
+        E[i] = f(t[i], omega, Em)*np.sin(omega*t[i])
+
+    fig, ax = plt.subplots()
+    ax.plot(t, E)
+    plt.show()
+
 def plot(results):
 
     # fig, ax = plt.subplots()
@@ -60,7 +74,7 @@ def plot(results):
     # plt.show()
 
     fig, ax = plt.subplots()
-    ax.plot(results["t"][1:], -results["r"].real)
+    ax.plot(results["t"], results["r"].real)
     print("Shows pos")
     plt.show()
 
@@ -73,3 +87,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # plot_E_field()
