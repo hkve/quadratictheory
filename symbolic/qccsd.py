@@ -1,96 +1,115 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
-import gristmill
 
-def calculate_expressions(dr):
+def define_rhs(dr, term, rank):
+    if rank == 0:
+        equation = drutils.define_rk0_rhs(dr, term)
+    elif rank == 1:
+        equation = drutils.define_rk1_rhs(dr, term)
+    elif rank == 2:
+        equation = drutils.define_rk2_rhs(dr, term)
+    else:
+        print("Uknown rank here, how manu free indicies do you have?")
+        exit()
+
+    return equation
+
+def load(dr, basename):
+    equations = {}
+    names = ["t1", "t2"]
+
+    for name in names:
+        equation = drutils.load_from_pickle(dr, basename + f"_{name}")
+        equations[name] = equation
+
+    return equations
+
+@drutils.timeme
+def get_t_equation(dr, ham_bar, Y, L, filename=None):
+    term = (Y * L * ham_bar).eval_fermi_vev().simplify()
+    rank = len(Y.terms[0].args[2]) // 2
+    equation = define_rhs(dr, term, rank)
+
+    if filename is not None: drutils.save_to_pickle(equation, filename)
+
+    return equation
+
+@drutils.timeme
+def get_l_equation(dr, H, X, T, deex, filename=None):
+    comm = H | X
+    comm_bar = drutils.similarity_transform(comm, T)
+    deex = deex.simplify()
+    term = (deex * comm_bar).eval_fermi_vev().simplify()
+    rank = len(X.terms[0].args[2]) // 2
+    equation = define_rhs(dr, term, rank)
+
+    if filename is not None: drutils.save_to_pickle(equation, filename)
+
+    return equation
+
+def calculate_expressions(dr, basename):
     T1, L1 = drutils.get_clusters_1(dr)
     T2, L2 = drutils.get_clusters_2(dr)
     T, L = T1+T2, L1+L2
 
     ham = dr.ham
-    ham_bar = drutils.similarity_transform(ham, T)
-
-    t1, l1 = drutils.make_rk1(dr, "t"), drutils.make_rk1(dr, "\lambda")
-    t2, l2 = drutils.make_rk2(dr, "t"), drutils.make_rk2(dr, "\lambda")
-    (i,j), (a,b) = drutils.get_indicies(dr, num=2)
-
-    # Performing algebraic derivatives
-    energy_terms = ((1 + L + L*L/2)*ham_bar).eval_fermi_vev().simplify()
-    drutils.timer.tock("QCCSD lagrangian addition done")
-
-    t1_terms = energy_terms.diff(t1[a,i]).simplify()
-    drutils.timer.tock("QCCSD t1 done")
-    t2_terms = (4*drutils.diff_rk2_antisym(energy_terms, l2, (i,j), (a,b))).simplify()
-    drutils.timer.tock("QCCSD t2 done")
-
-    l1_terms = energy_terms.diff(l1[a,i]).simplify()
-    drutils.timer.tock("QCCSD l1 done")
-    l2_terms = (4*drutils.diff_rk2_antisym(energy_terms, t2, (i,j), (a,b))).simplify()
-    drutils.timer.tock("QCCSD l2 done")
-    drutils.timer.tock("DONE DOING BASE ALGEBRA")
-
-    # Define equations and saving einsums, save algebraic equations in raw form
-    energy_eq = drutils.define_rk0_rhs(dr, energy_terms)
-    grutils.einsum_raw(dr, "qccsd_energy_from_lag", [energy_eq])
-
-    t1_equations = drutils.define_rk1_rhs(dr, t1_terms)
-    l1_equations = drutils.define_rk1_rhs(dr, l1_terms)
-    grutils.einsum_raw(dr, "qccsd_t1_from_lag", [t1_equations])
-    grutils.einsum_raw(dr, "qccsd_l1_from_lag", [l1_equations])
-
-    t2_equations = drutils.define_rk2_rhs(dr, t2_terms)
-    l2_equations = drutils.define_rk2_rhs(dr, l2_terms)
-    grutils.einsum_raw(dr, "qccsd_t2_from_lag", [t2_equations])
-    grutils.einsum_raw(dr, "qccsd_l2_from_lag", [l2_equations])
     
-    all_raw_eqs = [energy_eq, t1_equations, l1_equations, t2_equations, l2_equations]
-    drutils.save_html(dr, "qccsd_from_lag", all_raw_eqs, ["Energy", "t1=0", "l1=0", "t2=0", "l2=0"])
-    drutils.save_to_pickle(all_raw_eqs, "qccsd_from_lag")
-    drutils.timer.tock("DONE SAVING RAW EQUATIONS")
+    # Free indicies for de-excitation operator
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    Y1 = drutils.get_Y(dr, 1, (i,), (a,))
+    Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
+    X1 = drutils.get_X(dr, 1, (i,), (a,))
+    X2 = drutils.get_X(dr, 2, (i, j), (a, b))
 
-    return all_raw_eqs
 
-def optimize(dr, all_raw_eqs):
-    # Creating intermediates, saving einsums and intermediate algebraic equations
-    opti_strat = {
-        "contr_strat": gristmill.ContrStrat.OPT,
-        "req_an_opt": True,
-    }
-    energy_eq, t1_equations, l1_equations, t2_equations, l2_equations = all_raw_eqs
+    equations = {}
 
-    eval_seq_e = grutils.optimize_equations(dr, energy_eq, **opti_strat)
-    grutils.einsum_raw(dr, "qccsd_energy_optimized_from_lag", eval_seq_e)
-    drutils.timer.tock("QCCSD energy opti done")
-    
-    eval_seq_t = grutils.optimize_equations(dr, [t1_equations, t2_equations], **opti_strat)
-    grutils.einsum_raw(dr, "qccsd_t_optimized_from_lag", eval_seq_t)
-    drutils.timer.tock("QCCD t opti done")
+    # ham_bar = drutils.similarity_transform(ham, T)
+    # # T1 QCCSD addition
+    # t1_equation = get_t_equation(dr, ham_bar, Y1, L, basename + "_t1")
+    # equations["t1"] = t1_equation
+    # grutils.einsum_raw(dr, basename + "_t1", t1_equation)
+    # drutils.timer.tock("QCCSD t1 done")
 
-    
-    eval_seq_l = grutils.optimize_equations(dr, [l1_equations, l2_equations], **opti_strat)
-    grutils.einsum_raw(dr, "qccsd_l_optimized_from_lag", eval_seq_l)
-    drutils.timer.tock("QCCSD l opti done")
-    
-    all_raw_eqs = [eval_seq_e, eval_seq_t, eval_seq_l]
-    drutils.save_to_pickle(all_raw_eqs, "qccsd_opti_from_lag")
-    drutils.save_html(dr, "qccsd_opti_lagrangian", eval_seq_e)
-    drutils.save_html(dr, "qccsd_opti_t", eval_seq_t)
-    drutils.save_html(dr, "qccsd_opti_l", eval_seq_l)
+    # # T2 QCCSD addition
+    # t2_equation = get_t_equation(dr, ham_bar, Y2, L, basename + "_t2")
+    # equations["t2"] = t2_equation
+    # grutils.einsum_raw(dr, basename + "_t2", t2_equation)
+    # drutils.timer.tock("QCCSD t2 done")
 
-@drutils.timeme
-def run(dr):
-    calculate = False
+    # L1 QCCSD addition
+    # l1_equation = get_l_equation(dr, ham, X1, T, L*L/2, basename + "_l1")
+    # equations["l1"] = l1_equation
+    # grutils.einsum_raw(dr, basename + "_l1", l1_equation)
+    # drutils.timer.tock("QCCSD l1 done")
 
-    all_raw_eqs = None
-    if calculate:
-        all_raw_eqs = calculate_expressions(dr)
-    else:
-        all_raw_eqs = drutils.load_from_pickle(dr, "qccsd_from_lag")
+    # L2 QCCSD addition
+    names = ["11", "12", "22"]
+    deexes = [L1*L1/2, L1*L2, L2*L2/2]
 
-    optimize(dr, all_raw_eqs)
+    for name, deex in zip(names, deexes):
+        l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
+        equations[f"l2_{name}"] = l2_equation_additon
+        grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
+        drutils.timer.tock(f"QCCSD l2 done, {name} term")
+
+    return equations
+
+def optimize_expressions(dr, equations):
+    for name, eq in equations.items():
+        eval_seq = grutils.optimize_equations(dr, eq)
+        drutils.timer.tock(f"QCCSD {name} optimization done")
+
+        drutils.save_to_pickle(eval_seq, basename + "_opti_" + name)
+        drutils.save_html(dr, basename + "_opti_" + name, eval_seq)
+        grutils.einsum_raw(dr, basename + "_opti_" + name, eval_seq)
 
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge()
-
     drutils.timer.vocal = True
-    run(dr)
+    
+    basename = "qccsd"
+
+    equations = calculate_expressions(dr, basename)
+    # equations = load(dr, basename)
+    optimize_expressions(dr, equations)
