@@ -55,8 +55,10 @@ def plot_time_evolution():
     tdcc.external_one_body = electric_field
     tdcc.one_body_sampler = sampler
 
-    t, e, overlap = tdcc.run()
-    t *= electric_field_freq/(2*np.pi)
+    tdcc.run(vocal=True)
+    
+    t = tdcc.results["t"] * electric_field_freq/(2*np.pi)
+    overlap = tdcc.results["overlap"]
 
     fig, ax = plt.subplots()
     ax.plot(t, overlap)

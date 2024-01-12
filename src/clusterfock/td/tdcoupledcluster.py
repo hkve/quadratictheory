@@ -56,7 +56,20 @@ class TimeDependentCoupledCluster:
         self._one_body_results = {}
         self._two_body_results = {}
 
-    def run(self, vocal: bool = False):
+    def run(self, vocal: bool = False) -> dict:
+        """
+        Main function to run the time evolution of the CC state. If the passed cc 
+        instance has not been run, it will be. Also casts CC matrix elements to
+        complex and sets up integration points and integrator. Lastly the main integration
+        loop is run with sampling for each complete step. Resturns a dict with all sampled
+        properties.
+
+        Args:
+            vocal (bool): If diagnostics should be shown for every step
+
+        Returns:
+            result (dict): Dictionary with the sampled properties for each time step
+        """
         cc, basis = self.cc, self.basis
 
         if not (cc.t_info["run"] or cc.l_info["run"]):
@@ -113,10 +126,21 @@ class TimeDependentCoupledCluster:
 
         self.results = self._construct_results(energy, overlap)
 
-        return np.arange(t_start, t_end+dt, dt), energy, overlap
-    
+        return self.results    
 
-    def rhs(self, t, y):
+    def rhs(self, t: float, y: np.ndarray) -> np.ndarray:
+        """
+        Evaluates the rhs for each partial step. Since scipy integrater requires flat arrays
+        the amplitudes are passed as a long flat array y, reshaped in the CC instance for calculations
+        and then after flattend for the next integration step.
+
+        Args:
+            t (float): The current time
+            y (np.ndarray): The amplitudes in a flat numpy array
+
+        Returns:
+            y_dot (np.ndarray): The current amplitude derivatives
+        """
         basis, cc = self.basis, self.cc
 
         # Update t and l amplitudes in basis
@@ -135,6 +159,9 @@ class TimeDependentCoupledCluster:
         return y_dot
 
     def _sample(self):
+        """
+        Internal function for sampling. Stores the results in '_one_body_results' dict.
+        """
         basis, cc = self.basis, self.cc
         if self._has_one_body_sampler:
             cc.one_body_density()
@@ -144,7 +171,17 @@ class TimeDependentCoupledCluster:
                 sample = cc.one_body_expval(operator)
                 self._one_body_results[key].append(sample)
 
-    def _construct_results(self, energy, overlap):
+    def _construct_results(self, energy: np.ndarray, overlap: np.ndarray) -> dict:
+        """
+        Constructs the results dict after the integration has been completed. 
+
+        Args:
+            energy (np.ndarray): Energies for each timestep
+            overlap (np.ndarray): Overlap for each timestep
+
+        Returns:
+            results (dict): The combined results
+        """
         t_start, t_end, dt = self._t_start, self._t_end, self._dt
         time = np.arange(t_start, t_end+dt, dt)
 
