@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, GCCSD
+from clusterfock.cc import GCCD, GCCSD, QCCD
 from clusterfock.basis import PyscfBasis
 
 
@@ -55,15 +55,19 @@ class TestCoupledClusterDensities(TestCase):
         rbasis.change_basis(hf.C, inplace=True)
         gbasis = rbasis.from_restricted(inplace=False)
 
-        ccd = CC(gbasis, intermediates=True).run(tol=tol, include_l=True)
-        ccd.densities()
+        if CC.__name__ in ["QCCD", "QCCSD"]:
+            cc = CC(gbasis, intermediates=True).run(tol=tol)
+        else:
+            cc = CC(gbasis, intermediates=True).run(tol=tol, include_l=True)
+
+        cc.densities()
 
         # Energy using amplitudes
-        E1 = ccd.energy() - gbasis._energy_shift
+        E1 = cc.energy() - gbasis._energy_shift
 
         # Energy using densities
-        E2 = np.trace(ccd.rho_ob @ gbasis.h)
-        E2 += 0.25 * np.einsum("pqrs,pqrs->", ccd.rho_tb, gbasis.u)
+        E2 = np.trace(cc.rho_ob @ gbasis.h)
+        E2 += 0.25 * np.einsum("pqrs,pqrs->", cc.rho_tb, gbasis.u)
 
         self.assertAlmostEqual(
             E1,
@@ -89,9 +93,8 @@ class TestCoupledClusterDensities(TestCase):
     def test_ccd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
-
+        
         self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
-        self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
 
     def test_ccd_Be(self):
         self.compare_raw_vs_intermediate(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD)
@@ -104,6 +107,7 @@ class TestCoupledClusterDensities(TestCase):
     def test_ccsd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
+        self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
 
     def test_ccsd_Be(self):
         self.compare_raw_vs_intermediate(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD)
@@ -112,3 +116,12 @@ class TestCoupledClusterDensities(TestCase):
     def test_ccsd_LiH(self):
         self.compare_raw_vs_intermediate(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCSD)
         self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCSD)
+
+    def test_qccd_He(self):
+        self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=QCCD)
+
+    def test_qccd_Be(self):
+        self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=QCCD)
+
+    def test_qccd_Li(self):
+        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=QCCD)
