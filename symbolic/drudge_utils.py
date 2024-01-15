@@ -191,8 +191,13 @@ def get_ob_density_blocks(dr, o_dums, v_dums):
     a, b = v_dums
     c_, c_dag = get_secondquant_operators(dr)
 
-    blocks = [c_dag[i] * c_[j], c_dag[a] * c_[b], c_dag[i] * c_[a]]
-    block_names = ["oo", "vv", "ov"]
+    blocks = [
+        c_dag[i] * c_[j],
+        c_dag[a] * c_[b],
+        c_dag[i] * c_[a], 
+        c_dag[a] * c_[i],
+    ]
+    block_names = ["oo", "vv", "ov", "vo"]
 
     return blocks, block_names
 
@@ -219,6 +224,22 @@ def get_tb_density_blocks(dr, o_dums, v_dums):
 
     return blocks, block_names
 
+def define_ob_density_blocks(dr, rho, block_names, o_dums, v_dums):
+    assert len(o_dums) == 2 and len(v_dums) == 2
+
+    i, j = o_dums
+    a, b = v_dums
+
+    rs = [IndexedBase(f"\\rho_{name}") for name in block_names]
+
+    blocks = [
+        rs[0][i, j],
+        rs[1][a, b],
+        rs[2][i, a],
+    ]
+
+    return [dr.define(rhs, term) for rhs, term in zip(blocks, rho)]
+
 
 def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
     assert len(o_dums) == 4 and len(v_dums) == 4
@@ -226,7 +247,7 @@ def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
     i, j, k, l = o_dums
     a, b, c, d = v_dums
 
-    rs = [IndexedBase(f"\rho_{name}") for name in block_names]
+    rs = [IndexedBase(f"\\rho_{name}") for name in block_names]
     for r in rs:
         dr.set_dbbar_base(r, 2)
 

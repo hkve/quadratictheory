@@ -11,6 +11,8 @@ from clusterfock.cc.rhs.l_inter_QCCD import lambda_amplitudes_intermediates_qccd
 from clusterfock.cc.energies.e_qccd import energy_qccd
 from clusterfock.cc.energies.e_inter_qccd import energy_intermediates_qccd
 
+from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
+from clusterfock.cc.densities.l_QCCD import one_body_density_addition
 
 class QCCD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -71,3 +73,14 @@ class QCCD(QuadraticCoupledCluster):
 
         u, f, o, v = self.basis.u, self.basis.f, self.basis.o, self.basis.v
         return self.energy_expression(t2, l2, u, f, o, v)
+
+    def _calculate_one_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
+
+        l, t = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = one_body_density(rho, t, l, o, v)
+
+        return rho
