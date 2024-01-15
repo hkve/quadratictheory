@@ -1,0 +1,361 @@
+    
+    ho_oooo = zeros((no, no, no, no))
+
+    
+    ho_oooo += einsum(
+        "abmk,cdnl,acim,bdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_oooo -= einsum(
+        "abmk,cdnl,acin,bdmj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_oooo -= einsum(
+        "abmn,cdkl,acim,bdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_oooo -= einsum(
+        "abmk,cdnl,abim,cdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oooo -= einsum(
+        "abmk,cdnl,abnj,cdim->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oooo += einsum(
+        "abmk,cdnl,abin,cdmj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oooo += einsum(
+        "abmk,cdnl,abmj,cdin->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oooo += einsum(
+        "abmn,cdkl,abim,cdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oooo += einsum(
+        "abmn,cdkl,abnj,cdim->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv = zeros((nv, nv, nv, nv))
+
+    
+    ho_vvvv += einsum(
+        "abkl,efij,ceik,dfjl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_vvvv += einsum(
+        "aeij,bfkl,cfik,dejl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_vvvv -= einsum(
+        "aeij,bfkl,ceik,dfjl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_vvvv -= einsum(
+        "abkl,efij,ceij,dfkl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv -= einsum(
+        "abkl,efij,cekl,dfij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv -= einsum(
+        "aeij,bfkl,cfij,dekl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv -= einsum(
+        "aeij,bfkl,cfkl,deij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv += einsum(
+        "aeij,bfkl,ceij,dfkl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_vvvv += einsum(
+        "aeij,bfkl,cekl,dfij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv = zeros((no, no, nv, nv))
+
+    
+    ho_oovv += einsum(
+        "cekl,dfmn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "cekl,dfmn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "cekm,dfln,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "cfkl,demn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "cfkl,demn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv += einsum(
+        "cdkl,efmn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cdkl,efmn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cdkm,efln,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cdln,efkm,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cdln,efkm,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "celm,dfkn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "celm,dfkn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cflm,dekn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv += einsum(
+        "cflm,dekn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cekl,dfmn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "cekl,dfmn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "cekm,dfln,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "cfkl,demn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "cfkl,demn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    
+    ho_oovv -= einsum(
+        "cdkl,efmn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cdkl,efmn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cdln,efkm,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cdln,efkm,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "celm,dfkn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "celm,dfkn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cemn,dfkl,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cflm,dekn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cflm,dekn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    
+    ho_oovv -= einsum(
+        "cdkm,efln,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdkn,eflm,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdkn,eflm,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdlm,efkn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdlm,efkn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdln,efkm,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cfkl,demn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv -= einsum(
+        "cdkl,efmn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    
+    ho_oovv -= einsum(
+        "cdmn,efkl,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    
+    ho_oovv += einsum(
+        "cdkn,eflm,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv += einsum(
+        "cdkn,eflm,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv += einsum(
+        "cdlm,efkn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv += einsum(
+        "cdlm,efkn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv += einsum(
+        "cekl,dfmn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    
+    ho_oovv += einsum(
+        "cdkl,efmn,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    
+    ho_oovv += einsum(
+        "cdmn,efkl,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    
+    ho_ovov = zeros((no, nv, no, nv))
+
+    
+    ho_ovov += einsum(
+        "aelm,cdkj,bdkm,ceil->iajb", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_ovov += einsum(
+        "aemj,cdkl,belm,cdik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    
+    ho_ovov -= einsum(
+        "aemj,cdkl,bdlm,ceik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    
+    ho_ovov -= einsum(
+        "aelm,cdkj,bdlm,ceik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    
+    ho_ovov -= einsum(
+        "aelm,cdkj,bekm,cdil->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    
+    ho_ovov -= einsum(
+        "aemj,cdkl,bdkl,ceim->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    
+    ho_ovov += einsum(
+        "aelm,cdkj,belm,cdik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    
+    ho_ovov += einsum(
+        "aemj,cdkl,bekl,cdim->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4

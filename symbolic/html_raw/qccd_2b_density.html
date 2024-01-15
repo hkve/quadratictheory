@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>qccd_2b_density</title>
+
+    <!-- MathJAX intialization -->
+    <script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			"HTML-CSS": { linebreaks: { automatic: true } },
+			SVG: { linebreaks: { automatic: true } }
+		});
+	</script>
+	<script type="text/javascript"
+		src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+    <!-- Boostrap initialization -->
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>qccd_2b_density</h1>
+    </div>
+
+    <div class="row">
+        <!-- The main content -->
+        <div class="col-sm-9 col-lg-10">
+            <div class="page-header" id="sect-1">
+                <h2>oooo</h2>
+            </div>
+            <p>\[ ho^{(oooo)}_{i,j,k,l} = \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,c,i,m}  t^{2}_{b,d,n,j}  - \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,c,i,n}  t^{2}_{b,d,m,j}  - \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \lambda^2_{a,b,m,n}  \lambda^2_{c,d,k,l}  t^{2}_{a,c,i,m}  t^{2}_{b,d,n,j}  - \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V}  \frac{1}{4} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,b,i,m}  t^{2}_{c,d,n,j}  - \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V}  \frac{1}{4} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,b,n,j}  t^{2}_{c,d,i,m}   + \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,b,i,n}  t^{2}_{c,d,m,j}   + \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} \lambda^2_{a,b,m,k}  \lambda^2_{c,d,n,l}  t^{2}_{a,b,m,j}  t^{2}_{c,d,i,n}   + \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} \lambda^2_{a,b,m,n}  \lambda^2_{c,d,k,l}  t^{2}_{a,b,i,m}  t^{2}_{c,d,n,j}   + \sum_{m \in O} \sum_{n \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} \lambda^2_{a,b,m,n}  \lambda^2_{c,d,k,l}  t^{2}_{a,b,n,j}  t^{2}_{c,d,i,m}  \]</p>
+            <div class="page-header" id="sect-2">
+                <h2>vvvv</h2>
+            </div>
+            <p>\[ ho^{(vvvv)}_{a,b,c,d} = \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V} \lambda^2_{a,b,k,l}  \lambda^2_{e,f,i,j}  t^{2}_{c,e,i,k}  t^{2}_{d,f,j,l}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,f,i,k}  t^{2}_{d,e,j,l}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,e,i,k}  t^{2}_{d,f,j,l}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{a,b,k,l}  \lambda^2_{e,f,i,j}  t^{2}_{c,e,i,j}  t^{2}_{d,f,k,l}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{a,b,k,l}  \lambda^2_{e,f,i,j}  t^{2}_{c,e,k,l}  t^{2}_{d,f,i,j}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,f,i,j}  t^{2}_{d,e,k,l}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,f,k,l}  t^{2}_{d,e,i,j}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,e,i,j}  t^{2}_{d,f,k,l}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{a,e,i,j}  \lambda^2_{b,f,k,l}  t^{2}_{c,e,k,l}  t^{2}_{d,f,i,j}  \]</p>
+            <div class="page-header" id="sect-3">
+                <h2>oovv</h2>
+            </div>
+            <p>\[ ho^{(oovv)}_{i,j,a,b} = \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,l}  \lambda^2_{d,f,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,l}  \lambda^2_{d,f,m,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,m}  \lambda^2_{d,f,l,n}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,f,k,l}  \lambda^2_{d,e,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,f,k,l}  \lambda^2_{d,e,m,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,d,k,m}  \lambda^2_{e,f,l,n}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,d,l,n}  \lambda^2_{e,f,k,m}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,d,l,n}  \lambda^2_{e,f,k,m}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,e,l,m}  \lambda^2_{d,f,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,e,l,m}  \lambda^2_{d,f,k,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,f,l,m}  \lambda^2_{d,e,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{2} \lambda^2_{c,f,l,m}  \lambda^2_{d,e,k,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,l}  \lambda^2_{d,f,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,l}  \lambda^2_{d,f,m,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,e,k,m}  \lambda^2_{d,f,l,n}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,f,k,l}  \lambda^2_{d,e,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \lambda^2_{c,f,k,l}  \lambda^2_{d,e,m,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,d,l,n}  \lambda^2_{e,f,k,m}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,d,l,n}  \lambda^2_{e,f,k,m}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,e,l,m}  \lambda^2_{d,f,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,e,l,m}  \lambda^2_{d,f,k,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,e,m,n}  \lambda^2_{d,f,k,l}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,f,l,m}  \lambda^2_{d,e,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{2} \lambda^2_{c,f,l,m}  \lambda^2_{d,e,k,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,k,m}  \lambda^2_{e,f,l,n}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,k,n}  \lambda^2_{e,f,l,m}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,k,n}  \lambda^2_{e,f,l,m}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,l,m}  \lambda^2_{e,f,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,n,j}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,l,m}  \lambda^2_{e,f,k,n}  t^{2}_{a,f,i,n}  t^{2}_{b,e,l,m}  t^{2}_{c,d,k,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,d,l,n}  \lambda^2_{e,f,k,m}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{4} \lambda^2_{c,f,k,l}  \lambda^2_{d,e,m,n}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{8} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V}  \frac{1}{8} \lambda^2_{c,d,m,n}  \lambda^2_{e,f,k,l}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{c,d,k,n}  \lambda^2_{e,f,l,m}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{c,d,k,n}  \lambda^2_{e,f,l,m}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{c,d,l,m}  \lambda^2_{e,f,k,n}  t^{2}_{a,e,l,m}  t^{2}_{b,f,i,n}  t^{2}_{c,d,k,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{c,d,l,m}  \lambda^2_{e,f,k,n}  t^{2}_{a,f,n,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{4} \lambda^2_{c,e,k,l}  \lambda^2_{d,f,m,n}  t^{2}_{a,e,k,l}  t^{2}_{b,f,m,n}  t^{2}_{c,d,i,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{8} \lambda^2_{c,d,k,l}  \lambda^2_{e,f,m,n}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{n \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \sum_{f \in V} \frac{1}{8} \lambda^2_{c,d,m,n}  \lambda^2_{e,f,k,l}  t^{2}_{a,b,m,n}  t^{2}_{c,d,i,k}  t^{2}_{e,f,l,j}  \]</p>
+            <div class="page-header" id="sect-4">
+                <h2>vvoo</h2>
+            </div>
+            <p>\[ ho^{(vvoo)}_{a,b,i,j} = 0 \]</p>
+            <div class="page-header" id="sect-5">
+                <h2>ovov</h2>
+            </div>
+            <p>\[ ho^{(ovov)}_{i,a,j,b} = \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \lambda^2_{a,e,l,m}  \lambda^2_{c,d,k,j}  t^{2}_{b,d,k,m}  t^{2}_{c,e,i,l}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \frac{1}{2} \lambda^2_{a,e,m,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \lambda^2_{a,e,m,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,l,m}  t^{2}_{c,e,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V}  \frac{1}{2} \lambda^2_{a,e,l,m}  \lambda^2_{c,d,k,j}  t^{2}_{b,d,l,m}  t^{2}_{c,e,i,k}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V}  \frac{1}{2} \lambda^2_{a,e,l,m}  \lambda^2_{c,d,k,j}  t^{2}_{b,e,k,m}  t^{2}_{c,d,i,l}  - \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V}  \frac{1}{2} \lambda^2_{a,e,m,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,d,k,l}  t^{2}_{c,e,i,m}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \frac{1}{4} \lambda^2_{a,e,l,m}  \lambda^2_{c,d,k,j}  t^{2}_{b,e,l,m}  t^{2}_{c,d,i,k}   + \sum_{k \in O} \sum_{l \in O} \sum_{m \in O} \sum_{c \in V} \sum_{d \in V} \sum_{e \in V} \frac{1}{4} \lambda^2_{a,e,m,j}  \lambda^2_{c,d,k,l}  t^{2}_{b,e,k,l}  t^{2}_{c,d,i,m}  \]</p>
+            <div class="page-header" id="sect-6">
+                <h2>ooov</h2>
+            </div>
+            <p>\[ ho^{(ooov)}_{i,j,k,a} = 0 \]</p>
+            <div class="page-header" id="sect-7">
+                <h2>ovoo</h2>
+            </div>
+            <p>\[ ho^{(ovoo)}_{i,a,j,k} = 0 \]</p>
+            <div class="page-header" id="sect-8">
+                <h2>vvvo</h2>
+            </div>
+            <p>\[ ho^{(vvvo)}_{a,b,c,i} = 0 \]</p>
+            <div class="page-header" id="sect-9">
+                <h2>vovv</h2>
+            </div>
+            <p>\[ ho^{(vovv)}_{a,i,b,c} = 0 \]</p>
+        </div>
+
+        <!-- The navigation -->
+        <div class="col-sm-3 col-lg-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#sect-1">oooo</a></li>
+                <li ><a href="#sect-2">vvvv</a></li>
+                <li ><a href="#sect-3">oovv</a></li>
+                <li ><a href="#sect-4">vvoo</a></li>
+                <li ><a href="#sect-5">ovov</a></li>
+                <li ><a href="#sect-6">ooov</a></li>
+                <li ><a href="#sect-7">ovoo</a></li>
+                <li ><a href="#sect-8">vvvo</a></li>
+                <li ><a href="#sect-9">vovv</a></li>
+            </ul>
+        </div>
+    </div> <!-- end the main row -->
+
+    <!-- The footer -->
+    <div class="row">
+        <footer class="footer">
+            <p class="small text-center">Automatically generated by drudge symbolic algebra system.</p>
+            <p class="small text-center">By Jinmo Zhao and Gustavo E Scuseria, Rice Univ, Houston, TX, USA</p>
+        </footer>
+    </div>
+</div> <!-- end the main fluid container -->
+</body>
+</html>

@@ -1,0 +1,129 @@
+    tau0 = np.zeros((N, N, M, M))
+
+    tau0 += np.einsum(
+        "acik,bckj->ijab", l2, t2, optimize=True
+    )
+
+    tau1 = np.zeros((N, N, M, M))
+
+    tau1 += np.einsum(
+        "acki,kjcb->ijab", t2, tau0, optimize=True
+    )
+
+    
+    ho_vvvv = np.zeros((M, M, M, M))
+
+    
+    ho_vvvv += np.einsum(
+        "abij,ijcd->abcd", l2, tau1, optimize=True
+    )
+
+    tau1 = None
+
+    tau2 = np.zeros((N, N, M, M))
+
+    tau2 += np.einsum(
+        "acki,bcjk->ijab", l2, t2, optimize=True
+    )
+
+    
+    ho_vvvv += np.einsum(
+        "ijad,jibc->abcd", tau0, tau2, optimize=True
+    )
+
+    tau0 = None
+
+    tau2 = None
+
+    tau3 = np.zeros((N, N, M, M))
+
+    tau3 += np.einsum(
+        "acki,bckj->ijab", l2, t2, optimize=True
+    )
+
+    tau4 = np.zeros((N, N, M, M))
+
+    tau4 += np.einsum(
+        "acik,bcjk->ijab", l2, t2, optimize=True
+    )
+
+    
+    ho_vvvv -= np.einsum(
+        "ijac,jibd->abcd", tau3, tau4, optimize=True
+    )
+
+    tau3 = None
+
+    tau4 = None
+
+    tau5 = np.zeros((M, M))
+
+    tau5 += np.einsum(
+        "acij,bcij->ab", l2, t2, optimize=True
+    )
+
+    tau8 = np.zeros((M, M, M, M))
+
+    tau8 += np.einsum(
+        "ac,bd->abcd", tau5, tau5, optimize=True
+    )
+
+    tau10 = np.zeros((N, N, M, M))
+
+    tau10 += np.einsum(
+        "cb,acij->ijab", tau5, t2, optimize=True
+    )
+
+    tau5 = None
+
+    tau6 = np.zeros((M, M, M, M))
+
+    tau6 += np.einsum(
+        "abji,cdji->abcd", l2, t2, optimize=True
+    )
+
+    tau7 = np.zeros((M, M, M, M))
+
+    tau7 += np.einsum(
+        "aecf,bfde->abcd", tau6, tau6, optimize=True
+    )
+
+    tau6 = None
+
+    tau8 -= np.einsum(
+        "badc->abcd", tau7, optimize=True
+    )
+
+    tau7 = None
+
+    
+    ho_vvvv -= np.einsum(
+        "abdc->abcd", tau8, optimize=True
+    ) / 4
+
+    
+    ho_vvvv += np.einsum(
+        "abcd->abcd", tau8, optimize=True
+    ) / 4
+
+    tau8 = None
+
+    tau9 = np.zeros((M, M))
+
+    tau9 += np.einsum(
+        "caij,bcij->ab", l2, t2, optimize=True
+    )
+
+    tau10 += np.einsum(
+        "ca,bcij->ijab", tau9, t2, optimize=True
+    )
+
+    tau9 = None
+
+    
+    ho_vvvv -= np.einsum(
+        "abij,ijcd->abcd", l2, tau10, optimize=True
+    ) / 4
+
+    tau10 = None
+
