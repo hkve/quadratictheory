@@ -78,10 +78,10 @@ class QCCD(QuadraticCoupledCluster):
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
 
-        l, t = self._l[2], self._t[2]
+        l2, t2 = self._l[2], self._t[2]
         o, v = basis.o, basis.v
 
-        rho = one_body_density(rho, t, l, o, v)
+        rho = one_body_density(rho, t2, l2, o, v)
 
         return rho
     

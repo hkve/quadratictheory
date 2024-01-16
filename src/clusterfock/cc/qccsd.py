@@ -11,6 +11,9 @@ from clusterfock.cc.rhs.l_inter_QCCSD import lambda_amplitudes_intermediates_qcc
 from clusterfock.cc.energies.e_qccsd import energy_qccsd
 from clusterfock.cc.energies.e_inter_qccsd import energy_intermediates_qccsd
 
+from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
+from clusterfock.cc.densities.l_QCCSD import one_body_density_addition, two_body_density_addition
+
 class QCCSD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "QCCSD can not deal with restricted basis"
@@ -74,3 +77,29 @@ class QCCSD(QuadraticCoupledCluster):
 
         u, f, o, v = self.basis.u, self.basis.f, self.basis.o, self.basis.v
         return self.energy_expression(t1, t2, l1, l2, u, f, o, v)
+
+    def _calculate_one_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
+
+        l1, t1 = self._l[1], self._t[1]
+        l2, t2 = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = one_body_density(rho, t1, t2, l1, l2, o, v)
+        rho = one_body_density_addition(rho, t1, t2, l1, l2, o, v)
+
+        return rho
+    
+    def _calculate_two_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
+
+        l1, t1 = self._l[1], self._t[1]
+        l2, t2 = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = two_body_density(rho, t1, t2, l1, l2, o, v)
+        rho = two_body_density_addition(rho, t1, t2, l1, l2, o, v)
+
+        return rho
