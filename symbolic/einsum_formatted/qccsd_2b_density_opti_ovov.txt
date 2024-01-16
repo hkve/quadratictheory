@@ -1,0 +1,222 @@
+    tau0 = np.zeros((N, M))
+
+    tau0 -= np.einsum(
+        "bj,abji->ia", l1, t2, optimize=True
+    )
+
+    tau1 = np.zeros((M, M))
+
+    tau1 += np.einsum(
+        "ai,ib->ab", l1, tau0, optimize=True
+    )
+
+    \rho_ovov = np.zeros((N, M, N, M))
+
+    \rho_ovov +=  np.einsum(
+        "ij,ab->iajb", I, tau1, optimize=True
+    )
+
+    tau1 = None
+
+    tau14 = np.zeros((N, N, M, M))
+
+    tau14 += 4 * np.einsum(
+        "bi,ja->ijab", t1, tau0, optimize=True
+    )
+
+    tau14 += 4 * np.einsum(
+        "aj,ib->ijab", t1, tau0, optimize=True
+    )
+
+    tau16 = np.zeros((N, M))
+
+    tau16 -= 2 * np.einsum(
+        "ia->ia", tau0, optimize=True
+    )
+
+    tau0 = None
+
+    tau2 = np.zeros((N, N, N, M))
+
+    tau2 += np.einsum(
+        "bi,abjk->ijka", l1, t2, optimize=True
+    )
+
+    tau4 = np.zeros((N, N, N, M))
+
+    tau4 += np.einsum(
+        "ablj,iklb->ijka", l2, tau2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "bk,jkia->iajb", t1, tau4, optimize=True
+    )
+
+    tau4 = None
+
+    tau15 = np.zeros((N, N, N, M))
+
+    tau15 -= 2 * np.einsum(
+        "ikja->ijka", tau2, optimize=True
+    )
+
+    tau3 = np.zeros((N, N, N, M))
+
+    tau3 += np.einsum(
+        "bk,abij->ijka", t1, l2, optimize=True
+    )
+
+    tau15 += 2 * np.einsum(
+        "ablj,ilkb->ijka", t2, tau3, optimize=True
+    )
+
+    tau16 -= np.einsum(
+        "abkj,kjib->ia", t2, tau3, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "jlkb,lkia->iajb", tau2, tau3, optimize=True
+    ) / 2
+
+    tau2 = None
+
+    tau3 = None
+
+    tau5 = np.zeros((N, N, M, M))
+
+    tau5 += np.einsum(
+        "caik,bckj->ijab", l2, t2, optimize=True
+    )
+
+    tau14 -= 4 * np.einsum(
+        "cajk,kicb->ijab", t2, tau5, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "jkcb,kiac->iajb", tau5, tau5, optimize=True
+    )
+
+    tau6 = np.zeros((M, M, M, M))
+
+    tau6 += np.einsum(
+        "abji,cdji->abcd", l2, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "jidc,acbd->iajb", tau5, tau6, optimize=True
+    ) / 2
+
+    tau6 = None
+
+    tau7 = np.zeros((N, N, N, N))
+
+    tau7 += np.einsum(
+        "baij,bakl->ijkl", l2, t2, optimize=True
+    )
+
+    tau14 -= np.einsum(
+        "balk,lkji->ijab", t2, tau7, optimize=True
+    )
+
+    tau15 += np.einsum(
+        "al,iljk->ijka", t1, tau7, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "ak,jkib->iajb", l1, tau15, optimize=True
+    ) / 2
+
+    tau15 = None
+
+    \rho_ovov += np.einsum(
+        "klab,jlik->iajb", tau5, tau7, optimize=True
+    ) / 2
+
+    tau5 = None
+
+    tau7 = None
+
+    tau8 = np.zeros((M, M))
+
+    tau8 += np.einsum(
+        "ai,bi->ab", l1, t1, optimize=True
+    )
+
+    tau10 = np.zeros((M, M))
+
+    tau10 += 2 * np.einsum(
+        "ab->ab", tau8, optimize=True
+    )
+
+    tau8 = None
+
+    tau9 = np.zeros((M, M))
+
+    tau9 -= np.einsum(
+        "caji,bcji->ab", l2, t2, optimize=True
+    )
+
+    tau10 += np.einsum(
+        "ab->ab", tau9, optimize=True
+    )
+
+    tau9 = None
+
+    tau14 -= 2 * np.einsum(
+        "ca,cbji->ijab", tau10, t2, optimize=True
+    )
+
+    tau11 = np.zeros((N, N))
+
+    tau11 += np.einsum(
+        "ai,aj->ij", l1, t1, optimize=True
+    )
+
+    tau13 = np.zeros((N, N))
+
+    tau13 += 2 * np.einsum(
+        "ij->ij", tau11, optimize=True
+    )
+
+    tau11 = None
+
+    tau12 = np.zeros((N, N))
+
+    tau12 -= np.einsum(
+        "baki,bajk->ij", l2, t2, optimize=True
+    )
+
+    tau13 += np.einsum(
+        "ij->ij", tau12, optimize=True
+    )
+
+    tau12 = None
+
+    tau14 -= 2 * np.einsum(
+        "ki,bakj->ijab", tau13, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "cakj,ikbc->iajb", l2, tau14, optimize=True
+    ) / 4
+
+    tau14 = None
+
+    tau16 += np.einsum(
+        "aj,ji->ia", t1, tau13, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "aj,ib->iajb", l1, tau16, optimize=True
+    ) / 2
+
+    tau16 = None
+
+    \rho_ovov -= np.einsum(
+        "ab,ji->iajb", tau10, tau13, optimize=True
+    ) / 4
+
+    tau10 = None
+
+    tau13 = None
+

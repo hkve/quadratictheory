@@ -1,0 +1,1897 @@
+    \rho_oooo = zeros((no, no, no, no))
+
+    \rho_oooo += einsum(
+        "al,bi,bcmk,acmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo += einsum(
+        "al,bj,bcmk,acim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo += einsum(
+        "am,bi,bckl,acmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo += einsum(
+        "am,bj,bckl,acim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo += einsum(
+        "ak,ai,bcml,bcmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo += einsum(
+        "ak,aj,bcml,bcim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= einsum(
+        "ak,bi,bcml,acmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo -= einsum(
+        "ak,bj,bcml,acim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oooo -= einsum(
+        "al,ai,bcmk,bcmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= einsum(
+        "al,aj,bcmk,bcim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= einsum(
+        "am,ai,bckl,bcmj->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo -= einsum(
+        "am,aj,bckl,bcim->ijkl", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oooo += einsum(
+        "ak,bl,abij->ijkl", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_oooo += einsum(
+        "ak,bl,ai,bj->ijkl", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_oooo -= einsum(
+        "ak,bl,aj,bi->ijkl", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_oooo += KroneckerDelta(j, l) * einsum(
+        "am,bk,abim->ijkl", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_oooo += KroneckerDelta(i, l) * einsum(
+        "am,bk,abmj->ijkl", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_oooo -= KroneckerDelta(j, k) * einsum(
+        "am,bl,abim->ijkl", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_oooo -= KroneckerDelta(i, k) * einsum(
+        "am,bl,abmj->ijkl", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_oooo += einsum(
+        "abmk,cdnl,acim,bdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oooo -= einsum(
+        "abmk,cdnl,acin,bdmj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oooo -= einsum(
+        "abmn,cdkl,acim,bdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oooo -= einsum(
+        "abmk,cdnl,abim,cdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oooo -= einsum(
+        "abmk,cdnl,abnj,cdim->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oooo += einsum(
+        "abmk,cdnl,abin,cdmj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oooo += einsum(
+        "abmk,cdnl,abmj,cdin->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oooo += einsum(
+        "abmn,cdkl,abim,cdnj->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oooo += einsum(
+        "abmn,cdkl,abnj,cdim->ijkl", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv = zeros((nv, nv, nv, nv))
+
+    \rho_vvvv += einsum(
+        "ai,dj,bejk,ceik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv += einsum(
+        "bi,cj,aejk,deik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv += einsum(
+        "ei,dj,abjk,ceik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv += einsum(
+        "ai,ci,bejk,dejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv += einsum(
+        "bi,di,aejk,cejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv += einsum(
+        "ei,ci,abjk,dejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv -= einsum(
+        "ai,cj,bejk,deik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv -= einsum(
+        "bi,dj,aejk,ceik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv -= einsum(
+        "ei,cj,abjk,deik->abcd", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vvvv -= einsum(
+        "ai,di,bejk,cejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv -= einsum(
+        "bi,ci,aejk,dejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv -= einsum(
+        "ei,di,abjk,cejk->abcd", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvv += einsum(
+        "abkl,efij,ceik,dfjl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vvvv += einsum(
+        "aeij,bfkl,cfik,dejl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vvvv -= einsum(
+        "aeij,bfkl,ceik,dfjl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vvvv -= einsum(
+        "abkl,efij,ceij,dfkl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv -= einsum(
+        "abkl,efij,cekl,dfij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv -= einsum(
+        "aeij,bfkl,cfij,dekl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv -= einsum(
+        "aeij,bfkl,cfkl,deij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv += einsum(
+        "aeij,bfkl,ceij,dfkl->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv += einsum(
+        "aeij,bfkl,cekl,dfij->abcd", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vvvv += einsum(
+        "ai,bj,cdij->abcd", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_vvvv += einsum(
+        "ai,bj,ci,dj->abcd", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_vvvv -= einsum(
+        "ai,bj,cj,di->abcd", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_oovv = zeros((no, no, nv, nv))
+
+    \rho_oovv += einsum(
+        "cekl,dfmn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cekl,dfmn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cekm,dfln,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cfkl,demn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cfkl,demn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cdkl,efmn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdkl,efmn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdkm,efln,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdln,efkm,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cdln,efkm,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "celm,dfkn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "celm,dfkn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cflm,dekn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "cflm,dekn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cekl,dfmn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cekl,dfmn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cekm,dfln,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cfkl,demn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cfkl,demn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cdkl,efmn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdkl,efmn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdln,efkm,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdln,efkm,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "celm,dfkn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "celm,dfkn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cemn,dfkl,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cflm,dekn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cflm,dekn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "cdkm,efln,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdkn,eflm,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdkn,eflm,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdlm,efkn,aelm,bfnj,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdlm,efkn,afin,belm,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdln,efkm,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cfkl,demn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "cdkl,efmn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    \rho_oovv -= einsum(
+        "cdmn,efkl,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    \rho_oovv += einsum(
+        "cdkn,eflm,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "cdkn,eflm,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "cdlm,efkn,aelm,bfin,cdkj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "cdlm,efkn,afnj,belm,cdik->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "cekl,dfmn,aekl,bfmn,cdij->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "cdkl,efmn,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    \rho_oovv += einsum(
+        "cdmn,efkl,abmn,cdik,eflj->ijab", \lambda^2, \lambda^2, t^2, t^2, t^2
+    ) / 8
+
+    \rho_oovv += einsum(
+        "ak,bl,cekm,dfln,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ak,ci,celn,dfkm,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ak,cj,celn,dfkm,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "bk,ci,cdkm,efln,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "bk,cj,cdkm,efln,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ci,dj,cdkm,efln,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ci,dj,cfkm,deln,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ak,ci,cdmn,efkl,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ak,ci,cfkn,delm,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ak,cj,cdmn,efkl,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ak,cj,cfkn,delm,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "bk,ci,cekl,dfmn,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "bk,ci,cfln,dekm,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "bk,cj,cekl,dfmn,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "bk,cj,cfln,dekm,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ak,bl,cekl,dfmn,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ak,bl,cekn,dflm,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ak,ci,cdkm,efln,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ak,cj,cdkm,efln,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "bk,ci,celn,dfkm,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "bk,cj,celn,dfkm,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ci,dj,cekm,dfln,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ak,ci,cekl,dfmn,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ak,ci,cfln,dekm,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ak,cj,cekl,dfmn,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ak,cj,cfln,dekm,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "bk,ci,cdmn,efkl,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "bk,ci,cfkn,delm,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "bk,cj,cdmn,efkl,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "bk,cj,cfkn,delm,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ak,bl,cdkm,efln,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ak,bl,cdln,efkm,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "bk,ci,cfkl,demn,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "bk,ci,cfmn,dekl,afmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "bk,cj,cfkl,demn,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "bk,cj,cfmn,dekl,afmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ci,dj,cdkl,efmn,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ci,dj,cdmn,efkl,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ci,dj,cfkl,demn,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ci,dj,cfmn,dekl,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,bl,cdkl,efmn,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,bl,cdkn,eflm,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,bl,cdlm,efkn,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,bl,cdmn,efkl,cdim,efnj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,ci,cfkl,demn,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,ci,cfmn,dekl,bfmn,delj->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,cj,cfkl,demn,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ak,cj,cfmn,dekl,bfmn,deil->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ci,dj,cekl,dfmn,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ci,dj,cemn,dfkl,aekl,bfmn->ijab", t^1, t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ck,dl,ablj,cdik->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ackj,bdil->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,adij,bckl->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cl,dk,acik,bdlj->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,abkl,cdij->ijab", \lambda^1, \lambda^1, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,dl,abil,cdkj->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,acik,bdlj->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,ackl,bdij->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cl,dk,ackj,bdil->ijab", \lambda^1, \lambda^1, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ai,bk,cdlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,aj,bk,cdil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,aj,ci,bdkl->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ak,bl,cdij->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ak,ci,bdlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ak,cj,bdil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,bi,cj,adkl->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ci,dj,abkl->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cl,dk,bk,ci,adlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "cl,dk,bk,cj,adil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,ai,cj,bdkl->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,ak,bi,cdlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,ak,bj,cdil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,bj,ci,adkl->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,bk,ci,adlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dl,bk,cj,adil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cl,dk,ak,ci,bdlj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "cl,dk,ak,cj,bdil->ijab", \lambda^1, \lambda^1, t^1, t^1, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dl,ak,bl,ci,dj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^1, t^1
+    )
+
+    \rho_oovv -= einsum(
+        "cl,dk,ak,bl,ci,dj->ijab", \lambda^1, \lambda^1, t^1, t^1, t^1, t^1
+    )
+
+    \rho_oovv += einsum(
+        "ck,ai,delm,bekm,cdlj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,aj,delm,bekm,cdil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,ak,delm,bemj,cdil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,al,delm,beim,cdkj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,al,delm,bekj,cdim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bk,delm,aeim,cdlj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,aeik,cdmj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,aekm,cdij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,aemj,cdik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,ci,delm,adkl,bemj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,cj,delm,adkl,beim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,di,delm,aekl,bcmj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,di,delm,aemj,bckl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dj,delm,aeim,bckl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,dj,delm,aekl,bcim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,ai,delm,bckm,delj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,aj,delm,bckm,deil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,ak,delm,bcmj,deil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,ak,delm,belm,cdij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,al,delm,bcim,dekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,al,delm,bckj,deim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bi,delm,aelm,cdkj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bj,delm,aelm,cdik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bk,delm,acim,delj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,acik,demj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,ackm,deij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bl,delm,acmj,deik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,ci,delm,abkm,delj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,ci,delm,adlm,bekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,cj,delm,abkm,deil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,cj,delm,adlm,beik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,di,delm,ablm,cekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,di,delm,aekj,bclm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,di,delm,aelm,bckj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,dj,delm,ablm,ceik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,dj,delm,aeik,bclm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,dj,delm,aelm,bcik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ak,delm,beim,cdlj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,beik,cdmj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,bekm,cdij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,bemj,cdik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bi,delm,aekm,cdlj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bj,delm,aekm,cdil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bk,delm,aemj,cdil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bl,delm,aeim,cdkj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bl,delm,aekj,cdim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,ci,delm,aemj,bdkl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,cj,delm,aeim,bdkl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,di,delm,abkm,celj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,di,delm,ackl,bemj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,di,delm,acmj,bekl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dj,delm,abkm,ceil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dj,delm,acim,bekl->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,dj,delm,ackl,beim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,ai,delm,belm,cdkj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,aj,delm,belm,cdik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ak,delm,bcim,delj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,bcik,demj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,bckm,deij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,delm,bcmj,deik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bi,delm,ackm,delj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bj,delm,ackm,deil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bk,delm,acmj,deil->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bk,delm,aelm,cdij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bl,delm,acim,dekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bl,delm,ackj,deim->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ci,delm,aekj,bdlm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,cj,delm,aeik,bdlm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,di,delm,ackj,belm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,di,delm,aclm,bekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,dj,delm,acik,belm->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,dj,delm,aclm,beik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ai,delm,bclm,dekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ck,aj,delm,bclm,deik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ck,bk,delm,aclm,deij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ck,ci,delm,ablm,dekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv -= einsum(
+        "ck,cj,delm,ablm,deik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ck,ak,delm,bclm,deij->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ck,bi,delm,aclm,dekj->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ck,bj,delm,aclm,deik->ijab", \lambda^1, t^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_oovv += einsum(
+        "ck,ak,bl,di,delm,cemj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,ak,bl,dj,delm,ceim->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,al,bm,di,delm,cekj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,al,bm,dj,delm,ceik->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,al,cj,di,delm,bekm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bl,ci,dj,delm,aekm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,bl,di,ej,delm,ackm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv += einsum(
+        "ck,ak,ci,dj,delm,belm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,ak,di,ej,delm,bclm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,al,bk,ci,delm,demj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,al,bk,cj,delm,deim->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv += einsum(
+        "ck,bk,cj,di,delm,aelm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,bk,di,delm,cemj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,bk,dj,delm,ceim->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,ci,dj,delm,bekm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,al,di,ej,delm,bckm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,bl,cj,di,delm,aekm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_oovv -= einsum(
+        "ck,ak,bl,ci,delm,demj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ak,bl,cj,delm,deim->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,ak,cj,di,delm,belm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,bm,ci,delm,dekj->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,al,bm,cj,delm,deik->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bk,ci,dj,delm,aelm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_oovv -= einsum(
+        "ck,bk,di,ej,delm,aclm->ijab", \lambda^1, t^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvoo = zeros((nv, nv, no, no))
+
+    \rho_vvoo += einsum(
+        "ai,bj->abij", \lambda^1, \lambda^1
+    )
+
+    \rho_vvoo -= einsum(
+        "aj,bi->abij", \lambda^1, \lambda^1
+    )
+
+    \rho_ovov = zeros((no, nv, no, nv))
+
+    \rho_ovov += KroneckerDelta(i, j) * einsum(
+        "ak,cl,bckl->iajb", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_ovov += einsum(
+        "ak,cj,bcik->iajb", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_ovov -= einsum(
+        "aj,ck,bcik->iajb", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_ovov += einsum(
+        "aj,ck,bk,ci->iajb", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_ovov -= einsum(
+        "ak,cj,bk,ci->iajb", \lambda^1, \lambda^1, t^1, t^1
+    )
+
+    \rho_ovov += einsum(
+        "ak,ci,cdlj,bdkl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov += einsum(
+        "ck,bl,adlj,cdik->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov += einsum(
+        "ck,di,adlj,bckl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov += einsum(
+        "aj,bk,cdkl,cdil->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "aj,ci,cdkl,bdkl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "ak,bk,cdlj,cdil->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "cj,di,adkl,bckl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov -= einsum(
+        "cj,bk,adkl,cdil->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov -= einsum(
+        "ck,bk,adlj,cdil->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov -= einsum(
+        "ck,ci,adlj,bdkl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ovov -= einsum(
+        "ak,bl,cdlj,cdik->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov -= einsum(
+        "cj,ci,adkl,bdkl->iajb", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "aelm,cdkj,bdkm,ceil->iajb", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ovov += einsum(
+        "aemj,cdkl,belm,cdik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ovov -= einsum(
+        "aemj,cdkl,bdlm,ceik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ovov -= einsum(
+        "aelm,cdkj,bdlm,ceik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ovov -= einsum(
+        "aelm,cdkj,bekm,cdil->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ovov -= einsum(
+        "aemj,cdkl,bdkl,ceim->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ovov += einsum(
+        "aelm,cdkj,belm,cdik->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ovov += einsum(
+        "aemj,cdkl,bekl,cdim->iajb", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov = zeros((no, no, no, nv))
+
+    \rho_ooov += einsum(
+        "bk,cdlm,admj,bcil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,cdmk,adil,bcmj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,cdmk,adlm,bcij->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,cdmk,admj,bcil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bk,cdlm,abmj,cdil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bk,cdlm,adlm,bcij->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bl,cdmk,abil,cdmj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bl,cdmk,ablm,cdij->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bl,cdmk,abmj,cdil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bk,cdlm,adim,bclj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,cdmk,adim,bclj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,cdmk,adlj,bcim->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bk,cdlm,abim,cdlj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bl,cdmk,abim,cdlj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bl,cdmk,ablj,cdim->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bk,cdlm,ablm,cdij->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov += einsum(
+        "bk,al,ci,cdlm,bdmj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bk,al,cj,cdlm,bdim->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,al,ci,cdmk,bdmj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,al,cj,cdmk,bdim->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,bi,cj,cdmk,adlm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,ci,dj,cdmk,ablm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bk,bi,cj,cdlm,adlm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bk,ci,dj,cdlm,ablm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bl,am,bi,cdmk,cdlj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "bl,am,bj,cdmk,cdil->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bl,am,ci,cdmk,bdlj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,am,cj,cdmk,bdil->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,bj,ci,cdmk,adlm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bk,al,bi,cdlm,cdmj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bk,al,bj,cdlm,cdim->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bk,bj,ci,cdlm,adlm->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bl,al,bi,cdmk,cdmj->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bl,al,bj,cdmk,cdim->ijka", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "al,bclm,denk,bdim,cenj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "an,bclm,denk,bdil,cemj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "di,bclm,denk,acmn,belj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "dj,bclm,denk,acmn,beil->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += einsum(
+        "di,bclm,denk,aclm,benj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += einsum(
+        "dj,bclm,denk,aclm,bein->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "al,bclm,denk,bdin,cemj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bi,bclm,denk,aemn,cdlj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bj,bclm,denk,aemn,cdil->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bi,bclm,denk,acmn,delj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bi,bclm,denk,aelm,cdnj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bj,bclm,denk,acmn,deil->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "bj,bclm,denk,aelm,cdin->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "di,bclm,denk,aemn,bclj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "dj,bclm,denk,aemn,bcil->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= einsum(
+        "al,bclm,denk,bcim,denj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "al,bclm,denk,bcnj,deim->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "an,bclm,denk,bcil,demj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "an,bclm,denk,bcmj,deil->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "bi,bclm,denk,aclm,denj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "bj,bclm,denk,aclm,dein->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "di,bclm,denk,aelm,bcnj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= einsum(
+        "dj,bclm,denk,aelm,bcin->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov += einsum(
+        "al,bclm,denk,bcin,demj->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov += einsum(
+        "al,bclm,denk,bcmj,dein->ijka", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov += einsum(
+        "bl,ck,ai,bclj->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,ck,aj,bcil->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,ck,ci,ablj->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,ck,cj,abil->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,ck,al,bcij->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,ck,bi,aclj->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov -= einsum(
+        "bl,ck,bj,acil->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += einsum(
+        "bl,ck,al,bj,ci->ijka", \lambda^1, \lambda^1, t^1, t^1, t^1
+    )
+
+    \rho_ooov -= einsum(
+        "bl,ck,al,bi,cj->ijka", \lambda^1, \lambda^1, t^1, t^1, t^1
+    )
+
+    \rho_ooov += KroneckerDelta(j, k) * einsum(
+        "bl,cdmn,adln,bcim->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += KroneckerDelta(i, k) * einsum(
+        "bl,cdmn,adln,bcmj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ooov += KroneckerDelta(j, k) * einsum(
+        "bl,cdmn,abln,cdim->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov += KroneckerDelta(i, k) * einsum(
+        "bl,cdmn,abln,cdmj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= KroneckerDelta(j, k) * einsum(
+        "bl,cdmn,admn,bcil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bl,cdmn,admn,bclj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ooov -= KroneckerDelta(j, k) * einsum(
+        "bl,cdmn,abmn,cdil->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bl,cdmn,abmn,cdlj->ijka", \lambda^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_ooov += KroneckerDelta(j, k) * einsum(
+        "bl,cm,al,bcim->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += KroneckerDelta(i, k) * einsum(
+        "bl,cm,al,bcmj->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov += KroneckerDelta(j, k) * einsum(
+        "bl,cm,bi,aclm->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ooov -= KroneckerDelta(i, k) * einsum(
+        "bl,cm,bj,aclm->ijka", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ovoo = zeros((no, nv, no, no))
+
+    \rho_ovoo += einsum(
+        "bj,aclk,bcil->iajk", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_ovoo += einsum(
+        "ak,bclj,bcil->iajk", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovoo += einsum(
+        "al,bcjk,bcil->iajk", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovoo -= einsum(
+        "bk,aclj,bcil->iajk", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_ovoo -= einsum(
+        "bl,acjk,bcil->iajk", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_ovoo -= einsum(
+        "aj,bclk,bcil->iajk", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_ovoo += einsum(
+        "aj,bk,bi->iajk", \lambda^1, \lambda^1, t^1
+    )
+
+    \rho_ovoo -= einsum(
+        "ak,bj,bi->iajk", \lambda^1, \lambda^1, t^1
+    )
+
+    \rho_vvvo = zeros((nv, nv, nv, no))
+
+    \rho_vvvo += einsum(
+        "aj,bi,cj->abci", \lambda^1, \lambda^1, t^1
+    )
+
+    \rho_vvvo -= einsum(
+        "ai,bj,cj->abci", \lambda^1, \lambda^1, t^1
+    )
+
+    \rho_vvvo += einsum(
+        "aj,bdik,cdjk->abci", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_vvvo += einsum(
+        "dj,abik,cdjk->abci", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_vvvo += einsum(
+        "bi,adjk,cdjk->abci", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvo -= einsum(
+        "bj,adik,cdjk->abci", \lambda^1, \lambda^2, t^2
+    )
+
+    \rho_vvvo -= einsum(
+        "ai,bdjk,cdjk->abci", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vvvo -= einsum(
+        "di,abjk,cdjk->abci", \lambda^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv = zeros((nv, no, nv, nv))
+
+    \rho_vovv += einsum(
+        "bj,aflm,dejk,cekm,dfil->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "cl,aflm,dejk,bekm,dfij->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "di,aflm,dejk,bfjl,cekm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "bl,aflm,dejk,cfkm,deij->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "cj,aflm,dejk,belm,dfik->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "cj,aflm,dejk,bfkm,deil->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "cl,aflm,dejk,bejk,dfim->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "bl,aflm,dejk,cekm,dfij->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "cj,aflm,dejk,bekm,dfil->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "di,aflm,dejk,bejl,cfkm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "fi,aflm,dejk,bdjl,cekm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "bj,aflm,dejk,celm,dfik->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "bj,aflm,dejk,cfkm,deil->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "bl,aflm,dejk,cejk,dfim->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "cl,aflm,dejk,bfkm,deij->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "cj,aflm,dejk,bflm,deik->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv -= einsum(
+        "cl,aflm,dejk,bfjk,deim->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv -= einsum(
+        "di,aflm,dejk,bfjk,celm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv -= einsum(
+        "di,aflm,dejk,bflm,cejk->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "bj,aflm,dejk,cflm,deik->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "bl,aflm,dejk,cfjk,deim->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "di,aflm,dejk,bejk,cflm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "di,aflm,dejk,belm,cfjk->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "fi,aflm,dejk,bdjk,celm->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "fi,aflm,dejk,bdlm,cejk->aibc", t^1, \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "aj,dekl,bdjk,ceil->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,aekl,beil,cdjk->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,aekl,bejk,cdil->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "aj,dekl,bcjl,deik->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "aj,dekl,bdkl,ceij->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "dj,aekl,bckl,deij->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "dj,aekl,beij,cdkl->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "dj,aekl,bekl,cdij->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "aj,dekl,beil,cdjk->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,aekl,bcjl,deik->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,aekl,bdil,cejk->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,aekl,bdjk,ceil->aibc", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dekl,beij,cdkl->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "dj,aekl,bdij,cekl->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "dj,aekl,bdkl,ceij->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "aj,dekl,bckl,deij->aibc", \lambda^1, \lambda^2, t^2, t^2
+    ) / 4
+
+    \rho_vovv += einsum(
+        "aj,bk,di,dekl,cejl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,bj,ck,aekl,deil->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,bk,cl,aekl,deij->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,bk,ei,aekl,cdjl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "dj,ck,di,aekl,bejl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv += einsum(
+        "aj,bk,cj,dekl,deil->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "aj,cj,di,dekl,bekl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "dj,bj,di,aekl,cekl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "dj,cj,ei,aekl,bdkl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "aj,ck,di,dekl,bejl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,bk,cj,aekl,deil->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,bk,di,aekl,cejl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "dj,ck,ei,aekl,bdjl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,bj,ck,dekl,deil->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "aj,bj,di,dekl,cekl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "aj,bk,cl,dekl,deij->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "dj,bj,ei,aekl,cdkl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv -= einsum(
+        "dj,cj,di,aekl,bekl->aibc", \lambda^1, t^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    \rho_vovv += einsum(
+        "aj,dk,bj,cdik->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv += einsum(
+        "aj,dk,ci,bdjk->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv += einsum(
+        "aj,dk,ck,bdij->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dk,bi,cdjk->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dk,bk,cdij->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dk,cj,bdik->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dk,di,bcjk->aibc", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_vovv += einsum(
+        "aj,dk,bk,cj,di->aibc", \lambda^1, \lambda^1, t^1, t^1, t^1
+    )
+
+    \rho_vovv -= einsum(
+        "aj,dk,bj,ck,di->aibc", \lambda^1, \lambda^1, t^1, t^1, t^1
+    )

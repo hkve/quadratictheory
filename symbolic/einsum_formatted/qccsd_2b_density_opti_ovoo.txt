@@ -1,0 +1,90 @@
+    tau0 = np.zeros((N, N, N, N))
+
+    tau0 += np.einsum(
+        "baij,bakl->ijkl", l2, t2, optimize=True
+    )
+
+    \rho_ovoo = np.zeros((N, M, N, N))
+
+    \rho_ovoo -= np.einsum(
+        "al,kjil->iajk", l1, tau0, optimize=True
+    ) / 2
+
+    tau0 = None
+
+    tau1 = np.zeros((N, M))
+
+    tau1 -= np.einsum(
+        "bj,baij->ia", l1, t2, optimize=True
+    )
+
+    \rho_ovoo -= np.einsum(
+        "ib,abkj->iajk", tau1, l2, optimize=True
+    )
+
+    tau1 = None
+
+    tau2 = np.zeros((N, N, N, M))
+
+    tau2 += np.einsum(
+        "bi,abjk->ijka", l1, t2, optimize=True
+    )
+
+    tau3 = np.zeros((N, N, N, M))
+
+    tau3 -= np.einsum(
+        "abjl,iklb->ijka", l2, tau2, optimize=True
+    )
+
+    tau2 = None
+
+    tau7 = np.zeros((N, N, N, M))
+
+    tau7 -= 2 * np.einsum(
+        "ijka->ijka", tau3, optimize=True
+    )
+
+    tau3 = None
+
+    tau4 = np.zeros((N, N))
+
+    tau4 += np.einsum(
+        "ai,aj->ij", l1, t1, optimize=True
+    )
+
+    tau6 = np.zeros((N, N))
+
+    tau6 += 2 * np.einsum(
+        "ij->ij", tau4, optimize=True
+    )
+
+    tau4 = None
+
+    tau5 = np.zeros((N, N))
+
+    tau5 += np.einsum(
+        "baik,bajk->ij", l2, t2, optimize=True
+    )
+
+    tau6 += np.einsum(
+        "ij->ij", tau5, optimize=True
+    )
+
+    tau5 = None
+
+    tau7 += np.einsum(
+        "ai,jk->ijka", l1, tau6, optimize=True
+    )
+
+    tau6 = None
+
+    \rho_ovoo += np.einsum(
+        "jkia->iajk", tau7, optimize=True
+    ) / 2
+
+    \rho_ovoo -= np.einsum(
+        "kjia->iajk", tau7, optimize=True
+    ) / 2
+
+    tau7 = None
+

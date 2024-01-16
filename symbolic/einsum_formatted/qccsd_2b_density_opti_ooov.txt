@@ -1,0 +1,554 @@
+    tau0 = np.zeros((N, N, N, M))
+
+    tau0 += np.einsum(
+        "bi,abjk->ijka", l1, t2, optimize=True
+    )
+
+    tau24 = np.zeros((N, N, N, M))
+
+    tau24 -= np.einsum(
+        "abjl,iklb->ijka", l2, tau0, optimize=True
+    )
+
+    tau26 = np.zeros((N, N, N, M))
+
+    tau26 -= 2 * np.einsum(
+        "ijka->ijka", tau24, optimize=True
+    )
+
+    tau26 += 2 * np.einsum(
+        "jika->ijka", tau24, optimize=True
+    )
+
+    tau44 = np.zeros((N, N, N, M))
+
+    tau44 += 4 * np.einsum(
+        "jika->ijka", tau24, optimize=True
+    )
+
+    tau24 = None
+
+    tau1 = np.zeros((N, N, M, M))
+
+    tau1 += np.einsum(
+        "caki,bcjk->ijab", l2, t2, optimize=True
+    )
+
+    tau2 = np.zeros((N, N, M, M))
+
+    tau2 -= np.einsum(
+        "cbjk,kica->ijab", t2, tau1, optimize=True
+    )
+
+    tau3 = np.zeros((N, N, N, N))
+
+    tau3 += np.einsum(
+        "baji,klab->ijkl", l2, tau2, optimize=True
+    )
+
+    \rho_ooov = np.zeros((N, N, N, M))
+
+    \rho_ooov -= np.einsum(
+        "al,lkij->ijka", t1, tau3, optimize=True
+    )
+
+    tau3 = None
+
+    tau20 = np.zeros((N, N, M, M))
+
+    tau20 += 4 * np.einsum(
+        "ijba->ijab", tau2, optimize=True
+    )
+
+    tau2 = None
+
+    tau28 = np.zeros((N, M, M, M))
+
+    tau28 += np.einsum(
+        "bj,jiac->iabc", t1, tau1, optimize=True
+    )
+
+    tau30 = np.zeros((N, M, M, M))
+
+    tau30 += 2 * np.einsum(
+        "iabc->iabc", tau28, optimize=True
+    )
+
+    tau28 = None
+
+    \rho_ooov += np.einsum(
+        "lijb,klba->ijka", tau0, tau1, optimize=True
+    )
+
+    tau4 = np.zeros((N, M))
+
+    tau4 -= np.einsum(
+        "bj,baij->ia", l1, t2, optimize=True
+    )
+
+    tau5 = np.zeros((N, N))
+
+    tau5 += np.einsum(
+        "ai,ja->ij", l1, tau4, optimize=True
+    )
+
+    tau42 = np.zeros((N, N, N, M))
+
+    tau42 -= 4 * np.einsum(
+        "aj,ik->ijka", t1, tau5, optimize=True
+    )
+
+    tau43 = np.zeros((N, M))
+
+    tau43 += np.einsum(
+        "aj,ji->ia", t1, tau5, optimize=True
+    )
+
+    tau5 = None
+
+    tau46 = np.zeros((N, M))
+
+    tau46 += 4 * np.einsum(
+        "ia->ia", tau43, optimize=True
+    )
+
+    tau43 = None
+
+    tau20 += 4 * np.einsum(
+        "bi,ja->ijab", t1, tau4, optimize=True
+    )
+
+    tau23 = np.zeros((N, N, N, M))
+
+    tau23 += np.einsum(
+        "kb,abji->ijka", tau4, l2, optimize=True
+    )
+
+    tau26 -= 2 * np.einsum(
+        "ijka->ijka", tau23, optimize=True
+    )
+
+    tau44 -= 2 * np.einsum(
+        "ijka->ijka", tau23, optimize=True
+    )
+
+    tau23 = None
+
+    tau40 = np.zeros((N, M))
+
+    tau40 -= 2 * np.einsum(
+        "ia->ia", tau4, optimize=True
+    )
+
+    tau6 = np.zeros((N, N))
+
+    tau6 -= np.einsum(
+        "baki,bajk->ij", l2, t2, optimize=True
+    )
+
+    tau15 = np.zeros((N, N, M, M))
+
+    tau15 -= np.einsum(
+        "kj,baik->ijab", tau6, t2, optimize=True
+    )
+
+    tau20 -= 2 * np.einsum(
+        "ijba->ijab", tau15, optimize=True
+    )
+
+    tau15 = None
+
+    tau25 = np.zeros((N, N))
+
+    tau25 += np.einsum(
+        "ij->ij", tau6, optimize=True
+    )
+
+    tau42 += 2 * np.einsum(
+        "ka,ij->ijka", tau4, tau6, optimize=True
+    )
+
+    tau7 = np.zeros((N, N))
+
+    tau7 += np.einsum(
+        "ai,aj->ij", l1, t1, optimize=True
+    )
+
+    tau25 += 2 * np.einsum(
+        "ij->ij", tau7, optimize=True
+    )
+
+    tau26 += np.einsum(
+        "ai,jk->ijka", l1, tau25, optimize=True
+    )
+
+    tau34 = np.zeros((N, N, M, M))
+
+    tau34 += np.einsum(
+        "ki,abkj->ijab", tau25, t2, optimize=True
+    )
+
+    tau35 = np.zeros((N, N, N, N))
+
+    tau35 += np.einsum(
+        "abkl,jiba->ijkl", l2, tau34, optimize=True
+    )
+
+    tau34 = None
+
+    tau36 = np.zeros((N, N, N, N))
+
+    tau36 += np.einsum(
+        "lkji->ijkl", tau35, optimize=True
+    )
+
+    tau35 = None
+
+    tau39 = np.zeros((N, M))
+
+    tau39 += np.einsum(
+        "aj,ji->ia", t1, tau25, optimize=True
+    )
+
+    tau40 += np.einsum(
+        "ia->ia", tau39, optimize=True
+    )
+
+    tau41 = np.zeros((N, M))
+
+    tau41 += np.einsum(
+        "ia->ia", tau39, optimize=True
+    )
+
+    tau39 = None
+
+    tau44 += 2 * np.einsum(
+        "ai,jk->ijka", l1, tau25, optimize=True
+    )
+
+    tau25 = None
+
+    tau8 = np.zeros((N, N, N, M))
+
+    tau8 += np.einsum(
+        "bk,abij->ijka", t1, l2, optimize=True
+    )
+
+    tau9 = np.zeros((N, N, N, M))
+
+    tau9 -= np.einsum(
+        "bakl,lijb->ijka", t2, tau8, optimize=True
+    )
+
+    tau10 = np.zeros((N, N, N, M))
+
+    tau10 += np.einsum(
+        "lj,ikla->ijka", tau7, tau9, optimize=True
+    )
+
+    tau42 += 4 * np.einsum(
+        "ijka->ijka", tau10, optimize=True
+    )
+
+    tau10 = None
+
+    tau13 = np.zeros((N, N, N, M))
+
+    tau13 += np.einsum(
+        "ilba,ljkb->ijka", tau1, tau9, optimize=True
+    )
+
+    tau42 += 4 * np.einsum(
+        "ijka->ijka", tau13, optimize=True
+    )
+
+    tau13 = None
+
+    tau29 = np.zeros((N, M, M, M))
+
+    tau29 -= np.einsum(
+        "cbkj,kjia->iabc", t2, tau8, optimize=True
+    )
+
+    tau30 += np.einsum(
+        "iacb->iabc", tau29, optimize=True
+    )
+
+    tau29 = None
+
+    tau31 = np.zeros((N, N, N, M))
+
+    tau31 += np.einsum(
+        "jkcb,ibac->ijka", tau1, tau30, optimize=True
+    )
+
+    tau1 = None
+
+    tau30 = None
+
+    tau42 -= 2 * np.einsum(
+        "jika->ijka", tau31, optimize=True
+    )
+
+    tau31 = None
+
+    tau32 = np.zeros((N, N, N, N))
+
+    tau32 -= np.einsum(
+        "ilma,mjka->ijkl", tau0, tau8, optimize=True
+    )
+
+    tau36 += 4 * np.einsum(
+        "ijkl->ijkl", tau32, optimize=True
+    )
+
+    tau32 = None
+
+    tau38 = np.zeros((N, M))
+
+    tau38 -= np.einsum(
+        "abkj,kjib->ia", t2, tau8, optimize=True
+    )
+
+    tau40 += np.einsum(
+        "ia->ia", tau38, optimize=True
+    )
+
+    tau42 -= 2 * np.einsum(
+        "ka,ij->ijka", tau40, tau7, optimize=True
+    )
+
+    tau40 = None
+
+    tau7 = None
+
+    tau41 += np.einsum(
+        "ia->ia", tau38, optimize=True
+    )
+
+    tau38 = None
+
+    tau42 += np.einsum(
+        "ja,ik->ijka", tau41, tau6, optimize=True
+    )
+
+    tau41 = None
+
+    tau6 = None
+
+    tau11 = np.zeros((N, N, N, N))
+
+    tau11 += np.einsum(
+        "baij,bakl->ijkl", l2, t2, optimize=True
+    )
+
+    tau12 = np.zeros((N, N, N, M))
+
+    tau12 -= np.einsum(
+        "imkl,ljma->ijka", tau11, tau9, optimize=True
+    )
+
+    tau9 = None
+
+    tau42 += 2 * np.einsum(
+        "ijka->ijka", tau12, optimize=True
+    )
+
+    tau12 = None
+
+    tau14 = np.zeros((N, N, M, M))
+
+    tau14 -= np.einsum(
+        "balk,lkij->ijab", t2, tau11, optimize=True
+    )
+
+    tau20 += np.einsum(
+        "ijba->ijab", tau14, optimize=True
+    )
+
+    tau14 = None
+
+    tau22 = np.zeros((N, N, N, M))
+
+    tau22 -= np.einsum(
+        "al,jikl->ijka", l1, tau11, optimize=True
+    )
+
+    tau26 += np.einsum(
+        "ijka->ijka", tau22, optimize=True
+    )
+
+    tau27 = np.zeros((N, N, N, M))
+
+    tau27 += np.einsum(
+        "balk,iljb->ijka", t2, tau26, optimize=True
+    )
+
+    tau26 = None
+
+    tau42 -= 2 * np.einsum(
+        "ijka->ijka", tau27, optimize=True
+    )
+
+    tau27 = None
+
+    tau44 += np.einsum(
+        "ijka->ijka", tau22, optimize=True
+    )
+
+    tau22 = None
+
+    tau45 = np.zeros((N, M))
+
+    tau45 += np.einsum(
+        "bajk,jkib->ia", t2, tau44, optimize=True
+    )
+
+    tau44 = None
+
+    tau46 += np.einsum(
+        "ia->ia", tau45, optimize=True
+    )
+
+    tau45 = None
+
+    \rho_ooov -=  np.einsum(
+        "ik,ja->ijka", I, tau46, optimize=True
+    ) / 4
+
+    \rho_ooov +=  np.einsum(
+        "jk,ia->ijka", I, tau46, optimize=True
+    ) / 4
+
+    tau46 = None
+
+    tau33 = np.zeros((N, N, N, N))
+
+    tau33 -= np.einsum(
+        "jnkm,miln->ijkl", tau11, tau11, optimize=True
+    )
+
+    tau11 = None
+
+    tau36 += np.einsum(
+        "ijlk->ijkl", tau33, optimize=True
+    )
+
+    tau33 = None
+
+    tau37 = np.zeros((N, N, N, M))
+
+    tau37 += np.einsum(
+        "al,iljk->ijka", t1, tau36, optimize=True
+    )
+
+    tau36 = None
+
+    tau42 += np.einsum(
+        "ijka->ijka", tau37, optimize=True
+    )
+
+    tau37 = None
+
+    tau16 = np.zeros((M, M))
+
+    tau16 += np.einsum(
+        "ai,bi->ab", l1, t1, optimize=True
+    )
+
+    tau18 = np.zeros((M, M))
+
+    tau18 += 2 * np.einsum(
+        "ab->ab", tau16, optimize=True
+    )
+
+    tau16 = None
+
+    tau17 = np.zeros((M, M))
+
+    tau17 -= np.einsum(
+        "caji,bcji->ab", l2, t2, optimize=True
+    )
+
+    tau18 += np.einsum(
+        "ab->ab", tau17, optimize=True
+    )
+
+    tau17 = None
+
+    tau19 = np.zeros((N, N, M, M))
+
+    tau19 += np.einsum(
+        "ca,cbij->ijab", tau18, t2, optimize=True
+    )
+
+    tau20 += 2 * np.einsum(
+        "jiba->ijab", tau19, optimize=True
+    )
+
+    tau19 = None
+
+    tau21 = np.zeros((N, N, N, M))
+
+    tau21 += np.einsum(
+        "liba,ljkb->ijka", tau20, tau8, optimize=True
+    )
+
+    tau8 = None
+
+    tau20 = None
+
+    tau42 -= np.einsum(
+        "kija->ijka", tau21, optimize=True
+    )
+
+    tau21 = None
+
+    \rho_ooov -= np.einsum(
+        "kija->ijka", tau42, optimize=True
+    ) / 4
+
+    \rho_ooov += np.einsum(
+        "kjia->ijka", tau42, optimize=True
+    ) / 4
+
+    tau42 = None
+
+    \rho_ooov += np.einsum(
+        "ba,kjib->ijka", tau18, tau0, optimize=True
+    ) / 2
+
+    tau18 = None
+
+    tau47 = np.zeros((N, N, M, M))
+
+    tau47 += np.einsum(
+        "baji->ijab", t2, optimize=True
+    )
+
+    tau47 += 2 * np.einsum(
+        "ai,bj->ijab", t1, t1, optimize=True
+    )
+
+    tau48 = np.zeros((N, N, N, N))
+
+    tau48 += np.einsum(
+        "abkl,ijab->ijkl", l2, tau47, optimize=True
+    )
+
+    tau47 = None
+
+    \rho_ooov -= np.einsum(
+        "klma,ijml->ijka", tau0, tau48, optimize=True
+    ) / 4
+
+    tau0 = None
+
+    \rho_ooov += np.einsum(
+        "la,ijkl->ijka", tau4, tau48, optimize=True
+    ) / 2
+
+    tau48 = None
+
+    tau4 = None
+

@@ -1,0 +1,89 @@
+    tau^0 = zeros((no, no, no, no))
+
+    tau^0 += einsum(
+        "baij,bakl->ijkl", \lambda^2, t^2
+    )
+
+    \rho_ovoo = zeros((no, nv, no, no))
+
+    \rho_ovoo -= einsum(
+        "al,kjil->iajk", \lambda^1, tau^0
+    ) / 2
+
+    del tau^0
+
+    tau^1 = zeros((no, nv))
+
+    tau^1 -= einsum(
+        "bj,baij->ia", \lambda^1, t^2
+    )
+
+    \rho_ovoo -= einsum(
+        "ib,abkj->iajk", tau^1, \lambda^2
+    )
+
+    del tau^1
+
+    tau^2 = zeros((no, no, no, nv))
+
+    tau^2 += einsum(
+        "bi,abjk->ijka", \lambda^1, t^2
+    )
+
+    tau^3 = zeros((no, no, no, nv))
+
+    tau^3 -= einsum(
+        "abjl,iklb->ijka", \lambda^2, tau^2
+    )
+
+    del tau^2
+
+    tau^7 = zeros((no, no, no, nv))
+
+    tau^7 -= 2 * einsum(
+        "ijka->ijka", tau^3
+    )
+
+    del tau^3
+
+    tau^4 = zeros((no, no))
+
+    tau^4 += einsum(
+        "ai,aj->ij", \lambda^1, t^1
+    )
+
+    tau^6 = zeros((no, no))
+
+    tau^6 += 2 * einsum(
+        "ij->ij", tau^4
+    )
+
+    del tau^4
+
+    tau^5 = zeros((no, no))
+
+    tau^5 += einsum(
+        "baik,bajk->ij", \lambda^2, t^2
+    )
+
+    tau^6 += einsum(
+        "ij->ij", tau^5
+    )
+
+    del tau^5
+
+    tau^7 += einsum(
+        "ai,jk->ijka", \lambda^1, tau^6
+    )
+
+    del tau^6
+
+    \rho_ovoo += einsum(
+        "jkia->iajk", tau^7
+    ) / 2
+
+    \rho_ovoo -= einsum(
+        "kjia->iajk", tau^7
+    ) / 2
+
+    del tau^7

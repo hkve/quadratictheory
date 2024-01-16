@@ -1,0 +1,10 @@
+    \rho_vvoo = np.zeros((M, M, N, N))
+
+    \rho_vvoo -= np.einsum(
+        "aj,bi->abij", l1, l1, optimize=True
+    )
+
+    \rho_vvoo += np.einsum(
+        "ai,bj->abij", l1, l1, optimize=True
+    )
+

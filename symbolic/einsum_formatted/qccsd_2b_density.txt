@@ -1,0 +1,1898 @@
+    \rho_oooo = np.zeros((N, N, N, N))
+
+    \rho_oooo += np.einsum(
+        "al,bi,bcmk,acmj->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "al,bj,bcmk,acim->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "am,bi,bckl,acmj->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "am,bj,bckl,acim->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "ak,ai,bcml,bcmj->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo += np.einsum(
+        "ak,aj,bcml,bcim->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo -= np.einsum(
+        "ak,bi,bcml,acmj->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "ak,bj,bcml,acim->ijkl", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "al,ai,bcmk,bcmj->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo -= np.einsum(
+        "al,aj,bcmk,bcim->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo -= np.einsum(
+        "am,ai,bckl,bcmj->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo -= np.einsum(
+        "am,aj,bckl,bcim->ijkl", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oooo += np.einsum(
+        "ak,bl,abij->ijkl", l1, l1, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "ak,bl,ai,bj->ijkl", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "ak,bl,aj,bi->ijkl", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_oooo +=  np.einsum(
+        "jl,am,bk,abim->ijkl", I, l1, l1, t2, optimize=True
+    )
+
+    \rho_oooo +=  np.einsum(
+        "il,am,bk,abmj->ijkl", I, l1, l1, t2, optimize=True
+    )
+
+    \rho_oooo -=  np.einsum(
+        "jk,am,bl,abim->ijkl", I, l1, l1, t2, optimize=True
+    )
+
+    \rho_oooo -=  np.einsum(
+        "ik,am,bl,abmj->ijkl", I, l1, l1, t2, optimize=True
+    )
+
+    \rho_oooo += np.einsum(
+        "abmk,cdnl,acim,bdnj->ijkl", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "abmk,cdnl,acin,bdmj->ijkl", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "abmn,cdkl,acim,bdnj->ijkl", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oooo -= np.einsum(
+        "abmk,cdnl,abim,cdnj->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oooo -= np.einsum(
+        "abmk,cdnl,abnj,cdim->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oooo += np.einsum(
+        "abmk,cdnl,abin,cdmj->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oooo += np.einsum(
+        "abmk,cdnl,abmj,cdin->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oooo += np.einsum(
+        "abmn,cdkl,abim,cdnj->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oooo += np.einsum(
+        "abmn,cdkl,abnj,cdim->ijkl", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv = np.zeros((M, M, M, M))
+
+    \rho_vvvv += np.einsum(
+        "ai,dj,bejk,ceik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv += np.einsum(
+        "bi,cj,aejk,deik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv += np.einsum(
+        "ei,dj,abjk,ceik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv += np.einsum(
+        "ai,ci,bejk,dejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv += np.einsum(
+        "bi,di,aejk,cejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv += np.einsum(
+        "ei,ci,abjk,dejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv -= np.einsum(
+        "ai,cj,bejk,deik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "bi,dj,aejk,ceik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "ei,cj,abjk,deik->abcd", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "ai,di,bejk,cejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv -= np.einsum(
+        "bi,ci,aejk,dejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv -= np.einsum(
+        "ei,di,abjk,cejk->abcd", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvv += np.einsum(
+        "abkl,efij,ceik,dfjl->abcd", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vvvv += np.einsum(
+        "aeij,bfkl,cfik,dejl->abcd", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "aeij,bfkl,ceik,dfjl->abcd", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "abkl,efij,ceij,dfkl->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv -= np.einsum(
+        "abkl,efij,cekl,dfij->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv -= np.einsum(
+        "aeij,bfkl,cfij,dekl->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv -= np.einsum(
+        "aeij,bfkl,cfkl,deij->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv += np.einsum(
+        "aeij,bfkl,ceij,dfkl->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv += np.einsum(
+        "aeij,bfkl,cekl,dfij->abcd", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vvvv += np.einsum(
+        "ai,bj,cdij->abcd", l1, l1, t2, optimize=True
+    )
+
+    \rho_vvvv += np.einsum(
+        "ai,bj,ci,dj->abcd", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_vvvv -= np.einsum(
+        "ai,bj,cj,di->abcd", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_oovv = np.zeros((N, N, M, M))
+
+    \rho_oovv += np.einsum(
+        "cekl,dfmn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cekl,dfmn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cekm,dfln,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cfkl,demn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cfkl,demn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cdkl,efmn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cdkl,efmn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cdkm,efln,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cdln,efkm,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cdln,efkm,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "celm,dfkn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "celm,dfkn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cflm,dekn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "cflm,dekn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cekl,dfmn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cekl,dfmn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cekm,dfln,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cfkl,demn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cfkl,demn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cdkl,efmn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cdkl,efmn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cdln,efkm,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cdln,efkm,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "celm,dfkn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "celm,dfkn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cemn,dfkl,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cflm,dekn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cflm,dekn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "cdkm,efln,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdkn,eflm,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdkn,eflm,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdlm,efkn,aelm,bfnj,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdlm,efkn,afin,belm,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdln,efkm,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cfkl,demn,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "cdkl,efmn,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 8
+
+    \rho_oovv -= np.einsum(
+        "cdmn,efkl,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 8
+
+    \rho_oovv += np.einsum(
+        "cdkn,eflm,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "cdkn,eflm,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "cdlm,efkn,aelm,bfin,cdkj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "cdlm,efkn,afnj,belm,cdik->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "cekl,dfmn,aekl,bfmn,cdij->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "cdkl,efmn,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 8
+
+    \rho_oovv += np.einsum(
+        "cdmn,efkl,abmn,cdik,eflj->ijab", l2, l2, t2, t2, t2, optimize=True
+    ) / 8
+
+    \rho_oovv += np.einsum(
+        "ak,bl,cekm,dfln,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ak,ci,celn,dfkm,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ak,cj,celn,dfkm,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "bk,ci,cdkm,efln,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "bk,cj,cdkm,efln,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ci,dj,cdkm,efln,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ci,dj,cfkm,deln,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ak,ci,cdmn,efkl,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ak,ci,cfkn,delm,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ak,cj,cdmn,efkl,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ak,cj,cfkn,delm,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "bk,ci,cekl,dfmn,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "bk,ci,cfln,dekm,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "bk,cj,cekl,dfmn,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "bk,cj,cfln,dekm,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ak,bl,cekl,dfmn,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ak,bl,cekn,dflm,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ak,ci,cdkm,efln,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ak,cj,cdkm,efln,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "bk,ci,celn,dfkm,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "bk,cj,celn,dfkm,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ci,dj,cekm,dfln,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ak,ci,cekl,dfmn,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ak,ci,cfln,dekm,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ak,cj,cekl,dfmn,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ak,cj,cfln,dekm,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "bk,ci,cdmn,efkl,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "bk,ci,cfkn,delm,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "bk,cj,cdmn,efkl,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "bk,cj,cfkn,delm,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ak,bl,cdkm,efln,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ak,bl,cdln,efkm,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "bk,ci,cfkl,demn,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "bk,ci,cfmn,dekl,afmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "bk,cj,cfkl,demn,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "bk,cj,cfmn,dekl,afmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ci,dj,cdkl,efmn,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ci,dj,cdmn,efkl,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ci,dj,cfkl,demn,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ci,dj,cfmn,dekl,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,bl,cdkl,efmn,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,bl,cdkn,eflm,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,bl,cdlm,efkn,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,bl,cdmn,efkl,cdim,efnj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,ci,cfkl,demn,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,ci,cfmn,dekl,bfmn,delj->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,cj,cfkl,demn,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ak,cj,cfmn,dekl,bfmn,deil->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ci,dj,cekl,dfmn,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ci,dj,cemn,dfkl,aekl,bfmn->ijab", t1, t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ablj,cdik->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ackj,bdil->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,adij,bckl->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cl,dk,acik,bdlj->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,abkl,cdij->ijab", l1, l1, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,abil,cdkj->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,acik,bdlj->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,ackl,bdij->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cl,dk,ackj,bdil->ijab", l1, l1, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ai,bk,cdlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,aj,bk,cdil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,aj,ci,bdkl->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ak,bl,cdij->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ak,ci,bdlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ak,cj,bdil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,bi,cj,adkl->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ci,dj,abkl->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cl,dk,bk,ci,adlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "cl,dk,bk,cj,adil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,ai,cj,bdkl->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,ak,bi,cdlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,ak,bj,cdil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,bj,ci,adkl->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,bk,ci,adlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dl,bk,cj,adil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cl,dk,ak,ci,bdlj->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cl,dk,ak,cj,bdil->ijab", l1, l1, t1, t1, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dl,ak,bl,ci,dj->ijab", l1, l1, t1, t1, t1, t1, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "cl,dk,ak,bl,ci,dj->ijab", l1, l1, t1, t1, t1, t1, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ai,delm,bekm,cdlj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,aj,delm,bekm,cdil->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ak,delm,bemj,cdil->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,al,delm,beim,cdkj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,al,delm,bekj,cdim->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bk,delm,aeim,cdlj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,aeik,cdmj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,aekm,cdij->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,aemj,cdik->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ci,delm,adkl,bemj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,cj,delm,adkl,beim->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,di,delm,aekl,bcmj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,di,delm,aemj,bckl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dj,delm,aeim,bckl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,dj,delm,aekl,bcim->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ai,delm,bckm,delj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,aj,delm,bckm,deil->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,ak,delm,bcmj,deil->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,ak,delm,belm,cdij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,al,delm,bcim,dekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,al,delm,bckj,deim->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bi,delm,aelm,cdkj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bj,delm,aelm,cdik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bk,delm,acim,delj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,acik,demj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,ackm,deij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bl,delm,acmj,deik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,ci,delm,abkm,delj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,ci,delm,adlm,bekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,cj,delm,abkm,deil->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,cj,delm,adlm,beik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,di,delm,ablm,cekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,di,delm,aekj,bclm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,di,delm,aelm,bckj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,dj,delm,ablm,ceik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,dj,delm,aeik,bclm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,dj,delm,aelm,bcik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ak,delm,beim,cdlj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,beik,cdmj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,bekm,cdij->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,bemj,cdik->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bi,delm,aekm,cdlj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bj,delm,aekm,cdil->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,delm,aemj,cdil->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bl,delm,aeim,cdkj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bl,delm,aekj,cdim->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,ci,delm,aemj,bdkl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,cj,delm,aeim,bdkl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,di,delm,abkm,celj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,di,delm,ackl,bemj->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,di,delm,acmj,bekl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dj,delm,abkm,ceil->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dj,delm,acim,bekl->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,dj,delm,ackl,beim->ijab", l1, t1, l2, t2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,ai,delm,belm,cdkj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,aj,delm,belm,cdik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ak,delm,bcim,delj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,bcik,demj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,bckm,deij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,delm,bcmj,deik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bi,delm,ackm,delj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bj,delm,ackm,deil->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,delm,acmj,deil->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,delm,aelm,cdij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bl,delm,acim,dekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bl,delm,ackj,deim->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ci,delm,aekj,bdlm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,cj,delm,aeik,bdlm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,di,delm,ackj,belm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,di,delm,aclm,bekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,dj,delm,acik,belm->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,dj,delm,aclm,beik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ai,delm,bclm,dekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ck,aj,delm,bclm,deik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,delm,aclm,deij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ck,ci,delm,ablm,dekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv -= np.einsum(
+        "ck,cj,delm,ablm,deik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ck,ak,delm,bclm,deij->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ck,bi,delm,aclm,dekj->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ck,bj,delm,aclm,deik->ijab", l1, t1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_oovv += np.einsum(
+        "ck,ak,bl,di,delm,cemj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ak,bl,dj,delm,ceim->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,al,bm,di,delm,cekj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,al,bm,dj,delm,ceik->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,al,cj,di,delm,bekm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bl,ci,dj,delm,aekm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,bl,di,ej,delm,ackm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv += np.einsum(
+        "ck,ak,ci,dj,delm,belm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,ak,di,ej,delm,bclm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,al,bk,ci,delm,demj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,al,bk,cj,delm,deim->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv += np.einsum(
+        "ck,bk,cj,di,delm,aelm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,bk,di,delm,cemj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,bk,dj,delm,ceim->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,ci,dj,delm,bekm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,al,di,ej,delm,bckm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,bl,cj,di,delm,aekm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_oovv -= np.einsum(
+        "ck,ak,bl,ci,delm,demj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ak,bl,cj,delm,deim->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,ak,cj,di,delm,belm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,bm,ci,delm,dekj->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,al,bm,cj,delm,deik->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,ci,dj,delm,aelm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_oovv -= np.einsum(
+        "ck,bk,di,ej,delm,aclm->ijab", l1, t1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvoo = np.zeros((M, M, N, N))
+
+    \rho_vvoo += np.einsum(
+        "ai,bj->abij", l1, l1, optimize=True
+    )
+
+    \rho_vvoo -= np.einsum(
+        "aj,bi->abij", l1, l1, optimize=True
+    )
+
+    \rho_ovov = np.zeros((N, M, N, M))
+
+    \rho_ovov +=  np.einsum(
+        "ij,ak,cl,bckl->iajb", I, l1, l1, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "ak,cj,bcik->iajb", l1, l1, t2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "aj,ck,bcik->iajb", l1, l1, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "aj,ck,bk,ci->iajb", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "ak,cj,bk,ci->iajb", l1, l1, t1, t1, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "ak,ci,cdlj,bdkl->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "ck,bl,adlj,cdik->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "ck,di,adlj,bckl->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "aj,bk,cdkl,cdil->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov += np.einsum(
+        "aj,ci,cdkl,bdkl->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov += np.einsum(
+        "ak,bk,cdlj,cdil->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov += np.einsum(
+        "cj,di,adkl,bckl->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov -= np.einsum(
+        "cj,bk,adkl,cdil->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "ck,bk,adlj,cdil->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "ck,ci,adlj,bdkl->iajb", l1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "ak,bl,cdlj,cdik->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov -= np.einsum(
+        "cj,ci,adkl,bdkl->iajb", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov += np.einsum(
+        "aelm,cdkj,bdkm,ceil->iajb", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ovov += np.einsum(
+        "aemj,cdkl,belm,cdik->iajb", l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov -= np.einsum(
+        "aemj,cdkl,bdlm,ceik->iajb", l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ovov -= np.einsum(
+        "aelm,cdkj,bdlm,ceik->iajb", l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov -= np.einsum(
+        "aelm,cdkj,bekm,cdil->iajb", l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov -= np.einsum(
+        "aemj,cdkl,bdkl,ceim->iajb", l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ovov += np.einsum(
+        "aelm,cdkj,belm,cdik->iajb", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ovov += np.einsum(
+        "aemj,cdkl,bekl,cdim->iajb", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov = np.zeros((N, N, N, M))
+
+    \rho_ooov += np.einsum(
+        "bk,cdlm,admj,bcil->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,adil,bcmj->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,adlm,bcij->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,admj,bcil->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bk,cdlm,abmj,cdil->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bk,cdlm,adlm,bcij->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,abil,cdmj->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,ablm,cdij->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bl,cdmk,abmj,cdil->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bk,cdlm,adim,bclj->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,cdmk,adim,bclj->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,cdmk,adlj,bcim->ijka", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bk,cdlm,abim,cdlj->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bl,cdmk,abim,cdlj->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bl,cdmk,ablj,cdim->ijka", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bk,cdlm,ablm,cdij->ijka", l1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov += np.einsum(
+        "bk,al,ci,cdlm,bdmj->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bk,al,cj,cdlm,bdim->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,al,ci,cdmk,bdmj->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,al,cj,cdmk,bdim->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,bi,cj,cdmk,adlm->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,ci,dj,cdmk,ablm->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bk,bi,cj,cdlm,adlm->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bk,ci,dj,cdlm,ablm->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bl,am,bi,cdmk,cdlj->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "bl,am,bj,cdmk,cdil->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bl,am,ci,cdmk,bdlj->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,am,cj,cdmk,bdil->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,bj,ci,cdmk,adlm->ijka", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bk,al,bi,cdlm,cdmj->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bk,al,bj,cdlm,cdim->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bk,bj,ci,cdlm,adlm->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bl,al,bi,cdmk,cdmj->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bl,al,bj,cdmk,cdim->ijka", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "al,bclm,denk,bdim,cenj->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "an,bclm,denk,bdil,cemj->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "di,bclm,denk,acmn,belj->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "dj,bclm,denk,acmn,beil->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "di,bclm,denk,aclm,benj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov += np.einsum(
+        "dj,bclm,denk,aclm,bein->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "al,bclm,denk,bdin,cemj->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bi,bclm,denk,aemn,cdlj->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bj,bclm,denk,aemn,cdil->ijka", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bi,bclm,denk,acmn,delj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bi,bclm,denk,aelm,cdnj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bj,bclm,denk,acmn,deil->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "bj,bclm,denk,aelm,cdin->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "di,bclm,denk,aemn,bclj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "dj,bclm,denk,aemn,bcil->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -= np.einsum(
+        "al,bclm,denk,bcim,denj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "al,bclm,denk,bcnj,deim->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "an,bclm,denk,bcil,demj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "an,bclm,denk,bcmj,deil->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "bi,bclm,denk,aclm,denj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "bj,bclm,denk,aclm,dein->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "di,bclm,denk,aelm,bcnj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -= np.einsum(
+        "dj,bclm,denk,aelm,bcin->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov += np.einsum(
+        "al,bclm,denk,bcin,demj->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov += np.einsum(
+        "al,bclm,denk,bcmj,dein->ijka", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov += np.einsum(
+        "bl,ck,ai,bclj->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,ck,aj,bcil->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,ck,ci,ablj->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,ck,cj,abil->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,ck,al,bcij->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,ck,bi,aclj->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,ck,bj,acil->ijka", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov += np.einsum(
+        "bl,ck,al,bj,ci->ijka", l1, l1, t1, t1, t1, optimize=True
+    )
+
+    \rho_ooov -= np.einsum(
+        "bl,ck,al,bi,cj->ijka", l1, l1, t1, t1, t1, optimize=True
+    )
+
+    \rho_ooov +=  np.einsum(
+        "jk,bl,cdmn,adln,bcim->ijka", I, l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov +=  np.einsum(
+        "ik,bl,cdmn,adln,bcmj->ijka", I, l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ooov +=  np.einsum(
+        "jk,bl,cdmn,abln,cdim->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov +=  np.einsum(
+        "ik,bl,cdmn,abln,cdmj->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -=  np.einsum(
+        "jk,bl,cdmn,admn,bcil->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -=  np.einsum(
+        "ik,bl,cdmn,admn,bclj->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ooov -=  np.einsum(
+        "jk,bl,cdmn,abmn,cdil->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov -=  np.einsum(
+        "ik,bl,cdmn,abmn,cdlj->ijka", I, l1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_ooov +=  np.einsum(
+        "jk,bl,cm,al,bcim->ijka", I, l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov +=  np.einsum(
+        "ik,bl,cm,al,bcmj->ijka", I, l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov +=  np.einsum(
+        "jk,bl,cm,bi,aclm->ijka", I, l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ooov -=  np.einsum(
+        "ik,bl,cm,bj,aclm->ijka", I, l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ovoo = np.zeros((N, M, N, N))
+
+    \rho_ovoo += np.einsum(
+        "bj,aclk,bcil->iajk", l1, l2, t2, optimize=True
+    )
+
+    \rho_ovoo += np.einsum(
+        "ak,bclj,bcil->iajk", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovoo += np.einsum(
+        "al,bcjk,bcil->iajk", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovoo -= np.einsum(
+        "bk,aclj,bcil->iajk", l1, l2, t2, optimize=True
+    )
+
+    \rho_ovoo -= np.einsum(
+        "bl,acjk,bcil->iajk", l1, l2, t2, optimize=True
+    )
+
+    \rho_ovoo -= np.einsum(
+        "aj,bclk,bcil->iajk", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_ovoo += np.einsum(
+        "aj,bk,bi->iajk", l1, l1, t1, optimize=True
+    )
+
+    \rho_ovoo -= np.einsum(
+        "ak,bj,bi->iajk", l1, l1, t1, optimize=True
+    )
+
+    \rho_vvvo = np.zeros((M, M, M, N))
+
+    \rho_vvvo += np.einsum(
+        "aj,bi,cj->abci", l1, l1, t1, optimize=True
+    )
+
+    \rho_vvvo -= np.einsum(
+        "ai,bj,cj->abci", l1, l1, t1, optimize=True
+    )
+
+    \rho_vvvo += np.einsum(
+        "aj,bdik,cdjk->abci", l1, l2, t2, optimize=True
+    )
+
+    \rho_vvvo += np.einsum(
+        "dj,abik,cdjk->abci", l1, l2, t2, optimize=True
+    )
+
+    \rho_vvvo += np.einsum(
+        "bi,adjk,cdjk->abci", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvo -= np.einsum(
+        "bj,adik,cdjk->abci", l1, l2, t2, optimize=True
+    )
+
+    \rho_vvvo -= np.einsum(
+        "ai,bdjk,cdjk->abci", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vvvo -= np.einsum(
+        "di,abjk,cdjk->abci", l1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv = np.zeros((M, N, M, M))
+
+    \rho_vovv += np.einsum(
+        "bj,aflm,dejk,cekm,dfil->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "cl,aflm,dejk,bekm,dfij->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "di,aflm,dejk,bfjl,cekm->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "bl,aflm,dejk,cfkm,deij->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "cj,aflm,dejk,belm,dfik->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "cj,aflm,dejk,bfkm,deil->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "cl,aflm,dejk,bejk,dfim->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "bl,aflm,dejk,cekm,dfij->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "cj,aflm,dejk,bekm,dfil->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "di,aflm,dejk,bejl,cfkm->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "fi,aflm,dejk,bdjl,cekm->aibc", t1, l2, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "bj,aflm,dejk,celm,dfik->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "bj,aflm,dejk,cfkm,deil->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "bl,aflm,dejk,cejk,dfim->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "cl,aflm,dejk,bfkm,deij->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "cj,aflm,dejk,bflm,deik->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv -= np.einsum(
+        "cl,aflm,dejk,bfjk,deim->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv -= np.einsum(
+        "di,aflm,dejk,bfjk,celm->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv -= np.einsum(
+        "di,aflm,dejk,bflm,cejk->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "bj,aflm,dejk,cflm,deik->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "bl,aflm,dejk,cfjk,deim->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "di,aflm,dejk,bejk,cflm->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "di,aflm,dejk,belm,cfjk->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "fi,aflm,dejk,bdjk,celm->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "fi,aflm,dejk,bdlm,cejk->aibc", t1, l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "aj,dekl,bdjk,ceil->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,aekl,beil,cdjk->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,aekl,bejk,cdil->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "aj,dekl,bcjl,deik->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "aj,dekl,bdkl,ceij->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "dj,aekl,bckl,deij->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "dj,aekl,beij,cdkl->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "dj,aekl,bekl,cdij->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "aj,dekl,beil,cdjk->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,aekl,bcjl,deik->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,aekl,bdil,cejk->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,aekl,bdjk,ceil->aibc", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dekl,beij,cdkl->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "dj,aekl,bdij,cekl->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "dj,aekl,bdkl,ceij->aibc", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "aj,dekl,bckl,deij->aibc", l1, l2, t2, t2, optimize=True
+    ) / 4
+
+    \rho_vovv += np.einsum(
+        "aj,bk,di,dekl,cejl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,bj,ck,aekl,deil->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,bk,cl,aekl,deij->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,bk,ei,aekl,cdjl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "dj,ck,di,aekl,bejl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "aj,bk,cj,dekl,deil->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "aj,cj,di,dekl,bekl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "dj,bj,di,aekl,cekl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "dj,cj,ei,aekl,bdkl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "aj,ck,di,dekl,bejl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,bk,cj,aekl,deil->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,bk,di,aekl,cejl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "dj,ck,ei,aekl,bdjl->aibc", l1, t1, t1, l2, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,bj,ck,dekl,deil->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "aj,bj,di,dekl,cekl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "aj,bk,cl,dekl,deij->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "dj,bj,ei,aekl,cdkl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv -= np.einsum(
+        "dj,cj,di,aekl,bekl->aibc", l1, t1, t1, l2, t2, optimize=True
+    ) / 2
+
+    \rho_vovv += np.einsum(
+        "aj,dk,bj,cdik->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "aj,dk,ci,bdjk->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "aj,dk,ck,bdij->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dk,bi,cdjk->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dk,bk,cdij->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dk,cj,bdik->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dk,di,bcjk->aibc", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_vovv += np.einsum(
+        "aj,dk,bk,cj,di->aibc", l1, l1, t1, t1, t1, optimize=True
+    )
+
+    \rho_vovv -= np.einsum(
+        "aj,dk,bj,ck,di->aibc", l1, l1, t1, t1, t1, optimize=True
+    )
+

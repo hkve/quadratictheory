@@ -1,0 +1,9 @@
+    \rho_vvoo = zeros((nv, nv, no, no))
+
+    \rho_vvoo -= einsum(
+        "aj,bi->abij", \lambda^1, \lambda^1
+    )
+
+    \rho_vvoo += einsum(
+        "ai,bj->abij", \lambda^1, \lambda^1
+    )
