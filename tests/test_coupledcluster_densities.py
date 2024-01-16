@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, GCCSD, QCCD
+from clusterfock.cc import GCCD, GCCSD, QCCD, QCCSD
 from clusterfock.basis import PyscfBasis
 
 
@@ -125,3 +125,12 @@ class TestCoupledClusterDensities(TestCase):
 
     def test_qccd_Li(self):
         self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=QCCD)
+
+    def test_qccsd_He(self):
+        self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=QCCSD)
+
+    def test_qccsd_Be(self):
+        self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=QCCSD)
+
+    def test_qccsd_Li(self):
+        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=QCCSD)
