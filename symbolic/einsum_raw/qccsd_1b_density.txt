@@ -1,0 +1,37 @@
+    \rho_oo = zeros((no, no))
+
+    \rho_oo += einsum(
+        "ak,bj,abik->ij", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_vv = zeros((nv, nv))
+
+    \rho_vv += einsum(
+        "ai,cj,bcij->ab", \lambda^1, \lambda^1, t^2
+    )
+
+    \rho_ov = zeros((no, nv))
+
+    \rho_ov -= einsum(
+        "bj,ck,aj,bcik->ia", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ov -= einsum(
+        "bj,ck,bi,acjk->ia", \lambda^1, \lambda^1, t^1, t^2
+    )
+
+    \rho_ov += einsum(
+        "bj,cdkl,adkl,bcij->ia", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ov -= einsum(
+        "bj,cdkl,adjl,bcik->ia", \lambda^1, \lambda^2, t^2, t^2
+    )
+
+    \rho_ov -= einsum(
+        "bj,cdkl,abjl,cdik->ia", \lambda^1, \lambda^2, t^2, t^2
+    ) / 2
+
+    \rho_ov += einsum(
+        "bj,cdkl,abkl,cdij->ia", \lambda^1, \lambda^2, t^2, t^2
+    ) / 4

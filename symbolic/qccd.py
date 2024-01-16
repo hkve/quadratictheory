@@ -103,13 +103,13 @@ def L_densities(dr):
     # Two body
     o_dums, v_dums = drutils.get_indicies(dr, num=4)
     blocks, block_names = drutils.get_tb_density_blocks(dr, o_dums, v_dums)
-    # rho = _run_blocks(dr, blocks, block_names)
+    rho = _run_blocks(dr, blocks, block_names)
     
-    # rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
-    # drutils.save_html(dr, "qccd_2b_density", rho_eqs, block_names)
-    # grutils.einsum_raw(dr, "qccd_2b_density", rho_eqs)
-    # drutils.save_to_pickle(rho_eqs, "qccd_2b_density")
-    rho_eqs = drutils.load_from_pickle(dr, "qccd_2b_density")
+    rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
+    drutils.save_html(dr, "qccd_2b_density", rho_eqs, block_names)
+    grutils.einsum_raw(dr, "qccd_2b_density", rho_eqs)
+    drutils.save_to_pickle(rho_eqs, "qccd_2b_density")
+    # rho_eqs = drutils.load_from_pickle(dr, "qccd_2b_density")
 
     block_names = [
             block_name for block_name, rho_eq in zip(block_names, rho_eqs)

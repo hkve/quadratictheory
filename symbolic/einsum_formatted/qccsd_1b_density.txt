@@ -1,0 +1,38 @@
+    \rho_oo = np.zeros((N, N))
+
+    \rho_oo += np.einsum(
+        "ak,bj,abik->ij", l1, l1, t2, optimize=True
+    )
+
+    \rho_vv = np.zeros((M, M))
+
+    \rho_vv += np.einsum(
+        "ai,cj,bcij->ab", l1, l1, t2, optimize=True
+    )
+
+    \rho_ov = np.zeros((N, M))
+
+    \rho_ov -= np.einsum(
+        "bj,ck,aj,bcik->ia", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ov -= np.einsum(
+        "bj,ck,bi,acjk->ia", l1, l1, t1, t2, optimize=True
+    )
+
+    \rho_ov += np.einsum(
+        "bj,cdkl,adkl,bcij->ia", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ov -= np.einsum(
+        "bj,cdkl,adjl,bcik->ia", l1, l2, t2, t2, optimize=True
+    )
+
+    \rho_ov -= np.einsum(
+        "bj,cdkl,abjl,cdik->ia", l1, l2, t2, t2, optimize=True
+    ) / 2
+
+    \rho_ov += np.einsum(
+        "bj,cdkl,abkl,cdij->ia", l1, l2, t2, t2, optimize=True
+    ) / 4
+

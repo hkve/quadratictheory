@@ -1,0 +1,13 @@
+    tau^0 = zeros((no, nv))
+
+    tau^0 += einsum(
+        "bj,abij->ia", \lambda^1, t^2
+    )
+
+    \rho_vv = zeros((nv, nv))
+
+    \rho_vv += einsum(
+        "ai,ib->ab", \lambda^1, tau^0
+    )
+
+    del tau^0

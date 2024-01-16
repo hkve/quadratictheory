@@ -230,12 +230,14 @@ def define_ob_density_blocks(dr, rho, block_names, o_dums, v_dums):
     i, j = o_dums
     a, b = v_dums
 
-    rs = [IndexedBase(f"\\rho_{name}") for name in block_names]
+    s1, s2 = "\\rho_{" "}"
+    rs = [IndexedBase(s1 + name + s2) for name in block_names]
 
     blocks = [
         rs[0][i, j],
         rs[1][a, b],
         rs[2][i, a],
+        rs[2][a, i],
     ]
 
     return [dr.define(rhs, term) for rhs, term in zip(blocks, rho)]

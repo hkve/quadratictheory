@@ -1,0 +1,14 @@
+    tau0 = np.zeros((N, M))
+
+    tau0 += np.einsum(
+        "bj,abij->ia", l1, t2, optimize=True
+    )
+
+    \rho_vv = np.zeros((M, M))
+
+    \rho_vv += np.einsum(
+        "ai,ib->ab", l1, tau0, optimize=True
+    )
+
+    tau0 = None
+
