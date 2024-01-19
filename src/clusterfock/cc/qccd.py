@@ -96,3 +96,6 @@ class QCCD(QuadraticCoupledCluster):
         rho = two_body_density_addition(rho, t2, l2, o, v)
 
         return rho
+    
+    def _overlap(self, t0, l0, t, l):
+        return 0

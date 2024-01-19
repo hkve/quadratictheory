@@ -2256,4 +2256,4 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau44 = None
 
-    # return r2
+    return r2

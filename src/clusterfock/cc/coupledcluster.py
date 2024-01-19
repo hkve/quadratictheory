@@ -185,6 +185,37 @@ class CoupledCluster(ABC):
         """
         pass
 
+    def _t_rhs_timedependent(self, t: CoupledClusterParameter,  l: CoupledClusterParameter) -> CoupledClusterParameter:
+        """
+        Adds additional calculations to '_next_t_iteration' if this is required by the
+        time evelution equations for the specific CC scheme. For standard coupled cluster, this
+        adds nothing
+
+        Args:
+            t (CoupledClusterParameter): The amplitude at this iteration
+
+        Returns:
+            rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
+        """
+        return self._next_t_iteration(t)
+    
+
+    def _l_rhs_timedependent(self, t: CoupledClusterParameter,  l: CoupledClusterParameter) -> CoupledClusterParameter:
+        """
+        Adds additional calculations to '_next_l_iteration' if this is required by the
+        time evelution equations for the specific CC scheme. For standard coupled cluster, this
+        adds nothing
+
+        Args:
+            t (CoupledClusterParameter): The amplitude at this iteration
+            l (CoupledClusterParameter): The Lambda-amplitude at this iteration
+
+        Returns:
+            rhs_l (CoupledClusterParameter): The rhs of the time-dependent equation
+        """
+        return self._next_l_iteration(t, l)
+
+
     @abstractmethod
     def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
         """
@@ -198,6 +229,7 @@ class CoupledCluster(ABC):
         """
         pass
 
+
     def _calculated_one_body_density(self) -> np.ndarray:
         """
         Helper function to calculate one-body density.
@@ -206,6 +238,7 @@ class CoupledCluster(ABC):
             rho_ob (np.ndarray): The one-body density, not quaranteed to be hermitian
         """
         raise NotImplementedError("This scheme does not implement one body densities")
+
 
     def _calculated_one_body_density(self) -> np.ndarray:
         """
