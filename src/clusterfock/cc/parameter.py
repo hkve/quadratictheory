@@ -100,6 +100,9 @@ class CoupledClusterParameter:
     def __getitem__(self, order) -> np.ndarray:
         return self._data[order]
 
+    def add(self, order, value):
+        self._data[order] += value
+
     def __mul__(self, other: CoupledClusterParameter) -> CoupledClusterParameter:
         product = None
         if type(other) == type(self):

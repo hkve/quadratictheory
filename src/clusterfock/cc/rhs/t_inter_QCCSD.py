@@ -16,47 +16,47 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
     dtype = u.dtype
     zeros = lambda shape: np.zeros(shape, dtype=dtype)
 
-    tau0 = np.zeros((N, N, N, N))
+    tau0 = zeros((N, N, N, N))
 
     tau0 += np.einsum("baij,bakl->ijkl", l2, t2, optimize=True)
 
-    tau24 = np.zeros((N, N, N, M))
+    tau24 = zeros((N, N, N, M))
 
     tau24 += np.einsum("al,iljk->ijka", t1, tau0, optimize=True)
 
-    tau28 = np.zeros((N, N, N, M))
+    tau28 = zeros((N, N, N, M))
 
     tau28 -= np.einsum("ikja->ijka", tau24, optimize=True)
 
-    tau42 = np.zeros((N, N, N, M))
+    tau42 = zeros((N, N, N, M))
 
     tau42 += np.einsum("ikja->ijka", tau24, optimize=True)
 
-    tau47 = np.zeros((N, N, N, M))
+    tau47 = zeros((N, N, N, M))
 
     tau47 += np.einsum("ikja->ijka", tau24, optimize=True)
 
-    tau53 = np.zeros((N, N, N, M))
+    tau53 = zeros((N, N, N, M))
 
     tau53 -= np.einsum("ikja->ijka", tau24, optimize=True)
 
     tau24 = None
 
-    tau41 = np.zeros((N, N, N, M))
+    tau41 = zeros((N, N, N, M))
 
     tau41 += 4 * np.einsum("ilkm,jmla->ijka", tau0, u[o, o, o, v], optimize=True)
 
-    tau46 = np.zeros((N, N, M, M))
+    tau46 = zeros((N, N, M, M))
 
     tau46 += np.einsum("balk,lkji->ijab", t2, tau0, optimize=True)
 
-    tau61 = np.zeros((N, M))
+    tau61 = zeros((N, M))
 
     tau61 += np.einsum("ijlk,lkja->ia", tau0, u[o, o, o, v], optimize=True)
 
     r1 -= np.einsum("lkij,jalk->ai", tau0, u[o, v, o, o], optimize=True) / 4
 
-    tau1 = np.zeros((N, M))
+    tau1 = zeros((N, M))
 
     tau1 += np.einsum("bj,abij->ia", l1, t2, optimize=True)
 
@@ -66,7 +66,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau46 += 8 * np.einsum("bj,ia->ijab", t1, tau1, optimize=True)
 
-    tau58 = np.zeros((N, M))
+    tau58 = zeros((N, M))
 
     tau58 -= 2 * np.einsum("ia->ia", tau1, optimize=True)
 
@@ -74,11 +74,11 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau1 = None
 
-    tau2 = np.zeros((N, N, N, M))
+    tau2 = zeros((N, N, N, M))
 
     tau2 += np.einsum("bk,abij->ijka", t1, l2, optimize=True)
 
-    tau3 = np.zeros((N, N, N, M))
+    tau3 = zeros((N, N, N, M))
 
     tau3 -= np.einsum("ablk,lijb->ijka", t2, tau2, optimize=True)
 
@@ -90,11 +90,11 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau3 = None
 
-    tau43 = np.zeros((N, M))
+    tau43 = zeros((N, M))
 
     tau43 += np.einsum("bakj,kjib->ia", t2, tau2, optimize=True)
 
-    tau45 = np.zeros((N, M))
+    tau45 = zeros((N, M))
 
     tau45 += np.einsum("ia->ia", tau43, optimize=True)
 
@@ -102,7 +102,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau43 = None
 
-    tau49 = np.zeros((N, N, N, N))
+    tau49 = zeros((N, N, N, N))
 
     tau49 += np.einsum("ak,ijla->ijkl", t1, tau2, optimize=True)
 
@@ -110,41 +110,41 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau49 = None
 
-    tau4 = np.zeros((N, M, M, M))
+    tau4 = zeros((N, M, M, M))
 
     tau4 += np.einsum("di,abcd->iabc", t1, u[v, v, v, v], optimize=True)
 
-    tau11 = np.zeros((N, M, M, M))
+    tau11 = zeros((N, M, M, M))
 
     tau11 += np.einsum("ibac->iabc", tau4, optimize=True)
 
-    tau52 = np.zeros((N, M, M, M))
+    tau52 = zeros((N, M, M, M))
 
     tau52 += np.einsum("ibac->iabc", tau4, optimize=True)
 
     tau4 = None
 
-    tau5 = np.zeros((N, N, M, M))
+    tau5 = zeros((N, N, M, M))
 
     tau5 += np.einsum("ak,ikjb->ijab", t1, u[o, o, o, v], optimize=True)
 
-    tau8 = np.zeros((N, N, M, M))
+    tau8 = zeros((N, N, M, M))
 
     tau8 += np.einsum("jiab->ijab", tau5, optimize=True)
 
-    tau64 = np.zeros((N, N, M, M))
+    tau64 = zeros((N, N, M, M))
 
     tau64 += np.einsum("jiab->ijab", tau5, optimize=True)
 
     tau5 = None
 
-    tau6 = np.zeros((N, N, M, M))
+    tau6 = zeros((N, N, M, M))
 
     tau6 += np.einsum("ci,jabc->ijab", t1, u[o, v, v, v], optimize=True)
 
     tau8 += 2 * np.einsum("ijab->ijab", tau6, optimize=True)
 
-    tau54 = np.zeros((N, N, M, M))
+    tau54 = zeros((N, N, M, M))
 
     tau54 -= np.einsum("jiab->ijab", tau6, optimize=True)
 
@@ -152,7 +152,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau6 = None
 
-    tau7 = np.zeros((N, N, M, M))
+    tau7 = zeros((N, N, M, M))
 
     tau7 += 2 * np.einsum("baji->ijab", t2, optimize=True)
 
@@ -170,11 +170,11 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau8 = None
 
-    tau9 = np.zeros((N, M))
+    tau9 = zeros((N, M))
 
     tau9 += np.einsum("bj,jiba->ia", t1, u[o, o, v, v], optimize=True)
 
-    tau10 = np.zeros((N, M))
+    tau10 = zeros((N, M))
 
     tau10 += np.einsum("ia->ia", tau9, optimize=True)
 
@@ -184,21 +184,21 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau11 -= np.einsum("jc,baji->iabc", tau10, t2, optimize=True)
 
-    tau21 = np.zeros((N, N, N, M))
+    tau21 = zeros((N, N, N, M))
 
     tau21 += np.einsum("kb,baij->ijka", tau10, t2, optimize=True)
 
-    tau22 = np.zeros((N, N, N, M))
+    tau22 = zeros((N, N, N, M))
 
     tau22 += 2 * np.einsum("jika->ijka", tau21, optimize=True)
 
-    tau51 = np.zeros((N, N, N, M))
+    tau51 = zeros((N, N, N, M))
 
     tau51 += 2 * np.einsum("kjia->ijka", tau21, optimize=True)
 
     tau21 = None
 
-    tau66 = np.zeros((N, N, M, M))
+    tau66 = zeros((N, N, M, M))
 
     tau66 += 8 * np.einsum("bi,ja->ijab", l1, tau10, optimize=True)
 
@@ -212,11 +212,11 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau11 = None
 
-    tau12 = np.zeros((N, N, N, M))
+    tau12 = zeros((N, N, N, M))
 
     tau12 += np.einsum("bi,jakb->ijka", t1, u[o, v, o, v], optimize=True)
 
-    tau15 = np.zeros((N, N, N, M))
+    tau15 = zeros((N, N, N, M))
 
     tau15 += np.einsum("ijka->ijka", tau12, optimize=True)
 
@@ -224,13 +224,13 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau12 = None
 
-    tau13 = np.zeros((N, N, M, M))
+    tau13 = zeros((N, N, M, M))
 
     tau13 += np.einsum("baji->ijab", t2, optimize=True)
 
     tau13 -= np.einsum("aj,bi->ijab", t1, t1, optimize=True)
 
-    tau14 = np.zeros((N, N, N, M))
+    tau14 = zeros((N, N, N, M))
 
     tau14 += np.einsum("lkba,lijb->ijka", tau13, u[o, o, o, v], optimize=True)
 
@@ -248,11 +248,11 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau13 = None
 
-    tau16 = np.zeros((N, N, N, M))
+    tau16 = zeros((N, N, N, M))
 
     tau16 += np.einsum("bi,jkab->ijka", t1, u[o, o, v, v], optimize=True)
 
-    tau17 = np.zeros((N, N, N, M))
+    tau17 = zeros((N, N, N, M))
 
     tau17 -= np.einsum("bajl,ilkb->ijka", t2, tau16, optimize=True)
 
@@ -262,31 +262,31 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau17 = None
 
-    tau29 = np.zeros((N, N, N, M))
+    tau29 = zeros((N, N, N, M))
 
     tau29 -= np.einsum("ikja->ijka", tau16, optimize=True)
 
-    tau32 = np.zeros((N, N, N, M))
+    tau32 = zeros((N, N, N, M))
 
     tau32 += np.einsum("kjia->ijka", tau16, optimize=True)
 
     tau16 = None
 
-    tau18 = np.zeros((N, N, M, M))
+    tau18 = zeros((N, N, M, M))
 
     tau18 -= np.einsum("baji->ijab", t2, optimize=True)
 
     tau18 += 2 * np.einsum("aj,bi->ijab", t1, t1, optimize=True)
 
-    tau65 = np.zeros((N, N, N, N))
+    tau65 = zeros((N, N, N, N))
 
     tau65 -= np.einsum("lkab,jiab->ijkl", tau18, u[o, o, v, v], optimize=True)
 
-    tau19 = np.zeros((N, M, M, M))
+    tau19 = zeros((N, M, M, M))
 
     tau19 += np.einsum("aj,ijbc->iabc", t1, u[o, o, v, v], optimize=True)
 
-    tau20 = np.zeros((N, M, M, M))
+    tau20 = zeros((N, M, M, M))
 
     tau20 += np.einsum("iacb->iabc", tau19, optimize=True)
 
@@ -306,7 +306,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau22 = None
 
-    tau23 = np.zeros((N, N, N, M))
+    tau23 = zeros((N, N, N, M))
 
     tau23 += np.einsum("bi,abjk->ijka", l1, t2, optimize=True)
 
@@ -324,17 +324,17 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau23 = None
 
-    tau25 = np.zeros((N, N))
+    tau25 = zeros((N, N))
 
     tau25 += np.einsum("ai,aj->ij", l1, t1, optimize=True)
 
-    tau27 = np.zeros((N, N))
+    tau27 = zeros((N, N))
 
     tau27 += 2 * np.einsum("ij->ij", tau25, optimize=True)
 
     tau25 = None
 
-    tau26 = np.zeros((N, N))
+    tau26 = zeros((N, N))
 
     tau26 += np.einsum("baki,bakj->ij", l2, t2, optimize=True)
 
@@ -350,7 +350,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau41 -= 4 * np.einsum("il,ljka->ijka", tau27, u[o, o, o, v], optimize=True)
 
-    tau44 = np.zeros((N, M))
+    tau44 = zeros((N, M))
 
     tau44 += np.einsum("aj,ji->ia", t1, tau27, optimize=True)
 
@@ -364,19 +364,19 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau44 = None
 
-    tau59 = np.zeros((N, M))
+    tau59 = zeros((N, M))
 
     tau59 += np.einsum("jb,jiba->ia", tau58, u[o, o, v, v], optimize=True)
 
     tau61 += 2 * np.einsum("ia->ia", tau59, optimize=True)
 
-    tau67 = np.zeros((N, M))
+    tau67 = zeros((N, M))
 
     tau67 -= np.einsum("ia->ia", tau59, optimize=True)
 
     tau59 = None
 
-    tau68 = np.zeros((N, N))
+    tau68 = zeros((N, N))
 
     tau68 += 4 * np.einsum("ka,kija->ij", tau58, u[o, o, o, v], optimize=True)
 
@@ -398,7 +398,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau53 = None
 
-    tau60 = np.zeros((N, M))
+    tau60 = zeros((N, M))
 
     tau60 += np.einsum("kj,jika->ia", tau27, u[o, o, o, v], optimize=True)
 
@@ -422,17 +422,17 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau51 += 4 * np.einsum("balj,klib->ijka", t2, tau29, optimize=True)
 
-    tau30 = np.zeros((N, N, M, M))
+    tau30 = zeros((N, N, M, M))
 
     tau30 -= np.einsum("caki,cbjk->ijab", l2, t2, optimize=True)
 
-    tau31 = np.zeros((N, N, M, M))
+    tau31 = zeros((N, N, M, M))
 
     tau31 += np.einsum("ijab->ijab", tau30, optimize=True)
 
     tau46 -= 8 * np.einsum("caik,kjcb->ijab", t2, tau30, optimize=True)
 
-    tau63 = np.zeros((N, M, M, M))
+    tau63 = zeros((N, M, M, M))
 
     tau63 += 2 * np.einsum("bj,jiac->iabc", t1, tau30, optimize=True)
 
@@ -458,15 +458,15 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau32 = None
 
-    tau33 = np.zeros((N, N, N, N))
+    tau33 = zeros((N, N, N, N))
 
     tau33 += np.einsum("ai,jkla->ijkl", t1, u[o, o, o, v], optimize=True)
 
-    tau34 = np.zeros((N, N, N, N))
+    tau34 = zeros((N, N, N, N))
 
     tau34 += 2 * np.einsum("kjil->ijkl", tau33, optimize=True)
 
-    tau50 = np.zeros((N, N, N, N))
+    tau50 = zeros((N, N, N, N))
 
     tau50 -= 2 * np.einsum("kjil->ijkl", tau33, optimize=True)
 
@@ -482,7 +482,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau34 = None
 
-    tau35 = np.zeros((M, M))
+    tau35 = zeros((M, M))
 
     tau35 += np.einsum("caji,cbji->ab", l2, t2, optimize=True)
 
@@ -496,7 +496,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau46 = None
 
-    tau56 = np.zeros((M, M))
+    tau56 = zeros((M, M))
 
     tau56 += np.einsum("ab->ab", tau35, optimize=True)
 
@@ -508,17 +508,17 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau63 = None
 
-    tau36 = np.zeros((N, N))
+    tau36 = zeros((N, N))
 
     tau36 += np.einsum("ia,aj->ij", f[o, v], t1, optimize=True)
 
-    tau40 = np.zeros((N, N))
+    tau40 = zeros((N, N))
 
     tau40 += 2 * np.einsum("ij->ij", tau36, optimize=True)
 
     tau36 = None
 
-    tau37 = np.zeros((N, N))
+    tau37 = zeros((N, N))
 
     tau37 -= np.einsum("ak,kija->ij", t1, u[o, o, o, v], optimize=True)
 
@@ -526,13 +526,13 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau37 = None
 
-    tau38 = np.zeros((N, N, M, M))
+    tau38 = zeros((N, N, M, M))
 
     tau38 += np.einsum("baji->ijab", t2, optimize=True)
 
     tau38 += 2 * np.einsum("ai,bj->ijab", t1, t1, optimize=True)
 
-    tau39 = np.zeros((N, N))
+    tau39 = zeros((N, N))
 
     tau39 += np.einsum("kjab,kiab->ij", tau38, u[o, o, v, v], optimize=True)
 
@@ -560,7 +560,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau41 = None
 
-    tau48 = np.zeros((N, M))
+    tau48 = zeros((N, M))
 
     tau48 += np.einsum("bj,ibja->ia", l1, u[o, v, o, v], optimize=True)
 
@@ -596,13 +596,13 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau54 = None
 
-    tau55 = np.zeros((M, M))
+    tau55 = zeros((M, M))
 
     tau55 += np.einsum("ai,bi->ab", l1, t1, optimize=True)
 
     tau56 += 2 * np.einsum("ab->ab", tau55, optimize=True)
 
-    tau57 = np.zeros((N, M))
+    tau57 = zeros((N, M))
 
     tau57 += np.einsum("bc,ibca->ia", tau56, u[o, v, v, v], optimize=True)
 
@@ -624,7 +624,7 @@ def amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o):
 
     tau56 = None
 
-    tau62 = np.zeros((N, M, M, M))
+    tau62 = zeros((N, M, M, M))
 
     tau62 += 2 * np.einsum("ci,ab->iabc", t1, tau55, optimize=True)
 
@@ -678,29 +678,29 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
     dtype = u.dtype
     zeros = lambda shape: np.zeros(shape, dtype=dtype)
 
-    tau0 = np.zeros((N, N, M, M))
+    tau0 = zeros((N, N, M, M))
 
     tau0 += np.einsum("ak,ijkb->ijab", l1, u[o, o, o, v], optimize=True)
 
-    tau18 = np.zeros((N, N, M, M))
+    tau18 = zeros((N, N, M, M))
 
     tau18 -= 2 * np.einsum("jiba->ijab", tau0, optimize=True)
 
-    tau128 = np.zeros((N, N, M, M))
+    tau128 = zeros((N, N, M, M))
 
     tau128 -= 8 * np.einsum("jiab->ijab", tau0, optimize=True)
 
-    tau173 = np.zeros((N, N, M, M))
+    tau173 = zeros((N, N, M, M))
 
     tau173 -= 4 * np.einsum("jiab->ijab", tau0, optimize=True)
 
-    tau200 = np.zeros((N, N, M, M))
+    tau200 = zeros((N, N, M, M))
 
     tau200 += 2 * np.einsum("jiab->ijab", tau0, optimize=True)
 
     tau0 = None
 
-    tau1 = np.zeros((N, N, M, M))
+    tau1 = zeros((N, N, M, M))
 
     tau1 += np.einsum("ci,jcab->ijab", l1, u[o, v, v, v], optimize=True)
 
@@ -714,77 +714,77 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau1 = None
 
-    tau2 = np.zeros((N, N, M, M))
+    tau2 = zeros((N, N, M, M))
 
     tau2 -= np.einsum("ak,kijb->ijab", t1, u[o, o, o, v], optimize=True)
 
-    tau6 = np.zeros((N, N, M, M))
+    tau6 = zeros((N, N, M, M))
 
     tau6 += np.einsum("jiab->ijab", tau2, optimize=True)
 
-    tau42 = np.zeros((N, N, M, M))
+    tau42 = zeros((N, N, M, M))
 
     tau42 += np.einsum("jiab->ijab", tau2, optimize=True)
 
-    tau54 = np.zeros((N, N, M, M))
+    tau54 = zeros((N, N, M, M))
 
     tau54 += np.einsum("ijab->ijab", tau2, optimize=True)
 
-    tau204 = np.zeros((N, M, M, M))
+    tau204 = zeros((N, M, M, M))
 
     tau204 += np.einsum("aj,jibc->iabc", t1, tau2, optimize=True)
 
     tau2 = None
 
-    tau3 = np.zeros((N, N, M, M))
+    tau3 = zeros((N, N, M, M))
 
     tau3 += np.einsum("ci,jabc->ijab", t1, u[o, v, v, v], optimize=True)
 
     tau6 += np.einsum("ijab->ijab", tau3, optimize=True)
 
-    tau21 = np.zeros((N, N, M, M))
+    tau21 = zeros((N, N, M, M))
 
     tau21 += np.einsum("ijab->ijab", tau3, optimize=True)
 
-    tau56 = np.zeros((N, N, N, M))
+    tau56 = zeros((N, N, N, M))
 
     tau56 += np.einsum("bi,jkba->ijka", l1, tau3, optimize=True)
 
-    tau59 = np.zeros((N, N, N, M))
+    tau59 = zeros((N, N, N, M))
 
     tau59 += np.einsum("ijka->ijka", tau56, optimize=True)
 
     tau56 = None
 
-    tau71 = np.zeros((N, N, M, M))
+    tau71 = zeros((N, N, M, M))
 
     tau71 += np.einsum("ijab->ijab", tau3, optimize=True)
 
-    tau151 = np.zeros((N, N, M, M))
+    tau151 = zeros((N, N, M, M))
 
     tau151 += np.einsum("ijab->ijab", tau3, optimize=True)
 
-    tau188 = np.zeros((N, N, N, M))
+    tau188 = zeros((N, N, N, M))
 
     tau188 -= np.einsum("bj,ikab->ijka", t1, tau3, optimize=True)
 
-    tau189 = np.zeros((N, N, N, M))
+    tau189 = zeros((N, N, N, M))
 
     tau189 += np.einsum("ijka->ijka", tau188, optimize=True)
 
-    tau201 = np.zeros((N, N, N, M))
+    tau201 = zeros((N, N, N, M))
 
     tau201 -= np.einsum("kjia->ijka", tau188, optimize=True)
 
     tau188 = None
 
-    tau4 = np.zeros((N, N, M, M))
+    tau4 = zeros((N, N, M, M))
 
     tau4 += np.einsum("baji->ijab", t2, optimize=True)
 
     tau4 -= np.einsum("aj,bi->ijab", t1, t1, optimize=True)
 
-    tau5 = np.zeros((N, N, M, M))
+    tau5 = zeros((N, N, M, M))
 
     tau5 += np.einsum("kica,kjcb->ijab", tau4, u[o, o, v, v], optimize=True)
 
@@ -800,7 +800,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau6 -= np.einsum("jaib->ijab", u[o, v, o, v], optimize=True)
 
-    tau7 = np.zeros((N, N, M, M))
+    tau7 = zeros((N, N, M, M))
 
     tau7 += np.einsum("cbkj,kica->ijab", l2, tau6, optimize=True)
 
@@ -816,23 +816,23 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau7 = None
 
-    tau8 = np.zeros((M, M))
+    tau8 = zeros((M, M))
 
     tau8 += np.einsum("ai,bi->ab", l1, t1, optimize=True)
 
-    tau10 = np.zeros((M, M))
+    tau10 = zeros((M, M))
 
     tau10 += 2 * np.einsum("ab->ab", tau8, optimize=True)
 
     tau8 = None
 
-    tau9 = np.zeros((M, M))
+    tau9 = zeros((M, M))
 
     tau9 += np.einsum("caji,cbji->ab", l2, t2, optimize=True)
 
     tau10 += np.einsum("ab->ab", tau9, optimize=True)
 
-    tau11 = np.zeros((N, N, M, M))
+    tau11 = zeros((N, N, M, M))
 
     tau11 += np.einsum("ac,ijcb->ijab", tau10, u[o, o, v, v], optimize=True)
 
@@ -846,93 +846,93 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau11 = None
 
-    tau79 = np.zeros((N, M, M, M))
+    tau79 = zeros((N, M, M, M))
 
     tau79 += np.einsum("bi,ac->iabc", t1, tau10, optimize=True)
 
-    tau86 = np.zeros((N, N, M, M))
+    tau86 = zeros((N, N, M, M))
 
     tau86 += np.einsum("ca,cbij->ijab", tau10, t2, optimize=True)
 
-    tau88 = np.zeros((N, N, M, M))
+    tau88 = zeros((N, N, M, M))
 
     tau88 += 2 * np.einsum("jiab->ijab", tau86, optimize=True)
 
-    tau199 = np.zeros((N, N, M, M))
+    tau199 = zeros((N, N, M, M))
 
     tau199 += np.einsum("jiba->ijab", tau86, optimize=True)
 
     tau86 = None
 
-    tau130 = np.zeros((N, N))
+    tau130 = zeros((N, N))
 
     tau130 += np.einsum("ab,iajb->ij", tau10, u[o, v, o, v], optimize=True)
 
-    tau136 = np.zeros((N, N))
+    tau136 = zeros((N, N))
 
     tau136 += 4 * np.einsum("ij->ij", tau130, optimize=True)
 
     tau130 = None
 
-    tau139 = np.zeros((N, M))
+    tau139 = zeros((N, M))
 
     tau139 += np.einsum("bc,ibca->ia", tau10, u[o, v, v, v], optimize=True)
 
-    tau142 = np.zeros((N, M))
+    tau142 = zeros((N, M))
 
     tau142 -= np.einsum("ia->ia", tau139, optimize=True)
 
     tau139 = None
 
-    tau175 = np.zeros((M, M))
+    tau175 = zeros((M, M))
 
     tau175 += np.einsum("cd,cadb->ab", tau10, u[v, v, v, v], optimize=True)
 
     tau10 = None
 
-    tau178 = np.zeros((M, M))
+    tau178 = zeros((M, M))
 
     tau178 -= 4 * np.einsum("ab->ab", tau175, optimize=True)
 
     tau175 = None
 
-    tau52 = np.zeros((N, M, M, M))
+    tau52 = zeros((N, M, M, M))
 
     tau52 -= np.einsum("bi,ac->iabc", t1, tau9, optimize=True)
 
-    tau67 = np.zeros((N, N, M, M))
+    tau67 = zeros((N, N, M, M))
 
     tau67 += np.einsum("ac,ijbc->ijab", tau9, tau3, optimize=True)
 
-    tau74 = np.zeros((N, N, M, M))
+    tau74 = zeros((N, N, M, M))
 
     tau74 += np.einsum("ijab->ijab", tau67, optimize=True)
 
     tau67 = None
 
-    tau154 = np.zeros((N, M, M, M))
+    tau154 = zeros((N, M, M, M))
 
     tau154 -= np.einsum("ad,ibcd->iabc", tau9, u[o, v, v, v], optimize=True)
 
     tau9 = None
 
-    tau160 = np.zeros((N, M, M, M))
+    tau160 = zeros((N, M, M, M))
 
     tau160 -= np.einsum("ibac->iabc", tau154, optimize=True)
 
     tau154 = None
 
-    tau12 = np.zeros((N, N))
+    tau12 = zeros((N, N))
 
     tau12 += np.einsum("ai,aj->ij", l1, t1, optimize=True)
 
-    tau14 = np.zeros((N, N))
+    tau14 = zeros((N, N))
 
     tau14 += 2 * np.einsum("ij->ij", tau12, optimize=True)
 
     tau12 = None
 
-    tau13 = np.zeros((N, N))
+    tau13 = zeros((N, N))
 
     tau13 += np.einsum("baki,bakj->ij", l2, t2, optimize=True)
 
@@ -940,7 +940,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau13 = None
 
-    tau15 = np.zeros((N, N, M, M))
+    tau15 = zeros((N, N, M, M))
 
     tau15 += np.einsum("ik,kjab->ijab", tau14, u[o, o, v, v], optimize=True)
 
@@ -954,15 +954,15 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau15 = None
 
-    tau47 = np.zeros((N, N, N, M))
+    tau47 = zeros((N, N, N, M))
 
     tau47 += np.einsum("aj,ik->ijka", t1, tau14, optimize=True)
 
-    tau69 = np.zeros((N, N, N, M))
+    tau69 = zeros((N, N, N, M))
 
     tau69 += np.einsum("aj,ik->ijka", t1, tau14, optimize=True)
 
-    tau87 = np.zeros((N, N, M, M))
+    tau87 = zeros((N, N, M, M))
 
     tau87 += np.einsum("ki,abkj->ijab", tau14, t2, optimize=True)
 
@@ -970,21 +970,21 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau87 = None
 
-    tau110 = np.zeros((N, N, N, M))
+    tau110 = zeros((N, N, N, M))
 
     tau110 += np.einsum("ak,ij->ijka", t1, tau14, optimize=True)
 
-    tau132 = np.zeros((N, M))
+    tau132 = zeros((N, M))
 
     tau132 += np.einsum("aj,ji->ia", t1, tau14, optimize=True)
 
-    tau133 = np.zeros((N, M))
+    tau133 = zeros((N, M))
 
     tau133 += np.einsum("ia->ia", tau132, optimize=True)
 
     tau132 = None
 
-    tau135 = np.zeros((N, N))
+    tau135 = zeros((N, N))
 
     tau135 += np.einsum("kl,likj->ij", tau14, u[o, o, o, o], optimize=True)
 
@@ -992,7 +992,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau135 = None
 
-    tau141 = np.zeros((N, M))
+    tau141 = zeros((N, M))
 
     tau141 += np.einsum("jk,kija->ia", tau14, u[o, o, o, v], optimize=True)
 
@@ -1000,7 +1000,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau141 = None
 
-    tau177 = np.zeros((M, M))
+    tau177 = zeros((M, M))
 
     tau177 += np.einsum("ij,jaib->ab", tau14, u[o, v, o, v], optimize=True)
 
@@ -1008,11 +1008,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau177 = None
 
-    tau16 = np.zeros((N, M))
+    tau16 = zeros((N, M))
 
     tau16 += np.einsum("bj,jiba->ia", t1, u[o, o, v, v], optimize=True)
 
-    tau17 = np.zeros((N, M))
+    tau17 = zeros((N, M))
 
     tau17 += np.einsum("ia->ia", tau16, optimize=True)
 
@@ -1022,13 +1022,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau18 += 2 * np.einsum("ai,jb->ijab", l1, tau17, optimize=True)
 
-    tau19 = np.zeros((N, N, M, M))
+    tau19 = zeros((N, N, M, M))
 
     tau19 += np.einsum("cbkj,kiac->ijab", t2, tau18, optimize=True)
 
     tau18 = None
 
-    tau61 = np.zeros((N, N, M, M))
+    tau61 = zeros((N, N, M, M))
 
     tau61 -= 2 * np.einsum("ijab->ijab", tau19, optimize=True)
 
@@ -1042,19 +1042,19 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau17 = None
 
-    tau202 = np.zeros((N, N, N, N))
+    tau202 = zeros((N, N, N, N))
 
     tau202 += np.einsum("balk,ijab->ijkl", t2, tau200, optimize=True)
 
     tau200 = None
 
-    tau20 = np.zeros((N, N, M, M))
+    tau20 = zeros((N, N, M, M))
 
     tau20 += np.einsum("acik,kjcb->ijab", t2, u[o, o, v, v], optimize=True)
 
     tau21 += np.einsum("ijab->ijab", tau20, optimize=True)
 
-    tau108 = np.zeros((N, N, M, M))
+    tau108 = zeros((N, N, M, M))
 
     tau108 += np.einsum("ijab->ijab", tau20, optimize=True)
 
@@ -1062,11 +1062,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau20 = None
 
-    tau22 = np.zeros((M, M, M, M))
+    tau22 = zeros((M, M, M, M))
 
     tau22 += np.einsum("abji,cdji->abcd", l2, t2, optimize=True)
 
-    tau23 = np.zeros((N, N, M, M))
+    tau23 = zeros((N, N, M, M))
 
     tau23 += np.einsum("ijcd,cadb->ijab", tau21, tau22, optimize=True)
 
@@ -1074,41 +1074,41 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau23 = None
 
-    tau77 = np.zeros((N, N, M, M))
+    tau77 = zeros((N, N, M, M))
 
     tau77 += np.einsum("acbd,icjd->ijab", tau22, u[o, v, o, v], optimize=True)
 
-    tau84 = np.zeros((N, N, M, M))
+    tau84 = zeros((N, N, M, M))
 
     tau84 -= np.einsum("ijba->ijab", tau77, optimize=True)
 
     tau77 = None
 
-    tau24 = np.zeros((N, N, N, N))
+    tau24 = zeros((N, N, N, N))
 
     tau24 += np.einsum("baij,bakl->ijkl", l2, t2, optimize=True)
 
-    tau25 = np.zeros((N, N, M, M))
+    tau25 = zeros((N, N, M, M))
 
     tau25 -= np.einsum("ablk,lkji->ijab", t2, tau24, optimize=True)
 
-    tau29 = np.zeros((N, N, M, M))
+    tau29 = zeros((N, N, M, M))
 
     tau29 -= np.einsum("ijba->ijab", tau25, optimize=True)
 
     tau88 -= np.einsum("ijba->ijab", tau25, optimize=True)
 
-    tau90 = np.zeros((N, N, M, M))
+    tau90 = zeros((N, N, M, M))
 
     tau90 -= np.einsum("ijba->ijab", tau25, optimize=True)
 
-    tau97 = np.zeros((N, N, M, M))
+    tau97 = zeros((N, N, M, M))
 
     tau97 -= np.einsum("ijba->ijab", tau25, optimize=True)
 
     tau25 = None
 
-    tau55 = np.zeros((N, N, M, M))
+    tau55 = zeros((N, N, M, M))
 
     tau55 += np.einsum("likj,klab->ijab", tau24, tau54, optimize=True)
 
@@ -1118,7 +1118,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau55 = None
 
-    tau66 = np.zeros((N, N, M, M))
+    tau66 = zeros((N, N, M, M))
 
     tau66 -= np.einsum("kijl,lakb->ijab", tau24, u[o, v, o, v], optimize=True)
 
@@ -1126,7 +1126,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau66 = None
 
-    tau68 = np.zeros((N, N, N, M))
+    tau68 = zeros((N, N, N, M))
 
     tau68 += np.einsum("al,iljk->ijka", t1, tau24, optimize=True)
 
@@ -1134,27 +1134,27 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau110 += np.einsum("ikja->ijka", tau68, optimize=True)
 
-    tau112 = np.zeros((N, N, N, M))
+    tau112 = zeros((N, N, N, M))
 
     tau112 -= np.einsum("ikja->ijka", tau68, optimize=True)
 
     tau68 = None
 
-    tau106 = np.zeros((N, N, N, N))
+    tau106 = zeros((N, N, N, N))
 
     tau106 += np.einsum("mijn,nklm->ijkl", tau24, u[o, o, o, o], optimize=True)
 
-    tau121 = np.zeros((N, N, N, N))
+    tau121 = zeros((N, N, N, N))
 
     tau121 += 2 * np.einsum("ijkl->ijkl", tau106, optimize=True)
 
     tau106 = None
 
-    tau164 = np.zeros((N, N, M, M))
+    tau164 = zeros((N, N, M, M))
 
     tau164 -= np.einsum("jilk,lkab->ijab", tau24, u[o, o, v, v], optimize=True)
 
-    tau169 = np.zeros((N, N, M, M))
+    tau169 = zeros((N, N, M, M))
 
     tau169 += np.einsum("ijba->ijab", tau164, optimize=True)
 
@@ -1162,11 +1162,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau164 = None
 
-    tau26 = np.zeros((N, N, M, M))
+    tau26 = zeros((N, N, M, M))
 
     tau26 -= np.einsum("caki,bckj->ijab", l2, t2, optimize=True)
 
-    tau27 = np.zeros((N, N, M, M))
+    tau27 = zeros((N, N, M, M))
 
     tau27 -= np.einsum("acki,kjcb->ijab", t2, tau26, optimize=True)
 
@@ -1178,11 +1178,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau97 += 4 * np.einsum("ijab->ijab", tau27, optimize=True)
 
-    tau182 = np.zeros((N, N, N, M))
+    tau182 = zeros((N, N, N, M))
 
     tau182 += np.einsum("ijcb,kacb->ijka", tau27, u[o, v, v, v], optimize=True)
 
-    tau186 = np.zeros((N, N, N, M))
+    tau186 = zeros((N, N, N, M))
 
     tau186 -= np.einsum("kjia->ijka", tau182, optimize=True)
 
@@ -1192,7 +1192,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau202 += 2 * np.einsum("lkba,jiba->ijkl", tau27, u[o, o, v, v], optimize=True)
 
-    tau31 = np.zeros((N, N, M, M))
+    tau31 = zeros((N, N, M, M))
 
     tau31 += np.einsum("ikca,jkcb->ijab", tau21, tau26, optimize=True)
 
@@ -1202,11 +1202,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau31 = None
 
-    tau40 = np.zeros((N, N, M, M))
+    tau40 = zeros((N, N, M, M))
 
     tau40 += np.einsum("ijab->ijab", tau26, optimize=True)
 
-    tau43 = np.zeros((N, N, M, M))
+    tau43 = zeros((N, N, M, M))
 
     tau43 += np.einsum("kjbc,kiac->ijab", tau26, tau42, optimize=True)
 
@@ -1216,7 +1216,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau43 = None
 
-    tau78 = np.zeros((N, M, M, M))
+    tau78 = zeros((N, M, M, M))
 
     tau78 += np.einsum("bj,jiac->iabc", t1, tau26, optimize=True)
 
@@ -1224,7 +1224,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau78 = None
 
-    tau107 = np.zeros((N, N, N, N))
+    tau107 = zeros((N, N, N, N))
 
     tau107 -= np.einsum("ikab,jlab->ijkl", tau26, tau3, optimize=True)
 
@@ -1232,7 +1232,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau107 = None
 
-    tau28 = np.zeros((N, M))
+    tau28 = zeros((N, M))
 
     tau28 -= np.einsum("bj,abji->ia", l1, t2, optimize=True)
 
@@ -1240,7 +1240,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau29 += 4 * np.einsum("bj,ia->ijab", t1, tau28, optimize=True)
 
-    tau30 = np.zeros((N, N, M, M))
+    tau30 = zeros((N, N, M, M))
 
     tau30 += np.einsum("ikca,kjcb->ijab", tau29, u[o, o, v, v], optimize=True)
 
@@ -1250,7 +1250,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau30 = None
 
-    tau65 = np.zeros((N, N, M, M))
+    tau65 = zeros((N, N, M, M))
 
     tau65 -= np.einsum("ic,jabc->ijab", tau28, u[o, v, v, v], optimize=True)
 
@@ -1258,7 +1258,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau65 = None
 
-    tau76 = np.zeros((N, N, M, M))
+    tau76 = zeros((N, N, M, M))
 
     tau76 -= np.einsum("ka,ikjb->ijab", tau28, u[o, o, o, v], optimize=True)
 
@@ -1270,13 +1270,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau88 += 4 * np.einsum("bj,ia->ijab", t1, tau28, optimize=True)
 
-    tau89 = np.zeros((N, N, M, M))
+    tau89 = zeros((N, N, M, M))
 
     tau89 += np.einsum("ikca,kbjc->ijab", tau88, u[o, v, o, v], optimize=True)
 
     tau88 = None
 
-    tau101 = np.zeros((N, N, M, M))
+    tau101 = zeros((N, N, M, M))
 
     tau101 -= np.einsum("ijab->ijab", tau89, optimize=True)
 
@@ -1284,7 +1284,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau90 += 4 * np.einsum("ai,jb->ijab", t1, tau28, optimize=True)
 
-    tau91 = np.zeros((N, N, M, M))
+    tau91 = zeros((N, N, M, M))
 
     tau91 += np.einsum("jkbc,kiac->ijab", tau3, tau90, optimize=True)
 
@@ -1294,33 +1294,33 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau91 = None
 
-    tau96 = np.zeros((N, N, N, M))
+    tau96 = zeros((N, N, N, M))
 
     tau96 += np.einsum("ilba,ljkb->ijka", tau90, u[o, o, o, v], optimize=True)
 
     tau90 = None
 
-    tau99 = np.zeros((N, N, N, M))
+    tau99 = zeros((N, N, N, M))
 
     tau99 += np.einsum("ijka->ijka", tau96, optimize=True)
 
     tau96 = None
 
-    tau102 = np.zeros((N, N, M, M))
+    tau102 = zeros((N, N, M, M))
 
     tau102 -= np.einsum("ic,abjc->ijab", tau28, u[v, v, o, v], optimize=True)
 
-    tau145 = np.zeros((N, N, M, M))
+    tau145 = zeros((N, N, M, M))
 
     tau145 += 8 * np.einsum("ijba->ijab", tau102, optimize=True)
 
     tau102 = None
 
-    tau103 = np.zeros((N, M, M, M))
+    tau103 = zeros((N, M, M, M))
 
     tau103 += np.einsum("id,abdc->iabc", tau28, u[v, v, v, v], optimize=True)
 
-    tau104 = np.zeros((N, N, M, M))
+    tau104 = zeros((N, N, M, M))
 
     tau104 += np.einsum("ci,jabc->ijab", t1, tau103, optimize=True)
 
@@ -1330,27 +1330,27 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau104 = None
 
-    tau105 = np.zeros((N, N, N, N))
+    tau105 = zeros((N, N, N, N))
 
     tau105 += np.einsum("ia,kjla->ijkl", tau28, u[o, o, o, v], optimize=True)
 
     tau121 -= 2 * np.einsum("jikl->ijkl", tau105, optimize=True)
 
-    tau194 = np.zeros((N, N, N, N))
+    tau194 = zeros((N, N, N, N))
 
     tau194 -= np.einsum("ikjl->ijkl", tau105, optimize=True)
 
     tau105 = None
 
-    tau118 = np.zeros((N, N, N, M))
+    tau118 = zeros((N, N, N, M))
 
     tau118 += np.einsum("ib,kjab->ijka", tau28, u[o, o, v, v], optimize=True)
 
-    tau119 = np.zeros((N, N, N, M))
+    tau119 = zeros((N, N, N, M))
 
     tau119 += np.einsum("ikja->ijka", tau118, optimize=True)
 
-    tau193 = np.zeros((N, N, N, N))
+    tau193 = zeros((N, N, N, N))
 
     tau193 -= np.einsum("ai,jlka->ijkl", t1, tau118, optimize=True)
 
@@ -1360,19 +1360,19 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau193 = None
 
-    tau195 = np.zeros((N, N, N, M))
+    tau195 = zeros((N, N, N, M))
 
     tau195 += np.einsum("al,iljk->ijka", t1, tau194, optimize=True)
 
     tau194 = None
 
-    tau196 = np.zeros((N, N, M, M))
+    tau196 = zeros((N, N, M, M))
 
     tau196 -= np.einsum("bk,ikja->ijab", t1, tau195, optimize=True)
 
     tau195 = None
 
-    tau197 = np.zeros((N, N, M, M))
+    tau197 = zeros((N, N, M, M))
 
     tau197 -= np.einsum("ijba->ijab", tau196, optimize=True)
 
@@ -1380,17 +1380,17 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau133 -= 2 * np.einsum("ia->ia", tau28, optimize=True)
 
-    tau148 = np.zeros((M, M, M, M))
+    tau148 = zeros((M, M, M, M))
 
     tau148 += np.einsum("ia,ibdc->abcd", tau28, u[o, v, v, v], optimize=True)
 
-    tau162 = np.zeros((M, M, M, M))
+    tau162 = zeros((M, M, M, M))
 
     tau162 -= 2 * np.einsum("bcad->abcd", tau148, optimize=True)
 
     tau148 = None
 
-    tau153 = np.zeros((N, M, M, M))
+    tau153 = zeros((N, M, M, M))
 
     tau153 += np.einsum("ja,ijcb->iabc", tau28, u[o, o, v, v], optimize=True)
 
@@ -1398,27 +1398,27 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau153 = None
 
-    tau32 = np.zeros((M, M, M, M))
+    tau32 = zeros((M, M, M, M))
 
     tau32 += np.einsum("ai,ibcd->abcd", t1, u[o, v, v, v], optimize=True)
 
-    tau34 = np.zeros((M, M, M, M))
+    tau34 = zeros((M, M, M, M))
 
     tau34 -= 2 * np.einsum("abdc->abcd", tau32, optimize=True)
 
-    tau149 = np.zeros((M, M, M, M))
+    tau149 = zeros((M, M, M, M))
 
     tau149 += 2 * np.einsum("abdc->abcd", tau32, optimize=True)
 
     tau32 = None
 
-    tau33 = np.zeros((M, M, M, M))
+    tau33 = zeros((M, M, M, M))
 
     tau33 += np.einsum("abji,jicd->abcd", t2, u[o, o, v, v], optimize=True)
 
     tau34 -= np.einsum("badc->abcd", tau33, optimize=True)
 
-    tau35 = np.zeros((N, N, M, M))
+    tau35 = zeros((N, N, M, M))
 
     tau35 += np.einsum("ijcd,acdb->ijab", tau26, tau34, optimize=True)
 
@@ -1432,23 +1432,23 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau33 = None
 
-    tau36 = np.zeros((N, N, N, N))
+    tau36 = zeros((N, N, N, N))
 
     tau36 += np.einsum("ai,jkla->ijkl", t1, u[o, o, o, v], optimize=True)
 
-    tau39 = np.zeros((N, N, N, N))
+    tau39 = zeros((N, N, N, N))
 
     tau39 -= 2 * np.einsum("ikjl->ijkl", tau36, optimize=True)
 
-    tau115 = np.zeros((N, N, N, N))
+    tau115 = zeros((N, N, N, N))
 
     tau115 -= 2 * np.einsum("ikjl->ijkl", tau36, optimize=True)
 
-    tau126 = np.zeros((N, N, N, N))
+    tau126 = zeros((N, N, N, N))
 
     tau126 -= 4 * np.einsum("ljik->ijkl", tau36, optimize=True)
 
-    tau192 = np.zeros((N, N, M, M))
+    tau192 = zeros((N, N, M, M))
 
     tau192 += np.einsum("klba,ilkj->ijab", tau27, tau36, optimize=True)
 
@@ -1464,13 +1464,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau197 = None
 
-    tau37 = np.zeros((N, N, M, M))
+    tau37 = zeros((N, N, M, M))
 
     tau37 -= np.einsum("baji->ijab", t2, optimize=True)
 
     tau37 += 2 * np.einsum("aj,bi->ijab", t1, t1, optimize=True)
 
-    tau38 = np.zeros((N, N, N, N))
+    tau38 = zeros((N, N, N, N))
 
     tau38 += np.einsum("ijab,klab->ijkl", tau37, u[o, o, v, v], optimize=True)
 
@@ -1482,7 +1482,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau40 += np.einsum("ai,bj->ijab", l1, t1, optimize=True)
 
-    tau41 = np.zeros((N, N, M, M))
+    tau41 = zeros((N, N, M, M))
 
     tau41 += np.einsum("ikjl,lkab->ijab", tau39, tau40, optimize=True)
 
@@ -1492,7 +1492,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau41 = None
 
-    tau73 = np.zeros((N, N, M, M))
+    tau73 = zeros((N, N, M, M))
 
     tau73 += np.einsum("ijcd,cadb->ijab", tau40, u[v, v, v, v], optimize=True)
 
@@ -1500,7 +1500,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau73 = None
 
-    tau82 = np.zeros((N, N, M, M))
+    tau82 = zeros((N, N, M, M))
 
     tau82 += np.einsum("ikca,kcjb->ijab", tau40, u[o, v, o, v], optimize=True)
 
@@ -1508,7 +1508,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau82 = None
 
-    tau83 = np.zeros((N, N, M, M))
+    tau83 = zeros((N, N, M, M))
 
     tau83 += np.einsum("klab,likj->ijab", tau40, u[o, o, o, o], optimize=True)
 
@@ -1516,13 +1516,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau83 = None
 
-    tau44 = np.zeros((N, N, N, M))
+    tau44 = zeros((N, N, N, M))
 
     tau44 += np.einsum("bi,abjk->ijka", l1, t2, optimize=True)
 
     tau47 -= np.einsum("ikja->ijka", tau44, optimize=True)
 
-    tau57 = np.zeros((N, N, N, M))
+    tau57 = zeros((N, N, N, M))
 
     tau57 += np.einsum("ikja->ijka", tau44, optimize=True)
 
@@ -1532,17 +1532,17 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau112 -= 2 * np.einsum("ikja->ijka", tau44, optimize=True)
 
-    tau45 = np.zeros((N, N, N, M))
+    tau45 = zeros((N, N, N, M))
 
     tau45 += np.einsum("bk,abij->ijka", t1, l2, optimize=True)
 
-    tau46 = np.zeros((N, N, N, M))
+    tau46 = zeros((N, N, N, M))
 
     tau46 -= np.einsum("bakl,lijb->ijka", t2, tau45, optimize=True)
 
     tau47 -= 2 * np.einsum("ijka->ijka", tau46, optimize=True)
 
-    tau81 = np.zeros((N, N, M, M))
+    tau81 = zeros((N, N, M, M))
 
     tau81 += np.einsum("ikla,lkjb->ijab", tau47, u[o, o, o, v], optimize=True)
 
@@ -1552,7 +1552,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau57 += np.einsum("ijka->ijka", tau46, optimize=True)
 
-    tau58 = np.zeros((N, N, N, M))
+    tau58 = zeros((N, N, N, M))
 
     tau58 += np.einsum("iljb,lkba->ijka", tau57, u[o, o, v, v], optimize=True)
 
@@ -1562,7 +1562,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau58 = None
 
-    tau60 = np.zeros((N, N, M, M))
+    tau60 = zeros((N, N, M, M))
 
     tau60 += np.einsum("bk,ijka->ijab", t1, tau59, optimize=True)
 
@@ -1574,7 +1574,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau69 += 2 * np.einsum("ikja->ijka", tau46, optimize=True)
 
-    tau70 = np.zeros((N, N, M, M))
+    tau70 = zeros((N, N, M, M))
 
     tau70 += np.einsum("ijkc,kacb->ijab", tau69, u[o, v, v, v], optimize=True)
 
@@ -1586,7 +1586,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau110 += 2 * np.einsum("ijka->ijka", tau46, optimize=True)
 
-    tau111 = np.zeros((N, N, N, N))
+    tau111 = zeros((N, N, N, N))
 
     tau111 += np.einsum("imja,mkla->ijkl", tau110, u[o, o, o, v], optimize=True)
 
@@ -1600,7 +1600,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau46 = None
 
-    tau51 = np.zeros((N, M, M, M))
+    tau51 = zeros((N, M, M, M))
 
     tau51 += np.einsum("bckj,kjia->iabc", t2, tau45, optimize=True)
 
@@ -1610,7 +1610,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau51 = None
 
-    tau131 = np.zeros((N, M))
+    tau131 = zeros((N, M))
 
     tau131 += np.einsum("bakj,kjib->ia", t2, tau45, optimize=True)
 
@@ -1620,7 +1620,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau131 = None
 
-    tau134 = np.zeros((N, N))
+    tau134 = zeros((N, N))
 
     tau134 += np.einsum("ka,kija->ij", tau133, u[o, o, o, v], optimize=True)
 
@@ -1628,7 +1628,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau134 = None
 
-    tau140 = np.zeros((N, M))
+    tau140 = zeros((N, M))
 
     tau140 += np.einsum("jb,jiba->ia", tau133, u[o, o, v, v], optimize=True)
 
@@ -1636,7 +1636,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau140 = None
 
-    tau176 = np.zeros((M, M))
+    tau176 = zeros((M, M))
 
     tau176 += np.einsum("ic,iacb->ab", tau133, u[o, v, v, v], optimize=True)
 
@@ -1646,11 +1646,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau176 = None
 
-    tau48 = np.zeros((N, N, N, M))
+    tau48 = zeros((N, N, N, M))
 
     tau48 += np.einsum("bi,jkab->ijka", t1, u[o, o, v, v], optimize=True)
 
-    tau49 = np.zeros((N, N, M, M))
+    tau49 = zeros((N, N, M, M))
 
     tau49 += np.einsum("ikla,jlkb->ijab", tau47, tau48, optimize=True)
 
@@ -1660,7 +1660,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau49 = None
 
-    tau98 = np.zeros((N, N, N, M))
+    tau98 = zeros((N, N, N, M))
 
     tau98 += np.einsum("jlkb,ilba->ijka", tau48, tau97, optimize=True)
 
@@ -1670,7 +1670,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau98 = None
 
-    tau100 = np.zeros((N, N, M, M))
+    tau100 = zeros((N, N, M, M))
 
     tau100 += np.einsum("bk,ikja->ijab", t1, tau99, optimize=True)
 
@@ -1680,7 +1680,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau100 = None
 
-    tau113 = np.zeros((N, N, N, N))
+    tau113 = zeros((N, N, N, N))
 
     tau113 += np.einsum("imja,kmla->ijkl", tau112, tau48, optimize=True)
 
@@ -1690,27 +1690,27 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau113 = None
 
-    tau155 = np.zeros((N, N, N, M))
+    tau155 = zeros((N, N, N, M))
 
     tau155 += np.einsum("kjia->ijka", tau48, optimize=True)
 
-    tau183 = np.zeros((N, N, N, N))
+    tau183 = zeros((N, N, N, N))
 
     tau183 -= np.einsum("aj,ikla->ijkl", t1, tau48, optimize=True)
 
-    tau184 = np.zeros((N, N, N, N))
+    tau184 = zeros((N, N, N, N))
 
     tau184 -= np.einsum("lkij->ijkl", tau183, optimize=True)
 
     tau183 = None
 
-    tau50 = np.zeros((N, M, M, M))
+    tau50 = zeros((N, M, M, M))
 
     tau50 += np.einsum("aj,bcij->iabc", l1, t2, optimize=True)
 
     tau52 += 2 * np.einsum("iacb->iabc", tau50, optimize=True)
 
-    tau53 = np.zeros((N, N, M, M))
+    tau53 = zeros((N, N, M, M))
 
     tau53 += np.einsum("ikjc,kabc->ijab", tau48, tau52, optimize=True)
 
@@ -1722,7 +1722,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau53 = None
 
-    tau62 = np.zeros((N, N, M, M))
+    tau62 = zeros((N, N, M, M))
 
     tau62 += np.einsum("cbkj,kica->ijab", t2, tau61, optimize=True)
 
@@ -1736,7 +1736,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau50 = None
 
-    tau80 = np.zeros((N, N, M, M))
+    tau80 = zeros((N, N, M, M))
 
     tau80 += np.einsum("kabc,kijc->ijab", tau79, u[o, o, o, v], optimize=True)
 
@@ -1746,7 +1746,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau80 = None
 
-    tau85 = np.zeros((N, N, M, M))
+    tau85 = zeros((N, N, M, M))
 
     tau85 += np.einsum("cbkj,kiac->ijab", t2, tau84, optimize=True)
 
@@ -1756,11 +1756,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau85 = None
 
-    tau63 = np.zeros((N, N, N, M))
+    tau63 = zeros((N, N, N, M))
 
     tau63 += np.einsum("cbij,kacb->ijka", t2, u[o, v, v, v], optimize=True)
 
-    tau64 = np.zeros((N, N, M, M))
+    tau64 = zeros((N, N, M, M))
 
     tau64 += np.einsum("ak,ikjb->ijab", l1, tau63, optimize=True)
 
@@ -1772,7 +1772,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau71 -= np.einsum("jaib->ijab", u[o, v, o, v], optimize=True)
 
-    tau72 = np.zeros((N, N, M, M))
+    tau72 = zeros((N, N, M, M))
 
     tau72 += np.einsum("kiac,kjbc->ijab", tau40, tau71, optimize=True)
 
@@ -1782,7 +1782,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau72 = None
 
-    tau75 = np.zeros((N, N, M, M))
+    tau75 = zeros((N, N, M, M))
 
     tau75 += np.einsum("cbkj,ikca->ijab", t2, tau74, optimize=True)
 
@@ -1792,17 +1792,17 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau75 = None
 
-    tau92 = np.zeros((N, N, M, M))
+    tau92 = zeros((N, N, M, M))
 
     tau92 += np.einsum("ak,ibjk->ijab", l1, u[o, v, o, o], optimize=True)
 
-    tau94 = np.zeros((N, N, M, M))
+    tau94 = zeros((N, N, M, M))
 
     tau94 += np.einsum("ijab->ijab", tau92, optimize=True)
 
     tau92 = None
 
-    tau93 = np.zeros((N, N, M, M))
+    tau93 = zeros((N, N, M, M))
 
     tau93 += np.einsum("ci,acjb->ijab", l1, u[v, v, o, v], optimize=True)
 
@@ -1810,7 +1810,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau93 = None
 
-    tau95 = np.zeros((N, N, M, M))
+    tau95 = zeros((N, N, M, M))
 
     tau95 += np.einsum("cbkj,kica->ijab", t2, tau94, optimize=True)
 
@@ -1832,7 +1832,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau108 -= np.einsum("jaib->ijab", u[o, v, o, v], optimize=True)
 
-    tau109 = np.zeros((N, N, N, N))
+    tau109 = zeros((N, N, N, N))
 
     tau109 += np.einsum("ijab,klab->ijkl", tau108, tau26, optimize=True)
 
@@ -1842,7 +1842,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau109 = None
 
-    tau114 = np.zeros((N, N, N, N))
+    tau114 = zeros((N, N, N, N))
 
     tau114 += np.einsum("baij,klba->ijkl", t2, u[o, o, v, v], optimize=True)
 
@@ -1850,7 +1850,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau114 = None
 
-    tau116 = np.zeros((N, N, N, N))
+    tau116 = zeros((N, N, N, N))
 
     tau116 += np.einsum("imjn,nkml->ijkl", tau115, tau24, optimize=True)
 
@@ -1862,7 +1862,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau116 = None
 
-    tau117 = np.zeros((N, N, N, M))
+    tau117 = zeros((N, N, N, M))
 
     tau117 += np.einsum("bi,jbka->ijka", l1, u[o, v, o, v], optimize=True)
 
@@ -1870,7 +1870,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau117 = None
 
-    tau120 = np.zeros((N, N, N, N))
+    tau120 = zeros((N, N, N, N))
 
     tau120 += np.einsum("al,ijka->ijkl", t1, tau119, optimize=True)
 
@@ -1880,7 +1880,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau120 = None
 
-    tau122 = np.zeros((N, N, M, M))
+    tau122 = zeros((N, N, M, M))
 
     tau122 += np.einsum("ablk,kilj->ijab", t2, tau121, optimize=True)
 
@@ -1890,7 +1890,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau122 = None
 
-    tau123 = np.zeros((N, N))
+    tau123 = zeros((N, N))
 
     tau123 += np.einsum("ak,iajk->ij", l1, u[o, v, o, o], optimize=True)
 
@@ -1898,13 +1898,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau123 = None
 
-    tau124 = np.zeros((N, N, M, M))
+    tau124 = zeros((N, N, M, M))
 
     tau124 += np.einsum("baji->ijab", t2, optimize=True)
 
     tau124 += 2 * np.einsum("ai,bj->ijab", t1, t1, optimize=True)
 
-    tau125 = np.zeros((N, N, N, N))
+    tau125 = zeros((N, N, N, N))
 
     tau125 += np.einsum("ijab,klab->ijkl", tau124, u[o, o, v, v], optimize=True)
 
@@ -1912,7 +1912,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau126 += np.einsum("lkji->ijkl", tau125, optimize=True)
 
-    tau203 = np.zeros((N, N, N, N))
+    tau203 = zeros((N, N, N, N))
 
     tau203 += np.einsum("lkji->ijkl", tau125, optimize=True)
 
@@ -1920,7 +1920,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau126 += 2 * np.einsum("jilk->ijkl", u[o, o, o, o], optimize=True)
 
-    tau127 = np.zeros((N, N, M, M))
+    tau127 = zeros((N, N, M, M))
 
     tau127 += np.einsum("abkl,ijkl->ijab", l2, tau126, optimize=True)
 
@@ -1928,7 +1928,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau128 -= np.einsum("jiba->ijab", tau127, optimize=True)
 
-    tau129 = np.zeros((N, N))
+    tau129 = zeros((N, N))
 
     tau129 += np.einsum("bakj,kiab->ij", t2, tau128, optimize=True)
 
@@ -1938,7 +1938,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau129 = None
 
-    tau137 = np.zeros((N, N, M, M))
+    tau137 = zeros((N, N, M, M))
 
     tau137 += np.einsum("ki,abkj->ijab", tau136, t2, optimize=True)
 
@@ -1952,7 +1952,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau127 = None
 
-    tau138 = np.zeros((N, M))
+    tau138 = zeros((N, M))
 
     tau138 += np.einsum("bj,ibja->ia", l1, u[o, v, o, v], optimize=True)
 
@@ -1960,11 +1960,11 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau138 = None
 
-    tau143 = np.zeros((N, N))
+    tau143 = zeros((N, N))
 
     tau143 += np.einsum("aj,ia->ij", t1, tau142, optimize=True)
 
-    tau144 = np.zeros((N, N, M, M))
+    tau144 = zeros((N, N, M, M))
 
     tau144 += np.einsum("ki,abkj->ijab", tau143, t2, optimize=True)
 
@@ -1980,29 +1980,29 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau145 = None
 
-    tau180 = np.zeros((M, M))
+    tau180 = zeros((M, M))
 
     tau180 += np.einsum("bi,ia->ab", t1, tau142, optimize=True)
 
     tau142 = None
 
-    tau181 = np.zeros((N, N, M, M))
+    tau181 = zeros((N, N, M, M))
 
     tau181 += np.einsum("ca,cbij->ijab", tau180, t2, optimize=True)
 
     tau180 = None
 
-    tau191 = np.zeros((N, N, M, M))
+    tau191 = zeros((N, N, M, M))
 
     tau191 -= 4 * np.einsum("jiab->ijab", tau181, optimize=True)
 
     tau181 = None
 
-    tau146 = np.zeros((N, M, M, M))
+    tau146 = zeros((N, M, M, M))
 
     tau146 -= np.einsum("adij,jbdc->iabc", t2, u[o, v, v, v], optimize=True)
 
-    tau147 = np.zeros((M, M, M, M))
+    tau147 = zeros((M, M, M, M))
 
     tau147 += np.einsum("ai,ibcd->abcd", l1, tau146, optimize=True)
 
@@ -2014,7 +2014,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau149 += 2 * np.einsum("badc->abcd", u[v, v, v, v], optimize=True)
 
-    tau150 = np.zeros((M, M, M, M))
+    tau150 = zeros((M, M, M, M))
 
     tau150 += np.einsum("eafb,ecfd->abcd", tau149, tau22, optimize=True)
 
@@ -2026,7 +2026,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau151 -= np.einsum("jaib->ijab", u[o, v, o, v], optimize=True)
 
-    tau152 = np.zeros((M, M, M, M))
+    tau152 = zeros((M, M, M, M))
 
     tau152 += np.einsum("ijcd,ijab->abcd", tau151, tau40, optimize=True)
 
@@ -2040,7 +2040,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau155 -= np.einsum("jika->ijka", u[o, o, o, v], optimize=True)
 
-    tau156 = np.zeros((N, M, M, M))
+    tau156 = zeros((N, M, M, M))
 
     tau156 += np.einsum("jika,kjbc->iabc", tau155, tau26, optimize=True)
 
@@ -2052,19 +2052,19 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau156 = None
 
-    tau157 = np.zeros((N, M, M, M))
+    tau157 = zeros((N, M, M, M))
 
     tau157 += np.einsum("aj,ijbc->iabc", t1, u[o, o, v, v], optimize=True)
 
-    tau158 = np.zeros((N, M, M, M))
+    tau158 = zeros((N, M, M, M))
 
     tau158 += np.einsum("iacb->iabc", tau157, optimize=True)
 
-    tau165 = np.zeros((N, M, M, M))
+    tau165 = zeros((N, M, M, M))
 
     tau165 += np.einsum("iacb->iabc", tau157, optimize=True)
 
-    tau198 = np.zeros((M, M, M, M))
+    tau198 = zeros((M, M, M, M))
 
     tau198 += np.einsum("ai,ibcd->abcd", t1, tau157, optimize=True)
 
@@ -2072,7 +2072,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau158 -= np.einsum("iacb->iabc", u[o, v, v, v], optimize=True)
 
-    tau159 = np.zeros((N, M, M, M))
+    tau159 = zeros((N, M, M, M))
 
     tau159 += np.einsum("idea,dbec->iabc", tau158, tau22, optimize=True)
 
@@ -2084,7 +2084,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau159 = None
 
-    tau161 = np.zeros((M, M, M, M))
+    tau161 = zeros((M, M, M, M))
 
     tau161 += np.einsum("di,iabc->abcd", t1, tau160, optimize=True)
 
@@ -2094,7 +2094,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau161 = None
 
-    tau163 = np.zeros((N, N, M, M))
+    tau163 = zeros((N, N, M, M))
 
     tau163 += np.einsum("dcij,cabd->ijab", t2, tau162, optimize=True)
 
@@ -2106,13 +2106,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau165 -= 2 * np.einsum("iacb->iabc", u[o, v, v, v], optimize=True)
 
-    tau166 = np.zeros((M, M, M, M))
+    tau166 = zeros((M, M, M, M))
 
     tau166 += np.einsum("di,iabc->abcd", t1, tau165, optimize=True)
 
     tau165 = None
 
-    tau167 = np.zeros((M, M, M, M))
+    tau167 = zeros((M, M, M, M))
 
     tau167 -= np.einsum("adcb->abcd", tau166, optimize=True)
 
@@ -2120,7 +2120,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau167 += np.einsum("badc->abcd", u[v, v, v, v], optimize=True)
 
-    tau168 = np.zeros((N, N, M, M))
+    tau168 = zeros((N, N, M, M))
 
     tau168 += np.einsum("cdij,cdab->ijab", l2, tau167, optimize=True)
 
@@ -2128,13 +2128,13 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau169 -= 2 * np.einsum("jiba->ijab", tau168, optimize=True)
 
-    tau170 = np.zeros((N, N, M, M))
+    tau170 = zeros((N, N, M, M))
 
     tau170 += np.einsum("cbkj,ikca->ijab", t2, tau169, optimize=True)
 
     tau169 = None
 
-    tau171 = np.zeros((N, N, M, M))
+    tau171 = zeros((N, N, M, M))
 
     tau171 += np.einsum("cbkj,kica->ijab", t2, tau170, optimize=True)
 
@@ -2148,7 +2148,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau168 = None
 
-    tau174 = np.zeros((M, M))
+    tau174 = zeros((M, M))
 
     tau174 += np.einsum("cbji,ijca->ab", t2, tau173, optimize=True)
 
@@ -2158,7 +2158,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau174 = None
 
-    tau172 = np.zeros((M, M))
+    tau172 = zeros((M, M))
 
     tau172 += np.einsum("ci,acib->ab", l1, u[v, v, o, v], optimize=True)
 
@@ -2166,7 +2166,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau172 = None
 
-    tau179 = np.zeros((N, N, M, M))
+    tau179 = zeros((N, N, M, M))
 
     tau179 += np.einsum("ac,cbij->ijab", tau178, t2, optimize=True)
 
@@ -2178,7 +2178,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau184 += np.einsum("jilk->ijkl", u[o, o, o, o], optimize=True)
 
-    tau185 = np.zeros((N, N, N, M))
+    tau185 = zeros((N, N, N, M))
 
     tau185 += np.einsum("la,lijk->ijka", tau28, tau184, optimize=True)
 
@@ -2186,7 +2186,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau185 = None
 
-    tau187 = np.zeros((N, N, M, M))
+    tau187 = zeros((N, N, M, M))
 
     tau187 += np.einsum("bk,kija->ijab", t1, tau186, optimize=True)
 
@@ -2204,7 +2204,7 @@ def amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o):
 
     tau189 -= np.einsum("kaji->ijka", u[o, v, o, o], optimize=True)
 
-    tau190 = np.zeros((N, N, M, M))
+    tau190 = zeros((N, N, M, M))
 
     tau190 += np.einsum("kb,ijka->ijab", tau28, tau189, optimize=True)
 

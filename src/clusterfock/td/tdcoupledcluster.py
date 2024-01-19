@@ -72,17 +72,17 @@ class TimeDependentCoupledCluster:
         """
         cc, basis = self.cc, self.basis
 
-        if not (cc.t_info["run"] or cc.l_info["run"]):
-            if self._has_td_one_body:
-                external_contribution = self.external_one_body(self._t_start, basis)
-                cc._f += external_contribution
-            cc.run(include_l=True, vocal=vocal)
+        if not (cc.t_info["run"] and cc.l_info["run"]):
+            # if self._has_td_one_body:
+            #     external_contribution = self.external_one_body(self._t_start, basis)
+            #     cc._f += external_contribution
+            # cc.run(include_l=True, vocal=vocal)
+            raise AttributeError("You need to run the CC with lambda amplitudes!!!")
         if not basis.dtype == complex:
             basis.dtype = complex
             cc._t.dtype = complex
             cc._l.dtype = complex
             cc._f = cc._f.astype(complex)
-
 
         self._t0 = cc._t.copy()
         self._l0 = cc._l.copy()
@@ -151,8 +151,8 @@ class TimeDependentCoupledCluster:
             external_contribution = self.external_one_body(t, basis)
             cc._f = basis.f + external_contribution
 
-        t_dot = -1j*cc._next_t_iteration(cc._t)
-        l_dot = 1j*cc._next_l_iteration(cc._t, cc._l)
+        t_dot = -1j*cc._t_rhs_timedependent(cc._t, cc._l)
+        l_dot = 1j*cc._l_rhs_timedependent(cc._t, cc._l)
 
         y_dot, _, _ = merge_to_flat(t_dot, l_dot)
 

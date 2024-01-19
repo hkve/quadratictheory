@@ -664,7 +664,7 @@ def two_body_density_ooov(rho, t1, t2, l1, l2, o, v):
 
     tau4 = None
 
-    rho[o, o, v, o] = -rho[o, o, o, v].transpose(0,1,3,2)
+    rho[o, o, v, o] = -rho[o, o, o, v].transpose(0, 1, 3, 2)
 
     return rho
 
@@ -1368,6 +1368,7 @@ def two_body_density_oovv(rho, t1, t2, l1, l2, o, v):
 
     return rho
 
+
 def two_body_density_ovoo(rho, t1, t2, l1, l2, o, v):
     M, N = t1.shape
     dtype = t1.dtype
@@ -1433,7 +1434,7 @@ def two_body_density_ovoo(rho, t1, t2, l1, l2, o, v):
 
     tau7 = None
 
-    rho[v, o, o, o] = -rho[o, v, o, o].transpose(1,0,2,3)
+    rho[v, o, o, o] = -rho[o, v, o, o].transpose(1, 0, 2, 3)
 
     return rho
 
@@ -1452,7 +1453,7 @@ def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
     tau1 += np.einsum("ai,ib->ab", l1, tau0, optimize=True)
 
     I = np.eye(N, dtype=dtype)
-    
+
     rho[o, v, o, v] += np.einsum("ij,ab->iajb", I, tau1, optimize=True)
 
     tau1 = None
@@ -1589,9 +1590,9 @@ def two_body_density_ovov(rho, t1, t2, l1, l2, o, v):
 
     tau13 = None
 
-    rho[v, o, o, v] = -rho[o, v, o, v].transpose(1,0,2,3)
-    rho[o, v, v, o] = -rho[o, v, o, v].transpose(0,1,3,2)
-    rho[v, o, v, o] = rho[o, v, o, v].transpose(1,0,3,2)
+    rho[v, o, o, v] = -rho[o, v, o, v].transpose(1, 0, 2, 3)
+    rho[o, v, v, o] = -rho[o, v, o, v].transpose(0, 1, 3, 2)
+    rho[v, o, v, o] = rho[o, v, o, v].transpose(1, 0, 3, 2)
 
     return rho
 
@@ -1979,7 +1980,7 @@ def two_body_density_vovv(rho, t1, t2, l1, l2, o, v):
 
     tau48 = None
 
-    rho[o, v, v, v] = -rho[v, o, v, v].transpose(1,0,2,3)
+    rho[o, v, v, v] = -rho[v, o, v, v].transpose(1, 0, 2, 3)
 
     return rho
 
@@ -2061,7 +2062,7 @@ def two_body_density_vvvo(rho, t1, t2, l1, l2, o, v):
 
     tau7 = None
 
-    rho[v, v, o, v] = -rho[v, v, v, o].transpose(0,1,3,2)
+    rho[v, v, o, v] = -rho[v, v, v, o].transpose(0, 1, 3, 2)
 
     return rho
 

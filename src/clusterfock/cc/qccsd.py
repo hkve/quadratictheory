@@ -14,6 +14,7 @@ from clusterfock.cc.energies.e_inter_qccsd import energy_intermediates_qccsd
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.densities.l_QCCSD import one_body_density_addition, two_body_density_addition
 
+
 class QCCSD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "QCCSD can not deal with restricted basis"
@@ -71,6 +72,49 @@ class QCCSD(QuadraticCoupledCluster):
 
         return rhs
 
+    def _t_rhs_timedependent(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        """
+        Adds additional calculations to '_next_t_iteration' if this is required by the
+        time evelution equations for the specific CC scheme. For standard coupled cluster, this
+        adds nothing
+
+        Args:
+            t (CoupledClusterParameter): The amplitude at this iteration
+
+        Returns:
+            rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
+        """
+        rhs = self._next_t_iteration(t, l)
+
+        rhs.add(1, 1j * np.einsum("bj,abij->ai", l[1], rhs[2]))
+
+        return rhs
+
+    def _l_rhs_timedependent(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        """
+        Adds additional calculations to '_next_l_iteration' if this is required by the
+        time evelution equations for the specific CC scheme. For standard coupled cluster, this
+        adds nothing
+
+        Args:
+            t (CoupledClusterParameter): The amplitude at this iteration
+            l (CoupledClusterParameter): The Lambda-amplitude at this iteration
+
+        Returns:
+            rhs_l (CoupledClusterParameter): The rhs of the time-dependent equation
+        """
+
+        rhs = self._next_l_iteration(t, l)
+
+        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs[1], l[1]))
+        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs[1]))
+
+        return rhs
+
     def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
         t1, t2 = t[1], t[2]
         l1, l2 = self._l[1], self._l[2]
@@ -90,7 +134,7 @@ class QCCSD(QuadraticCoupledCluster):
         rho = one_body_density_addition(rho, t1, t2, l1, l2, o, v)
 
         return rho
-    
+
     def _calculate_two_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
@@ -103,3 +147,6 @@ class QCCSD(QuadraticCoupledCluster):
         rho = two_body_density_addition(rho, t1, t2, l1, l2, o, v)
 
         return rho
+
+    def _overlap(self, t0, l0, t, l):
+        return 0

@@ -11,6 +11,7 @@ from clusterfock.cc.rhs.t_RCCD import amplitudes_ccd_restricted
 
 from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 
+
 class GCCD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"

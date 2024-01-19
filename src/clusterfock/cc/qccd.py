@@ -14,6 +14,7 @@ from clusterfock.cc.energies.e_inter_qccd import energy_intermediates_qccd
 from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 from clusterfock.cc.densities.l_QCCD import two_body_density_addition
 
+
 class QCCD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "QCCD can not deal with restricted basis"
@@ -84,7 +85,7 @@ class QCCD(QuadraticCoupledCluster):
         rho = one_body_density(rho, t2, l2, o, v)
 
         return rho
-    
+
     def _calculate_two_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
@@ -96,6 +97,6 @@ class QCCD(QuadraticCoupledCluster):
         rho = two_body_density_addition(rho, t2, l2, o, v)
 
         return rho
-    
+
     def _overlap(self, t0, l0, t, l):
         return 0
