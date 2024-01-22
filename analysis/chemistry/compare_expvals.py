@@ -220,7 +220,7 @@ def compare(filename):
             print(f"Load {method} MISSING")
             pass
 
-    t = results_linear[methods_linear[0]]["t"]
+    t = results_linear["CCD"]["t"]
     to_show = ["energy", "r"]
 
     for expval_key in to_show:
@@ -236,15 +236,15 @@ def compare(filename):
 def main():
     params = {
         "dt" : 0.1,
-        "t_end" : 10.0,
+        "t_end" : 2,
         "F_str" : 1e-3,
         "tol" : 1e-10,
         "direction" : 0,
     }
     filename = "dat/short_time"
 
-    # run_linear_cc(params, filename=filename)
-    # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
+    # run_linear_cc(params, filename=None, methods=["CCD", "CCSD"])
+    # run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
@@ -253,3 +253,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    # Be, omega = 0.2, 
