@@ -49,6 +49,22 @@ class QCCD(QuadraticCoupledCluster):
 
         return rhs
 
+    def _t_rhs_timedependent(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        """
+        Adds additional calculations to '_next_t_iteration' if this is required by the
+        time evelution equations for the specific CC scheme. For standard coupled cluster, this
+        adds nothing
+
+        Args:
+            t (CoupledClusterParameter): The amplitude at this iteration
+
+        Returns:
+            rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
+        """
+        return self._next_t_iteration(t, l)
+
     def _next_l_iteration(
         self, t: CoupledClusterParameter, l: CoupledClusterParameter
     ) -> CoupledClusterParameter:
