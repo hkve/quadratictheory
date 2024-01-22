@@ -7,6 +7,7 @@ from quantum_systems import (
     QuantumSystem,
 )
 
+import warnings
 
 def make_pyscf_system(molecule, basis="cc-pvdz", verbose=False, charge=0):
 
