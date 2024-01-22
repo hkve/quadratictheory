@@ -183,6 +183,10 @@ def combine_expvals(results1, results2, results3, expval_key):
 
     return all_methods, all_expvals
 
+def get_ls(name):
+    if name.startswith("Q"): return "-"
+    if name.startswith("HYQD"): return "--"
+    return ":"
 
 def compare(filename):
     methods_linear = ["CCD", "CCSD", ]
@@ -224,7 +228,7 @@ def compare(filename):
         methods, expvals = combine_expvals(results_linear, results_quadratic, results_hyqd, expval_key)
         
         for method, expval in zip(methods, expvals):
-            ax.plot(t, expval.real, label=method)
+            ax.plot(t, expval.real, label=method, ls=get_ls(method))
         ax.set_title(expval_key)
         ax.legend()
         plt.show()
@@ -240,7 +244,7 @@ def main():
     filename = "dat/short_time"
 
     # run_linear_cc(params, filename=filename)
-    run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
+    # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
