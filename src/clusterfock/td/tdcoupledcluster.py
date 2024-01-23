@@ -109,13 +109,12 @@ class TimeDependentCoupledCluster:
 
         for i in tqdm.tqdm(range(n_time_points-1)):
             integrator.integrate(integrator.t + dt)
-            
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
             
             self._sample()
-            energy[i+1] = cc.energy()
+            energy[i+1] = cc.time_dependent_energy()
             overlap[i+1] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
         self.results = self._construct_results(time_points, energy, overlap)

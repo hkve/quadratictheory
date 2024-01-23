@@ -62,3 +62,6 @@ class QuadraticCoupledCluster(CoupledCluster):
     def initialize_amplitudes(self, t, l):
         self._t = t.copy()
         self._l = l.copy()
+
+    def time_dependent_energy(self):
+        return self.energy(self._t)
