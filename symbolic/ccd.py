@@ -1,6 +1,24 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
 
+@drutils.timeme
+def energy_lambda_contribution(dr):
+    # Get T2 operators and sim transform ham
+    T2, L2 = drutils.get_clusters_2(dr)
+    ham = dr.ham
+    ham_bar = drutils.similarity_transform(ham, T2)
+
+    energy_eq = (L2*ham_bar).eval_fermi_vev().simplify()
+    energy_eq = drutils.define_rk0_rhs(dr, energy_eq)
+    drutils.timer.tock("energy equation")
+
+    eval_seq = grutils.optimize_equations(dr, energy_eq)
+    
+    drutils.save_html(dr, "ccd_energy_addition", [energy_eq], ["E addition"])
+    grutils.einsum_raw(dr, "ccd_energy_addition", [energy_eq])
+
+    drutils.save_html(dr, "ccd_energy_addition_optimized", eval_seq)
+    grutils.einsum_raw(dr, "ccd_energy_addition_optimized", eval_seq)
 
 @drutils.timeme
 def T_equations(dr):
@@ -92,9 +110,10 @@ def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
+    energy_lambda_contribution(dr)
     # T_equations(dr)
     # L_equations(dr)
-    L_densities(dr)
+    # L_densities(dr)
 
 
 if __name__ == "__main__":

@@ -3,6 +3,30 @@ import gristmill_utils as grutils
 
 
 @drutils.timeme
+def energy_lambda_contribution(dr):
+    # Get T2 operators and sim transform ham
+    T1, L1 = drutils.get_clusters_1(dr)
+    T2, L2 = drutils.get_clusters_2(dr)
+    
+    T = (T1+T2).simplify()
+    L = (L1+L2).simplify()
+    
+    ham = dr.ham
+    ham_bar = drutils.similarity_transform(ham, T)
+
+    energy_eq = (L*ham_bar).eval_fermi_vev().simplify()
+    energy_eq = drutils.define_rk0_rhs(dr, energy_eq)
+    drutils.timer.tock("energy equation")
+
+    eval_seq = grutils.optimize_equations(dr, energy_eq)
+    
+    drutils.save_html(dr, "ccsd_energy_addition", [energy_eq], ["E addition"])
+    grutils.einsum_raw(dr, "ccsd_energy_addition", [energy_eq])
+
+    drutils.save_html(dr, "ccsd_energy_addition_optimized", eval_seq)
+    grutils.einsum_raw(dr, "ccsd_energy_addition_optimized", eval_seq)
+
+@drutils.timeme
 def T_equations(dr):
     # Get T2 operators and sim transform ham
     T1, _ = drutils.get_clusters_1(dr)
@@ -127,8 +151,8 @@ def main():
     drutils.timer.vocal = True
     # T_equations(dr)
     # L_equations(dr)
-    L_densities(dr)
-
+    # L_densities(dr)
+    energy_lambda_contribution(dr)
 
 if __name__ == "__main__":
     main()
