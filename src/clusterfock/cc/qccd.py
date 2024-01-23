@@ -84,8 +84,8 @@ class QCCD(QuadraticCoupledCluster):
 
         return rhs
 
-    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
-        t2 = t[2]
+    def _evaluate_cc_energy(self) -> float:
+        t2 = self._t[2]
         l2 = self._l[2]
 
         u, o, v = self.basis.u, self.basis.o, self.basis.v

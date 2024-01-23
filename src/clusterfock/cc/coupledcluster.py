@@ -109,7 +109,7 @@ class CoupledCluster(ABC):
             t_next_flat = self.mixer(t.to_flat(), (rhs * epsinv).to_flat())
             t.from_flat(t_next_flat)
 
-            corr_energy = self._evaluate_cc_energy(t)
+            corr_energy = self._evaluate_cc_energy()
 
             iters += 1
 
@@ -219,17 +219,24 @@ class CoupledCluster(ABC):
         return self._next_l_iteration(t, l)
 
     @abstractmethod
-    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
+    def _evaluate_cc_energy() -> float:
         """
-        Function to evaluate the energy. Takes a set of amplitudes and returns the energy
-
-        Args:
-            t (CoupledClusterParameter): The amplitudes for energy calculation
+        Function to evaluate the energy. Calculates energy based on stored amplitudes
 
         Returns:
-            energy (float): Energy based on t amplitudes
+            energy (float): Correlation energy of the time-independent solution
         """
         pass
+
+    def _evaluate_tdcc_energy(self) -> float:
+        """
+        Additional part to energy that can be added in the case where rhs_t = rhs_l = 0 might not be true.
+        Defaults to no addition, but should be overwritten in the case it differs
+
+        Returns:
+            energy (float): Correlation energy additon of the time-dependent solution
+        """
+        return 0
 
     def _calculated_one_body_density(self) -> np.ndarray:
         """
@@ -305,23 +312,25 @@ class CoupledCluster(ABC):
         if not self.t_info["converged"]:
             raise RuntimeWarning("t amplitude computation did not converge")
 
-    def energy(self, t: CoupledClusterParameter = None) -> float:
+    def energy(self) -> float:
         """
-        Wrapper function to calculate energy. If no ampitude set is given, use
-        the stored one after convergence
-
-        Args:
-            t (CoupledClusterParameter): Optional amplitude set for energy calculation
+        Wrapper function to calculate energy.
 
         Returns:
             energy (float): The energy calculated using t
         """
         self._check_valid_for_energy()
 
-        if t is None:
-            t = self._t
+        return self._evaluate_cc_energy() + self.basis.energy()
 
-        return self._evaluate_cc_energy(t) + self.basis.energy()
+    def time_dependent_energy(self) -> float:
+        """
+        Wrapper function to calculate energy.
+
+        Returns:
+            energy (float): The energy calculated using t
+        """
+        return self._evaluate_tdcc_energy() + self.energy()
 
     def one_body_expval(self, operator: np.ndarray) -> np.ndarray:
         """

@@ -59,13 +59,13 @@ class GCCD(CoupledCluster):
 
         return rhs
 
-    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
-        t2 = t[2]
+    def _evaluate_cc_energy(self) -> float:
+        t2 = self._t[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         return 0.25 * np.einsum("ijab,abij", u[o, o, v, v], t2)
     
-    def _evaluate_td_cc_energy(self, t: CoupledClusterParameter, l: CoupledClusterParameter) -> float:
-        t2, l2 = t[2], l[2]
+    def _evaluate_tdcc_energy(self) -> float:
+        t2, l2 = self._t[2], self._l[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         f = self._f
         return self.td_energy_addition(t2, l2, u, f, o, v)

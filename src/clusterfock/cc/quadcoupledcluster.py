@@ -64,4 +64,4 @@ class QuadraticCoupledCluster(CoupledCluster):
         self._l = l.copy()
 
     def time_dependent_energy(self):
-        return self.energy(self._t)
+        return self.energy()

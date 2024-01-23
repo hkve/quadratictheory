@@ -64,9 +64,9 @@ class GCCSD(CoupledCluster):
 
         return rhs
 
-    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
+    def _evaluate_cc_energy(self) -> float:
         u, o, v = self.basis.u, self.basis.o, self.basis.v
-        t1, t2 = t[1], t[2]
+        t1, t2 = self._t[1], self._t[2]
 
         e = 0
         e += np.einsum("ia,ai->", self._f[o, v], t1, optimize=True)
@@ -75,9 +75,9 @@ class GCCSD(CoupledCluster):
 
         return e
 
-    def _evaluate_td_cc_energy(self, t: CoupledClusterParameter, l: CoupledClusterParameter) -> float:
-        t1, t2 = t[1], t[2]
-        l1, l2 = l[1], l[2]
+    def _evaluate_tdcc_energy(self) -> float:
+        t1, t2 = self._t[1], self._t[2]
+        l1, l2 = self._l[1], self._l[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         f = self._f
 
