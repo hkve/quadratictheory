@@ -24,9 +24,9 @@ def sampler(basis):
 def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     m = {"CCD": cf.CCD, "CCSD": cf.CCSD}
 
-    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ")
-    hf = cf.HF(basis).run()
-    basis.change_basis(hf.C)
+    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ").pyscf_hartree_fock()
+    # hf = cf.HF(basis).run()
+    # basis.change_basis(hf.C)
     basis.from_restricted()
 
     dt = params["dt"]
@@ -39,7 +39,7 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     for method in methods:
         CC = m[method]
     
-        cc = CC(basis).run(vocal=True, include_l=True, tol=tol)
+        cc = CC(basis).run(vocal=False, include_l=True, tol=tol)
 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
         tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=0)
@@ -52,9 +52,9 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
 def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
     m = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD}
 
-    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ")
-    hf = cf.HF(basis).run()
-    basis.change_basis(hf.C)
+    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ").pyscf_hartree_fock()
+    # hf = cf.HF(basis).run()
+    # basis.change_basis(hf.C)
     basis.from_restricted()
 
     dt = params["dt"]
@@ -67,7 +67,7 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
     for method in methods:
         CC = m[method]
     
-        cc = CC(basis).run(vocal=True, tol=tol)
+        cc = CC(basis).run(vocal=False, tol=tol)
 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
         tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction)
@@ -241,13 +241,13 @@ def main():
         "tol" : 1e-10,
         "direction" : 0,
     }
-    filename = "dat/short_time"
+    filename = "dat/short_time_fixed"
 
-    # run_linear_cc(params, filename=None, methods=["CCD", "CCSD"])
-    # run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"])
+    run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
+    run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
-    # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
-    # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
+    run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
+    run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     compare(filename)
 
