@@ -1,0 +1,41 @@
+    e = 0
+
+    e += einsum(
+        "abij,abkl,klij->", \lambda^2, t^2, u
+    ) / 8
+
+    e += einsum(
+        "abij,cdij,abcd->", \lambda^2, t^2, u
+    ) / 8
+
+    e += einsum(
+        "abij,acik,bdjl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 2
+
+    e -= einsum(
+        "abij,abik,cdjl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 4
+
+    e -= einsum(
+        "abij,acij,bdkl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 4
+
+    e += einsum(
+        "abij,abkl,cdij,klcd->", \lambda^2, t^2, t^2, u
+    ) / 16
+
+    e -= einsum(
+        "abij,acik,kbjc->", \lambda^2, t^2, u
+    )
+
+    e += einsum(
+        "abij,abij->", \lambda^2, u
+    ) / 4
+
+    e += einsum(
+        "ki,abij,abjk->", f, \lambda^2, t^2
+    ) / 2
+
+    e -= einsum(
+        "ac,abij,bcij->", f, \lambda^2, t^2
+    ) / 2
