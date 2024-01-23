@@ -9,7 +9,7 @@ from clusterfock.cc.rhs.t_inter_CCSD import amplitudes_intermediates_ccsd
 from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
-
+from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -23,6 +23,8 @@ class GCCSD(CoupledCluster):
         self.l_rhs = (
             lambda_amplitudes_intermediates_ccsd if intermediates else lambda_amplitudes_ccsd
         )
+
+        self.td_energy_addition = td_energy_addition
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> dict:
         basis = self.basis
@@ -72,6 +74,15 @@ class GCCSD(CoupledCluster):
         e += np.einsum("ai,bj,ijab->", t1, t1, u[o, o, v, v], optimize=True) / 2
 
         return e
+
+    def _evaluate_td_cc_energy(self, t: CoupledClusterParameter, l: CoupledClusterParameter) -> float:
+        t1, t2 = t[1], t[2]
+        l1, l2 = l[1], l[2]
+        u, o, v = self.basis.u, self.basis.o, self.basis.v
+        f = self._f
+
+        return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
+    
 
     def _calculate_one_body_density(self) -> np.ndarray:
         basis = self.basis
