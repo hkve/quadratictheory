@@ -87,12 +87,13 @@ class TimeDependentCoupledCluster:
         self._t0 = cc._t.copy()
         self._l0 = cc._l.copy()
 
-        y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._l, cc._l)
+        y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._t, cc._l)
         t_start, t_end, dt = self._t_start, self._t_end, self._dt
 
         assert dt > 0
         assert t_end > t_start
-        n_time_points = int(np.ceil((t_end - t_start)/dt)) + 1
+        n_time_points = int((t_end-t_start)/dt) + 1
+        time_points = np.linspace(t_start, t_end, n_time_points)
 
         integrator = complex_ode(self.rhs)
         integrator.set_integrator(self._integrator, dt=dt)
@@ -105,26 +106,20 @@ class TimeDependentCoupledCluster:
         energy[0] = cc.energy()
         overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
-        t, counter = dt, 0
-        while integrator.successful() and t < t_end + dt:
-            if counter > n_time_points:
-                break
-
-            integrator.integrate(t) # Integrates to y(t)
+        for i in range(n_time_points-1):
+            integrator.integrate(integrator.t + dt)
             
+
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
-            counter += 1
             
-            if vocal: print(f"Done {counter}/{n_time_points-1}, t = {t}")
+            if vocal: print(f"Done {i+1}/{n_time_points-1}, t = {time_points[i]}")
             
             self._sample()
-            energy[counter] = cc.energy()
-            overlap[counter] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
-            t += dt
-        
+            energy[i+1] = cc.energy()
+            overlap[i+1] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
-        self.results = self._construct_results(energy, overlap)
+        self.results = self._construct_results(time_points, energy, overlap)
 
         return self.results    
 
@@ -171,7 +166,7 @@ class TimeDependentCoupledCluster:
                 sample = cc.one_body_expval(operator)
                 self._one_body_results[key].append(sample)
 
-    def _construct_results(self, energy: np.ndarray, overlap: np.ndarray) -> dict:
+    def _construct_results(self, time_points: np.ndarray, energy: np.ndarray, overlap: np.ndarray) -> dict:
         """
         Constructs the results dict after the integration has been completed. 
 
@@ -182,10 +177,7 @@ class TimeDependentCoupledCluster:
         Returns:
             results (dict): The combined results
         """
-        t_start, t_end, dt = self._t_start, self._t_end, self._dt
-        time = np.arange(t_start, t_end+dt, dt)
-
-        results = {"t": time, "energy": energy, "overlap": overlap}
+        results = {"t": time_points, "energy": energy, "overlap": overlap}
 
         if self._has_one_body_sampler:
             for k, v in self._one_body_results.items():
