@@ -90,7 +90,7 @@ class QCCD(QuadraticCoupledCluster):
 
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         f = self._f
-        
+
         return self.energy_expression(t2, l2, u, f, o, v)
 
     def _calculate_one_body_density(self) -> np.ndarray:

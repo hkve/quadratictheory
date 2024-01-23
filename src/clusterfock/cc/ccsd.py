@@ -11,6 +11,7 @@ from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
+
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
@@ -82,7 +83,6 @@ class GCCSD(CoupledCluster):
         f = self._f
 
         return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
-    
 
     def _calculate_one_body_density(self) -> np.ndarray:
         basis = self.basis

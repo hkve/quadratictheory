@@ -12,6 +12,7 @@ from clusterfock.cc.rhs.t_RCCD import amplitudes_ccd_restricted
 from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccd import td_energy_addition
 
+
 class GCCD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
@@ -63,13 +64,13 @@ class GCCD(CoupledCluster):
         t2 = self._t[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         return 0.25 * np.einsum("ijab,abij", u[o, o, v, v], t2)
-    
+
     def _evaluate_tdcc_energy(self) -> float:
         t2, l2 = self._t[2], self._l[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         f = self._f
         return self.td_energy_addition(t2, l2, u, f, o, v)
-    
+
     def _calculate_one_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
