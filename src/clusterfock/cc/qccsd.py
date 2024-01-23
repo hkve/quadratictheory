@@ -110,8 +110,15 @@ class QCCSD(QuadraticCoupledCluster):
 
         rhs = self._next_l_iteration(t, l)
 
-        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs[1], l[1]))
-        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs[1]))
+        # With normal derivation
+        # rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs[1], l[1]))
+        # rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs[1]))
+
+        rhs.add(2, -1j / 4 * np.einsum("ai,bj->abij", rhs[1], l[1]))
+        rhs.add(2, -1j / 4 * np.einsum("ai,bj->abij", l[1], rhs[1]))
+        
+        rhs.add(2, -1j / 4 * np.einsum("aj,bi->abij", rhs[1], l[1]))
+        rhs.add(2, -1j / 4 * np.einsum("aj,bi->abij", l[1], rhs[1]))
 
         return rhs
 

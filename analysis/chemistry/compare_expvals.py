@@ -12,11 +12,20 @@ from tdccsd_absoprtion_spectra.utils import sine_square_laser, get_pyscf_geometr
 import basis_set_exchange as bse
 import tqdm
 
-def pulse(t, basis, dt, F_str, direction):
-    if t < dt:
-        return F_str/dt * -basis.r[direction]
-    else:
-        return 0
+# def pulse(t, basis, dt, F_str, direction):
+#     if t < dt:
+#         return F_str/dt * -basis.r[direction]
+#     else:
+#         return 0
+
+def pulse(t, basis, dt, F_str, direction, omega, tprime):
+    return (
+            (np.sin(np.pi * t / tprime) ** 2)
+            * np.heaviside(t, 1.0)
+            * np.heaviside(tprime - t, 1.0)
+            * np.sin(omega * t)
+            * F_str
+        ) * -basis.r[direction]
 
 def sampler(basis):
     return {"r": basis.r}
@@ -34,6 +43,8 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     F_str = params["F_str"]
     tol = params["tol"]
     direction = params["direction"]
+    omega = params["omega"]
+    tprime = 2*np.pi / omega
     time = (0, t_end, dt)
 
     for method in methods:
@@ -42,7 +53,7 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
         cc = CC(basis).run(vocal=False, include_l=True, tol=tol)
 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
-        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=0)
+        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
         results = tdcc.run(vocal=True)
 
@@ -63,6 +74,8 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
     tol = params["tol"]
     direction = params["direction"]
     time = (0, t_end, dt)
+    omega = params["omega"]
+    tprime = 2*np.pi / omega
 
     for method in methods:
         CC = m[method]
@@ -70,7 +83,7 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
         cc = CC(basis).run(vocal=False, tol=tol)
 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
-        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction)
+        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
         results = tdcc.run(vocal=True)
 
@@ -84,7 +97,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     geometries = get_pyscf_geometries()
 
     # System and basis parameters
-    name = "be"
+    name = "he"
     basis = "cc-pvdz"
     basis_set = bse.get_basis(basis, fmt='nwchem')
     charge = 0
@@ -95,6 +108,8 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     F_str = params["F_str"]
     ground_state_tolerance = params["tol"]
     polarization_direction = params["direction"]
+    omega = params["omega"]
+    tprime = 2*np.pi / omega
 
     integrator = "rk4"
     molecule = geometries[name]
@@ -113,11 +128,10 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
 
     num_steps = int(tfinal / dt) + 1
     time_points = np.linspace(0, tfinal, num_steps)
-
+    # Discrete_delta_pulse(F_str=F_str, dt=dt), polarization_vector=polarization,
     system.set_time_evolution_operator(
         DipoleFieldInteraction(
-            Discrete_delta_pulse(F_str=F_str, dt=dt),
-            polarization_vector=polarization,
+            sine_square_laser(F_str, omega, tprime, 0)
         )
     )
 
@@ -173,20 +187,20 @@ def combine_expvals(results1, results2, results3, expval_key):
     combined.update(results2)
     combined.update(results3)
 
-    all_methods, all_expvals = [], []
+    all_methods, all_expvals, all_times = [], [], []
     for method, results in combined.items():
         all_methods.append(method)
+        all_times.append(results["t"])
         if expval_key == "r":
             all_expvals.append(results[expval_key][:,0])
         else:
             all_expvals.append(results[expval_key])
-
-    return all_methods, all_expvals
+    return all_methods, all_expvals, all_times
 
 def get_ls(name):
     if name.startswith("Q"): return "-"
     if name.startswith("HYQD"): return "--"
-    return ":"
+    return "-"
 
 def compare(filename):
     methods_linear = ["CCD", "CCSD", ]
@@ -220,34 +234,35 @@ def compare(filename):
             print(f"Load {method} MISSING")
             pass
 
-    t = results_linear["CCD"]["t"]
     to_show = ["energy", "r"]
 
     for expval_key in to_show:
         fig, ax = plt.subplots()
-        methods, expvals = combine_expvals(results_linear, results_quadratic, results_hyqd, expval_key)
+        methods, expvals, times = combine_expvals(results_linear, results_quadratic, results_hyqd, expval_key)
         
-        for method, expval in zip(methods, expvals):
+        for method, expval, t in zip(methods, expvals, times):
             ax.plot(t, expval.real, label=method, ls=get_ls(method))
-        ax.set_title(expval_key)
+        
         ax.legend()
+        ax.set_title(expval_key)
         plt.show()
 
 def main():
     params = {
         "dt" : 0.1,
-        "t_end" : 2,
-        "F_str" : 1e-3,
+        "t_end" : 100,
+        "F_str" : 1e-2,
         "tol" : 1e-10,
+        "omega": 0.2,
         "direction" : 0,
     }
-    filename = "dat/short_time_fixed"
+    filename = "dat/test_new"
 
     run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
     run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
-    run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
-    run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
+    # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
+    # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     compare(filename)
 
