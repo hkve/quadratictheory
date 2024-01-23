@@ -2,8 +2,9 @@ from __future__ import annotations
 from clusterfock.basis import Basis
 from clusterfock.cc.parameter import CoupledClusterParameter, merge_to_flat
 from clusterfock.cc.coupledcluster import CoupledCluster
-import numpy as np
 
+import tqdm
+import numpy as np
 from scipy.integrate import complex_ode, ode
 from rk4_integrator.rk4 import Rk4Integrator
 
@@ -106,14 +107,12 @@ class TimeDependentCoupledCluster:
         energy[0] = cc.energy()
         overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
 
-        for i in range(n_time_points-1):
+        for i in tqdm.tqdm(range(n_time_points-1)):
             integrator.integrate(integrator.t + dt)
             
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
-            
-            if vocal: print(f"Done {i+1}/{n_time_points-1}, t = {time_points[i]}")
             
             self._sample()
             energy[i+1] = cc.energy()
