@@ -51,8 +51,7 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0)
 
         self.C = self.mf.mo_coeff
-        print("CF")
-        print(np.round(self.C.real[-6:-1,-6:-1], 4))
+        
         if not self.restricted:
             self.C = self._add_spin_one_body(self.C)
 
