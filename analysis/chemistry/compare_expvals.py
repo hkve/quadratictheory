@@ -33,10 +33,13 @@ def sampler(basis):
 def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     m = {"CCD": cf.CCD, "CCSD": cf.CCSD}
 
-    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ").pyscf_hartree_fock()
+    molecule = params["molecule"]
+    basis = params["basis"]
+    print(molecule, basis)
+    system = cf.PyscfBasis(molecule, basis).pyscf_hartree_fock()
     # hf = cf.HF(basis).run()
     # basis.change_basis(hf.C)
-    basis.from_restricted()
+    system.from_restricted()
 
     dt = params["dt"]
     t_end = params["t_end"]
@@ -46,14 +49,18 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     omega = params["omega"]
     tprime = 2*np.pi / omega
     time = (0, t_end, dt)
-
     for method in methods:
         CC = m[method]
     
-        cc = CC(basis).run(vocal=False, include_l=True, tol=tol)
-
+        cc = CC(system).run(vocal=True, include_l=True, tol=tol)
+        cc.densities()
+        E = cc.one_body_expval(system.h)
+        E += 0.5*cc.two_body_expval(system.u)
+        print(cc.energy(), cc.time_dependent_energy(), E)
+        print(cc._evaluate_cc_energy(),system.energy())
+        return
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
-        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
+        tdcc.external_one_body = lambda t, system: pulse(t, system, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
         results = tdcc.run(vocal=True)
 
@@ -63,7 +70,10 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
 def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
     m = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD}
 
-    basis = cf.PyscfBasis("Be 0 0 0", "cc-pVDZ").pyscf_hartree_fock()
+    molecule = params["molecule"]
+    basis = params["basis"]
+
+    basis = cf.PyscfBasis(molecule, basis).pyscf_hartree_fock()
     # hf = cf.HF(basis).run()
     # basis.change_basis(hf.C)
     basis.from_restricted()
@@ -81,7 +91,8 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
         CC = m[method]
     
         cc = CC(basis).run(vocal=False, tol=tol)
-
+        print(cc.energy())
+        return 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
         tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
@@ -94,12 +105,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     m = {"HYQD_CCD": CCD, "HYQD_CCSD": CCSD}
     m_td = {"HYQD_CCD": TDCCD, "HYQD_CCSD": TDCCSD}
 
-    geometries = get_pyscf_geometries()
-
-    # System and basis parameters
-    name = "be"
-    basis = "cc-pvdz"
-    basis_set = bse.get_basis(basis, fmt='nwchem')
+    # basis_set = bse.get_basis(basis, fmt='nwchem')
     charge = 0
 
     # Laser pulse parameters
@@ -110,9 +116,10 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     polarization_direction = params["direction"]
     omega = params["omega"]
     tprime = 2*np.pi / omega
+    molecule = params["molecule"]
+    basis = params["basis"]
 
     integrator = "rk4"
-    molecule = geometries[name]
 
     system = construct_pyscf_system_rhf(
         molecule=molecule,
@@ -152,7 +159,8 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
 
     # Set initial values
     energy[0] = tdcc.compute_energy(r.t, r.y)
-
+    print(energy[0])
+    return
     for j in range(3):
         dipole_moment[0, j] = tdcc.compute_one_body_expectation_value(
             r.t,
@@ -249,7 +257,7 @@ def compare(filename):
         ax.set_title(expval_key)
         plt.show()
 
-def cc_diff(filename, method):
+def cc_diff(filename, method, **params):
     results1 = np.load(f"{filename}_{method}.npz", allow_pickle=True)
     results2 = np.load(f"{filename}_HYQD_{method}.npz", allow_pickle=True)
 
@@ -287,54 +295,28 @@ def cc_diff(filename, method):
     fig.tight_layout()
     fig.savefig("to_haakon/be_r.pdf")
     plt.show()
+
 def main():
     params = {
+        "molecule": get_pyscf_geometries()["lih"],
+        "basis": "cc-pvdz",
         "dt" : 0.1,
-        "t_end" : 100,
+        "t_end" : 1,
         "F_str" : 1e-2,
         "tol" : 1e-10,
         "omega": 0.2,
         "direction" : 0,
     }
-    filename = "dat/test_Be_sine2"
+    filename = "dat/test_LiH"
 
-    # run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
-    run_linear_cc(params, filename=filename, methods=["CCSD"])
+    run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
     # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
-    # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
+    run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     # compare(filename)
-    cc_diff(filename, method="CCSD")
+    # cc_diff(filename, method="CCSD")
 
 if __name__ == '__main__':
     main()
-    exit()
-
-    geometries = get_pyscf_geometries()
-
-    # System and basis parameters
-    name = "be"
-    basis = "cc-pvdz"
-    basis_set = bse.get_basis(basis, fmt='nwchem')
-    charge = 0
-
-    # Laser pulse parameters
-    molecule = geometries[name]
-
-    system = construct_pyscf_system_rhf(
-        molecule=molecule,
-        basis=basis_set,
-        add_spin=True,
-        anti_symmetrize=True,
-        charge=charge,
-    )
-
-    basis = cf.PyscfBasis(atom="Be 0 0 0", basis="cc-pVDZ").pyscf_hartree_fock()
-
-    basis.from_restricted()
-    basis.r = system.dipole_moment
-
-    print(np.linalg.norm(system.dipole_moment))
-    print(np.linalg.norm(basis.r))
