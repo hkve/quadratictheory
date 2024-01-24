@@ -20,6 +20,8 @@ classifiers = [
 dependencies = [
     "numpy~=1.25.2",
     "scipy~=1.11.2",
+    "pyscf~=2.3.0",
+    "tqdm~=4.64.1",
 ]
     # "pyscf-2.3.0",
 
