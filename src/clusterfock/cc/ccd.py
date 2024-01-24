@@ -118,8 +118,8 @@ class RCCD(CoupledCluster):
 
         self.rhs = amplitudes_ccd_restricted
 
-    def _evaluate_cc_energy(self, t: CoupledClusterParameter) -> float:
-        t2 = t[2]
+    def _evaluate_cc_energy(self) -> float:
+        t2 = self._t[2]
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         D = np.einsum("ijab,abij", u[o, o, v, v], t2, optimize=True)
         E = np.einsum("ijba,abij", u[o, o, v, v], t2, optimize=True)
