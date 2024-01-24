@@ -9,6 +9,7 @@ lib.num_threads(1)
 class PyscfBasis(Basis):
     def __init__(self, atom: str, basis: str, restricted: bool = True, center=True, dtype=float):
         mol = pyscf.gto.Mole()
+        mol.unit = "bohr"
         mol.build(atom=atom, basis=basis)
 
         if center:
