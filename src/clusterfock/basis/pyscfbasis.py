@@ -3,12 +3,13 @@ from functools import cached_property
 import numpy as np
 import pyscf
 
+from pyscf import lib
+lib.num_threads(1)
 
 class PyscfBasis(Basis):
-    def __init__(self, atom: str, basis: str, restricted: bool = True, center=True):
+    def __init__(self, atom: str, basis: str, restricted: bool = True, center=True, dtype=float):
         mol = pyscf.gto.Mole()
         mol.build(atom=atom, basis=basis)
-        self.mol = mol
 
         if center:
             charges = mol.atom_charges()
@@ -16,13 +17,15 @@ class PyscfBasis(Basis):
             nuc_charge_center = np.einsum("z,zx->x", charges, coords) / charges.sum()
             mol.set_common_orig_(nuc_charge_center)
 
-        super().__init__(L=2 * mol.nao, N=mol.nelectron, restricted=True)
+        self.mol = mol
+
+        super().__init__(L=2 * mol.nao, N=mol.nelectron, restricted=True, dtype=dtype)
 
         self._atom_string = atom
         self._basis_string = basis
 
         L = self.L
-
+        
         self.restricted = restricted
         self.setup()
 
@@ -30,9 +33,10 @@ class PyscfBasis(Basis):
         L = self.L
         self._energy_shift = self.mol.energy_nuc()
         self.s = self.mol.intor_symmetric("int1e_ovlp")
-        self.h = self.mol.intor_symmetric("int1e_kin") + self.mol.intor_symmetric("int1e_nuc")
+        # self.h = self.mol.intor_symmetric("int1e_kin") + self.mol.intor_symmetric("int1e_nuc")
+        self.h = pyscf.scf.hf.get_hcore(self.mol)
         self.u = self.mol.intor("int2e").reshape(L, L, L, L).transpose(0, 2, 1, 3)
-
+        
         if not self.restricted:
             self.from_restricted()
 
@@ -46,7 +50,8 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0)
 
         self.C = self.mf.mo_coeff
-
+        print("CF")
+        print(np.round(self.C.real[-6:-1,-6:-1], 4))
         if not self.restricted:
             self.C = self._add_spin_one_body(self.C)
 
