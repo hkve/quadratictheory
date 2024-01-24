@@ -97,7 +97,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     geometries = get_pyscf_geometries()
 
     # System and basis parameters
-    name = "he"
+    name = "be"
     basis = "cc-pvdz"
     basis_set = bse.get_basis(basis, fmt='nwchem')
     charge = 0
@@ -116,7 +116,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
 
     system = construct_pyscf_system_rhf(
         molecule=molecule,
-        basis=basis_set,
+        basis=basis,
         add_spin=True,
         anti_symmetrize=True,
         charge=charge,
@@ -158,6 +158,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
             r.t,
             r.y,
             system.dipole_moment[j],
+            make_hermitian=False
         )
 
     for i in tqdm.tqdm(range(num_steps - 1)):
@@ -169,6 +170,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
                 r.t,
                 r.y,
                 system.dipole_moment[j],
+                make_hermitian=False
             )
 
         energy[i+1] = tdcc.compute_energy(r.t, r.y)
@@ -247,6 +249,44 @@ def compare(filename):
         ax.set_title(expval_key)
         plt.show()
 
+def cc_diff(filename, method):
+    results1 = np.load(f"{filename}_{method}.npz", allow_pickle=True)
+    results2 = np.load(f"{filename}_HYQD_{method}.npz", allow_pickle=True)
+
+    t1, t2 = results1["t"], results2["t"]
+    r1, r2 = results1["r"][:,0], results2["r"][:,0]
+    e1, e2 = results1["energy"], results2["energy"]
+    print(len(t1), len(t2))
+
+    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    fig.suptitle('Energy for  Be sin2 pulse', fontsize=16)
+    ax[0].plot(t1, e1, label="CF: CCSD", c="k")
+    ax[0].plot(t2, e2, label="HYQD: CCSD", ls=":", c="r")
+    ax[0].legend()
+    ax[0].set(ylabel="Energy [au]")
+
+    ax[1].plot(t1, np.abs(e1-e2), label="DIFF")
+    ax[1].legend()
+    ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
+    ax[1].set_yscale("log")
+    fig.tight_layout()
+    fig.savefig("to_haakon/be_energy.pdf")
+    plt.show()
+
+    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    fig.suptitle('<x> for  Be sin2 pulse', fontsize=16)
+    ax[0].plot(t1, r1, label="CF: CCSD", c="k")
+    ax[0].plot(t2, r2, label="HYQD: CCSD", ls=":", c="r")
+    ax[0].legend()
+    ax[0].set(ylabel="Distance [au]")
+
+    ax[1].plot(t1, np.abs(r1-r2), label="DIFF")
+    ax[1].legend()
+    ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
+    ax[1].set_yscale("log")
+    fig.tight_layout()
+    fig.savefig("to_haakon/be_r.pdf")
+    plt.show()
 def main():
     params = {
         "dt" : 0.1,
@@ -256,17 +296,45 @@ def main():
         "omega": 0.2,
         "direction" : 0,
     }
-    filename = "dat/test_new"
+    filename = "dat/test_Be_sine2"
 
-    run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
-    run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
+    # run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
+    run_linear_cc(params, filename=filename, methods=["CCSD"])
+    # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
-    # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
+    run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
-    compare(filename)
+    # compare(filename)
+    cc_diff(filename, method="CCSD")
 
 if __name__ == '__main__':
     main()
+    exit()
 
-    # Be, omega = 0.2, 
+    geometries = get_pyscf_geometries()
+
+    # System and basis parameters
+    name = "be"
+    basis = "cc-pvdz"
+    basis_set = bse.get_basis(basis, fmt='nwchem')
+    charge = 0
+
+    # Laser pulse parameters
+    molecule = geometries[name]
+
+    system = construct_pyscf_system_rhf(
+        molecule=molecule,
+        basis=basis_set,
+        add_spin=True,
+        anti_symmetrize=True,
+        charge=charge,
+    )
+
+    basis = cf.PyscfBasis(atom="Be 0 0 0", basis="cc-pVDZ").pyscf_hartree_fock()
+
+    basis.from_restricted()
+    basis.r = system.dipole_moment
+
+    print(np.linalg.norm(system.dipole_moment))
+    print(np.linalg.norm(basis.r))
