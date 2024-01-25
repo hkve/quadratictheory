@@ -35,7 +35,6 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
 
     molecule = params["molecule"]
     basis = params["basis"]
-    print(molecule, basis)
     system = cf.PyscfBasis(molecule, basis).pyscf_hartree_fock()
     # hf = cf.HF(basis).run()
     # basis.change_basis(hf.C)
@@ -259,7 +258,7 @@ def cc_diff(filename, method, **params):
     print(len(t1), len(t2))
 
     fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
-    fig.suptitle('Energy for  Be sin2 pulse', fontsize=16)
+    fig.suptitle('Energy for  LiH sin2 pulse', fontsize=16)
     ax[0].plot(t1, e1, label="CF: CCSD", c="k")
     ax[0].plot(t2, e2, label="HYQD: CCSD", ls=":", c="r")
     ax[0].legend()
@@ -270,22 +269,55 @@ def cc_diff(filename, method, **params):
     ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
     ax[1].set_yscale("log")
     fig.tight_layout()
-    fig.savefig("to_haakon/be_energy.pdf")
+    fig.savefig("to_haakon/lih_energy.pdf")
     plt.show()
 
     fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
-    fig.suptitle('<x> for  Be sin2 pulse', fontsize=16)
+    fig.suptitle('<x> for  LiH sin2 pulse', fontsize=16)
     ax[0].plot(t1, r1, label="CF: CCSD", c="k")
     ax[0].plot(t2, r2, label="HYQD: CCSD", ls=":", c="r")
     ax[0].legend()
     ax[0].set(ylabel="Distance [au]")
 
-    ax[1].plot(t1, np.abs(r1-r2), label="DIFF")
+    ax[1].plot(t1, np.abs(r1-r2), label="CCSD DIFF TO HYQD")
     ax[1].legend()
     ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
     ax[1].set_yscale("log")
     fig.tight_layout()
-    fig.savefig("to_haakon/be_r.pdf")
+    fig.savefig("to_haakon/lih_r.pdf")
+    plt.show()
+
+    results3 = np.load(f"{filename}_Q{method}.npz", allow_pickle=True)
+    t3, r3, e3 = results3["t"], results3["r"][:,0], results3["energy"]
+
+    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    fig.suptitle('Energy for  LiH sin2 pulse', fontsize=16)
+    ax[0].plot(t3, e3, label="QCCSD", c="k")
+    ax[0].plot(t1, e1, label="CCSD", ls=":", c="r")
+    ax[0].legend()
+    ax[0].set(ylabel="Energy [au]")
+
+    ax[1].plot(t1, np.abs(e1-e3), label="DIFF")
+    ax[1].legend()
+    ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
+    ax[1].set_yscale("log")
+    fig.tight_layout()
+    # fig.savefig("to_haakon/be_energy.pdf")
+    plt.show()
+
+    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    fig.suptitle('<x> for  LiH sin2 pulse', fontsize=16)
+    ax[0].plot(t3, r3, label="QCCSD", c="k")
+    ax[0].plot(t1, r1, label="CCSD", ls=":", c="r")
+    ax[0].legend()
+    ax[0].set(ylabel="Distance [au]")
+
+    ax[1].plot(t1, np.abs(r1-r3), label="CCSD-QCCSD DIFF")
+    ax[1].legend()
+    ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
+    ax[1].set_yscale("log")
+    fig.tight_layout()
+    # fig.savefig("to_haakon/be_r.pdf")
     plt.show()
 
 def main():
