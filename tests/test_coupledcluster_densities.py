@@ -66,8 +66,8 @@ class TestCoupledClusterDensities(TestCase):
         E1 = cc.energy() - gbasis._energy_shift
 
         # Energy using densities
-        E2 = np.trace(cc.rho_ob @ gbasis.h)
-        E2 += 0.25 * np.einsum("pqrs,pqrs->", cc.rho_tb, gbasis.u)
+        E2 = cc.one_body_expval(gbasis.h)
+        E2 += 0.5*cc.two_body_expval(gbasis.u)
 
         self.assertAlmostEqual(
             E1,

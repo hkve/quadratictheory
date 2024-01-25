@@ -53,12 +53,7 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
         CC = m[method]
     
         cc = CC(system).run(vocal=True, include_l=True, tol=tol)
-        cc.densities()
-        E = cc.one_body_expval(system.h)
-        E += 0.5*cc.two_body_expval(system.u)
-        print(cc.energy(), cc.time_dependent_energy(), E)
-        print(cc._evaluate_cc_energy(),system.energy())
-        return
+
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
         tdcc.external_one_body = lambda t, system: pulse(t, system, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
@@ -91,8 +86,6 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
         CC = m[method]
     
         cc = CC(basis).run(vocal=False, tol=tol)
-        print(cc.energy())
-        return 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
         tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
         tdcc.one_body_sampler = sampler
@@ -159,8 +152,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
 
     # Set initial values
     energy[0] = tdcc.compute_energy(r.t, r.y)
-    print(energy[0])
-    return
+
     for j in range(3):
         dipole_moment[0, j] = tdcc.compute_one_body_expectation_value(
             r.t,
@@ -186,7 +178,7 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     samples = dict()
     samples["t"] = time_points
     samples["r"] = dipole_moment
-    samples["energy"] = energy
+    samples["energy"] = energy + system.nuclear_repulsion_energy
 
     np.savez(f"{filename}_{method}",
     **samples,
@@ -309,14 +301,14 @@ def main():
     }
     filename = "dat/test_LiH"
 
-    run_linear_cc(params, filename=filename, methods=["CCD", "CCSD"])
+    # run_linear_cc(params, filename=filename, methods=["CCSD"])
     # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
 
-    run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
-    run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
+    # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
+    # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     # compare(filename)
-    # cc_diff(filename, method="CCSD")
+    cc_diff(filename, method="CCSD")
 
 if __name__ == '__main__':
     main()
