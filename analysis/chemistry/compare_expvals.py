@@ -334,13 +334,13 @@ def main():
     filename = "dat/test_LiH"
 
     # run_linear_cc(params, filename=filename, methods=["CCSD"])
-    # run_quadratic_cc(params, filename=filename, methods=["QCCD", "QCCSD"])
+    run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     # compare(filename)
-    cc_diff(filename, method="CCSD")
+    # cc_diff(filename, method="CCD")
 
 if __name__ == '__main__':
     main()
