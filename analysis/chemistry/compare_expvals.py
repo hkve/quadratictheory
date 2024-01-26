@@ -250,42 +250,41 @@ def compare(filename):
 
 def cc_diff(filename, method, **params):
     results1 = np.load(f"{filename}_{method}.npz", allow_pickle=True)
-    results2 = np.load(f"{filename}_HYQD_{method}.npz", allow_pickle=True)
+    # results2 = np.load(f"{filename}_HYQD_{method}.npz", allow_pickle=True)
 
-    t1, t2 = results1["t"], results2["t"]
-    r1, r2 = results1["r"][:,0], results2["r"][:,0]
-    e1, e2 = results1["energy"], results2["energy"]
-    print(len(t1), len(t2))
+    t1, t2 = results1["t"], None # , results2["t"]
+    r1, r2 = results1["r"][:,0], None #results2["r"][:,0]
+    e1, e2 = results1["energy"], None #results2["energy"]
 
-    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
-    fig.suptitle('Energy for  LiH sin2 pulse', fontsize=16)
-    ax[0].plot(t1, e1, label="CF: CCSD", c="k")
-    ax[0].plot(t2, e2, label="HYQD: CCSD", ls=":", c="r")
-    ax[0].legend()
-    ax[0].set(ylabel="Energy [au]")
+    # fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    # fig.suptitle('Energy for  LiH sin2 pulse', fontsize=16)
+    # ax[0].plot(t1, e1, label="CF: CCSD", c="k")
+    # ax[0].plot(t2, e2, label="HYQD: CCSD", ls=":", c="r")
+    # ax[0].legend()
+    # ax[0].set(ylabel="Energy [au]")
 
-    ax[1].plot(t1, np.abs(e1-e2), label="DIFF")
-    ax[1].legend()
-    ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
-    ax[1].set_yscale("log")
-    fig.tight_layout()
-    fig.savefig("to_haakon/lih_energy.pdf")
-    plt.show()
+    # ax[1].plot(t1, np.abs(e1-e2), label="DIFF")
+    # ax[1].legend()
+    # ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
+    # ax[1].set_yscale("log")
+    # fig.tight_layout()
+    # fig.savefig("to_haakon/lih_energy.pdf")
+    # plt.show()
 
-    fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
-    fig.suptitle('<x> for  LiH sin2 pulse', fontsize=16)
-    ax[0].plot(t1, r1, label="CF: CCSD", c="k")
-    ax[0].plot(t2, r2, label="HYQD: CCSD", ls=":", c="r")
-    ax[0].legend()
-    ax[0].set(ylabel="Distance [au]")
+    # fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
+    # fig.suptitle('<x> for  LiH sin2 pulse', fontsize=16)
+    # ax[0].plot(t1, r1, label="CF: CCSD", c="k")
+    # ax[0].plot(t2, r2, label="HYQD: CCSD", ls=":", c="r")
+    # ax[0].legend()
+    # ax[0].set(ylabel="Distance [au]")
 
-    ax[1].plot(t1, np.abs(r1-r2), label="CCSD DIFF TO HYQD")
-    ax[1].legend()
-    ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
-    ax[1].set_yscale("log")
-    fig.tight_layout()
-    fig.savefig("to_haakon/lih_r.pdf")
-    plt.show()
+    # ax[1].plot(t1, np.abs(r1-r2), label="CCSD DIFF TO HYQD")
+    # ax[1].legend()
+    # ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
+    # ax[1].set_yscale("log")
+    # fig.tight_layout()
+    # fig.savefig("to_haakon/lih_r.pdf")
+    # plt.show()
 
     results3 = np.load(f"{filename}_Q{method}.npz", allow_pickle=True)
     t3, r3, e3 = results3["t"], results3["r"][:,0], results3["energy"]
@@ -333,8 +332,8 @@ def main():
     }
     filename = "dat/test_LiH"
 
-    # run_linear_cc(params, filename=filename, methods=["CCSD"])
-    # run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
+    run_linear_cc(params, filename=filename, methods=["CCSD"])
+    run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
