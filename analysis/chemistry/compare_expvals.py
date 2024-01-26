@@ -18,15 +18,6 @@ import tqdm
 #     else:
 #         return 0
 
-def pulse(t, basis, dt, F_str, direction, omega, tprime):
-    return (
-            (np.sin(np.pi * t / tprime) ** 2)
-            * np.heaviside(t, 1.0)
-            * np.heaviside(tprime - t, 1.0)
-            * np.sin(omega * t)
-            * F_str
-        ) * -basis.r[direction]
-
 def sampler(basis):
     return {"r": basis.r}
 
@@ -48,13 +39,20 @@ def run_linear_cc(params, filename=None, methods=["CCD", "CCSD"]):
     omega = params["omega"]
     tprime = 2*np.pi / omega
     time = (0, t_end, dt)
+
+    pulse = cf.pulse.DeltaKick(
+        u = np.array([1,0,0]),
+        dt = dt,
+        F_str = F_str,
+    )
+
     for method in methods:
         CC = m[method]
     
-        cc = CC(system).run(vocal=True, include_l=True, tol=tol)
+        cc = CC(system).run(vocal=False, include_l=True, tol=tol)
 
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
-        tdcc.external_one_body = lambda t, system: pulse(t, system, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
+        tdcc.external_one_body = pulse
         tdcc.one_body_sampler = sampler
         results = tdcc.run(vocal=True)
 
@@ -81,12 +79,18 @@ def run_quadratic_cc(params, filename=None, methods=["QCCD", "QCCSD"]):
     omega = params["omega"]
     tprime = 2*np.pi / omega
 
+    pulse = cf.pulse.DeltaKick(
+        u = np.array([1,0,0]),
+        dt = dt,
+        F_str = F_str,
+    )
+
     for method in methods:
         CC = m[method]
     
         cc = CC(basis).run(vocal=False, tol=tol)
         tdcc = cf.TimeDependentCoupledCluster(cc, time)
-        tdcc.external_one_body = lambda t, basis: pulse(t, basis, dt=dt, F_str=F_str, direction=direction, omega=omega, tprime=tprime)
+        tdcc.external_one_body = pulse
         tdcc.one_body_sampler = sampler
         results = tdcc.run(vocal=True)
 
@@ -130,7 +134,8 @@ def run_hyqd_cc(params, filename=None, method="HYQD_CCSD"):
     # Discrete_delta_pulse(F_str=F_str, dt=dt), polarization_vector=polarization,
     system.set_time_evolution_operator(
         DipoleFieldInteraction(
-            sine_square_laser(F_str, omega, tprime, 0)
+            Discrete_delta_pulse(F_str=F_str, dt=dt),
+            polarization_vector=polarization,
         )
     )
 
@@ -321,16 +326,16 @@ def cc_diff(filename, method, **params):
 
 def main():
     params = {
-        "molecule": get_pyscf_geometries()["lih"],
+        "molecule": get_pyscf_geometries()["be"],
         "basis": "cc-pvdz",
-        "dt" : 0.1,
-        "t_end" : 1,
-        "F_str" : 1e-2,
+        "dt" : 0.025,
+        "t_end" : 500,
+        "F_str" : 1e-3,
         "tol" : 1e-10,
         "omega": 0.2,
         "direction" : 0,
     }
-    filename = "dat/test_LiH"
+    filename = "dat/test_Be_delta"
 
     run_linear_cc(params, filename=filename, methods=["CCSD"])
     run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
@@ -338,8 +343,8 @@ def main():
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
-    # compare(filename)
-    cc_diff(filename, method="CCD")
+    compare(filename)
+    # cc_diff(filename, method="CCD")
 
 if __name__ == '__main__':
     main()
