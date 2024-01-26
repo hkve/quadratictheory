@@ -18,10 +18,10 @@ import basis_set_exchange as bse
 geometries = get_pyscf_geometries()
 
 # System and basis parameters
-name = "be"
+name = "chp"
 basis = "cc-pvdz"
 basis_set = bse.get_basis(basis, fmt='nwchem')
-charge = 0
+charge = 1
 
 # Laser pulse parameters
 F_str = 1e-3
@@ -64,6 +64,9 @@ rccsd.compute_ground_state(
     t_kwargs=dict(tol=ground_state_tolerance),
     l_kwargs=dict(tol=ground_state_tolerance),
 )
+
+print(f"{rccsd.compute_energy() = }")
+exit()
 
 tdrccsd = TDRCCSD(system)
 if integrator=="vode":

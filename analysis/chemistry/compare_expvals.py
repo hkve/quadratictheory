@@ -302,7 +302,7 @@ def cc_diff(filename, method, **params):
     ax[1].set(xlabel="Time  [au]", ylabel="Energy [au]")
     ax[1].set_yscale("log")
     fig.tight_layout()
-    # fig.savefig("to_haakon/be_energy.pdf")
+    fig.savefig("to_haakon/lih_energy_QCCSD.pdf")
     plt.show()
 
     fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5,3], figsize=(10,8))
@@ -317,7 +317,7 @@ def cc_diff(filename, method, **params):
     ax[1].set(xlabel="Time  [au]", ylabel="Distance [au]")
     ax[1].set_yscale("log")
     fig.tight_layout()
-    # fig.savefig("to_haakon/be_r.pdf")
+    fig.savefig("to_haakon/lih_r_QCCSD.pdf")
     plt.show()
 
 def main():
@@ -334,13 +334,13 @@ def main():
     filename = "dat/test_LiH"
 
     # run_linear_cc(params, filename=filename, methods=["CCSD"])
-    run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
+    # run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
 
     # compare(filename)
-    # cc_diff(filename, method="CCD")
+    cc_diff(filename, method="CCD")
 
 if __name__ == '__main__':
     main()

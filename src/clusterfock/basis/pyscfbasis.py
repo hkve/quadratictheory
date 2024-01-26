@@ -7,10 +7,20 @@ from pyscf import lib
 lib.num_threads(1)
 
 class PyscfBasis(Basis):
-    def __init__(self, atom: str, basis: str, restricted: bool = True, center=True, dtype=float):
+    def __init__(self, atom: str, basis: str, restricted: bool = True, dtype=float, **kwargs):
+        defaults = {
+            "center": True,
+            "charge": 0,
+        }
+        
+        defaults.update(kwargs)
+
+        center = defaults["center"]
+        charge = defaults["charge"]
+
         mol = pyscf.gto.Mole()
         mol.unit = "bohr"
-        mol.build(atom=atom, basis=basis)
+        mol.build(atom=atom, basis=basis, charge=charge)
 
         if center:
             charges = mol.atom_charges()
