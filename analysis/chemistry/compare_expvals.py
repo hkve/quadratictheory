@@ -240,7 +240,7 @@ def compare(filename):
             print(f"Load {method} MISSING")
             pass
 
-    to_show = ["energy", "r"]
+    to_show = ["energy", "r", "delta_rho"]
 
     for expval_key in to_show:
         fig, ax = plt.subplots()
@@ -256,7 +256,7 @@ def compare(filename):
 def cc_diff(filename, method, **params):
     results1 = np.load(f"{filename}_{method}.npz", allow_pickle=True)
     # results2 = np.load(f"{filename}_HYQD_{method}.npz", allow_pickle=True)
-
+    
     t1, t2 = results1["t"], None # , results2["t"]
     r1, r2 = results1["r"][:,0], None #results2["r"][:,0]
     e1, e2 = results1["energy"], None #results2["energy"]
@@ -329,7 +329,7 @@ def main():
         "molecule": get_pyscf_geometries()["be"],
         "basis": "cc-pvdz",
         "dt" : 0.025,
-        "t_end" : 500,
+        "t_end" : 1,
         "F_str" : 1e-3,
         "tol" : 1e-10,
         "omega": 0.2,
@@ -337,8 +337,8 @@ def main():
     }
     filename = "dat/test_Be_delta"
 
-    run_linear_cc(params, filename=filename, methods=["CCSD"])
-    run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
+    # run_linear_cc(params, filename=filename, methods=["CCSD"])
+    # run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")

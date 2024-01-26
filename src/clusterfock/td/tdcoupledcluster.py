@@ -102,10 +102,13 @@ class TimeDependentCoupledCluster:
 
         energy = np.zeros(n_time_points, dtype=basis.dtype)
         overlap = np.zeros(n_time_points, dtype=basis.dtype)
-        
+        delta_rho = np.zeros(n_time_points, dtype=basis.dtype)
+
         self._sample()
         energy[0] = cc.energy()
         overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
+        cc.one_body_density()
+        delta_rho[0] = np.linalg.norm(cc.rho_ob - cc.rho_ob.conj().T)
 
         for i in tqdm.tqdm(range(n_time_points-1)):
             integrator.integrate(integrator.t + dt)
@@ -116,8 +119,9 @@ class TimeDependentCoupledCluster:
             self._sample()
             energy[i+1] = cc.time_dependent_energy()
             overlap[i+1] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
+            delta_rho[i+1] = np.linalg.norm(cc.rho_ob - cc.rho_ob.conj().T)
 
-        self.results = self._construct_results(time_points, energy, overlap)
+        self.results = self._construct_results(time_points, energy, overlap, delta_rho)
 
         return self.results    
 
@@ -164,7 +168,7 @@ class TimeDependentCoupledCluster:
                 sample = cc.one_body_expval(operator)
                 self._one_body_results[key].append(sample)
 
-    def _construct_results(self, time_points: np.ndarray, energy: np.ndarray, overlap: np.ndarray) -> dict:
+    def _construct_results(self, time_points: np.ndarray, energy: np.ndarray, overlap: np.ndarray, delta_rho: np.ndarray) -> dict:
         """
         Constructs the results dict after the integration has been completed. 
 
@@ -175,7 +179,7 @@ class TimeDependentCoupledCluster:
         Returns:
             results (dict): The combined results
         """
-        results = {"t": time_points, "energy": energy, "overlap": overlap}
+        results = {"t": time_points, "energy": energy, "overlap": overlap, "delta_rho": delta_rho}
 
         if self._has_one_body_sampler:
             for k, v in self._one_body_results.items():
