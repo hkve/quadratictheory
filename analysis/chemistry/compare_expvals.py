@@ -337,8 +337,8 @@ def main():
     }
     filename = "dat/test_Be_delta"
 
-    # run_linear_cc(params, filename=filename, methods=["CCSD"])
-    # run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
+    run_linear_cc(params, filename=filename, methods=["CCSD"])
+    run_quadratic_cc(params, filename=filename, methods=["QCCSD"])
 
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCD")
     # run_hyqd_cc(params, filename=filename, method="HYQD_CCSD")
