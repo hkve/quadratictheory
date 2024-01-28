@@ -67,7 +67,7 @@ class TestCoupledClusterDensities(TestCase):
 
         # Energy using densities
         E2 = cc.one_body_expval(gbasis.h)
-        E2 += 0.5*cc.two_body_expval(gbasis.u)
+        E2 += 0.5 * cc.two_body_expval(gbasis.u)
 
         self.assertAlmostEqual(
             E1,
@@ -93,7 +93,7 @@ class TestCoupledClusterDensities(TestCase):
     def test_ccd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
-        
+
         self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
 
     def test_ccd_Be(self):

@@ -72,14 +72,17 @@ class TestHartreeFock(TestCase):
         self.compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=True)
         self.zero_posistion(atom="He 0 0 0", basis="cc-pVDZ", restricted=False)
-        self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=False)
-        self.translate_posistion(atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=True)
+        self.translate_posistion(
+            atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=False
+        )
+        self.translate_posistion(
+            atom="He 0 0 0", atom_translated="He 0 0 1", basis="cc-pVDZ", restricted=True
+        )
 
     def test_Be(self):
         self.compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
         self.zero_posistion(atom="Be 0 0 0", basis="cc-pVDZ", restricted=True)
         self.zero_posistion(atom="Be 0 0 0", basis="cc-pVDZ", restricted=False)
-
 
     def test_Ne(self):
         self.compare_with_pyscf(atom="Ne 0 0 0", basis="cc-pVDZ")
@@ -93,5 +96,15 @@ class TestHartreeFock(TestCase):
     def test_LiH(self):
         self.compare_with_pyscf(atom="Li 0 0 0; H 0 0 1.619", basis="cc-pVDZ")
         self.compare_with_pyscf(atom="Li 0 0 0; H 0 0 1.511", basis="sto-3g")
-        self.translate_posistion(atom="Li 0 0 0; H 0 0 1", atom_translated="Li 0 0 1; H 0 0 2", basis="cc-pVDZ", restricted=False)
-        self.translate_posistion(atom="Li 0 0 0; H 0 0 1", atom_translated="Li 0 0 1; H 0 0 2", basis="cc-pVDZ", restricted=True)
+        self.translate_posistion(
+            atom="Li 0 0 0; H 0 0 1",
+            atom_translated="Li 0 0 1; H 0 0 2",
+            basis="cc-pVDZ",
+            restricted=False,
+        )
+        self.translate_posistion(
+            atom="Li 0 0 0; H 0 0 1",
+            atom_translated="Li 0 0 1; H 0 0 2",
+            basis="cc-pVDZ",
+            restricted=True,
+        )
