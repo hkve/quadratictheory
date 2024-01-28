@@ -7,6 +7,8 @@ class Lipkin(Basis):
         self, N: int, eps: float = 1.0, V: float = 0.25, W: float = 0.25, dtype: type = float
     ):
         super().__init__(L=2 * N, N=N, restricted=False, dtype=dtype)
+        self._args = (N, eps, V, W, dtype)
+
         self.eps = eps
         self.V = V
         self.W = W

@@ -4,6 +4,7 @@ import numpy as np
 from clusterfock.basis import Basis
 from functools import cached_property
 
+
 class FiniteDifferenceBasisFunctions(ABC):
     def __init__(self, eigenfunction: bool, orthonormal: bool):
         self._eigenfunction = eigenfunction
@@ -37,7 +38,6 @@ class FiniteDifferenceBasis(Basis):
         self._L_spatial = L // 2
         self._restricted_dummy = restricted
         super().__init__(L, N, True, dtype)
-
 
     def setup(self):
         orthonormal = self._phi._orthonormal
@@ -88,7 +88,7 @@ class FiniteDifferenceBasis(Basis):
         pot_integrand = self._potential(self.x) * phi_p.conj() * phi_q
 
         return np.trapz(kin_integrand + pot_integrand, self.x)
-    
+
     def _calculate_r_offdiagonal_element(self, phi_p, phi_q):
         integrand = phi_p.conj() * self.x * phi_q
 
@@ -148,7 +148,7 @@ class FiniteDifferenceBasis(Basis):
                 h[q, p] = h[p, q].conj()
 
         return h
-    
+
     def _fill_r_all(self):
         L = self._L
         L_spatial = self._L_spatial
@@ -198,13 +198,13 @@ class FiniteDifferenceBasis(Basis):
 
         phi = self._phi
         phi_x = np.zeros((self._L_spatial, *x.shape))
-        
+
         for i in range(self._L_spatial):
             phi_x[i] = phi[i](x)
         if not self.restricted:
             phi_x = np.repeat(phi_x, repeats=2, axis=0)
 
-        return np.einsum("px,pq,qx->x", phi_x.conj(), rho, phi_x)        
+        return np.einsum("px,pq,qx->x", phi_x.conj(), rho, phi_x)
 
     @cached_property
     def r(self):

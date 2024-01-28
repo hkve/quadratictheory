@@ -3,8 +3,6 @@ from functools import cached_property
 import numpy as np
 import pyscf
 
-from pyscf import lib
-lib.num_threads(1)
 
 class PyscfBasis(Basis):
     def __init__(self, atom: str, basis: str, restricted: bool = True, dtype=float, **kwargs):
@@ -12,7 +10,7 @@ class PyscfBasis(Basis):
             "center": True,
             "charge": 0,
         }
-        
+
         defaults.update(kwargs)
 
         center = defaults["center"]
@@ -32,11 +30,14 @@ class PyscfBasis(Basis):
 
         super().__init__(L=2 * mol.nao, N=mol.nelectron, restricted=True, dtype=dtype)
 
+        self._args = (atom, basis, restricted, dtype)
+        self._kwargs = defaults
+
         self._atom_string = atom
         self._basis_string = basis
 
         L = self.L
-        
+
         self.restricted = restricted
         self.setup()
 
@@ -47,7 +48,7 @@ class PyscfBasis(Basis):
         # self.h = self.mol.intor_symmetric("int1e_kin") + self.mol.intor_symmetric("int1e_nuc")
         self.h = pyscf.scf.hf.get_hcore(self.mol)
         self.u = self.mol.intor("int2e").reshape(L, L, L, L).transpose(0, 2, 1, 3)
-        
+
         if not self.restricted:
             self.from_restricted()
 
@@ -61,7 +62,7 @@ class PyscfBasis(Basis):
         self.mf.run(verbose=0)
 
         self.C = self.mf.mo_coeff
-        
+
         if not self.restricted:
             self.C = self._add_spin_one_body(self.C)
 

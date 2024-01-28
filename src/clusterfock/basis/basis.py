@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import warnings
 
+
 class Basis(ABC):
     def __init__(self, L: int, N: int, restricted: bool = False, dtype=float):
         """
@@ -14,7 +15,7 @@ class Basis(ABC):
         - restricted (bool, optional): Whether to use a restricted scheme where all sp states are doubly occupied. Defaults to False.
         - dtype (type, optional): The data type for internal arrays (e.g., float64). Defaults to float.
         - operators (dict): Dict with operator names pointing to which property. Base class assumes none
-        
+
         Notes:
         - If 'restricted' is True, the system follows the restricted scheme, and both 'L' and 'N' must be even.
         - 'restricted' determines the degeneracy of sp states (2 for restricted, 1 for unrestricted).
@@ -44,6 +45,9 @@ class Basis(ABC):
         Raises:
         - AssertionError: If 'restricted' is True but 'L' or 'N' is not even.
         """
+
+        self._args = (L, N, restricted, dtype)
+        self._kwargs = {}
 
         # If restricted scheme is used, all sp states are doubly occupied
         if restricted:
@@ -157,7 +161,7 @@ class Basis(ABC):
         - new_basis (Basis): The new copy of self
         """
         L, N = self._degeneracy * self.L, self._degeneracy * self.N
-        new_basis = Basis(L=L, N=N, restricted=self.restricted, dtype=self.dtype)
+        new_basis = type(self)(*self._args, **self._kwargs)
         new_basis.orthonormal = self.orthonormal
         new_basis.antisymmetric = self.antisymmetric
 
@@ -186,11 +190,11 @@ class Basis(ABC):
 
         if inverse:
             C = np.linalg.pinv(C)
-        
+
         if np.allclose(C @ obj.C, np.eye(obj.L), atol=1e-6):
             self._computational_basis = True
         else:
-            self._computational_basis = False    
+            self._computational_basis = False
 
         obj.h = obj._change_basis_one_body(obj.h, C)
         obj.u = obj._change_basis_two_body(obj.u, C)
@@ -198,7 +202,6 @@ class Basis(ABC):
         obj.C = C
         obj.calculate_fock_matrix()
 
-            
         return obj
 
     def _antisymmetrize(self):
@@ -277,7 +280,7 @@ class Basis(ABC):
             operator = self._change_basis_one_body(operator, self.C)
 
         return operator
-    
+
     def _new_two_body_operator(self, operator, add_spin=True):
         operator = operator.astype(self.dtype)
         if not self.restricted and add_spin:
@@ -286,6 +289,7 @@ class Basis(ABC):
             operator = self._change_basis_two_body(operator, self.C)
 
         return operator
+
     """
     Getters and setters for ints (L,N) and slices (o,v). N also performs tweaking on M
     as this is easiest to understand (adding particles reduces the number of viritual states if L is const).

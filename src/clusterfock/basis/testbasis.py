@@ -3,15 +3,15 @@ from clusterfock.basis.basis import Basis
 import numpy as np
 from functools import cached_property
 
+
 class TestBasis(Basis):
     __test__ = False
 
     def __init__(
         self, L: int, N: int, restricted: bool = False, dtype: type = float, seed: int = 42
     ):
-
         super().__init__(L, N, restricted, dtype=dtype)
-        
+
         np.random.seed(seed)
         self.setup()
 
@@ -33,9 +33,10 @@ class TestBasis(Basis):
 
     def _fetch_r(self):
         from time import sleep
+
         sleep(0.01)
 
-        r = np.random.uniform(low=-1, high=1, size=(3,*self._one_body_shape))
+        r = np.random.uniform(low=-1, high=1, size=(3, *self._one_body_shape))
 
         return self._new_one_body_operator(r, add_spin=False)
 
@@ -45,4 +46,4 @@ class TestBasis(Basis):
 
     @property
     def mu(self):
-        return 2*self.r
+        return 2 * self.r
