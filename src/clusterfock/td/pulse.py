@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-class Pulse:
+class Pulse(ABC):
     def __init__(self, u, *args):
         self._u = u
 
