@@ -51,11 +51,8 @@ class TimeDependentCoupledCluster:
         self._td_one_body = None
         self._td_two_body = None
 
-        self._has_one_body_sampler = False
-        self._one_body_sampler = None
-        self._one_body_shapes = None
-        self._one_body_results = {}
-        self._two_body_results = {}
+        self._sampler = None
+        self.results = {}
 
     def run(self, vocal: bool = False) -> dict:
         """
@@ -85,8 +82,7 @@ class TimeDependentCoupledCluster:
             cc._l.dtype = complex
             cc._f = cc._f.astype(complex)
 
-        self._t0 = cc._t.copy()
-        self._l0 = cc._l.copy()
+        self._setup_sample(basis)
 
         y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._t, cc._l)
         t_start, t_end, dt = self._t_start, self._t_end, self._dt
@@ -100,28 +96,20 @@ class TimeDependentCoupledCluster:
         integrator.set_integrator(self._integrator, dt=dt)
         integrator.set_initial_value(y_initial, t_start)
 
-        energy = np.zeros(n_time_points, dtype=basis.dtype)
-        overlap = np.zeros(n_time_points, dtype=basis.dtype)
-        delta_rho = np.zeros(n_time_points, dtype=basis.dtype)
-
         self._sample()
-        energy[0] = cc.energy()
-        overlap[0] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
-        cc.one_body_density()
-        delta_rho[0] = np.linalg.norm(cc.rho_ob - cc.rho_ob.conj().T)
 
-        for i in tqdm.tqdm(range(n_time_points-1)):
+        loop_range = range(n_time_points-1)
+        if vocal: loop_range = tqdm.tqdm(range(n_time_points-1))
+
+        for i in loop_range:
             integrator.integrate(integrator.t + dt)
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
             
             self._sample()
-            energy[i+1] = cc.time_dependent_energy()
-            overlap[i+1] = cc.overlap(self._t0, self._l0, cc._t, cc._l)
-            delta_rho[i+1] = np.linalg.norm(cc.rho_ob - cc.rho_ob.conj().T)
 
-        self.results = self._construct_results(time_points, energy, overlap, delta_rho)
+        self.results = self._construct_results(time_points)
 
         return self.results    
 
@@ -159,39 +147,58 @@ class TimeDependentCoupledCluster:
         """
         Internal function for sampling. Stores the results in '_one_body_results' dict.
         """
-        basis, cc = self.basis, self.cc
-        if self._has_one_body_sampler:
+        cc, basis = self.cc, self.basis
+        if self.sampler.has_one_body:
             cc.one_body_density()
-            operators = self.one_body_sampler(basis)
+            operators = self.sampler.one_body(basis)
 
             for key, operator in operators.items():
                 sample = cc.one_body_expval(operator)
-                self._one_body_results[key].append(sample)
+                self.results[key].append(sample)
 
-    def _construct_results(self, time_points: np.ndarray, energy: np.ndarray, overlap: np.ndarray, delta_rho: np.ndarray) -> dict:
+        if self.sampler.has_two_body:
+            cc.two_body_density()
+            operators = self.sampler.two_body(basis)
+
+            for key, operator in operators.items():
+                sample = cc.two_body_expval(operator)
+                self.results[key].append(sample)
+
+        if self.sampler.has_misc:
+            misc = self.sampler.misc(self)
+
+            for key, value in misc.items():
+                self.results[key].append(value)
+
+    def _setup_sample(self, basis):
+        if self.sampler.has_one_body: self.cc.one_body_density()
+        if self.sampler.has_two_body: self.cc.two_body_density()
+        
+        if self.sampler.has_overlap:
+            self._t0 = self.cc._t.copy()
+            self._l0 = self.cc._l.copy()
+
+        all_keys = self.sampler.setup_sampler(basis, self)
+
+        for key in all_keys:
+            self.results[key] = []
+
+    def _construct_results(self, time_points: np.ndarray) -> dict:
         """
         Constructs the results dict after the integration has been completed. 
 
         Args:
-            energy (np.ndarray): Energies for each timestep
-            overlap (np.ndarray): Overlap for each timestep
+            time_points (np.ndarray): The times the different quantities are calcualted for
 
         Returns:
             results (dict): The combined results
         """
-        results = {"t": time_points, "energy": energy, "overlap": overlap, "delta_rho": delta_rho}
+        for k, v in self.results.items():
+            self.results[k] = np.array(v)
 
-        if self._has_one_body_sampler:
-            for k, v in self._one_body_results.items():
-                self._one_body_results[k] = np.array(v)
-        # if self._has_two_body_sampler:
-        #     for k, v in self._two_body_results.items():
-        #         self._two_body_results[k] = np.array(v)
+        self.results["t"] = time_points
 
-        results.update(self._one_body_results)
-        results.update(self._two_body_results)
-
-        return results
+        return self.results
 
     @property
     def external_one_body(self):
@@ -203,17 +210,9 @@ class TimeDependentCoupledCluster:
         self._td_one_body = func_ob
 
     @property
-    def one_body_sampler(self):
-        return self._one_body_sampler
+    def sampler(self):
+        return self._sampler
     
-    @one_body_sampler.setter
-    def one_body_sampler(self, sampler):
-        basis = self.basis
-        self._has_one_body_sampler = True
-        self._one_body_sampler = sampler
-
-        res = sampler(basis)
-        assert type(res) == dict, f"The return type of {sampler = } must be dict not {type(res) = }."
-
-        for key in res.keys():
-            self._one_body_results[key] = []
+    @sampler.setter
+    def sampler(self, sampler):
+        self._sampler = sampler

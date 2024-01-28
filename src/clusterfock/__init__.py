@@ -17,6 +17,7 @@ from clusterfock.cc.qccsd import QCCSD
 from clusterfock.td.tdcoupledcluster import TimeDependentCoupledCluster
 
 from clusterfock.td import pulse
+from clusterfock.td import sampler
 
 def HF(basis: Basis):
     return RHF(basis) if basis.restricted else GHF(basis)
