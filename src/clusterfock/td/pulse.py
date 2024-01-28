@@ -16,12 +16,16 @@ class Pulse(ABC):
         pass
 
 class Sin2(Pulse):
-    def __init__(self, u, F_str, omega, tprime):
+    def __init__(self, u, F_str, omega, tprime=None):
         super().__init__(u)
 
         self._F_str = F_str
         self._omega = omega
-        self._tprime = tprime
+        
+        if tprime is None:
+            self._tprime = 2*np.pi / omega
+        else:
+            self._tprime = tprime
 
     def E(self, t):
         return (
