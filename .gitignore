@@ -197,3 +197,4 @@ runner.py
 *.test
 .vscode/
 sandkasse/
+dat/
