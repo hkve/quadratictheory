@@ -7,10 +7,11 @@ import tqdm
 import numpy as np
 from scipy.integrate import complex_ode, ode
 from rk4_integrator.rk4 import Rk4Integrator
+from gauss_integrator.gauss import GaussIntegrator
 
 class TimeDependentCoupledCluster:
     def __init__(
-        self, cc: CoupledCluster, time: tuple = (0, 1.0, 0.0001), integrator="Rk4Integrator"
+        self, cc: CoupledCluster, time: tuple = (0, 1.0, 0.0001), integrator="Rk4Integrator", integrator_args={}
     ):
         """
         Constructor for time propegation using a cc calculation. Supports scipy-type integrators.
@@ -45,6 +46,7 @@ class TimeDependentCoupledCluster:
 
         self._t_start, self._t_end, self._dt = time
         self._integrator = integrator
+        self._integrator_args = integrator_args
 
         self._has_td_one_body = False
         self._has_td_two_body = False
@@ -93,7 +95,7 @@ class TimeDependentCoupledCluster:
         time_points = np.linspace(t_start, t_end, n_time_points)
 
         integrator = complex_ode(self.rhs)
-        integrator.set_integrator(self._integrator, dt=dt)
+        integrator.set_integrator(self._integrator, **self._integrator_args)
         integrator.set_initial_value(y_initial, t_start)
 
         self._sample()
@@ -101,13 +103,22 @@ class TimeDependentCoupledCluster:
         loop_range = range(n_time_points-1)
         if vocal: loop_range = tqdm.tqdm(range(n_time_points-1))
 
+        unsuccessful_index = None
+
         for i in loop_range:
             integrator.integrate(integrator.t + dt)
+
+            if not integrator.successful():
+                unsuccessful_index = i-1
+                break
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
             
             self._sample()
+
+        if unsuccessful_index is not None:
+            time_points = time_points[:unsuccessful_index]
 
         self.results = self._construct_results(time_points)
 
