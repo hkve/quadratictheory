@@ -86,11 +86,13 @@ class QCCSD(QuadraticCoupledCluster):
         Returns:
             rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
         """
-        rhs = self._next_t_iteration(t, l)
+        rhs_t = self._next_t_iteration(t, l)
+        rhs_t.add(1, 1j * np.einsum("bj,abij->ai", l[1], rhs_t[2]))
 
-        rhs.add(1, 1j * np.einsum("bj,abij->ai", l[1], rhs[2]))
-
-        return rhs
+        # print(f"RHS(T) sym upper: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(1,0,2,3))}")
+        # print(f"RHS(T) sym lower: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(0,1,3,2))}")
+        # print(f"RHS(T) sym both: {np.linalg.norm(rhs_t[2] - rhs_t[2].transpose(1,0,3,2))}")
+        return rhs_t
 
     def _l_rhs_timedependent(
         self, t: CoupledClusterParameter, l: CoupledClusterParameter
@@ -108,13 +110,21 @@ class QCCSD(QuadraticCoupledCluster):
             rhs_l (CoupledClusterParameter): The rhs of the time-dependent equation
         """
 
-        rhs = self._next_l_iteration(t, l)
+        rhs_l = self._next_l_iteration(t, l)
 
         # With normal derivation
-        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs[1], l[1]))
-        rhs.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs[1]))
+        rhs_l.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs_l[1], l[1]))
+        rhs_l.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs_l[1]))
 
-        return rhs
+        # rhs_l.add(2, -1j / 4 * np.einsum("ai,bj->abij", rhs_l[1], l[1]))
+        # rhs_l.add(2, -1j / 4 * np.einsum("ai,bj->abij", l[1], rhs_l[1]))
+
+        # rhs_l.add(2, +1j / 4 * np.einsum("aj,bi->abij", rhs_l[1], l[1]))
+        # rhs_l.add(2, +1j / 4 * np.einsum("aj,bi->abij", l[1], rhs_l[1]))
+        # print(f"RHS(L) sym upper: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(1,0,2,3))}")
+        # print(f"RHS(L) sym lower: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(0,1,3,2))}")
+        # print(f"RHS(L) sym both: {np.linalg.norm(rhs_l[2] - rhs_l[2].transpose(1,0,3,2))}")
+        return rhs_l
 
     def _evaluate_cc_energy(self) -> float:
         t1, t2 = self._t[1], self._t[2]
@@ -128,8 +138,8 @@ class QCCSD(QuadraticCoupledCluster):
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
 
-        l1, t1 = self._l[1], self._t[1]
-        l2, t2 = self._l[2], self._t[2]
+        t1, t2 = self._t[1], self._t[2]
+        l1, l2 = self._l[1], self._l[2]
         o, v = basis.o, basis.v
 
         rho = one_body_density(rho, t1, t2, l1, l2, o, v)
@@ -141,8 +151,8 @@ class QCCSD(QuadraticCoupledCluster):
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
 
-        l1, t1 = self._l[1], self._t[1]
-        l2, t2 = self._l[2], self._t[2]
+        t1, t2 = self._t[1], self._t[2]
+        l1, l2 = self._l[1], self._l[2]
         o, v = basis.o, basis.v
 
         rho = two_body_density(rho, t1, t2, l1, l2, o, v)

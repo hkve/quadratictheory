@@ -199,7 +199,11 @@ class CoupledCluster(ABC):
         Returns:
             rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
         """
-        return self._next_t_iteration(t)
+        rhs_t = self._next_t_iteration(t)
+        # print(f"RHS(T) sym upper: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(1,0,2,3))}")
+        # print(f"RHS(T) sym lower: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(0,1,3,2))}")
+        # print(f"RHS(T) sym both: {np.linalg.norm(rhs_t[2] - rhs_t[2].transpose(1,0,3,2))}")
+        return rhs_t
 
     def _l_rhs_timedependent(
         self, t: CoupledClusterParameter, l: CoupledClusterParameter
@@ -216,7 +220,11 @@ class CoupledCluster(ABC):
         Returns:
             rhs_l (CoupledClusterParameter): The rhs of the time-dependent equation
         """
-        return self._next_l_iteration(t, l)
+        rhs_l = self._next_l_iteration(t, l)
+        # print(f"RHS(L) sym upper: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(1,0,2,3))}")
+        # print(f"RHS(L) sym lower: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(0,1,3,2))}")
+        # print(f"RHS(L) sym both: {np.linalg.norm(rhs_l[2] - rhs_l[2].transpose(1,0,3,2))}")
+        return rhs_l
 
     @abstractmethod
     def _evaluate_cc_energy() -> float:

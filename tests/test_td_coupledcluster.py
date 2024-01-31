@@ -28,8 +28,9 @@ class TestTimeDependentCoupledCluster(TestCase):
         F_str = 1e-2
         omega = 0.2
         tprime = 2 * np.pi / omega
+        dt = 0.1
 
-        tdcc = TimeDependentCoupledCluster(cc, time=(0, 1, 0.1))
+        tdcc = TimeDependentCoupledCluster(cc, time=(0, 1, dt), integrator_args={"dt": dt})
         tdcc.external_one_body = Sin2(u, F_str, omega, tprime)
         tdcc.sampler = DipoleSampler()
 
@@ -58,8 +59,9 @@ class TestTimeDependentCoupledCluster(TestCase):
 
         cc = CC(basis).run(**args)
         u = np.array([1, 0, 0])
+        dt = 0.1
 
-        tdcc = TimeDependentCoupledCluster(cc, time=(0, 1, 0.1))
+        tdcc = TimeDependentCoupledCluster(cc, time=(0, 1, dt), integrator_args={"dt": dt})
         tdcc.sampler = DipoleSampler()
 
         tdcc.run()

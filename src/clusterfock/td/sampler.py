@@ -40,6 +40,23 @@ class DipoleSampler(Sampler):
             "energy": tdcc.cc.time_dependent_energy(),
             "delta_rho": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
         }
+    
+
+class DipoleSamplerExpanded(Sampler):
+    def __init__(self, one_body=True, two_body=True, misc=True):
+        super().__init__(one_body, two_body, misc)
+
+    def one_body(self, basis: Basis) -> dict:
+        return {"r": basis.r, "h": basis.h}
+
+    def two_body(self, basis: Basis) -> dict:
+        return {"u": basis.u}
+
+    def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
+        return {
+            "energy": tdcc.cc.time_dependent_energy(),
+            "delta_rho": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
+        }
 
 
 class OverlapSampler(Sampler):
