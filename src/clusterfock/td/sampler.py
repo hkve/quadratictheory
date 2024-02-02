@@ -38,9 +38,9 @@ class DipoleSampler(Sampler):
     def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
         return {
             "energy": tdcc.cc.time_dependent_energy(),
-            "delta_rho": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
+            "delta_rho1": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
         }
-    
+
 
 class DipoleSamplerExpanded(Sampler):
     def __init__(self, one_body=True, two_body=True, misc=True):
@@ -55,7 +55,10 @@ class DipoleSamplerExpanded(Sampler):
     def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
         return {
             "energy": tdcc.cc.time_dependent_energy(),
-            "delta_rho": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
+            "delta_rho1": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
+            "delta_rho2": np.linalg.norm(
+                tdcc.cc.rho_tb - tdcc.cc.rho_tb.conj().transpose(2, 3, 0, 1)
+            ),
         }
 
 
