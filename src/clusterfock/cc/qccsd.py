@@ -87,11 +87,9 @@ class QCCSD(QuadraticCoupledCluster):
             rhs_t (CoupledClusterParameter): The rhs of the time-dependent equation
         """
         rhs_t = self._next_t_iteration(t, l)
-        rhs_t.add(1, 1j * np.einsum("bj,abij->ai", l[1], rhs_t[2]))
+        mixing_term = np.einsum("bj,abij->ai", l[1], rhs_t[2])
+        rhs_t.add(1, -mixing_term)
 
-        # print(f"RHS(T) sym upper: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(1,0,2,3))}")
-        # print(f"RHS(T) sym lower: {np.linalg.norm(rhs_t[2] + rhs_t[2].transpose(0,1,3,2))}")
-        # print(f"RHS(T) sym both: {np.linalg.norm(rhs_t[2] - rhs_t[2].transpose(1,0,3,2))}")
         return rhs_t
 
     def _l_rhs_timedependent(
@@ -112,18 +110,11 @@ class QCCSD(QuadraticCoupledCluster):
 
         rhs_l = self._next_l_iteration(t, l)
 
-        # With normal derivation
-        rhs_l.add(2, -1j / 2 * np.einsum("ai,bj->abij", rhs_l[1], l[1]))
-        rhs_l.add(2, -1j / 2 * np.einsum("ai,bj->abij", l[1], rhs_l[1]))
+        mixing_term = np.einsum("ai,bj->abij", rhs_l[1], l[1])
+        mixing_term += np.einsum("ai,bj->abij", l[1], rhs_l[1])
+        mixing_term = mixing_term - mixing_term.transpose(0, 1, 3, 2)
+        rhs_l.add(2, -mixing_term)
 
-        # rhs_l.add(2, -1j / 4 * np.einsum("ai,bj->abij", rhs_l[1], l[1]))
-        # rhs_l.add(2, -1j / 4 * np.einsum("ai,bj->abij", l[1], rhs_l[1]))
-
-        # rhs_l.add(2, +1j / 4 * np.einsum("aj,bi->abij", rhs_l[1], l[1]))
-        # rhs_l.add(2, +1j / 4 * np.einsum("aj,bi->abij", l[1], rhs_l[1]))
-        # print(f"RHS(L) sym upper: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(1,0,2,3))}")
-        # print(f"RHS(L) sym lower: {np.linalg.norm(rhs_l[2] + rhs_l[2].transpose(0,1,3,2))}")
-        # print(f"RHS(L) sym both: {np.linalg.norm(rhs_l[2] - rhs_l[2].transpose(1,0,3,2))}")
         return rhs_l
 
     def _evaluate_cc_energy(self) -> float:
