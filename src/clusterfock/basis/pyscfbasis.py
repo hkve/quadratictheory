@@ -59,6 +59,7 @@ class PyscfBasis(Basis):
 
         # Make and run mean field object
         self.mf = pyscf.scf.RHF(self.mol)
+        self.mf.conv_tol_grad = tol
         self.mf.run(verbose=0)
 
         self.C = self.mf.mo_coeff
