@@ -9,16 +9,19 @@ class PyscfBasis(Basis):
         defaults = {
             "center": True,
             "charge": 0,
+            "mol": None
         }
 
         defaults.update(kwargs)
 
         center = defaults["center"]
         charge = defaults["charge"]
+        mol = defaults["mol"]
 
-        mol = pyscf.gto.Mole()
-        mol.unit = "bohr"
-        mol.build(atom=atom, basis=basis, charge=charge)
+        if mol is None:
+            mol = pyscf.gto.Mole()
+            mol.unit = "bohr"
+            mol.build(atom=atom, basis=basis, charge=charge)
 
         if center:
             charges = mol.atom_charges()

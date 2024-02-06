@@ -33,7 +33,7 @@ class TestMixer(TestCase):
         results = tdcc.results
 
         self.assertTrue(len(results["r"]) == 3)
-        self.assertTrue(len(results["delta_rho"]) == 3)
+        self.assertTrue(len(results["delta_rho1"]) == 3)
         self.assertTrue(len(results["energy"]) == 3)
 
         self.assertFalse("t" in list(results.keys()))
