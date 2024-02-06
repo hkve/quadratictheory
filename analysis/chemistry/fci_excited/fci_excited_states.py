@@ -5,8 +5,8 @@ import time
 
 hartree_eV = 27.2114079527 #1 Hartree energy = 27.2114079527 eV
 
-#geometry = f"Be 0.0 0.0 0.0"
-geometry = f"C 0.0 0.0 0.0; H 0.0 0.0 2.13713"
+geometry = f"Be 0.0 0.0 0.0"
+# geometry = f"C 0.0 0.0 0.0; H 0.0 0.0 2.13713"
 basis = f"chp.dat"
 
 mol = gto.M(unit="bohr")
