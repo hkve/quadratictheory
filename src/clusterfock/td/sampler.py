@@ -1,5 +1,4 @@
 from clusterfock.basis import Basis
-from clusterfock.td import TimeDependentCoupledCluster
 import numpy as np
 
 
@@ -24,7 +23,7 @@ class Sampler:
     def two_body(self, basis: Basis) -> dict:
         return {}
 
-    def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
+    def misc(self, tdcc) -> dict:
         return {}
 
 
@@ -35,7 +34,7 @@ class DipoleSampler(Sampler):
     def one_body(self, basis: Basis) -> dict:
         return {"r": basis.r}
 
-    def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
+    def misc(self, tdcc) -> dict:
         return {
             "energy": tdcc.cc.time_dependent_energy(),
             "delta_rho1": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
@@ -52,7 +51,7 @@ class DipoleSamplerExpanded(Sampler):
     def two_body(self, basis: Basis) -> dict:
         return {"u": basis.u}
 
-    def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
+    def misc(self, tdcc) -> dict:
         return {
             "energy": tdcc.cc.time_dependent_energy(),
             "delta_rho1": np.linalg.norm(tdcc.cc.rho_ob - tdcc.cc.rho_ob.conj().T),
@@ -67,7 +66,7 @@ class OverlapSampler(Sampler):
         super().__init__(one_body, two_body, misc)
         self.has_overlap = True
 
-    def misc(self, tdcc: TimeDependentCoupledCluster) -> dict:
+    def misc(self, tdcc) -> dict:
         return {
             "energy": tdcc.cc.time_dependent_energy(),
             "overlap": tdcc.cc.overlap(tdcc._t0, tdcc._l0, tdcc.cc._t, tdcc.cc._l),

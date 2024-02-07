@@ -2,6 +2,7 @@ from __future__ import annotations
 from clusterfock.basis import Basis
 from clusterfock.cc.parameter import CoupledClusterParameter, merge_to_flat
 from clusterfock.cc.coupledcluster import CoupledCluster
+from clusterfock.td.sampler import Sampler
 
 import tqdm
 import numpy as np
@@ -48,12 +49,15 @@ class TimeDependentCoupledCluster:
         self._integrator = integrator
         self._integrator_args = integrator_args
 
+        if self._integrator == "Rk4Integrator" and self._integrator_args == {}:
+            self._integrator_args = {"dt": self._dt}
+
         self._has_td_one_body = False
         self._has_td_two_body = False
         self._td_one_body = None
         self._td_two_body = None
 
-        self._sampler = None
+        self.sampler = Sampler()
         self.results = {}
 
     def run(self, vocal: bool = False) -> dict:
