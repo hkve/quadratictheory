@@ -1,0 +1,182 @@
+    tau0 = np.zeros((N, M, M, M))
+
+    tau0 -= np.einsum(
+        "iabc->iabc", u[o, v, v, v], optimize=True
+    )
+
+    tau0 += 2 * np.einsum(
+        "iacb->iabc", u[o, v, v, v], optimize=True
+    )
+
+    r = np.zeros((M, N))
+
+    r += 2 * np.einsum(
+        "bcij,jabc->ai", t, tau0, optimize=True
+    )
+
+    tau0 = None
+
+    tau1 = np.zeros((N, N, N, M))
+
+    tau1 += np.einsum(
+        "bi,jkab->ijka", t, u[o, o, v, v], optimize=True
+    )
+
+    tau2 = np.zeros((N, N, N, M))
+
+    tau2 -= np.einsum(
+        "ijka->ijka", tau1, optimize=True
+    )
+
+    tau2 += 2 * np.einsum(
+        "ikja->ijka", tau1, optimize=True
+    )
+
+    tau1 = None
+
+    tau2 += 2 * np.einsum(
+        "jkia->ijka", u[o, o, o, v], optimize=True
+    )
+
+    tau2 -= np.einsum(
+        "kjia->ijka", u[o, o, o, v], optimize=True
+    )
+
+    r -= 2 * np.einsum(
+        "abjk,ijkb->ai", t, tau2, optimize=True
+    )
+
+    tau2 = None
+
+    tau3 = np.zeros((N, N, M, M))
+
+    tau3 -= np.einsum(
+        "jiab->ijab", u[o, o, v, v], optimize=True
+    )
+
+    tau3 += 2 * np.einsum(
+        "jiba->ijab", u[o, o, v, v], optimize=True
+    )
+
+    tau4 = np.zeros((N, M))
+
+    tau4 += np.einsum(
+        "bj,jiba->ia", t, tau3, optimize=True
+    )
+
+    tau5 = np.zeros((N, M))
+
+    tau5 += np.einsum(
+        "ia->ia", tau4, optimize=True
+    )
+
+    tau4 = None
+
+    tau11 = np.zeros((N, N))
+
+    tau11 += np.einsum(
+        "abjk,kiba->ij", t, tau3, optimize=True
+    )
+
+    tau3 = None
+
+    tau5 += np.einsum(
+        "ia->ia", f[o, v], optimize=True
+    )
+
+    tau11 += np.einsum(
+        "aj,ia->ij", t, tau5, optimize=True
+    )
+
+    tau6 = np.zeros((N, N, M, M))
+
+    tau6 += 2 * np.einsum(
+        "abij->ijab", t, optimize=True
+    )
+
+    tau6 -= np.einsum(
+        "abji->ijab", t, optimize=True
+    )
+
+    r += 2 * np.einsum(
+        "jb,ijab->ai", tau5, tau6, optimize=True
+    )
+
+    tau5 = None
+
+    tau6 = None
+
+    tau7 = np.zeros((N, N, M, M))
+
+    tau7 += 2 * np.einsum(
+        "iabj->ijab", u[o, v, v, o], optimize=True
+    )
+
+    tau7 -= np.einsum(
+        "iajb->ijab", u[o, v, o, v], optimize=True
+    )
+
+    r += 2 * np.einsum(
+        "bj,jiab->ai", t, tau7, optimize=True
+    )
+
+    tau7 = None
+
+    tau8 = np.zeros((N, M, M, M))
+
+    tau8 += 2 * np.einsum(
+        "iabc->iabc", u[o, v, v, v], optimize=True
+    )
+
+    tau8 -= np.einsum(
+        "iacb->iabc", u[o, v, v, v], optimize=True
+    )
+
+    tau9 = np.zeros((M, M))
+
+    tau9 += np.einsum(
+        "ci,iacb->ab", t, tau8, optimize=True
+    )
+
+    tau8 = None
+
+    tau9 += np.einsum(
+        "ab->ab", f[v, v], optimize=True
+    )
+
+    r += 2 * np.einsum(
+        "bi,ab->ai", t, tau9, optimize=True
+    )
+
+    tau9 = None
+
+    tau10 = np.zeros((N, N, N, M))
+
+    tau10 -= np.einsum(
+        "ijka->ijka", u[o, o, o, v], optimize=True
+    )
+
+    tau10 += 2 * np.einsum(
+        "jika->ijka", u[o, o, o, v], optimize=True
+    )
+
+    tau11 += np.einsum(
+        "ak,kija->ij", t, tau10, optimize=True
+    )
+
+    tau10 = None
+
+    tau11 += np.einsum(
+        "ij->ij", f[o, o], optimize=True
+    )
+
+    r -= 2 * np.einsum(
+        "aj,ji->ai", t, tau11, optimize=True
+    )
+
+    tau11 = None
+
+    r += 2 * np.einsum(
+        "ai->ai", f[v, o], optimize=True
+    )
+
