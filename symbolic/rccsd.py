@@ -7,7 +7,7 @@ Scuseria et al, J Chem Phys 89 (1988) 7382 (10.1063/1.455269).
 """
 
 from pyspark import SparkConf, SparkContext
-from sympy import IndexedBase, Rational, symbols
+from sympy import IndexedBase, Rational, symbols, Symbol
 
 from drudge import RestrictedPartHoleDrudge, Stopwatch
 
@@ -62,22 +62,21 @@ def run_t(dr):
 
     dr.wick_parallel = 1
 
-    beta, gamma, x, y = symbols("beta gamma x y")
-    Y1 = e_[x, beta]
-    Y2 = e_[x, beta] * e_[y, gamma]
+    beta, gamma, i48, i49 = symbols("beta gamma i48 i49")
+    r = IndexedBase("r")
 
-    from IPython import embed
-    embed()
-    #
-    # Dump the result to a simple report.
-    #
+    Y1 = e_[i48, beta]
+    Y2 = e_[i48, beta] * e_[i49, gamma]
 
-    amp_eqns = []
-    for order, proj in enumerate(projs):
-        eqn = (proj * h_bar).eval_fermi_vev().simplify()
-        stopwatch.tock('T{} equation'.format(order + 1), eqn)
-        amp_eqns.append(eqn)
-        continue
+    t1 = (Y1 * h_bar).eval_fermi_vev().simplify()
+    t1_eq = dr.define(r[beta, i48], t1)
+    t1_eq = t1_eq[a,i]
+
+    t2 = (Y2 * h_bar).eval_fermi_vev().simplify()
+    t2_eq = dr.define(r[beta, gamma, i48, i49], t2)
+    t2_eq = t2_eq[a,b,i,j]
+
+    amp_eqns = [t1_eq, t2_eq]
 
     drutils.save_to_pickle(amp_eqns, "rccsd_t_amplitudes")
     drutils.save_html(dr, "rccsd_t_amplitudes", amp_eqns, titles=["T_1", "T_2"])
@@ -90,18 +89,19 @@ ctx = SparkContext(conf=conf)
 dr = RestrictedPartHoleDrudge(ctx)
 dr.full_simplify = False
 
-amp_eqns = run_t(dr)
-# amp_eqns = drutils.load_from_pickle(dr, "rccsd_t_amplitudes")
+# amp_eqns = run_t(dr)
+amp_eqns = drutils.load_from_pickle(dr, "rccsd_t_amplitudes")
+
+from IPython import embed
+embed()
+
 stopwatch.tock_total()
 
+t1_eval_seq = grutils.optimize_equations(dr, amp_eqns[0])
+t2_eval_seq = grutils.optimize_equations(dr, amp_eqns[1])
 
-working_eqns = grutils.get_working_equations(dr, amp_eqns, ranks=[1,2])
-
-t1_eval_seq = grutils.optimize_equations(dr, working_eqns[0])
-t2_eval_seq = grutils.optimize_equations(dr, working_eqns[1])
-
-drutils.save_html(dr, "rccsd_t1_opti", t1_eval_seq, titles="T_1 Opti")
-drutils.save_html(dr, "rccsd_t2_opti", t2_eval_seq, titles="T_2 Opti")
+drutils.save_html(dr, "rccsd_t1_opti", t1_eval_seq)
+drutils.save_html(dr, "rccsd_t2_opti", t2_eval_seq)
 
 grutils.einsum_raw(dr, "rccsd_t1_opti", t1_eval_seq)
 grutils.einsum_raw(dr, "rccsd_t2_opti", t2_eval_seq)

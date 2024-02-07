@@ -11,6 +11,7 @@ from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
+from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -130,3 +131,42 @@ class GCCSD(CoupledCluster):
         psit -= 0.25 * np.einsum("abij,abij->", l0[2], t0[2])
 
         return psit * psitilde_t
+
+class RCCSD(CoupledCluster):
+    def __init__(self, basis: Basis):
+        assert basis.restricted, f"Restricted CCSD requires restricted basis"
+
+        orders = [1, 2]
+        super().__init__(basis, orders)
+
+        self.t_rhs = amplitudes_intermediates_rccsd
+
+    def _evaluate_cc_energy(self) -> float:
+        t1, t2 = self._t[1], self._t[2]
+        u, o, v = self.basis.u, self.basis.o, self.basis.v
+        f = self._f
+
+        E = 2*np.einsum("ia,ai->", f[o,v], t1, optimize=True)
+        E -= np.einsum("abij,ijba->", t2, u[o,o,v,v], optimize=True)
+        E += 2*np.einsum("abij,ijab->", t2, u[o,o,v,v], optimize=True)
+        E -= np.einsum("ai,bj,ijba->", t1, t1, u[o,o,v,v], optimize=True)
+        E += 2*np.einsum("ai,bj,ijab->", t1, t1, u[o,o,v,v], optimize=True)
+
+        return E
+    
+    def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
+        basis = self.basis
+
+        rhs1, rhs2 = self.t_rhs(
+            t1=t[1],
+            t2=t[2],
+            u=basis.u,
+            f=self._f,
+            v=basis.v,
+            o=basis.o,
+        )
+
+        rhs = CoupledClusterParameter(t.orders, t.N, t.M, dtype=t.dtype)
+        rhs.initialize_dicts({1: rhs1, 2: rhs2})
+
+        return rhs

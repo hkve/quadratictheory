@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, RCCD, GCCSD
+from clusterfock.cc import GCCD, RCCD, GCCSD, RCCSD
 from clusterfock.basis import PyscfBasis
 
 import pyscf
@@ -51,18 +51,33 @@ class TestCoupledCluster(TestCase):
 
         self.assertAlmostEqual(Egccsd, Eccsd, places=6)
 
+    def compare_general_with_restricted(self, atom, basis, CC, RCC, tol=1e-8):
+        rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True).pyscf_hartree_fock()
+
+        rcc = RCC(rbasis).run(tol=tol, include_l=False)
+        e_rcc = rcc.energy()
+
+        rbasis.from_restricted()
+        cc = CC(rbasis).run(tol=tol, include_l=False)
+        e_cc = cc.energy()
+
+        self.assertAlmostEqual(e_rcc, e_cc, places=6) 
+
     def test_ccd_He(self):
         self.ccd_compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
+        self.compare_general_with_restricted(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD, RCC=RCCD)
 
     def test_ccd_Be(self):
         self.ccd_compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
+        self.compare_general_with_restricted(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD, RCC=RCCD)
 
     def test_ccsd_He(self):
         self.ccsd_compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
-
+        self.compare_general_with_restricted(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
+    
     def test_ccd_Be(self):
         self.ccsd_compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
-
+        self.compare_general_with_restricted(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
     # def ccd_compare_with_cccbdb(self, atom, basis, cccbdb_energy):
     #     rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True)
 
