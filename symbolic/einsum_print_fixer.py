@@ -219,12 +219,15 @@ def fix(readpath, writepath):
 
 if __name__ == "__main__":
     l = [
-        "qccd_energy_t2.txt",
-        "qccd_energy_optimized.txt",
-        "qccd_energy.txt",
-        "qccd_l2_optimized.txt",
-        "qccd_l2.txt",
-        "qccd_t2_optimized.txt",
+        "rccsd_energy_td_part.txt",
+        "rccsd_t1.txt",
+        "rccsd_t2.txt",
+        "rccsd_l1.txt",
+        "rccsd_l2.txt",
+        "rccsd_opti_t1.txt",
+        "rccsd_opti_t2.txt",
+        "rccsd_opti_l1.txt",
+        "rccsd_opti_l2.txt",
     ]
 
     for x in l:

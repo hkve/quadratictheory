@@ -177,7 +177,7 @@ def make_rk2(dr, symbol):
     return t
 
 def make_rk2_restricted(dr, symbol):
-    t = IndexedBase("{symbol}^2")
+    t = IndexedBase(f"{symbol}^2")
     dr.set_n_body_base(t, 2)
     return t
 

@@ -30,44 +30,44 @@ def run(dr, basename):
 
     energy = (ham_bar).eval_fermi_vev().simplify()
     energy = drutils.define_rk0_rhs(dr, energy)
-    energy_td_part = (L*ham_bar).eval_fermi_vev().simplify()
+    energy_td_part = ((L*L/2)*ham_bar).eval_fermi_vev().simplify()
     energy_td_part = drutils.define_rk0_rhs(dr, energy_td_part)
     equations["energy_td_part"] = energy_td_part
     grutils.einsum_raw(dr, basename + "_energy_td_part", energy_td_part)
     drutils.save_to_pickle(energy_td_part, basename + "_energy_td_part")
-    drutils.timer.tock("Done RCCSD energy")
+    drutils.timer.tock("Done RQCCSD energy")
 
     t1_eq = (e_[i,a]*ham_bar).eval_fermi_vev().simplify()
     t1_eq = drutils.define_rk1_rhs(dr, t1_eq)
     equations["t1"] = t1_eq
     grutils.einsum_raw(dr, basename + "_t1", t1_eq)
     drutils.save_to_pickle(t1_eq, basename + "_t1")
-    drutils.timer.tock("Done RCCSD t1")
+    drutils.timer.tock("Done RQCCSD t1")
 
     t2_eq = (e_[i,a]*e_[j,b]*ham_bar).eval_fermi_vev().simplify()
     t2_eq = drutils.define_rk2_rhs(dr, t2_eq)
     equations["t2"] = t2_eq
     grutils.einsum_raw(dr, basename + "_t2", t2_eq)
     drutils.save_to_pickle(t2_eq, basename + "_t2")
-    drutils.timer.tock("Done RCCSD t2")
+    drutils.timer.tock("Done RQCCSD t2")
 
     com = ham | e_[a,i]
     com_bar = drutils.similarity_transform(com, T)
-    l1_eq = ((1+L)*com_bar).eval_fermi_vev().simplify()
+    l1_eq = ((L*L/2)*com_bar).eval_fermi_vev().simplify()
     l1_eq = drutils.define_rk1_rhs(dr, l1_eq)
     equations["l1"] = l1_eq
     grutils.einsum_raw(dr, basename + "_l1", l1_eq)
     drutils.save_to_pickle(l1_eq, basename + "_l1")
-    drutils.timer.tock("Done RCCSD l1")
+    drutils.timer.tock("Done RQCCSD l1")
 
     com = ham | e_[a,i]*e_[b,j]
     com_bar = drutils.similarity_transform(com, T)
-    l2_eq = ((1+L)*com_bar).eval_fermi_vev().simplify()
+    l2_eq = ((L*L/2)*com_bar).eval_fermi_vev().simplify()
     l2_eq = drutils.define_rk2_rhs(dr, l2_eq)
     equations["l2"] = l2_eq
     grutils.einsum_raw(dr, basename + "_l2", l2_eq)
     drutils.save_to_pickle(l2_eq, basename + "_l2")
-    drutils.timer.tock("Done RCCSD l2")
+    drutils.timer.tock("Done RQCCSD l2")
 
     return equations
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     drutils.timer.vocal = True
     dr = drutils.get_restricted_particle_hole_drudge()
     
-    basename = "rccsd"
+    basename = "rqccsd"
 
     equations = run(dr, basename)
     # equations = load(dr, basename)
