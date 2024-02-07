@@ -14,94 +14,94 @@ from drudge import RestrictedPartHoleDrudge, Stopwatch
 import drudge_utils as drutils
 import gristmill_utils as grutils
 
+
 stopwatch = Stopwatch()
 
-def run_t(dr):
-    p = dr.names
-    e_ = p.e_
-    a, b, c, d = p.V_dumms[:4]
-    i, j, k, l = p.O_dumms[:4]
+def load(dr, basename):
+    equations = {}
+    names = ["energy_td_part", "t1", "t2", "l1", "l2"]
 
-    #
-    # Cluster excitation operator
-    # 
-    # Here, we first write the cluster excitation operator in terms of the
-    # unitary group generator.  Then they will be substituted by their fermion
-    # operator definition.
-    #
+    for name in names:
+        equation = drutils.load_from_pickle(dr, basename + f"_{name}")
+        equations[name] = equation
 
-    t = IndexedBase('t')
+    return equations
 
-    cluster = dr.einst(
-        t[a, i] * e_[a, i] +
-        Rational(1, 2) * t[a, b, i, j] * e_[a, i] * e_[b, j]
-    )
+def run(dr, basename):
+    ham = dr.ham  
+    equations = {}
 
-    dr.set_n_body_base(t, 2)
-    cluster = cluster.simplify()
-    cluster.cache()
+    T1, L1 = drutils.get_restricted_clusters_1(dr)
+    T2, L2 = drutils.get_restricted_clusters_2(dr)
 
-    #
-    # Similarity transform of the Hamiltonian
-    # 
+    T = (T1 + T2).simplify()
+    L = (L1 + L2).simplify()
 
-    curr = dr.ham
-    h_bar = dr.ham
-    for order in range(4):
-        curr = (curr | cluster).simplify() * Rational(1, order + 1)
-        stopwatch.tock('Commutator order {}'.format(order + 1), curr)
-        h_bar += curr
-        continue
+    ham_bar = drutils.similarity_transform(ham, T)
 
-    h_bar = h_bar.simplify()
-    h_bar.repartition(cache=True)
-    stopwatch.tock('H-bar assembly', h_bar)
+    energy = (ham_bar).eval_fermi_vev()
+    energy = drutils.define_rk0_rhs(dr, energy)
+    energy_td_part = (L*ham_bar).eval_fermi_vev()
+    energy_td_part = drutils.define_rk0_rhs(dr, energy_td_part)
+    equations["energy_td_part"] = energy_td_part
+    grutils.einsum_raw(dr, basename + "_energy_td_part", energy_td_part)
+    drutils.save_to_pickle(energy_td_part, basename + "_energy_td_part")
+    drutils.timer.tock("Done RCCSD energy")
 
-    en_eqn = h_bar.eval_fermi_vev().simplify()
-    stopwatch.tock('Energy equation', en_eqn)
+    e_ = drutils.get_restricted_secondquant_operator(dr)
+    (i, j), (a, b) = drutils.get_indicies(num=2)
 
-    dr.wick_parallel = 1
+    t1_eq = (e_[i,a]*ham_bar).eval_fermi_vev().simplify()
+    t1_eq = drutils.define_rk1_rhs(dr, t1_eq)
+    equations["t1"] = t1_eq
+    grutils.einsum_raw(dr, basename + "_t1", t1_eq)
+    drutils.save_to_pickle(t1_eq, basename + "_t1")
+    drutils.timer.tock("Done RCCSD t1")
 
-    beta, gamma, i48, i49 = symbols("beta gamma i48 i49")
-    r = IndexedBase("r")
+    t2_eq = (e_[i,a]*e_[j,b]*ham_bar).eval_fermi_vev().simplify()
+    t2_eq = drutils.define_rk2_rhs(dr, t2_eq)
+    equations["t2"] = t2_eq
+    grutils.einsum_raw(dr, basename + "_t2", t2_eq)
+    drutils.save_to_pickle(t2_eq, basename + "_t2")
+    drutils.timer.tock("Done RCCSD t2")
 
-    Y1 = e_[i48, beta]
-    Y2 = e_[i48, beta] * e_[i49, gamma]
+    com = ham | e_[a,i]
+    com_bar = drutils.similarity_transform(com_bar, T)
+    l1_eq = ((1+L)*com_bar).eval_fermi_vev().simplify()
+    l1_eq = drutils.define_rk2_rhs(dr, l1_eq)
+    equations["l1"] = l1_eq
+    grutils.einsum_raw(dr, basename + "_l1", l1_eq)
+    drutils.save_to_pickle(l1_eq, basename + "_l1")
+    drutils.timer.tock("Done RCCSD l1")
 
-    t1 = (Y1 * h_bar).eval_fermi_vev().simplify()
-    t1_eq = dr.define(r[beta, i48], t1)
-    t1_eq = t1_eq[a,i]
+    com = ham | e_[a,i]*e_[b,j]
+    com_bar = drutils.similarity_transform(com_bar, T)
+    l2_eq = ((1+L)*com_bar).eval_fermi_vev().simplify()
+    l2_eq = drutils.define_rk2_rhs(dr, l2_eq)
+    equations["l2"] = l2_eq
+    grutils.einsum_raw(dr, basename + "_l2", l2_eq)
+    drutils.save_to_pickle(l2_eq, basename + "_l2")
+    drutils.timer.tock("Done RCCSD l2")
 
-    t2 = (Y2 * h_bar).eval_fermi_vev().simplify()
-    t2_eq = dr.define(r[beta, gamma, i48, i49], t2)
-    t2_eq = t2_eq[a,b,i,j]
+    return equations
 
-    amp_eqns = [t1_eq, t2_eq]
+def optimize_expressions(dr, equations, basename):
+    for name, eq in equations.items():
+        eval_seq = grutils.optimize_equations(dr, eq)
+        drutils.timer.tock(f"RCCSD {name} optimization done")
 
-    drutils.save_to_pickle(amp_eqns, "rccsd_t_amplitudes")
-    drutils.save_html(dr, "rccsd_t_amplitudes", amp_eqns, titles=["T_1", "T_2"])
-    return amp_eqns
+        drutils.save_to_pickle(eval_seq, basename + "_opti_" + name)
+        drutils.save_html(dr, basename + "_opti_" + name, eval_seq)
+        grutils.einsum_raw(dr, basename + "_opti_" + name, eval_seq)
 
-# Environment setting up.
+if __name__ == "__main__":
+    drutils.timer.vocal = True
+    dr = drutils.get_restricted_particle_hole_drudge()
+    
+    basename = "rccsd"
 
-conf = SparkConf().setAppName('rccsd')
-ctx = SparkContext(conf=conf)
-dr = RestrictedPartHoleDrudge(ctx)
-dr.full_simplify = False
+    equations = run(dr, basename)
 
-# amp_eqns = run_t(dr)
-amp_eqns = drutils.load_from_pickle(dr, "rccsd_t_amplitudes")
+    # equations = load(dr, basename)
 
-from IPython import embed
-embed()
-
-stopwatch.tock_total()
-
-t1_eval_seq = grutils.optimize_equations(dr, amp_eqns[0])
-t2_eval_seq = grutils.optimize_equations(dr, amp_eqns[1])
-
-drutils.save_html(dr, "rccsd_t1_opti", t1_eval_seq)
-drutils.save_html(dr, "rccsd_t2_opti", t2_eval_seq)
-
-grutils.einsum_raw(dr, "rccsd_t1_opti", t1_eval_seq)
-grutils.einsum_raw(dr, "rccsd_t2_opti", t2_eval_seq)
+    optimize_expressions(dr, equations, basename)
