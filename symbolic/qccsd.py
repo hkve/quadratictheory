@@ -25,6 +25,15 @@ def load(dr, basename):
     return equations
 
 @drutils.timeme
+def get_energy_equations_addition(dr, ham_bar, deex, filename=None):
+    term = (deex * ham_bar).eval_fermi_vev().simplify()
+    equation = define_rhs(dr, term, 0)
+
+    if filename is not None: drutils.save_to_pickle(equation, filename)
+
+    return equation
+
+@drutils.timeme
 def get_t_equation(dr, ham_bar, Y, L, filename=None):
     term = (Y * L * ham_bar).eval_fermi_vev().simplify()
     rank = len(Y.terms[0].args[2]) // 2
@@ -63,6 +72,16 @@ def calculate_expressions(dr, basename):
 
 
     equations = {}
+    # Energy addition
+    names = ["11", "12", "22"]
+    deexes = [L1*L1/2, L1*L2, L2*L2/2]
+    ham_bar = drutils.similarity_transform(ham, T)
+    for name, deex in zip(names, deexes):
+        energy_equation = get_energy_equations_addition(dr, ham_bar, deex, basename + f"_energy_addition_{name}")
+        equations[f"energy_{name}"] = energy_equation
+        grutils.einsum_raw(dr, basename + f"_energy_addition_{name}", energy_equation)
+    drutils.timer.tock("QCCSD energy done")
+
 
     # ham_bar = drutils.similarity_transform(ham, T)
     # # T1 QCCSD addition
@@ -84,14 +103,14 @@ def calculate_expressions(dr, basename):
     # drutils.timer.tock("QCCSD l1 done")
 
     # L2 QCCSD addition
-    names = ["11", "12", "22"]
-    deexes = [L1*L1/2, L1*L2, L2*L2/2]
+    # names = ["11", "12", "22"]
+    # deexes = [L1*L1/2, L1*L2, L2*L2/2]
 
-    for name, deex in zip(names, deexes):
-        l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
-        equations[f"l2_{name}"] = l2_equation_additon
-        grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
-        drutils.timer.tock(f"QCCSD l2 done, {name} term")
+    # for name, deex in zip(names, deexes):
+    #     l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
+    #     equations[f"l2_{name}"] = l2_equation_additon
+    #     grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
+    #     drutils.timer.tock(f"QCCSD l2 done, {name} term")
 
     return equations
 
@@ -180,8 +199,8 @@ if __name__ == "__main__":
     
     basename = "qccsd"
 
-    # equations = calculate_expressions(dr, basename)
+    equations = calculate_expressions(dr, basename)
     # equations = load(dr, basename)
-    # optimize_expressions(dr, equations)
+    optimize_expressions(dr, equations)
 
-    L_densities(dr)
+    # L_densities(dr)
