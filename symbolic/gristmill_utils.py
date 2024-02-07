@@ -11,7 +11,7 @@ EINSUM_FORMATTED_PATH = utils.MAIN_PATH / "einsum_formatted"
 def get_working_equations(dr, equations, ranks=[0, 2]):
     equations = utils.pack_as_list(equations)
 
-    (i, j), (a, b) = utils.get_indicies(num=max(ranks))
+    (i, j), (a, b) = utils.get_indicies(dr, num=max(ranks))
     working_eqs = []
     for equation, rank in zip(equations, ranks):
         working_eq = None
@@ -20,7 +20,7 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
             e = Symbol("e")
             working_eq = dr.define(e, equation)
         if rank == 1:
-            # r = utils.make_rk1(dr, "r")
+            r = utils.make_rk1(dr, "r")
             working_eq = dr.define(r[a, i], equation)
         if rank == 2:
             r = utils.make_rk2(dr, "r")
