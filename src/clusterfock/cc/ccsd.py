@@ -12,6 +12,7 @@ from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
 from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
+from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -136,10 +137,12 @@ class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis):
         assert basis.restricted, f"Restricted CCSD requires restricted basis"
 
-        orders = [1, 2]
-        super().__init__(basis, orders)
+        t_orders = [1, 2]
+        l_orders = [1, 2]
+        super().__init__(basis, t_orders, l_orders)
 
         self.t_rhs = amplitudes_intermediates_rccsd
+        self.l_rhs = lambda_amplitudes_intermediates_rccsd
 
     def _evaluate_cc_energy(self) -> float:
         t1, t2 = self._t[1], self._t[2]
@@ -167,6 +170,27 @@ class RCCSD(CoupledCluster):
         )
 
         rhs = CoupledClusterParameter(t.orders, t.N, t.M, dtype=t.dtype)
+        rhs.initialize_dicts({1: rhs1, 2: rhs2})
+
+        return rhs
+    
+    def _next_l_iteration(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
+        basis = self.basis
+
+        rhs1, rhs2 = self.l_rhs(
+            t1=t[1],
+            t2=t[2],
+            l1=l[1],
+            l2=l[2],
+            u=basis.u,
+            f=self._f,
+            v=basis.v,
+            o=basis.o,
+        )
+
+        rhs = CoupledClusterParameter(l.orders, l.N, l.M, dtype=l.dtype)
         rhs.initialize_dicts({1: rhs1, 2: rhs2})
 
         return rhs
