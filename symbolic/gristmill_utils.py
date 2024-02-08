@@ -34,6 +34,7 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
 def optimize_equations(dr, equations, **kwargs):
     options = {
         "contr_strat": gristmill.ContrStrat.EXHAUST,
+        "check_result": False
     }
     options.update(kwargs)
     
@@ -47,6 +48,10 @@ def optimize_equations(dr, equations, **kwargs):
         substs={dr.names.nv: 5000, dr.names.no: 1000},
         **options
     )
+
+
+    if options["check_result"]:
+        print(f"Back substituted result is the same? {gristmill.verify_eval_seq(eval_seq, equations)}")
 
     opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
     print(f"Cost after optimization {opt_cost}")

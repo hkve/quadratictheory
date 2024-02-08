@@ -1,15 +1,15 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
-
+import pathlib as pl
 
 def load(dr, basename):
     equations = {}
-    names = ["energy_td_part", "t1", "t2", "l1", "l2"]
+    names = ["t1", "t2", "l1", "l2"]
 
-    from IPython import embed
     for name in names:
         equation = drutils.load_from_pickle(dr, basename + f"_{name}")
-        embed()
+        # drutils.save_html(dr, basename + f"_{name}", equation)
+
         equations[name] = equation
 
     return equations
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     
     basename = "rccsd"
 
-    equations = run(dr, basename)
-    # equations = load(dr, basename)
+    # equations = run(dr, basename)
+    equations = load(dr, basename)
 
     optimize_expressions(dr, equations, basename)
