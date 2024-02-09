@@ -10,4 +10,4 @@ def CCD(basis: Basis, intermediates=True):
     return RCCD(basis) if basis.restricted else GCCD(basis, intermediates)
 
 def CCSD(basis: Basis, intermediates=True):
-    return RCCSD(basis) if basis.restricted else GCCSD(basis, intermediates=intermediates)
+    return RCCSD(basis, intermediates=True) if basis.restricted else GCCSD(basis, intermediates=intermediates)

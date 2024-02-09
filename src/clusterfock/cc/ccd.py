@@ -16,6 +16,9 @@ from clusterfock.cc.rhs.t_inter_RCCD import amplitudes_intermediates_rccd
 from clusterfock.cc.rhs.l_inter_RCCD import lambda_amplitudes_intermediates_rccd
 from clusterfock.cc.rhs.l_RCCD import lambda_amplitudes_rccd
 
+from clusterfock.cc.energies.e_inter_rccd import td_energy_addition_opti_restricted
+from clusterfock.cc.energies.e_rccd import td_energy_addition_restricted
+
 class GCCD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
@@ -120,9 +123,9 @@ class RCCD(CoupledCluster):
         self.f_pp_o = self._f[v, v].copy()
         self.f_hh_o = self._f[o, o].copy()
 
-        self.t_rhs = amplitudes_ccd_restricted 
-        # self.l_rhs = lambda_amplitudes_intermediates_rccd if intermediates else lambda_amplitudes_rccd
-        self.l_rhs = lambda_amplitudes_rccd
+        self.t_rhs = amplitudes_intermediates_rccd if intermediates else amplitudes_ccd_restricted 
+        self.l_rhs = lambda_amplitudes_intermediates_rccd if intermediates else lambda_amplitudes_rccd
+        self.td_energy_addition = td_energy_addition_opti_restricted if intermediates else td_energy_addition_restricted
 
     def _evaluate_cc_energy(self) -> float:
         t2 = self._t[2]
@@ -131,6 +134,12 @@ class RCCD(CoupledCluster):
         E = np.einsum("ijba,abij", u[o, o, v, v], t2, optimize=True)
 
         return 2 * D - E
+    
+    def _evaluate_tdcc_energy(self) -> float:
+        t2, l2 = self._t[2], self._l[2]
+        u, o, v = self.basis.u, self.basis.o, self.basis.v
+        f = self._f
+        return self.td_energy_addition(t2, l2, u, f, o, v)
 
     def _next_t_iteration(self, t: CoupledClusterParameter):
         basis = self.basis
