@@ -197,12 +197,19 @@ def delta_kick_1990_basis(CC):
         )
 
 def main():
-    delta_kick_1990_basis(cf.CCD)
-    delta_kick_1990_basis(cf.CCSD)
+    pass
+    # delta_kick_1990_basis(cf.CCD)
+    # delta_kick_1990_basis(cf.CCSD)
     # molecule_name, basis_name = "be", "cc-pVDZ"
     # delta_kick_compare("be", basis_name, charge=0)
     # delta_kick_compare("lih", basis_name, charge=0)
     # delta_kick_compare("chp", basis_name, charge=1)
 
+def compare_delta_kick_1990_basis():
+    results = load_files(method=["CCD"], basis="custom", dt="0.01")
+
+    plot_compare(results, polarisations=[2])
+
 if __name__ == "__main__":
     main()
+    # compare_delta_kick_1990_basis()

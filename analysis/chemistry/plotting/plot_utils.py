@@ -26,7 +26,7 @@ def save(filename, addition):
         filename = make_figs_path(filename + addition)
         plt.savefig(filename)
 
-fancy = True
+fancy = False
 
 if fancy:
     colors = ["black", "orange", "green", "red", "purple", "blue"]

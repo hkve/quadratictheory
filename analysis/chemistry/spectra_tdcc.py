@@ -88,13 +88,12 @@ def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True):
     return excitations
 
 
-def compare_two(methods=["CCSD", "QCCSD"], name="be"):
-    methods = ["CCSD", "QCCSD"]
+def compare_two(methods=["CCD", "CCSD"], name="chp"):
     freqs, S_tots = [], []
     for method in methods:
-        results = load_files(method=method, name=name, basis="cc-pVDZ", Tend=1000, dt=0.025, integrator="Rk4Integrator", pulse="DeltaKick")
-        
-        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 1)
+        results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick")
+        print(len(results))
+        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 2)
         freq, S_tot = compute_absorption_spectrum(time, dipole_moments, pol_dirs)
         print(method)
         absorption_spectrum_peaks(S_tot, freq)
