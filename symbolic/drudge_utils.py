@@ -1,6 +1,6 @@
 from sympy import Symbol, IndexedBase, Rational
 import drudge
-from dummy_spark import SparkContext
+from dummy_spark import SparkContext as DummySparkContext
 from pyspark import SparkConf, SparkContext
 
 import pickle
@@ -59,7 +59,7 @@ def get_particle_hole_drudge(dummy=False):
     hole_orb = (drudge.Range("O", 0, Symbol("no")), DEFAULT_HOLE_DUMMS)
 
     if dummy:
-        ctx = SparkContext()
+        ctx = DummySparkContext()
     else:
         conf = SparkConf().setAppName("A little drudge script")
         ctx = SparkContext(conf=conf)
@@ -81,7 +81,7 @@ def get_restricted_particle_hole_drudge(dummy=False):
     hole_orb = (drudge.Range("O", 0, Symbol("no")), DEFAULT_HOLE_DUMMS)
 
     if dummy:
-        ctx = SparkContext()
+        ctx = DummySparkContext()
     else:
         conf = SparkConf().setAppName("A little drudge script")
         ctx = SparkContext(conf=conf)
@@ -144,6 +144,24 @@ def get_Y(dr, order, o_dums, v_dums):
 
     return X
 
+def get_restricted_X(dr):
+    e_ = get_restricted_secondquant_operator(dr)
+    (i,j), (a,b) = get_indicies(dr, num=2)
+
+    X1 = e_[a, i]
+    X2 = e_[a, i] * e_[b, j]
+
+    return X1, X2
+
+def get_restricted_Y(dr):
+    e_ = get_restricted_secondquant_operator(dr)
+    (i,j), (a,b) = get_indicies(dr, num=2)
+
+    Y1 = Rational(1,2) * e_[i, a]
+    Y2 = Rational(1,3) * e_[i,a] * e_[j,b] + Rational(1,6) * e_[j,a] * e_[i,b]
+
+    return Y1, Y2
+
 def get_clusters_1(dr):
     i, a = get_indicies(dr, num=1)
     t1, l1 = make_rk1(dr, "t"), make_rk1(dr, r"\lambda")
@@ -160,13 +178,21 @@ def get_restricted_clusters_1(dr):
     e_ = get_restricted_secondquant_operator(dr)
     i, a = get_indicies(dr, num=1)
     t1, l1 = make_rk1(dr, "t"), make_rk1(dr, r"\lambda")
-    return dr.einst( t1[a, i] * e_[a, i] ), dr.einst( l1[a, i] * e_[i, a] )
+
+    T1 = dr.einst( t1[a, i] * e_[a, i] )
+    L1 = dr.einst( Rational(1,2) * l1[a, i] * e_[i, a] )
+    return T1, L1
 
 def get_restricted_clusters_2(dr):
     e_ = get_restricted_secondquant_operator(dr)
     (i, j), (a, b) = get_indicies(dr, num=2)
     t2, l2 = make_rk2_restricted(dr, "t"), make_rk2_restricted(dr, r"\lambda")
-    return dr.einst( Rational(1, 2) * t2[a, b, i, j] * e_[a, i] * e_[b, j] ), dr.einst( Rational(1, 2) * l2[a, b, i, j] * e_[i, a] * e_[j,b] )
+    T2 = dr.einst( Rational(1, 2) * t2[a, b, i, j] * e_[a, i] * e_[b, j] )
+    L2 = dr.einst(
+         Rational(1, 3) * l2[a, b, i, j] * e_[i, a] * e_[j,b] + 
+         Rational(1, 6) * l2[a, b, i, j] * e_[j, a] * e_[i,b]  
+         )
+    return T2, L2
 
 def make_rk1(dr, symbol):
     return IndexedBase(f"{symbol}^1")
@@ -192,6 +218,11 @@ def define_rk1_rhs(dr, equation, symbol="r"):
 def define_rk2_rhs(dr, equation, symbol="r"):
     (i, j), (a, b) = get_indicies(dr, num=2)
     r2 = make_rk2(dr, symbol)
+    return dr.define(r2[a, b, i, j], equation)
+
+def define_rk2_rhs_restrictd(dr, equation, symbol="r"):
+    (i, j), (a, b) = get_indicies(dr, num=2)
+    r2 = make_rk2_restricted(dr, symbol)
     return dr.define(r2[a, b, i, j], equation)
 
 def diff_rk2_antisym(term, var, o, v):

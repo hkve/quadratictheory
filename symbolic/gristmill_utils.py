@@ -37,7 +37,9 @@ def optimize_equations(dr, equations, **kwargs):
         "check_result": False
     }
     options.update(kwargs)
-    
+
+    check_result = options.pop("check_result")
+
     equations = utils.pack_as_list(equations)
 
     orig_cost = gristmill.get_flop_cost(equations, leading=True)
@@ -50,7 +52,7 @@ def optimize_equations(dr, equations, **kwargs):
     )
 
 
-    if options["check_result"]:
+    if check_result:
         print(f"Back substituted result is the same? {gristmill.verify_eval_seq(eval_seq, equations)}")
 
     opt_cost = gristmill.get_flop_cost(eval_seq, leading=True)
