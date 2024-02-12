@@ -43,7 +43,7 @@ def run(dr, basename):
     # drutils.timer.tock("Done RCCD energy")
 
     # t2_eq = (Y2*ham_bar).eval_fermi_vev().simplify()
-    # t2_eq = drutils.define_rk2_rhs(dr, t2_eq)
+    # t2_eq = drutils.define_rk2_rhs_restrictd(dr, t2_eq)
     # equations["t2"] = t2_eq
     # drutils.save_html(dr, basename + f"_t2", t2_eq)
     # grutils.einsum_raw(dr, basename + "_t2", t2_eq)
@@ -62,7 +62,7 @@ def run(dr, basename):
     # com = ham | X2
     # com_bar = drutils.similarity_transform(com, T)
     l2_eq = ((1+L)*sim_HX2).eval_fermi_vev().simplify()
-    l2_eq = drutils.define_rk2_rhs(dr, l2_eq)
+    l2_eq = drutils.define_rk2_rhs_restrictd(dr, l2_eq)
     equations["l2"] = l2_eq
     drutils.save_html(dr, basename + f"_l2", l2_eq)
     grutils.einsum_raw(dr, basename + "_l2", l2_eq)
