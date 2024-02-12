@@ -1,0 +1,169 @@
+    tau^0 = zeros((no, nv, nv, nv))
+
+    tau^0 -= einsum(
+        "iabc->iabc", u
+    )
+
+    tau^0 += 2 * einsum(
+        "iacb->iabc", u
+    )
+
+    tau^8 = zeros((nv, nv))
+
+    tau^8 += einsum(
+        "ci,iabc->ab", t^1, tau^0
+    )
+
+    r^1 = zeros((nv, no))
+
+    r^1 += 2 * einsum(
+        "bcij,jabc->ai", t^2, tau^0
+    )
+
+    del tau^0
+
+    tau^1 = zeros((no, no, no, nv))
+
+    tau^1 += einsum(
+        "bi,kjba->ijka", t^1, u
+    )
+
+    tau^2 = zeros((no, no, no, nv))
+
+    tau^2 -= einsum(
+        "ijka->ijka", tau^1
+    )
+
+    tau^2 += 2 * einsum(
+        "ikja->ijka", tau^1
+    )
+
+    del tau^1
+
+    tau^2 += 2 * einsum(
+        "jkia->ijka", u
+    )
+
+    tau^2 -= einsum(
+        "kjia->ijka", u
+    )
+
+    r^1 -= 2 * einsum(
+        "abjk,ijkb->ai", t^2, tau^2
+    )
+
+    del tau^2
+
+    tau^3 = zeros((no, no, nv, nv))
+
+    tau^3 += 2 * einsum(
+        "jiab->ijab", u
+    )
+
+    tau^3 -= einsum(
+        "jiba->ijab", u
+    )
+
+    tau^4 = zeros((no, nv))
+
+    tau^4 += einsum(
+        "bj,jiab->ia", t^1, tau^3
+    )
+
+    tau^5 = zeros((no, nv))
+
+    tau^5 += einsum(
+        "ia->ia", tau^4
+    )
+
+    del tau^4
+
+    tau^10 = zeros((no, no))
+
+    tau^10 += einsum(
+        "abjk,kiab->ij", t^2, tau^3
+    )
+
+    del tau^3
+
+    tau^5 += einsum(
+        "ia->ia", f
+    )
+
+    tau^10 += einsum(
+        "aj,ia->ij", t^1, tau^5
+    )
+
+    tau^6 = zeros((no, no, nv, nv))
+
+    tau^6 -= einsum(
+        "abij->ijab", t^2
+    )
+
+    tau^6 += 2 * einsum(
+        "abji->ijab", t^2
+    )
+
+    r^1 += 2 * einsum(
+        "jb,jiab->ai", tau^5, tau^6
+    )
+
+    del tau^5
+
+    del tau^6
+
+    tau^7 = zeros((no, no, nv, nv))
+
+    tau^7 += 2 * einsum(
+        "iabj->ijab", u
+    )
+
+    tau^7 -= einsum(
+        "iajb->ijab", u
+    )
+
+    r^1 += 2 * einsum(
+        "bj,jiab->ai", t^1, tau^7
+    )
+
+    del tau^7
+
+    tau^8 += einsum(
+        "ab->ab", f
+    )
+
+    r^1 += 2 * einsum(
+        "bi,ab->ai", t^1, tau^8
+    )
+
+    del tau^8
+
+    tau^9 = zeros((no, no, no, nv))
+
+    tau^9 += 2 * einsum(
+        "ijka->ijka", u
+    )
+
+    tau^9 -= einsum(
+        "jika->ijka", u
+    )
+
+    tau^10 += einsum(
+        "ak,ikja->ij", t^1, tau^9
+    )
+
+    del tau^9
+
+    tau^10 += einsum(
+        "ij->ij", f
+    )
+
+    r^1 -= 2 * einsum(
+        "aj,ji->ai", t^1, tau^10
+    )
+
+    del tau^10
+
+    r^1 += 2 * einsum(
+        "ai->ai", f
+    )

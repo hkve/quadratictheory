@@ -1,0 +1,777 @@
+    r^2 = zeros((nv, nv, no, no))
+
+    r^2 -= 2 * einsum(
+        "abji->abij", u
+    )
+
+    r^2 += 4 * einsum(
+        "abij->abij", u
+    )
+
+    r^2 -= 2 * einsum(
+        "ac,bcij->abij", f, t^2
+    )
+
+    r^2 -= 2 * einsum(
+        "bc,acji->abij", f, t^2
+    )
+
+    r^2 -= 2 * einsum(
+        "ci,abjc->abij", t^1, u
+    )
+
+    r^2 -= 2 * einsum(
+        "cj,abci->abij", t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ac,bcji->abij", f, t^2
+    )
+
+    r^2 += 4 * einsum(
+        "bc,acij->abij", f, t^2
+    )
+
+    r^2 += 4 * einsum(
+        "ci,abcj->abij", t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "cj,abic->abij", t^1, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abkl,lkij->abij", t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abkl,klij->abij", t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bl,lkij->abij", t^1, t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bl,klij->abij", t^1, t^1, u
+    )
+
+    r^2 -= 2 * einsum(
+        "cdij,abdc->abij", t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "cdij,abcd->abij", t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ci,dj,abdc->abij", t^1, t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ci,dj,abcd->abij", t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ki,abkj->abij", f, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "kj,abik->abij", f, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "ak,bkji->abij", t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bk,akij->abij", t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "ki,abjk->abij", f, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "kj,abki->abij", f, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "ak,bkij->abij", t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "bk,akji->abij", t^1, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ak,bcjl,klic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "bk,acil,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ck,abil,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ck,ablj,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bcil,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bcli,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bclj,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,acjl,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,acli,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,aclj,klic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ci,abkl,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "cj,abkl,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ck,abjl,klic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ck,abli,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bcil,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bcjl,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bcli,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bclj,klic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,acil,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,acjl,klic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,acli,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,aclj,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ci,abkl,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "cj,abkl,klic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,abil,lkcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,abjl,lkic->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,abli,klcj->abij", t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,ablj,klic->abij", t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bl,ci,lkcj->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bl,cj,lkic->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bl,ci,klcj->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bl,cj,klic->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "acik,bkcj->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "acjk,bkic->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "acki,bkjc->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ackj,bkci->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bcik,akjc->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bcjk,akci->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bcki,akcj->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bckj,akic->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "acjk,bkci->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "acki,bkcj->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ackj,bkic->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "bcik,akcj->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "bcki,akjc->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "bckj,akci->abij", t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "acik,bkjc->abij", t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "bcjk,akic->abij", t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "kc,ak,bcji->abij", f, t^1, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "kc,bk,acij->abij", f, t^1, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "kc,ci,abkj->abij", f, t^1, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "kc,cj,abik->abij", f, t^1, t^2
+    )
+
+    r^2 -= 4 * einsum(
+        "ak,ci,bkjc->abij", t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ak,cj,bkci->abij", t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bk,ci,akcj->abij", t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bk,cj,akic->abij", t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "kc,ak,bcij->abij", f, t^1, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "kc,bk,acji->abij", f, t^1, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "kc,ci,abjk->abij", f, t^1, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "kc,cj,abki->abij", f, t^1, t^2
+    )
+
+    r^2 += 2 * einsum(
+        "ak,ci,bkcj->abij", t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "ak,cj,bkic->abij", t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "bk,ci,akjc->abij", t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "bk,cj,akci->abij", t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ak,cdij,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bk,cdij,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ci,adjk,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ci,adkj,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ci,bdjk,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ci,bdkj,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "cj,adik,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "cj,adki,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "cj,bdik,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "cj,bdki,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ck,adij,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ck,adji,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ck,bdij,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ck,bdji,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ak,cdij,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "bk,cdij,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ci,adjk,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ci,adkj,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ci,bdkj,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "cj,adki,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "cj,bdik,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "cj,bdki,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ck,adji,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "ck,bdij,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "ci,bdjk,akcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "cj,adik,bkcd->abij", t^1, t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "ck,adij,bkdc->abij", t^1, t^2, u
+    )
+
+    r^2 += 8 * einsum(
+        "ck,bdji,akdc->abij", t^1, t^2, u
+    )
+
+    r^2 -= 4 * einsum(
+        "ak,ci,dj,bkdc->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 -= 4 * einsum(
+        "bk,ci,dj,akcd->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "ak,ci,dj,bkcd->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 += 2 * einsum(
+        "bk,ci,dj,akdc->abij", t^1, t^1, t^1, u
+    )
+
+    r^2 -= 8 * einsum(
+        "abik,cdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "abkj,cdil,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "acij,bdkl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "acik,bdjl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "acik,bdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "acjk,bdil,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "acki,bdjl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ackl,bdji,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abjk,cdil,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abki,cdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abkl,cdij,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acji,bdkl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acjk,bdli,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acki,bdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ackj,bdil,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ackj,bdli,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ackl,bdij,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abik,cdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abjk,cdil,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abki,cdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abkj,cdil,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "abkl,cdij,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acij,bdkl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acik,bdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acji,bdkl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acjk,bdil,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acjk,bdli,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acki,bdjl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acki,bdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ackj,bdil,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ackj,bdli,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ackl,bdij,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ackl,bdji,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += 16 * einsum(
+        "acik,bdjl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ak,ci,bdjl,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ak,cl,bdji,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "bk,cj,adil,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "bk,cl,adij,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ci,dk,ablj,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 8 * einsum(
+        "ck,dj,abil,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bl,cdij,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,ci,bdlj,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,cj,bdil,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,cj,bdli,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,cl,bdij,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,ci,adjl,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,ci,adlj,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,cj,adli,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "bk,cl,adji,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ci,dj,abkl,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ci,dk,abjl,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ck,dj,abli,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bl,cdij,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,ci,bdjl,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,ci,bdlj,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,cj,bdil,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,cj,bdli,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,cl,bdij,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,cl,bdji,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,ci,adjl,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,ci,adlj,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,cj,adil,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,cj,adli,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,cl,adij,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "bk,cl,adji,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ci,dj,abkl,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ci,dk,abjl,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ci,dk,ablj,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,dj,abil,kldc->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "ck,dj,abli,klcd->abij", t^1, t^1, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ak,bl,ci,dj,kldc->abij", t^1, t^1, t^1, t^1, u
+    )
+
+    r^2 += 4 * einsum(
+        "ak,bl,ci,dj,klcd->abij", t^1, t^1, t^1, t^1, u
+    )

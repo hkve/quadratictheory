@@ -1,0 +1,546 @@
+    e = 0
+
+    e -= 4 * np.einsum(
+        "ak,abij,cdij,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ci,abij,adjk,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ci,abij,adkj,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ci,abji,adjk,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ci,abji,adkj,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ck,abij,adij,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ck,abij,adji,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,abij,cdji,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ci,abij,adjk,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ci,abij,adkj,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ci,abji,adkj,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ck,abij,adji,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 8 * np.einsum(
+        "ci,abji,adjk,kbdc->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 8 * np.einsum(
+        "ck,abij,adij,kbcd->", t1, l2, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ak,ci,dj,abij,kbcd->", t1, t1, t1, l2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,cj,di,abij,kbcd->", t1, t1, t1, l2, u[o, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,ai->", l1, f[v, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abij,acik,kbjc->", l2, t2, u[o, v, o, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abij,acki,kbcj->", l2, t2, u[o, v, v, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abji,acik,kbcj->", l2, t2, u[o, v, v, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abji,acki,kbjc->", l2, t2, u[o, v, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,acki,kbjc->", l2, t2, u[o, v, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abji,acik,kbjc->", l2, t2, u[o, v, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abji,acki,kbcj->", l2, t2, u[o, v, v, o], optimize=True
+    )
+
+    e += 8 * np.einsum(
+        "abij,acik,kbcj->", l2, t2, u[o, v, v, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,aj,bcik,jkbc->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,bi,acjk,jkbc->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,bj,acik,jkcb->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,bj,acki,jkbc->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "kc,ak,abij,bcji->", f[o, v], t1, l2, t2, optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "kc,ci,abij,bajk->", f[o, v], t1, l2, t2, optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ak,ci,abij,kbcj->", t1, t1, l2, u[o, v, v, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ak,ci,abji,kbjc->", t1, t1, l2, u[o, v, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,aj,bcik,jkcb->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,bi,acjk,kjbc->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,bj,acki,jkcb->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "kc,ak,abij,bcij->", f[o, v], t1, l2, t2, optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "kc,ci,abij,abjk->", f[o, v], t1, l2, t2, optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,ci,abij,kbjc->", t1, t1, l2, u[o, v, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,ci,abji,kbcj->", t1, t1, l2, u[o, v, v, o], optimize=True
+    )
+
+    e += 8 * np.einsum(
+        "ai,bj,acik,jkbc->", l1, t1, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,aj,bi,ck,jkbc->", l1, t1, t1, t1, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,aj,bi,ck,jkcb->", l1, t1, t1, t1, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,abjk,jkib->", l1, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ki,abij,bajk->", f[o, o], l2, t2, optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ak,abij,kbij->", t1, l2, u[o, v, o, o], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,abkj,jkib->", l1, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ki,abij,abjk->", f[o, o], l2, t2, optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,abji,kbij->", t1, l2, u[o, v, o, o], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "ai,aj,bk,jkib->", l1, t1, t1, u[o, o, o, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,ak,bj,jkib->", l1, t1, t1, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,bcij,jabc->", l1, t2, u[o, v, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ac,abij,bcij->", f[v, v], l2, t2, optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ci,abij,abjc->", t1, l2, u[v, v, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ai,cbij,jabc->", l1, t2, u[o, v, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ac,abij,bcji->", f[v, v], l2, t2, optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ci,baij,abjc->", t1, l2, u[v, v, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,bi,cj,jabc->", l1, t1, t1, u[o, v, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ai,bj,ci,jabc->", l1, t1, t1, u[o, v, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,cdij,abdc->", l2, t2, u[v, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,cdij,abcd->", l2, t2, u[v, v, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "ci,dj,abij,abdc->", t1, t1, l2, u[v, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ci,dj,abij,abcd->", t1, t1, l2, u[v, v, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ai,ab,bi->", l1, f[v, v], t1, optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "ak,abji,bcil,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "ck,abij,abil,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,abij,bcil,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,abij,bcli,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,abji,bcli,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ci,abij,abkl,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ck,abij,bail,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,abij,bcil,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,abij,bcli,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,abji,bcil,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,abji,bcli,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ci,abij,bakl,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ck,abij,abil,kljc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ck,abij,bail,lkjc->", t1, l2, t2, u[o, o, o, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,bl,ci,abij,kljc->", t1, t1, t1, l2, u[o, o, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "al,bk,ci,abij,kljc->", t1, t1, t1, l2, u[o, o, o, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,ablk,klij->", l2, t2, u[o, o, o, o], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,abkl,klij->", l2, t2, u[o, o, o, o], optimize=True
+    )
+
+    e -= np.einsum(
+        "al,bk,abij,klij->", t1, t1, l2, u[o, o, o, o], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,bl,abij,klij->", t1, t1, l2, u[o, o, o, o], optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,baij->", l2, u[v, v, o, o], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,abij->", l2, u[v, v, o, o], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,jb,abji->", l1, f[o, v], t2, optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,bj,jaib->", l1, t1, u[o, v, o, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ai,jb,abij->", l1, f[o, v], t2, optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ai,bj,jabi->", l1, t1, u[o, v, v, o], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,jb,aj,bi->", l1, f[o, v], t1, t1, optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,abkl,cdij,lkcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,acki,bdlj,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "abij,adlj,bcki,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "abij,abik,cdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "abij,acij,bdkl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "abij,acik,bdlj,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abij,acik,bdjl,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 4 * np.einsum(
+        "abij,adjl,bcik,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "abji,abik,cdjl,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "abji,acij,bdkl,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "abji,acik,bdlj,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,abkl,cdij,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,acki,bdlj,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,adjl,bcik,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "abij,adlj,bcki,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abij,abik,cdjl,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abij,acij,bdkl,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abij,acik,bdlj,kldc->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abji,abik,cdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abji,acij,bdkl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "abji,acik,bdlj,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 8 * np.einsum(
+        "abij,acik,bdjl,klcd->", l2, t2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "ak,bl,abij,cdij,lkcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "ci,dj,abij,abkl,lkcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "ak,ci,abij,bdjl,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "ak,cl,abij,bdji,lkcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 8 * np.einsum(
+        "ci,dk,abij,bajl,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,ci,abij,bdlj,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,ci,abji,bdjl,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,ci,abji,bdlj,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ak,cl,abij,bdij,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ci,dk,abij,abjl,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,bl,abij,cdij,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ci,dj,abij,abkl,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,ci,abij,bdjl,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,ci,abij,bdlj,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,ci,abji,bdjl,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,ci,abji,bdlj,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,cl,abij,bdij,lkcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ak,cl,abij,bdji,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ci,dk,abij,abjl,kldc->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e += 4 * np.einsum(
+        "ci,dk,abij,bajl,klcd->", t1, t1, l2, t2, u[o, o, v, v], optimize=True
+    )
+
+    e -= np.einsum(
+        "ak,bl,ci,dj,abij,lkcd->", t1, t1, t1, t1, l2, u[o, o, v, v], optimize=True
+    )
+
+    e += 2 * np.einsum(
+        "ak,bl,ci,dj,abij,klcd->", t1, t1, t1, t1, l2, u[o, o, v, v], optimize=True
+    )
+
+    e -= 2 * np.einsum(
+        "ai,ji,aj->", l1, f[o, o], t1, optimize=True
+    )
+

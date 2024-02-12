@@ -1,0 +1,129 @@
+    r^2 = zeros((nv, nv, no, no))
+
+    r^2 += einsum(
+        "abij->abij", u
+    )
+
+    r^2 += einsum(
+        "ac,bcji->abij", f, t^2
+    )
+
+    r^2 += einsum(
+        "bc,acij->abij", f, t^2
+    )
+
+    r^2 += einsum(
+        "abkl,klij->abij", t^2, u
+    )
+
+    r^2 += einsum(
+        "cdij,abcd->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "ki,abkj->abij", f, t^2
+    )
+
+    r^2 -= einsum(
+        "kj,abik->abij", f, t^2
+    )
+
+    r^2 -= einsum(
+        "acik,bkcj->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "acki,bkjc->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "ackj,bkci->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "bcjk,akci->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "bcki,akcj->abij", t^2, u
+    )
+
+    r^2 -= einsum(
+        "bckj,akic->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "acik,bkjc->abij", t^2, u
+    )
+
+    r^2 += 2 * einsum(
+        "bcjk,akic->abij", t^2, u
+    )
+
+    r^2 += einsum(
+        "abik,cdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "abkj,cdil,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "abkl,cdij,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "acij,bdkl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "acik,bdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "acki,bdjl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "acki,bdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "ackj,bdli,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += einsum(
+        "ackl,bdji,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abik,cdlj,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "abkj,cdil,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acij,bdkl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acik,bdjl,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acik,bdlj,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "acki,bdjl,klcd->abij", t^2, t^2, u
+    )
+
+    r^2 -= 2 * einsum(
+        "ackl,bdji,kldc->abij", t^2, t^2, u
+    )
+
+    r^2 += 4 * einsum(
+        "acik,bdjl,klcd->abij", t^2, t^2, u
+    )

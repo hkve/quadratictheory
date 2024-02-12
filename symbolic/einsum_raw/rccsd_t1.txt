@@ -1,0 +1,105 @@
+    r^1 = zeros((nv, no))
+
+    r^1 += 2 * einsum(
+        "ab,bi->ai", f, t^1
+    )
+
+    r^1 += 2 * einsum(
+        "ai->ai", f
+    )
+
+    r^1 -= 4 * einsum(
+        "aj,bcik,jkbc->ai", t^1, t^2, u
+    )
+
+    r^1 -= 4 * einsum(
+        "bi,acjk,jkbc->ai", t^1, t^2, u
+    )
+
+    r^1 -= 4 * einsum(
+        "bj,acik,jkcb->ai", t^1, t^2, u
+    )
+
+    r^1 -= 4 * einsum(
+        "bj,acki,jkbc->ai", t^1, t^2, u
+    )
+
+    r^1 += 2 * einsum(
+        "aj,bcik,jkcb->ai", t^1, t^2, u
+    )
+
+    r^1 += 2 * einsum(
+        "bi,acjk,jkcb->ai", t^1, t^2, u
+    )
+
+    r^1 += 2 * einsum(
+        "bj,acki,jkcb->ai", t^1, t^2, u
+    )
+
+    r^1 += 8 * einsum(
+        "bj,acik,jkbc->ai", t^1, t^2, u
+    )
+
+    r^1 -= 4 * einsum(
+        "aj,bi,ck,jkbc->ai", t^1, t^1, t^1, u
+    )
+
+    r^1 += 2 * einsum(
+        "aj,bi,ck,jkcb->ai", t^1, t^1, t^1, u
+    )
+
+    r^1 -= 4 * einsum(
+        "abjk,jkib->ai", t^2, u
+    )
+
+    r^1 += 2 * einsum(
+        "abjk,kjib->ai", t^2, u
+    )
+
+    r^1 -= 4 * einsum(
+        "aj,bk,jkib->ai", t^1, t^1, u
+    )
+
+    r^1 += 2 * einsum(
+        "aj,bk,kjib->ai", t^1, t^1, u
+    )
+
+    r^1 -= 2 * einsum(
+        "jb,abji->ai", f, t^2
+    )
+
+    r^1 -= 2 * einsum(
+        "bj,ajbi->ai", t^1, u
+    )
+
+    r^1 += 4 * einsum(
+        "jb,abij->ai", f, t^2
+    )
+
+    r^1 += 4 * einsum(
+        "bj,ajib->ai", t^1, u
+    )
+
+    r^1 -= 2 * einsum(
+        "jb,aj,bi->ai", f, t^1, t^1
+    )
+
+    r^1 -= 2 * einsum(
+        "bcij,ajcb->ai", t^2, u
+    )
+
+    r^1 += 4 * einsum(
+        "bcij,ajbc->ai", t^2, u
+    )
+
+    r^1 -= 2 * einsum(
+        "bi,cj,ajcb->ai", t^1, t^1, u
+    )
+
+    r^1 += 4 * einsum(
+        "bi,cj,ajbc->ai", t^1, t^1, u
+    )
+
+    r^1 -= 2 * einsum(
+        "ji,aj->ai", f, t^1
+    )
