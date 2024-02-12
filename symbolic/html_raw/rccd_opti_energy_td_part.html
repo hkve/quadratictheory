@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>rccd_opti_energy_td_part</title>
+
+    <!-- MathJAX intialization -->
+    <script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			"HTML-CSS": { linebreaks: { automatic: true } },
+			SVG: { linebreaks: { automatic: true } }
+		});
+	</script>
+	<script type="text/javascript"
+		src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+	</script>
+
+    <!-- Boostrap initialization -->
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>rccd_opti_energy_td_part</h1>
+    </div>
+
+    <div class="row">
+        <!-- The main content -->
+        <div class="col-sm-9 col-lg-10">
+            <div class="page-header" id="sect-1">
+                <h2>equation 1</h2>
+            </div>
+            <p>\[ \tau^{0}_{i,j} = \sum_{a \in V} \sum_{k \in O} \sum_{b \in V} \lambda^2_{a,b,i,k}  t^{2}_{b,a,k,j}  \]</p>
+            <div class="page-header" id="sect-2">
+                <h2>equation 2</h2>
+            </div>
+            <p>\[ \tau^{1}_{a,b} = \sum_{i \in O} \sum_{j \in O} \sum_{c \in V} \lambda^2_{a,c,i,j}  t^{2}_{c,b,j,i}  \]</p>
+            <div class="page-header" id="sect-3">
+                <h2>equation 3</h2>
+            </div>
+            <p>\[ \tau^{2}_{i,j,a,b} = - t^{2}_{a,b,i,j}   + t^{2}_{a,b,j,i}  \]</p>
+            <div class="page-header" id="sect-4">
+                <h2>equation 4</h2>
+            </div>
+            <p>\[ \tau^{3}_{i,j,a,b} = - u_{j,i,a,b}   + 2 u_{j,i,b,a}  \]</p>
+            <div class="page-header" id="sect-5">
+                <h2>equation 5</h2>
+            </div>
+            <p>\[ \tau^{4}_{i,j,a,b} = 2 u_{j,a,b,i}  - u_{j,a,i,b}   + \sum_{k \in O} \sum_{c \in V} \tau^{2}_{k,i,a,c}  \tau^{3}_{k,j,c,b}  \]</p>
+            <div class="page-header" id="sect-6">
+                <h2>equation 6</h2>
+            </div>
+            <p>\[ \tau^{5}_{i,j,a,b} = 2 u_{j,a,b,i}  - \sum_{k \in O} \sum_{c \in V} t^{2}_{a,c,k,i}  u_{j,k,b,c}  \]</p>
+            <div class="page-header" id="sect-7">
+                <h2>equation 7</h2>
+            </div>
+            <p>\[ \tau^{6}_{i,j,a,b} = u_{b,a,j,i}   + \sum_{c \in V} \sum_{d \in V} t^{2}_{d,c,j,i}  u_{a,b,c,d}   + \sum_{k \in O} \sum_{c \in V} 2 t^{2}_{b,c,j,k}  \tau^{4}_{i,k,a,c}  - \sum_{k \in O} \sum_{c \in V} t^{2}_{b,c,k,j}  \tau^{5}_{i,k,a,c}  \]</p>
+            <div class="page-header" id="sect-8">
+                <h2>equation 8</h2>
+            </div>
+            <p>\[ \tau^{7}_{i,j,a,b} = 2 u_{j,a,i,b}  - \sum_{c \in V} \sum_{k \in O} t^{2}_{a,c,k,i}  u_{j,k,c,b}  \]</p>
+            <div class="page-header" id="sect-9">
+                <h2>equation 9</h2>
+            </div>
+            <p>\[ \tau^{8}_{i,j,a,b} = \sum_{k \in O} \sum_{c \in V} t^{2}_{a,c,k,i}  \tau^{7}_{j,k,b,c}  \]</p>
+            <div class="page-header" id="sect-10">
+                <h2>equation 10</h2>
+            </div>
+            <p>\[ \tau^{9}_{i,j,k,l} = u_{j,i,l,k}   + \sum_{a \in V} \sum_{b \in V} t^{2}_{b,a,l,k}  u_{i,j,a,b}  \]</p>
+            <div class="page-header" id="sect-11">
+                <h2>equation 11</h2>
+            </div>
+            <p>\[ \tau^{10}_{i,j,k,l} = \sum_{a \in V} \sum_{b \in V} \lambda^2_{a,b,i,j}  t^{2}_{a,b,k,l}  \]</p>
+            <div class="page-header" id="sect-12">
+                <h2>equation 12</h2>
+            </div>
+            <p>\[ \tau^{11}_{a,b} = \sum_{i \in O} \sum_{j \in O} \sum_{c \in V} t^{2}_{a,c,j,i}  \tau^{3}_{i,j,c,b}  \]</p>
+            <div class="page-header" id="sect-13">
+                <h2>equation 13</h2>
+            </div>
+            <p>\[ \tau^{12}_{a,b} = \sum_{c \in V} \sum_{i \in O} \sum_{j \in O} \lambda^2_{c,a,i,j}  t^{2}_{c,b,i,j}  \]</p>
+            <div class="page-header" id="sect-14">
+                <h2>equation 14</h2>
+            </div>
+            <p>\[ \tau^{13}_{i,j,a,b} = 2 u_{j,i,a,b}  - u_{j,i,b,a}  \]</p>
+            <div class="page-header" id="sect-15">
+                <h2>equation 15</h2>
+            </div>
+            <p>\[ \tau^{14}_{i,j} = \sum_{k \in O} \sum_{a \in V} \sum_{b \in V} t^{2}_{a,b,i,k}  \tau^{13}_{k,j,a,b}  \]</p>
+            <div class="page-header" id="sect-16">
+                <h2>equation 16</h2>
+            </div>
+            <p>\[ \tau^{15}_{i,j} = \sum_{a \in V} \sum_{k \in O} \sum_{b \in V} \lambda^2_{a,b,k,i}  t^{2}_{a,b,k,j}  \]</p>
+            <div class="page-header" id="sect-17">
+                <h2>equation 17</h2>
+            </div>
+            <p>\[ e = - \sum_{i \in O} \sum_{j \in O} 2 f_{j,i}  \tau^{0}_{i,j}   + \sum_{a \in V} \sum_{b \in V} 2 f_{b,a}  \tau^{1}_{b,a}   + \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \lambda^2_{b,a,j,i}  \tau^{6}_{i,j,a,b}  - \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \lambda^2_{a,b,j,i}  \tau^{8}_{i,j,a,b}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \tau^{10}_{l,k,j,i}  \tau^{9}_{i,j,k,l}  - \sum_{a \in V} \sum_{b \in V} 2 \tau^{11}_{a,b}  \tau^{12}_{a,b}  - \sum_{i \in O} \sum_{j \in O} 2 \tau^{14}_{i,j}  \tau^{15}_{i,j}  \]</p>
+        </div>
+
+        <!-- The navigation -->
+        <div class="col-sm-3 col-lg-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#sect-1">equation 1</a></li>
+                <li ><a href="#sect-2">equation 2</a></li>
+                <li ><a href="#sect-3">equation 3</a></li>
+                <li ><a href="#sect-4">equation 4</a></li>
+                <li ><a href="#sect-5">equation 5</a></li>
+                <li ><a href="#sect-6">equation 6</a></li>
+                <li ><a href="#sect-7">equation 7</a></li>
+                <li ><a href="#sect-8">equation 8</a></li>
+                <li ><a href="#sect-9">equation 9</a></li>
+                <li ><a href="#sect-10">equation 10</a></li>
+                <li ><a href="#sect-11">equation 11</a></li>
+                <li ><a href="#sect-12">equation 12</a></li>
+                <li ><a href="#sect-13">equation 13</a></li>
+                <li ><a href="#sect-14">equation 14</a></li>
+                <li ><a href="#sect-15">equation 15</a></li>
+                <li ><a href="#sect-16">equation 16</a></li>
+                <li ><a href="#sect-17">equation 17</a></li>
+            </ul>
+        </div>
+    </div> <!-- end the main row -->
+
+    <!-- The footer -->
+    <div class="row">
+        <footer class="footer">
+            <p class="small text-center">Automatically generated by drudge symbolic algebra system.</p>
+            <p class="small text-center">By Jinmo Zhao and Gustavo E Scuseria, Rice Univ, Houston, TX, USA</p>
+        </footer>
+    </div>
+</div> <!-- end the main fluid container -->
+</body>
+</html>
