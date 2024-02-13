@@ -18,9 +18,9 @@ class Time(drudge.Stopwatch):
         super().__init__(*args, **kwargs)
         self.vocal = vocal
 
-    def tock(self, label):
+    def tock(self, label, tensor=None):
         if self.vocal:
-            super().tock(label)
+            super().tock(label, tensor=tensor)
 
 
 timer = Time(vocal=False)
@@ -250,7 +250,8 @@ def similarity_transform(tensor, clusters):
         timer.tock(f"Commutator at order {order+1}")
 
     tensor_bar.repartition(cache=True)
-
+    tensor_bar = tensor_bar.simplify()
+    
     return tensor_bar
 
 
