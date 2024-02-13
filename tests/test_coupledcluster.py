@@ -51,17 +51,57 @@ class TestCoupledCluster(TestCase):
 
         self.assertAlmostEqual(Egccsd, Eccsd, places=6)
 
+    def general_symmetry(self, amplitude):
+        permuted_hole = -amplitude.transpose(0, 1, 3, 2)
+        permuted_particle = -amplitude.transpose(1, 0, 2, 3)
+        permuted_both = amplitude.transpose(1, 0, 3, 2)
+
+        check_hole = np.linalg.norm(amplitude - permuted_hole)
+        check_particle = np.linalg.norm(amplitude - permuted_particle)
+        check_both = np.linalg.norm(amplitude - permuted_both)
+
+        return check_hole, check_particle, check_both
+
+    def restricted_symmetry(self, amplitude):
+        permuted_both = amplitude.transpose(1, 0, 3, 2)
+
+        return np.linalg.norm(amplitude - permuted_both)
+
     def compare_general_with_restricted(self, atom, basis, CC, RCC, tol=1e-8):
         rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True).pyscf_hartree_fock()
 
-        rcc = RCC(rbasis).run(tol=tol, include_l=False)
+        rcc = RCC(rbasis).run(tol=tol, include_l=True)
         e_rcc = rcc.energy()
+        td_e_rcc = rcc._evaluate_tdcc_energy()
+        t_sym_rcc = self.restricted_symmetry(rcc._t[2])
+        l_sym_rcc = self.restricted_symmetry(rcc._l[2])
 
         rbasis.from_restricted()
-        cc = CC(rbasis).run(tol=tol, include_l=False)
+        cc = CC(rbasis).run(tol=tol, include_l=True)
         e_cc = cc.energy()
+        td_e_cc = cc._evaluate_tdcc_energy()
+        t_sym_cc_hole, t_sym_cc_particle, t_sym_cc_both = self.general_symmetry(cc._t[2])
+        l_sym_cc_hole, l_sym_cc_particle, l_sym_cc_both = self.general_symmetry(cc._l[2])
 
-        self.assertAlmostEqual(e_rcc, e_cc, places=6) 
+        # Check that energies are equal
+        self.assertAlmostEqual(e_rcc, e_cc, places=8)
+
+        # Check if <0|(1+L)e^-T H e^T|0> is 0
+        self.assertAlmostEqual(td_e_cc, 0, places=8)
+        self.assertAlmostEqual(td_e_rcc, 0, places=8)
+
+        # Check rcc amplitude permutations
+        self.assertAlmostEqual(t_sym_rcc, 0, places=8)
+        self.assertAlmostEqual(l_sym_rcc, 0, places=8)
+
+        # Check cc amplitude permutations
+        self.assertAlmostEqual(t_sym_cc_hole, 0, places=8)
+        self.assertAlmostEqual(t_sym_cc_particle, 0, places=8)
+        self.assertAlmostEqual(t_sym_cc_both, 0, places=8)
+
+        self.assertAlmostEqual(l_sym_cc_hole, 0, places=8)
+        self.assertAlmostEqual(l_sym_cc_particle, 0, places=8)
+        self.assertAlmostEqual(l_sym_cc_both, 0, places=8)
 
     def test_ccd_He(self):
         self.ccd_compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
@@ -74,10 +114,11 @@ class TestCoupledCluster(TestCase):
     def test_ccsd_He(self):
         self.ccsd_compare_with_pyscf(atom="He 0 0 0", basis="cc-pVDZ")
         self.compare_general_with_restricted(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
-    
+
     def test_ccd_Be(self):
         self.ccsd_compare_with_pyscf(atom="Be 0 0 0", basis="cc-pVDZ")
         self.compare_general_with_restricted(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
+
     # def ccd_compare_with_cccbdb(self, atom, basis, cccbdb_energy):
     #     rbasis = PyscfBasis(atom=atom, basis=basis, restricted=True)
 

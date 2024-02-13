@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, GCCSD, QCCD, QCCSD
+from clusterfock.cc import GCCD, GCCSD, QCCD, QCCSD, RCCD, RCCSD
 from clusterfock.basis import PyscfBasis
 
 
@@ -90,32 +90,57 @@ class TestCoupledClusterDensities(TestCase):
         for i in range(3):
             self.assertAlmostEqual(r[i], 0)
 
+    def compare_general_with_restricted(self, atom, basis, CC, RCC, tol=1e-8):
+        basis = PyscfBasis(atom, basis, restricted=True).pyscf_hartree_fock()
+
+        rcc = RCC(basis).run(tol=tol, include_l=True)
+        h_rcc = rcc.one_body_expval(basis.h)
+        # r_rcc = rcc.one_body_expval(basis.r)
+
+        basis.from_restricted()
+        cc = CC(basis).run(tol=tol, include_l=True)
+        h_cc = cc.one_body_expval(basis.h)
+        # r_cc = cc.one_body_expval(basis.r)
+
+        self.assertAlmostEqual(h_rcc, h_cc, places=6)
+        # self.assertAlmostEqual(r_rcc, r_cc, places=6)
+
     def test_ccd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
+        self.compare_general_with_restricted(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD, RCC=RCCD)
 
         self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCD)
 
     def test_ccd_Be(self):
         self.compare_raw_vs_intermediate(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD)
         self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD)
+        self.compare_general_with_restricted(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCD, RCC=RCCD)
 
     def test_ccd_LiH(self):
-        self.compare_raw_vs_intermediate(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCD)
-        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCD)
+        self.compare_raw_vs_intermediate(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCD)
+        self.energy_expval(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCD)
+        self.compare_general_with_restricted(
+            atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCD, RCC=RCCD
+        )
 
     def test_ccsd_He(self):
         self.compare_raw_vs_intermediate(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
         self.zero_position(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD)
+        self.compare_general_with_restricted(atom="He 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
 
     def test_ccsd_Be(self):
         self.compare_raw_vs_intermediate(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD)
         self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD)
+        self.compare_general_with_restricted(atom="Be 0 0 0", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD)
 
     def test_ccsd_LiH(self):
-        self.compare_raw_vs_intermediate(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCSD)
-        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=GCCSD)
+        self.compare_raw_vs_intermediate(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCSD)
+        self.energy_expval(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCSD)
+        self.compare_general_with_restricted(
+            atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=GCCSD, RCC=RCCSD
+        )
 
     def test_qccd_He(self):
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=QCCD)
@@ -124,7 +149,7 @@ class TestCoupledClusterDensities(TestCase):
         self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=QCCD)
 
     def test_qccd_Li(self):
-        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=QCCD)
+        self.energy_expval(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=QCCD)
 
     def test_qccsd_He(self):
         self.energy_expval(atom="He 0 0 0", basis="cc-pVDZ", CC=QCCSD)
@@ -133,4 +158,4 @@ class TestCoupledClusterDensities(TestCase):
         self.energy_expval(atom="Be 0 0 0", basis="cc-pVDZ", CC=QCCSD)
 
     def test_qccsd_Li(self):
-        self.energy_expval(atom="Li 0 0 0; H 0 0 1.2", basis="cc-pVDZ", CC=QCCSD)
+        self.energy_expval(atom="Li 0 0 0; H 0 0 2.26", basis="cc-pVDZ", CC=QCCSD)
