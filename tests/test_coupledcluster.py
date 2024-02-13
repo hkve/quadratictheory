@@ -18,10 +18,10 @@ class TestCoupledCluster(TestCase):
         rbasis.change_basis(hf.C, inplace=True)
         gbasis = rbasis.from_restricted(inplace=False)
 
-        rccd = RCCD(rbasis).run(tol=tol)
+        rccd = RCCD(rbasis).run(tol=tol, include_l=False)
         Erccd = rccd.energy()
 
-        gccd = GCCD(gbasis).run(tol=tol)
+        gccd = GCCD(gbasis).run(tol=tol, include_l=False)
         Egccd = gccd.energy()
 
         hf_pyscf = pyscf.scf.HF(rbasis.mol).run(verbose=0, tol=tol)
@@ -41,7 +41,7 @@ class TestCoupledCluster(TestCase):
 
         gbasis = rbasis.from_restricted(inplace=True)
 
-        gccsd = GCCSD(gbasis).run(tol=tol)
+        gccsd = GCCSD(gbasis).run(tol=tol, include_l=False)
         Egccsd = gccsd.energy()
 
         hf_pyscf = pyscf.scf.HF(gbasis.mol).run(verbose=0, tol=tol)
