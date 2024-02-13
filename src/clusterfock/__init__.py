@@ -27,4 +27,5 @@ def CCD(basis: Basis, intermediates=True):
     return RCCD(basis) if basis.restricted else GCCD(basis, intermediates)
 
 def CCSD(basis: Basis, intermediates=True):
+    print(basis.restricted)
     return RCCSD(basis, intermediates=intermediates) if basis.restricted else GCCSD(basis, intermediates=intermediates)

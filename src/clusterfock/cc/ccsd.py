@@ -13,6 +13,7 @@ from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
 from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
+from clusterfock.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -134,7 +135,7 @@ class GCCSD(CoupledCluster):
         return psit * psitilde_t
 
 class RCCSD(CoupledCluster):
-    def __init__(self, basis: Basis):
+    def __init__(self, basis: Basis, intermediates=True):
         assert basis.restricted, f"Restricted CCSD requires restricted basis"
 
         t_orders = [1, 2]
@@ -143,6 +144,7 @@ class RCCSD(CoupledCluster):
 
         self.t_rhs = amplitudes_intermediates_rccsd
         self.l_rhs = lambda_amplitudes_intermediates_rccsd
+        self.td_energy_addition = td_energy_addition_restricted
 
     def _evaluate_cc_energy(self) -> float:
         t1, t2 = self._t[1], self._t[2]
@@ -156,6 +158,14 @@ class RCCSD(CoupledCluster):
         E += 2*np.einsum("ai,bj,ijab->", t1, t1, u[o,o,v,v], optimize=True)
 
         return E
+    
+    def _evaluate_tdcc_energy(self) -> float:
+        t1, t2 = self._t[1], self._t[2]
+        l1, l2 = self._l[1], self._l[2]
+        u, o, v = self.basis.u, self.basis.o, self.basis.v
+        f = self._f
+
+        return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
     
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis
