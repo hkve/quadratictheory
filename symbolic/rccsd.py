@@ -90,13 +90,42 @@ def optimize_expressions(dr, equations, basename):
         drutils.save_html(dr, basename + "_opti_" + name, eval_seq)
         grutils.einsum_raw(dr, basename + "_opti_" + name, eval_seq)
 
+def _run_blocks(dr, blocks, block_names):
+    # Get clusters
+    T1, L1 = drutils.get_restricted_clusters_1(dr)
+    T2, L2 = drutils.get_restricted_clusters_2(dr)
+    rho = [None] * len(blocks)
+
+    T = (T1 + T2).simplify()
+    L = (L1 + L2).simplify()
+
+    # Loop over each block, sim trans and resolve 1 and L term
+    for i, block in enumerate(blocks):
+        block_sim = drutils.similarity_transform(block, T)
+
+        A = block_sim.eval_fermi_vev().simplify()
+        B = (L * block_sim).eval_fermi_vev().simplify()
+        rho[i] = (A + B).simplify()
+        drutils.timer.tock(f"Density {block_names[i]}", rho[i])
+
+    return rho
+
+def L_densities(dr, basename):
+    # One body
+    o_dums, v_dums = drutils.get_indicies(dr, num=2)
+    blocks, block_names = drutils.get_ob_density_blocks_restricted(dr, o_dums, v_dums)
+    rho = _run_blocks(dr, blocks, block_names)
+    drutils.save_html(dr, basename + "_rho_ob", rho, block_names)
+
+
 if __name__ == "__main__":
     drutils.timer.vocal = True
     dr = drutils.get_restricted_particle_hole_drudge()
     
     basename = "rccsd"
 
-    equations = run(dr, basename)
+    # equations = run(dr, basename)
     # equations = load(dr, basename)
+    # optimize_expressions(dr, equations, basename)
 
-    optimize_expressions(dr, equations, basename)
+    L_densities(dr, basename)

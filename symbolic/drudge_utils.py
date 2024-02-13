@@ -273,6 +273,24 @@ def get_ob_density_blocks(dr, o_dums, v_dums):
     return blocks, block_names
 
 
+def get_ob_density_blocks_restricted(dr, o_dums, v_dums):
+    assert len(o_dums) == 2 and len(v_dums) == 2
+
+    i, j = o_dums
+    a, b = v_dums
+    e_ = get_restricted_secondquant_operator(dr)
+
+    blocks = [
+        e_[i,j],
+        e_[a,b],
+        e_[i,a],
+        e_[a,i],
+    ]
+
+    block_names = ["oo", "vv", "ov", "vo"]
+
+    return blocks, block_names
+
 def get_tb_density_blocks(dr, o_dums, v_dums):
     assert len(o_dums) == 4 and len(v_dums) == 4
 
@@ -314,7 +332,7 @@ def define_ob_density_blocks(dr, rho, block_names, o_dums, v_dums):
     return [dr.define(rhs, term) for rhs, term in zip(blocks, rho)]
 
 
-def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
+def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums, restricted=False):
     assert len(o_dums) == 4 and len(v_dums) == 4
 
     i, j, k, l = o_dums
@@ -322,7 +340,10 @@ def define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums):
 
     rs = [IndexedBase(f"\\rho_{name}") for name in block_names]
     for r in rs:
-        dr.set_dbbar_base(r, 2)
+        if restricted:
+            dr.set_n_body_base(r, 2)
+        else:
+            dr.set_dbbar_base(r, 2)
 
     blocks = [
         rs[0][i, j, k, l],

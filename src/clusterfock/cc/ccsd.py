@@ -13,6 +13,8 @@ from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
 from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
+
+from clusterfock.cc.densities.l_RCCSD import one_body_density_restricted
 from clusterfock.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
 
@@ -168,6 +170,18 @@ class RCCSD(CoupledCluster):
         f = self._f
 
         return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
+    
+    def _calculate_one_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
+
+        l1, t1 = self._l[1], self._t[1]
+        l2, t2 = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = one_body_density_restricted(rho, t1, t2, l1, l2, o, v)
+
+        return rho
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis
