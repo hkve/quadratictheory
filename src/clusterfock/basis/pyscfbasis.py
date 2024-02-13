@@ -6,11 +6,7 @@ import pyscf
 
 class PyscfBasis(Basis):
     def __init__(self, atom: str, basis: str, restricted: bool = True, dtype=float, **kwargs):
-        defaults = {
-            "center": True,
-            "charge": 0,
-            "mol": None
-        }
+        defaults = {"center": True, "charge": 0, "mol": None}
 
         defaults.update(kwargs)
 

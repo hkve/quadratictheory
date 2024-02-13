@@ -170,6 +170,7 @@ class HartreeFock(ABC):
         self._check_state()
         return np.einsum("pq,...pq->...", self.rho, operator)
 
+
 def _identity_guess(
     basis: Basis,
 ) -> np.ndarray:

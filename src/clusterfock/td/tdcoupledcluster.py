@@ -10,20 +10,25 @@ from scipy.integrate import complex_ode, ode
 from rk4_integrator.rk4 import Rk4Integrator
 from gauss_integrator.gauss import GaussIntegrator
 
+
 class TimeDependentCoupledCluster:
     def __init__(
-        self, cc: CoupledCluster, time: tuple = (0, 1.0, 0.0001), integrator="Rk4Integrator", integrator_args={}
+        self,
+        cc: CoupledCluster,
+        time: tuple = (0, 1.0, 0.0001),
+        integrator="Rk4Integrator",
+        integrator_args={},
     ):
         """
         Constructor for time propegation using a cc calculation. Supports scipy-type integrators.
-        For dynamics, time dependent one and two body potentials can be set using 
+        For dynamics, time dependent one and two body potentials can be set using
 
         instance.external_one_body = f(t, basis)
         instance.external_two_body = g(t, basis)
 
         The functions f and g will then be called for each intergration (sub-)step. They
         must return a (L,L) or (L,L,L,L) ndarray, which is added to the one or two body
-        hamiltonian respectively. 
+        hamiltonian respectively.
 
         Similarly to save expectation values during calculations, a sampler function can also
         be set. This is set using the 'one_body_sampler' property.
@@ -38,7 +43,7 @@ class TimeDependentCoupledCluster:
             return {"r": basis.r}
 
         is valid, if the basis instance contains functionality that allows for calculating r.
-        
+
         Note that the ENERGY observable is always calculated, in addition to the time dependent
         overlap with the ground state.
         """
@@ -62,7 +67,7 @@ class TimeDependentCoupledCluster:
 
     def run(self, vocal: bool = False) -> dict:
         """
-        Main function to run the time evolution of the CC state. If the passed cc 
+        Main function to run the time evolution of the CC state. If the passed cc
         instance has not been run, it will be. Also casts CC matrix elements to
         complex and sets up integration points and integrator. Lastly the main integration
         loop is run with sampling for each complete step. Resturns a dict with all sampled
@@ -95,7 +100,7 @@ class TimeDependentCoupledCluster:
 
         assert dt > 0
         assert t_end > t_start
-        n_time_points = int((t_end-t_start)/dt) + 1
+        n_time_points = int((t_end - t_start) / dt) + 1
         time_points = np.linspace(t_start, t_end, n_time_points)
 
         integrator = complex_ode(self.rhs)
@@ -104,8 +109,9 @@ class TimeDependentCoupledCluster:
 
         self._sample()
 
-        loop_range = range(n_time_points-1)
-        if vocal: loop_range = tqdm.tqdm(range(n_time_points-1))
+        loop_range = range(n_time_points - 1)
+        if vocal:
+            loop_range = tqdm.tqdm(range(n_time_points - 1))
 
         unsuccessful_index = None
 
@@ -113,12 +119,12 @@ class TimeDependentCoupledCluster:
             integrator.integrate(integrator.t + dt)
 
             if not integrator.successful():
-                unsuccessful_index = i-1
+                unsuccessful_index = i - 1
                 break
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
-            
+
             self._sample()
 
         if unsuccessful_index is not None:
@@ -126,7 +132,7 @@ class TimeDependentCoupledCluster:
 
         self.results = self._construct_results(time_points)
 
-        return self.results    
+        return self.results
 
     def rhs(self, t: float, y: np.ndarray) -> np.ndarray:
         """
@@ -144,15 +150,15 @@ class TimeDependentCoupledCluster:
         basis, cc = self.basis, self.cc
 
         # Update t and l amplitudes in basis
-        cc._t.from_flat(y[self.t_slice])       
+        cc._t.from_flat(y[self.t_slice])
         cc._l.from_flat(y[self.l_slice])
 
         if self._has_td_one_body:
             external_contribution = self.external_one_body(t, basis)
             cc._f = basis.f + external_contribution
 
-        t_dot = -1j*cc._t_rhs_timedependent(cc._t, cc._l)
-        l_dot = 1j*cc._l_rhs_timedependent(cc._t, cc._l)
+        t_dot = -1j * cc._t_rhs_timedependent(cc._t, cc._l)
+        l_dot = 1j * cc._l_rhs_timedependent(cc._t, cc._l)
 
         y_dot, _, _ = merge_to_flat(t_dot, l_dot)
 
@@ -186,9 +192,11 @@ class TimeDependentCoupledCluster:
                 self.results[key].append(value)
 
     def _setup_sample(self, basis):
-        if self.sampler.has_one_body: self.cc.one_body_density()
-        if self.sampler.has_two_body: self.cc.two_body_density()
-        
+        if self.sampler.has_one_body:
+            self.cc.one_body_density()
+        if self.sampler.has_two_body:
+            self.cc.two_body_density()
+
         if self.sampler.has_overlap:
             self._t0 = self.cc._t.copy()
             self._l0 = self.cc._l.copy()
@@ -200,7 +208,7 @@ class TimeDependentCoupledCluster:
 
     def _construct_results(self, time_points: np.ndarray) -> dict:
         """
-        Constructs the results dict after the integration has been completed. 
+        Constructs the results dict after the integration has been completed.
 
         Args:
             time_points (np.ndarray): The times the different quantities are calcualted for
@@ -218,7 +226,7 @@ class TimeDependentCoupledCluster:
     @property
     def external_one_body(self):
         return self._td_one_body
-    
+
     @external_one_body.setter
     def external_one_body(self, func_ob):
         self._has_td_one_body = True
@@ -227,7 +235,7 @@ class TimeDependentCoupledCluster:
     @property
     def sampler(self):
         return self._sampler
-    
+
     @sampler.setter
     def sampler(self, sampler):
         self._sampler = sampler

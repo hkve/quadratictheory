@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+
 class Pulse(ABC):
     def __init__(self, u, *args):
         self._u = u
 
     def r_dot_u(self, r):
         return np.einsum("xij,x->ij", r, self._u, optimize=True)
-    
+
     def __call__(self, t, basis):
         return -self.r_dot_u(basis.r) * self.E(t)
 
@@ -15,15 +16,16 @@ class Pulse(ABC):
     def E(t):
         pass
 
+
 class Sin2(Pulse):
     def __init__(self, u, F_str, omega, tprime=None):
         super().__init__(u)
 
         self._F_str = F_str
         self._omega = omega
-        
+
         if tprime is None:
-            self._tprime = 2*np.pi / omega
+            self._tprime = 2 * np.pi / omega
         else:
             self._tprime = tprime
 
@@ -35,7 +37,7 @@ class Sin2(Pulse):
             * np.sin(self._omega * t)
             * self._F_str
         )
-    
+
 
 class DeltaKick(Pulse):
     def __init__(self, u, F_str, dt):
@@ -46,6 +48,6 @@ class DeltaKick(Pulse):
 
     def E(self, t):
         if t < self._dt:
-            return self._F_str/self._dt
+            return self._F_str / self._dt
         else:
             return 0

@@ -15,6 +15,7 @@ from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
 from clusterfock.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
+
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
         assert not basis.restricted, "CCD can not deal with restricted basis"
@@ -134,6 +135,7 @@ class GCCSD(CoupledCluster):
 
         return psit * psitilde_t
 
+
 class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates=True):
         assert basis.restricted, f"Restricted CCSD requires restricted basis"
@@ -151,14 +153,14 @@ class RCCSD(CoupledCluster):
         u, o, v = self.basis.u, self.basis.o, self.basis.v
         f = self._f
 
-        E = 2*np.einsum("ia,ai->", f[o,v], t1, optimize=True)
-        E -= np.einsum("abij,ijba->", t2, u[o,o,v,v], optimize=True)
-        E += 2*np.einsum("abij,ijab->", t2, u[o,o,v,v], optimize=True)
-        E -= np.einsum("ai,bj,ijba->", t1, t1, u[o,o,v,v], optimize=True)
-        E += 2*np.einsum("ai,bj,ijab->", t1, t1, u[o,o,v,v], optimize=True)
+        E = 2 * np.einsum("ia,ai->", f[o, v], t1, optimize=True)
+        E -= np.einsum("abij,ijba->", t2, u[o, o, v, v], optimize=True)
+        E += 2 * np.einsum("abij,ijab->", t2, u[o, o, v, v], optimize=True)
+        E -= np.einsum("ai,bj,ijba->", t1, t1, u[o, o, v, v], optimize=True)
+        E += 2 * np.einsum("ai,bj,ijab->", t1, t1, u[o, o, v, v], optimize=True)
 
         return E
-    
+
     def _evaluate_tdcc_energy(self) -> float:
         t1, t2 = self._t[1], self._t[2]
         l1, l2 = self._l[1], self._l[2]
@@ -166,7 +168,7 @@ class RCCSD(CoupledCluster):
         f = self._f
 
         return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
-    
+
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis
 
@@ -183,7 +185,7 @@ class RCCSD(CoupledCluster):
         rhs.initialize_dicts({1: rhs1, 2: rhs2})
 
         return rhs
-    
+
     def _next_l_iteration(
         self, t: CoupledClusterParameter, l: CoupledClusterParameter
     ) -> CoupledClusterParameter:
