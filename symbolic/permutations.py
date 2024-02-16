@@ -5,6 +5,15 @@ from sympy import IndexedBase, Rational, symbols, Symbol
 from sympy import Indexed
 from sympy.physics.secondquant import PermutationOperator, simplify_index_permutations
 
+# For Restricted Permutation Operator
+from sympy import Expr, sympify, default_sort_key, Basic, Dummy, S
+# from sympy.core.expr import Expr
+# from sympy.core.sympify import sympify
+# from sympy.core.sorting import default_sort_key
+# from sympy.core.basic import Basic
+# from sympy.core.symbol import Dummy
+# from sympy.core.singleton import S
+
 from IPython import embed
 
 def permutations(self, P_list=None):
@@ -76,6 +85,40 @@ def _simplify_index_permutations(self, terms, expanded, P_list):
 
     return amps_sympy
 
+class RestrictedPermutationOperator(Expr):
+    """
+    Represents the index permutation operator P((ai)(bj)).
+
+    P((ai)(bj))*f(i)*g(j)*c(a)*d(b) = f(i)*g(j)*c(a)*d(b) + f(j)*g(i)*c(b)*d(a)
+    """
+    is_commutative = True
+
+    def __new__(cls, i, j, a, b):
+        i, j, a, b = sorted(map(sympify, (i, j, a, b)), key=default_sort_key)
+        obj = Basic.__new__(cls, i, j, a, b)
+        return obj
+
+    def get_permuted(self, expr):
+        i = self.args[0]
+        j = self.args[1]
+        a = self.args[2]
+        b = self.args[3]
+        if expr.has(i) and expr.has(j) and expr.has(a) and expr.has(b):
+            tmp = Dummy()
+            expr = expr.subs(i, tmp)
+            expr = expr.subs(j, i)
+            expr = expr.subs(tmp, j)
+
+            expr = expr.subs(a, tmp)
+            expr = expr.subs(b, a)
+            expr = expr.subs(tmp, b)
+            return expr
+        else:
+            return expr
+
+    def _latex(self, printer):
+        i, j, a, b = self.args[0], self.args[1], self.args[2], self.args[3]
+        return f"P(({i}{a})({j}{b}))"
 
 if __name__ == '__main__':
     dr = drutils.get_particle_hole_drudge(dummy=True)
