@@ -72,7 +72,7 @@ def compute_absorption_spectrum(time, dipole_moments, pol_dirs, normalize=True):
 
     return freq, S_tot
 
-def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True):
+def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True, cutoff=None):
     peaks, _ = find_peaks(S_tot, height=height)
     freq_peaks = freq[peaks]
 
@@ -81,6 +81,9 @@ def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True):
     excitations = freq_peaks[freq_peaks > 0]
     if ev:
         excitations *= one_ev
+
+    if cutoff is not None:
+        excitations = excitations[excitations < cutoff]
     
     if vocal:
         for excitation in excitations: print(excitation)
@@ -88,20 +91,30 @@ def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True):
     return excitations
 
 
-def compare_two(methods=["CCD", "CCSD"], name="chp"):
+def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
+    default = {
+        "cutoff": 20,
+        "plot_cutoff": 20,
+        "ev": True,
+    }
+    default.update(kwargs)
+    cutoff = default["cutoff"]
+    ev = default["ev"]
+    plot_cutoff = default["plot_cutoff"]
+
     freqs, S_tots = [], []
     for method in methods:
-        results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick")
-        print(len(results))
-        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 2)
+        results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick", polarisation=2)
+        
+        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 1)
         freq, S_tot = compute_absorption_spectrum(time, dipole_moments, pol_dirs)
         print(method)
-        absorption_spectrum_peaks(S_tot, freq)
+        absorption_spectrum_peaks(S_tot, freq, ev=ev, cutoff=cutoff)
 
         freqs.append(freq)
         S_tots.append(S_tot)
 
-    plot_spectrum(freqs, S_tots, methods)
+    plot_spectrum(freqs, S_tots, methods, ev=ev, cutoff=plot_cutoff)
 
 if __name__ == '__main__':
-    compare_two()
+    compare_two(methods=["CCD", "QCCD"], cutoff=20, plot_cutoff=100)

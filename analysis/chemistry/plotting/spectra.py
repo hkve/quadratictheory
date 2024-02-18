@@ -5,12 +5,12 @@ pack_as_list = lambda thing: [thing] if not type(thing) in [list, tuple] else th
 
 def plot_spectrum(freqs, S_tots, labels, ev=True, filename=None, **kwargs):
     default = {
-        "freq_cutoff": 0.05,
+        "cutoff": 0.05,
         "line_styles": ["-", ":"]
     }
     default.update(kwargs)
     
-    freq_cutoff = default["freq_cutoff"]
+    cutoff = default["cutoff"]
     line_styles = default["line_styles"]
 
     freqs = pack_as_list(freqs)
@@ -30,8 +30,11 @@ def plot_spectrum(freqs, S_tots, labels, ev=True, filename=None, **kwargs):
         n_points = len(freq)
         freq = freq[n_points//2:]
         S_tot = S_tot[n_points//2:]
+        n_points /= 2
+        max_freq = freq.max()
 
-        cutoff_idx = int(freq_cutoff*n_points)
+        cutoff_idx = int((cutoff/max_freq)*n_points)
+        print(cutoff, n_points)
         freq = freq[:cutoff_idx]
         S_tot = S_tot[:cutoff_idx]
 
