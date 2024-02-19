@@ -44,12 +44,16 @@ def check_if_file_should_be_included(prop, file_split, preamble=""):
     return False
 
 def make_info_from_filename(file):
-    pattern = r'^([A-Za-z]+)_([A-Za-z]+)_([A-Za-z\-]+)_Tend=(\d+)_dt=([\d\.]+)_([A-Za-z0-9]+)_([A-Za-z0-9]+)_(\d)\.npz$'
-    match = re.match(pattern, file)
-
+    # pattern = r'^([A-Za-z]+)_([A-Za-z]+)_([A-Za-z\-]+)_Tend=(\d+)_dt=([\d\.]+)_([A-Za-z0-9]+)_([A-Za-z0-9]+)_(\d)\.npz$'
+    # match = re.match(pattern, file)
+    file = file.strip(".npz")
+    file = file.split("_")
     keys = ["method", "name", "basis", "Tend", "dt", "integrator", "pulse", "polarisation"]
-    info = {key: match.group(i+1) for i, key in enumerate(keys)} 
 
+    assert len(keys) == len(file)
+
+    info = {k: v for k, v in zip(keys, file)}
+    
     return info
 
 def load_files(path=None, method=None, name=None, basis=None, Tend=None, dt=None, integrator=None, pulse=None, polarisation=None):
@@ -86,6 +90,7 @@ def load_files(path=None, method=None, name=None, basis=None, Tend=None, dt=None
             info = make_info_from_filename(file)
             result = np.load(path / file, allow_pickle=True)
 
-            results.append([info, result])
+            info.update(dict(result))
+            results.append(info)
 
     return results

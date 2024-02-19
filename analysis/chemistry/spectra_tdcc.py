@@ -12,8 +12,8 @@ def absorption_spectrum_preprocess(results, dof):
     assert len(results) == dof, f"Amount of data does not match expected {len(results)} != {dof}"
 
     dipole_moments, pol_dirs = [], []
-    for (info, samples) in results:
-        r, pol_dir = samples["r"], int(info["polarisation"])
+    for result in results:
+        r, pol_dir = result["r"], int(result["polarisation"])
         
         assert pol_dir in [0,1,2], f"{pol_dir = } is not along a cartesian axis, which preprocess assumes"
         dipole_moments.append(r)
@@ -28,7 +28,7 @@ def absorption_spectrum_preprocess(results, dof):
         pol_dirs = pol_dirs + [1]
         dipole_moments = dipole_moments + [dipole_moments[y_pol]]
 
-    time = samples["t"]
+    time = result["t"]
 
     return time, dipole_moments, pol_dirs
 
@@ -86,7 +86,8 @@ def absorption_spectrum_peaks(S_tot, freq, height=0.005, ev=True, vocal=True, cu
         excitations = excitations[excitations < cutoff]
     
     if vocal:
-        for excitation in excitations: print(excitation)
+        unit = "ev" if ev else "au"
+        for i, excitation in enumerate(excitations): print(f"Peak {i+1}:{excitation:>20.5f} {unit}")
 
     return excitations
 
@@ -104,9 +105,9 @@ def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
 
     freqs, S_tots = [], []
     for method in methods:
-        results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick", polarisation=2)
+        results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick", polarisation=[1,2])
         
-        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 1)
+        time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 2)
         freq, S_tot = compute_absorption_spectrum(time, dipole_moments, pol_dirs)
         print(method)
         absorption_spectrum_peaks(S_tot, freq, ev=ev, cutoff=cutoff)
@@ -117,4 +118,4 @@ def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
     plot_spectrum(freqs, S_tots, methods, ev=ev, cutoff=plot_cutoff)
 
 if __name__ == '__main__':
-    compare_two(methods=["CCD", "QCCD"], cutoff=20, plot_cutoff=100)
+    compare_two(methods=["CCD", "CCSD"], cutoff=20, plot_cutoff=100)

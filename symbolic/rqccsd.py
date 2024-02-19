@@ -4,11 +4,12 @@ import pathlib as pl
 
 from sympy import Rational
 from drudge import Stopwatch
+import gristmill
 
 
 def load(dr, basename):
     equations = {}
-    names = ["t2", "l2", "energy_td_part"]
+    names = ["t1", "t2", "l1", "l2", "energy_td_part"]
 
     for name in names:
         equation = drutils.load_from_pickle(dr, basename + f"_{name}")
@@ -83,7 +84,8 @@ def run(dr, basename):
 
 def optimize_expressions(dr, equations, basename):
     for name, eq in equations.items():
-        eval_seq = grutils.optimize_equations(dr, eq)
+        drutils.timer.tock(f"RQCCD before {name}", eq)
+        eval_seq = grutils.optimize_equations(dr, eq, contr_strat=gristmill.ContrStrat.OPT)
         drutils.timer.tock(f"RQCCD {name} optimization done")
 
         drutils.save_to_pickle(eval_seq, basename + "_opti_" + name)
@@ -124,7 +126,7 @@ if __name__ == "__main__":
     drutils.timer.vocal = True
     dr = drutils.get_restricted_particle_hole_drudge()
 
-    basename = "rqccd"
+    basename = "rqccsd"
 
     equations = run(dr, basename)
     # equations = load(dr, basename)

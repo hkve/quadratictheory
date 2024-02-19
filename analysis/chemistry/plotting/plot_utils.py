@@ -28,10 +28,10 @@ def save(filename, addition):
 
 fancy = False
 
-if fancy:
-    colors = ["black", "orange", "green", "red", "purple", "blue"]
-    markers = ["o", "^", "s", "x", "+", "<"]
+colors = ["black", "orange", "green", "red", "purple", "blue"]
+markers = ["o", "^", "s", "x", "+", "<"]
 
+if fancy:
     # Set all fonts to be equal to tex
     # https://stackoverflow.com/questions/11367736/matplotlib-consistent-font-using-latex
     plt.rcParams["mathtext.fontset"] = "stix"

@@ -41,7 +41,8 @@ def run_cc(
         basis = cf.PyscfBasis(geometry, basis_name, charge=charge)
 
     basis.pyscf_hartree_fock()
-    basis.from_restricted()
+    if not CC.__name__.startswith("R"):
+        basis.from_restricted()
 
     cc_run_args = {"tol": cc_tol, "vocal": False}
     if not "Q" in CC.__name__:
@@ -118,11 +119,13 @@ def delta_kick_compare(molecule_name, basis_name, **kwargs):
 
 def sin2_pulse_compare(molecule_name, basis_name, **kwargs):
     u = np.array([1.0, 0.0, 0.0])
-    F_str = 1e-2
-    dt = 0.1
-    omega = 0.2
-    tprime = 2 * np.pi / omega
-    t_end = 0.5
+    F_str = 1.0
+    dt = 0.01
+    omega = 2.87
+    tprime = (2 * np.pi / omega)
+    t_end = 3*tprime
+
+    tprime *= 2
 
     default = {
         "integrator": "Rk4Integrator",
@@ -211,5 +214,8 @@ def compare_delta_kick_1990_basis():
     plot_compare(results, polarisations=[2])
 
 if __name__ == "__main__":
-    main()
+    # main()
+    # compare_delta_kick_1990_basis()
+
+    sin2_pulse_compare(molecule_name="he", basis_name="cc-pVDZ")
     # compare_delta_kick_1990_basis()

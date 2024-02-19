@@ -14,27 +14,28 @@ def plot_compare(results, **kwargs):
     polarisation = defaults["polarisation"]
     filename = defaults["filename"]
 
-    info1, results1 = results[0]
-    info2, results2 = results[1]
-    
+    result1, result2 = results
+
     print("First passed: ")
-    for k, v in info1.items():
-        print(f"{k}: {v}")
+    for k, v in result1.items():
+        if type(v) is not np.ndarray:
+            print(f"{k}: {v}")
 
     print("Second passed: ")
-    for k, v in info2.items():
-        print(f"{k}: {v}")
+    for k, v in result2.items():
+        if type(v) is not np.ndarray:
+            print(f"{k}: {v}")
 
-    name, basis, integrator, pulse = info1["name"], info1["basis"], info1["integrator"], info1["pulse"] 
+    name, basis, integrator, pulse = result1["name"], result1["basis"], result1["integrator"], result1["pulse"] 
 
     fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5, 3], figsize=(10, 8))
     fig.suptitle(f"Energy for {name}({basis}) {pulse} pulse using {integrator}", fontsize=16)
 
-    t1, e1 = results1["t"], results1["energy"]
-    t2, e2 = results2["t"], results2["energy"]
+    t1, e1 = result1["t"], result1["energy"]
+    t2, e2 = result2["t"], result2["energy"]
 
-    ax[0].plot(t1, e1, label=f"{info1['method']}")
-    ax[0].plot(t2, e2, label=f"{info2['method']}")
+    ax[0].plot(t1, e1, label=f"{result1['method']}")
+    ax[0].plot(t2, e2, label=f"{result2['method']}")
 
     ax[1].plot(t1, np.abs(e1 - e2), label=f"DIFF: {integrator}")
 
@@ -47,15 +48,15 @@ def plot_compare(results, **kwargs):
     plt.show()
 
 
-    t1, t2 = results1["t"], results2["t"]
+    t1, t2 = result1["t"], result2["t"]
     fig, ax = plt.subplots(nrows=2, ncols=1, height_ratios=[5, 3], figsize=(10, 8))
     fig.suptitle(f"r_i for {name}({basis}) {pulse} pulse using {integrator}", fontsize=16)
     for pol in polarisation:
-        r1 = results1["r"][:,pol]
-        r2 = results2["r"][:,pol]
+        r1 = result1["r"][:,pol]
+        r2 = result2["r"][:,pol]
 
-        ax[0].plot(t1, r1, label=f"{info1['method']}")
-        ax[0].plot(t2, r2, label=f"{info2['method']}")
+        ax[0].plot(t1, r1, label=f"{result1['method']}")
+        ax[0].plot(t2, r2, label=f"{result2['method']}")
 
         ax[1].plot(t1, np.abs(r1 - r2), label=f"DIFF: direction {pol}")
 

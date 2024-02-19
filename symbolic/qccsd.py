@@ -84,33 +84,33 @@ def calculate_expressions(dr, basename):
 
 
     # ham_bar = drutils.similarity_transform(ham, T)
-    # # T1 QCCSD addition
-    # t1_equation = get_t_equation(dr, ham_bar, Y1, L, basename + "_t1")
-    # equations["t1"] = t1_equation
-    # grutils.einsum_raw(dr, basename + "_t1", t1_equation)
-    # drutils.timer.tock("QCCSD t1 done")
+    # T1 QCCSD addition
+    t1_equation = get_t_equation(dr, ham_bar, Y1, L, basename + "_t1")
+    equations["t1"] = t1_equation
+    grutils.einsum_raw(dr, basename + "_t1", t1_equation)
+    drutils.timer.tock("QCCSD t1 done")
 
     # # T2 QCCSD addition
-    # t2_equation = get_t_equation(dr, ham_bar, Y2, L, basename + "_t2")
-    # equations["t2"] = t2_equation
-    # grutils.einsum_raw(dr, basename + "_t2", t2_equation)
-    # drutils.timer.tock("QCCSD t2 done")
+    t2_equation = get_t_equation(dr, ham_bar, Y2, L, basename + "_t2")
+    equations["t2"] = t2_equation
+    grutils.einsum_raw(dr, basename + "_t2", t2_equation)
+    drutils.timer.tock("QCCSD t2 done")
 
     # L1 QCCSD addition
-    # l1_equation = get_l_equation(dr, ham, X1, T, L*L/2, basename + "_l1")
-    # equations["l1"] = l1_equation
-    # grutils.einsum_raw(dr, basename + "_l1", l1_equation)
-    # drutils.timer.tock("QCCSD l1 done")
+    l1_equation = get_l_equation(dr, ham, X1, T, L*L/2, basename + "_l1")
+    equations["l1"] = l1_equation
+    grutils.einsum_raw(dr, basename + "_l1", l1_equation)
+    drutils.timer.tock("QCCSD l1 done")
 
     # L2 QCCSD addition
-    # names = ["11", "12", "22"]
-    # deexes = [L1*L1/2, L1*L2, L2*L2/2]
+    names = ["11", "12", "22"]
+    deexes = [L1*L1/2, L1*L2, L2*L2/2]
 
-    # for name, deex in zip(names, deexes):
-    #     l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
-    #     equations[f"l2_{name}"] = l2_equation_additon
-    #     grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
-    #     drutils.timer.tock(f"QCCSD l2 done, {name} term")
+    for name, deex in zip(names, deexes):
+        l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
+        equations[f"l2_{name}"] = l2_equation_additon
+        grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
+        drutils.timer.tock(f"QCCSD l2 done, {name} term")
 
     return equations
 
