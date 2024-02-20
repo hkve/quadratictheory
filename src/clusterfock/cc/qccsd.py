@@ -111,8 +111,7 @@ class QCCSD(QuadraticCoupledCluster):
         rhs_l = self._next_l_iteration(t, l)
 
         mixing_term = np.einsum("ai,bj->abij", rhs_l[1], l[1])
-        mixing_term += np.einsum("ai,bj->abij", l[1], rhs_l[1])
-        mixing_term = mixing_term - mixing_term.transpose(0, 1, 3, 2)
+        mixing_term = mixing_term - mixing_term.transpose(0, 1, 3, 2) - mixing_term.transpose(1,0, 2, 3) + mixing_term.transpose(1, 0, 3, 2)
         rhs_l.add(2, -mixing_term)
 
         return rhs_l
