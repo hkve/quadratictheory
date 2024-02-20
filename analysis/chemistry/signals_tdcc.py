@@ -128,8 +128,8 @@ def sin2_pulse_compare(molecule_name, basis_name, **kwargs):
     tprime *= 2
 
     default = {
-        "integrator": "Rk4Integrator",
-        "integrator_args": {"dt": dt},
+        "integrator": "GaussIntegrator",
+        "integrator_args": {"s": 3, "maxit": 20, "eps": 1e-10, "method": "A", "mu": 1.75},
     }
     # integrator = "GaussIntegrator"
     # integrator_args = {"s": 3, "maxit": 20, "eps": 1e-6, "method": "A", "mu": 1.75}
