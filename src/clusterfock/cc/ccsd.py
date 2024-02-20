@@ -20,7 +20,7 @@ from clusterfock.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
 class GCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
-        assert not basis.restricted, "CCD can not deal with restricted basis"
+        assert not basis.restricted, "General CCSD can not deal with restricted basis"
 
         t_orders = [1, 2]
         l_orders = [1, 2]
