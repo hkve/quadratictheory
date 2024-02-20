@@ -24,7 +24,7 @@ def plot_imag_part(results, expval, direction=None, filename=None, **kwargs):
             y = y[:,direction]
 
 
-        ax.plot(x, y.real, label=result["method"], c=pl.colors[i])
+        ax.plot(x, y.imag, label=result["method"], c=pl.colors[i], marker="x")
 
     ax.set(xlabel=xlabel, ylabel=ylabel)
     ax.legend()
