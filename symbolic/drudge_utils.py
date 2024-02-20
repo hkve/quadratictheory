@@ -232,7 +232,7 @@ def diff_rk2_antisym(term, var, o, v):
     term_derivative = (term.diff(var[a,b,i,j])
                      - term.diff(var[b,a,i,j]) 
                      - term.diff(var[a,b,j,i])
-                     + term.diff(var[b,a,j,i]))/4
+                     + term.diff(var[b,a,j,i]))
     term_derivative = term_derivative.simplify()
 
     return term_derivative
