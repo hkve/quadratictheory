@@ -17,6 +17,7 @@ def run_cc(
     integrator,
     general_args={},
     integrator_args={},
+    subfolder = None,
 ):
     default = {
         "charge": 0,
@@ -63,7 +64,11 @@ def run_cc(
     filename = f"{CC.__name__}_{molecule_name}_{basis_name}_Tend={time[1]}_dt={time[2]}_{integrator}_{pulse.__class__.__name__}_{cartesian_polarisation_direction}.npz"
     print(f"DONE: {CC.__name__} {molecule_name} {pulse.__class__.__name__} {integrator} with pol = {cartesian_polarisation_direction}")
 
-    np.savez(f"{dat_path()}/{filename}", **results)
+    path = dat_path()
+    if subfolder is not None:
+        path / subfolder
+    
+    np.savez(f"{path}/{filename}", **results)
 
 def get_cartesian_direction(u):
     largest_idx = np.argmax(u)
