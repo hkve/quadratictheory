@@ -66,7 +66,7 @@ def run_cc(
 
     path = dat_path()
     if subfolder is not None:
-        path / subfolder
+        path = path / subfolder
     
     np.savez(f"{path}/{filename}", **results)
 
