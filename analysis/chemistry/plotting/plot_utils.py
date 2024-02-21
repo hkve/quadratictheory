@@ -26,7 +26,7 @@ def save(filename, addition):
         filename = make_figs_path(filename + addition)
         plt.savefig(filename)
 
-fancy = False
+fancy = True
 
 colors = ["black", "orange", "green", "red", "purple", "blue"]
 markers = ["o", "^", "s", "x", "+", "<"]
@@ -46,7 +46,7 @@ if fancy:
 
     # Font sizes
     plt.rc("axes", titlesize=18, labelsize=16, prop_cycle=cycler('color', colors))
-    plt.rc("legend", fontsize=14, shadow=True)
+    plt.rc("legend", fontsize=13, shadow=False)
 
     # Tick parameters
     _ticks_default_parameters = {
