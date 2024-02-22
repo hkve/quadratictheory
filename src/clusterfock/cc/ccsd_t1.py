@@ -115,3 +115,11 @@ class GCCSD_T1(CoupledCluster_T1):
         rho = two_body_density(rho, t2, l1, l2, o, v)
 
         return rho
+    
+    def _evaluate_tdcc_energy(self) -> float:
+        t1, t2 = self._t[1], self._t[2]
+        l1, l2 = self._l[1], self._l[2]
+        o, v = self.basis.o, self.basis.v
+        f, u = self._f, self._u
+
+        return self.td_energy_addition(np.zeros_like(t1), t2, l1, l2, u, f, o, v)
