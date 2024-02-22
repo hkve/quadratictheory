@@ -1,0 +1,17 @@
+    r^1 = zeros((nv, no))
+
+    r^1 += einsum(
+        "ai->ai", f
+    )
+
+    r^1 -= einsum(
+        "abjk,jkib->ai", t^2, u
+    ) / 2
+
+    r^1 += einsum(
+        "jb,abij->ai", f, t^2
+    )
+
+    r^1 += einsum(
+        "bcij,ajbc->ai", t^2, u
+    ) / 2

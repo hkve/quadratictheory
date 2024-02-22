@@ -29,11 +29,22 @@ def T_equations(dr):
 
     # Free indicies for de-excitation operator
     (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    Y1 = drutils.get_Y(dr, 1, (i,), (a,))
     Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
 
     # Calculate energy and t2 equations
     energy_eq = ham_bar.eval_fermi_vev().simplify()
     drutils.timer.tock("T2 energy equation")
+    
+    amplitude_t1_eq = (Y1 * ham_bar).eval_fermi_vev().simplify()
+    t1 = drutils.define_rk1_rhs(dr, amplitude_t1_eq)
+    eval_seq = grutils.optimize_equations(dr, t1)
+    drutils.save_html(dr, "ccsd_t1transform", t1)
+    drutils.save_html(dr, "ccsd_t1transform_optimized", eval_seq)
+    grutils.einsum_raw(dr, "ccsd_t1transform", t1)
+    grutils.einsum_raw(dr, "ccsd_t1transform_optimized", eval_seq)
+    drutils.timer.tock("T1 amplitude equation for T1-transformed CCSD done")
+
     amplitude_t2_eq = (Y2 * ham_bar).eval_fermi_vev().simplify()
     drutils.timer.tock("T2 amplitude equation")
 
@@ -110,8 +121,8 @@ def main():
     dr = drutils.get_particle_hole_drudge()
 
     drutils.timer.vocal = True
-    energy_lambda_contribution(dr)
-    # T_equations(dr)
+    # energy_lambda_contribution(dr)
+    T_equations(dr)
     # L_equations(dr)
     # L_densities(dr)
 

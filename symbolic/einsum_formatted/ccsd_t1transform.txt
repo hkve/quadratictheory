@@ -1,0 +1,18 @@
+    r1 = np.zeros((M, N))
+
+    r1 += np.einsum(
+        "ai->ai", f[v, o], optimize=True
+    )
+
+    r1 -= np.einsum(
+        "abjk,jkib->ai", t2, u[o, o, o, v], optimize=True
+    ) / 2
+
+    r1 += np.einsum(
+        "jb,abij->ai", f[o, v], t2, optimize=True
+    )
+
+    r1 += np.einsum(
+        "bcij,ajbc->ai", t2, u[v, o, v, v], optimize=True
+    ) / 2
+
