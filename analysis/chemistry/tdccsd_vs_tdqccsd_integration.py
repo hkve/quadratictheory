@@ -50,7 +50,7 @@ import plotting.plot_utils  as pl
 import matplotlib.pyplot as plt
 def plot(dts, omega=2.87, atom_name="he"):
 
-    # energy_diff_ccsd_qccsd(dts, omega)
+    energy_diff_ccsd_qccsd(dts, omega)
     energy_diff_after_pulse_off_integrators(dts, "CCSD", omega=omega)
     energy_diff_after_pulse_off_integrators(dts, "QCCSD", omega=omega)
 
