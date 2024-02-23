@@ -38,20 +38,20 @@ class GCCSD_T1(CoupledCluster_T1):
     def _next_t_iteration(self, t: CoupledClusterParameter) -> dict:
         basis = self.basis
 
-        self._h, self._f, self._u = self.perform_t1_transform(t[1], basis.h, basis.u)
+        self.perform_t1_transform(t1=t[1])
 
         rhs1 = self.t1_rhs(
             t2=t[2],
-            u=self._u,
-            f=self._f,
+            u=basis.u,
+            f=basis.f,
             v=basis.v,
             o=basis.o,
         )
 
         rhs2 = self.t2_rhs(
             t2=t[2],
-            u=self._u,
-            f=self._f,
+            u=basis.u,
+            f=basis.f,
             v=basis.v,
             o=basis.o,
         )
@@ -69,8 +69,8 @@ class GCCSD_T1(CoupledCluster_T1):
             t2=t[2],
             l1=l[1],
             l2=l[2],
-            u=self._u,
-            f=self._f,
+            u=basis.u,
+            f=basis.f,
             v=basis.v,
             o=basis.o,
         )
@@ -82,11 +82,12 @@ class GCCSD_T1(CoupledCluster_T1):
 
 
     def _evaluate_cc_energy(self) -> float:
-        o, v = self.basis.o, self.basis.v
+        basis = self.basis
+        o, v = basis.o, basis.v
         t2 = self._t[2]
 
         e = 0
-        e += np.einsum("abij,ijab->", t2, self._u[o, o, v, v], optimize=True) / 4
+        e += np.einsum("abij,ijab->", t2, basis._u[o, o, v, v], optimize=True) / 4
 
         return e
     

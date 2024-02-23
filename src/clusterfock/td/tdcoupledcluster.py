@@ -157,6 +157,9 @@ class TimeDependentCoupledCluster:
             external_contribution = self.external_one_body(t, basis)
             cc._f = basis.f + external_contribution
 
+            # IF T1-TRANSFORM
+            # cc._external_contribution = self.external_one_body(t, basis)
+
         t_dot = -1j * cc._t_rhs_timedependent(cc._t, cc._l)
         l_dot = 1j * cc._l_rhs_timedependent(cc._t, cc._l)
 
@@ -231,6 +234,8 @@ class TimeDependentCoupledCluster:
     def external_one_body(self, func_ob):
         self._has_td_one_body = True
         self._td_one_body = func_ob
+
+        self.cc._has_td_one_body = self._has_td_one_body # Only needs to be done for transform
 
     @property
     def sampler(self):
