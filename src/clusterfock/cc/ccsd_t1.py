@@ -20,12 +20,12 @@ from clusterfock.cc.densities.l_CCSD_t1transformed import one_body_density, two_
 from clusterfock.cc.energies.e_inter_ccsd_t1transformed import td_energy_addition
 
 class GCCSD_T1(CoupledCluster_T1):
-    def __init__(self, basis: Basis, intermediates: bool = True):
+    def __init__(self, basis: Basis, intermediates: bool = True, copy=False):
         assert not basis.restricted, "T1-transformed CCSD can not deal with restricted basis"
 
         t_orders = [1,2]
         l_orders = [1,2]
-        super().__init__(basis, t_orders, l_orders)
+        super().__init__(basis, t_orders, l_orders, copy=copy)
 
         self.t1_rhs = t1_transform_intermediates_ccsd
         self.t2_rhs = amplitudes_intermediates_ccd if intermediates else amplitudes_ccsd
