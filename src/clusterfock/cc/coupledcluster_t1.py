@@ -30,6 +30,8 @@ class CoupledCluster_T1(CoupledCluster):
         self.copy_cached_operators()
         self.perform_t1_transform(self._t[1])
         
+        return self
+    
     def perform_t1_transform(self, t1: np.ndarray):
         basis = self.basis
         N, M, L = basis.N, basis.M, basis.L
