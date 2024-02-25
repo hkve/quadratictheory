@@ -1,0 +1,57 @@
+    e = 0
+
+    e += einsum(
+        "ai,ai->", \lambda^1, f
+    )
+
+    e -= einsum(
+        "abij,acik,kbjc->", \lambda^2, t^2, u
+    )
+
+    e += einsum(
+        "ki,abij,abjk->", f, \lambda^2, t^2
+    ) / 2
+
+    e -= einsum(
+        "ai,abjk,jkib->", \lambda^1, t^2, u
+    ) / 2
+
+    e -= einsum(
+        "ai,bcij,jabc->", \lambda^1, t^2, u
+    ) / 2
+
+    e -= einsum(
+        "ac,abij,bcij->", f, \lambda^2, t^2
+    ) / 2
+
+    e += einsum(
+        "abij,cdij,abcd->", \lambda^2, t^2, u
+    ) / 8
+
+    e += einsum(
+        "abij,abkl,klij->", \lambda^2, t^2, u
+    ) / 8
+
+    e += einsum(
+        "abij,abij->", \lambda^2, u
+    ) / 4
+
+    e += einsum(
+        "ai,jb,abij->", \lambda^1, f, t^2
+    )
+
+    e += einsum(
+        "abij,acik,bdjl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 2
+
+    e -= einsum(
+        "abij,abik,cdjl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 4
+
+    e -= einsum(
+        "abij,acij,bdkl,klcd->", \lambda^2, t^2, t^2, u
+    ) / 4
+
+    e += einsum(
+        "abij,abkl,cdij,klcd->", \lambda^2, t^2, t^2, u
+    ) / 16

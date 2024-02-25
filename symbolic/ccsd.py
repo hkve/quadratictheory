@@ -170,7 +170,6 @@ def _run_blocks(dr, blocks, block_names, T, L):
 
     return rho
 
-
 @drutils.timeme
 def L_densities(dr):
     T1, L1 = drutils.get_clusters_1(dr)
@@ -192,6 +191,30 @@ def L_densities(dr):
     rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
     grutils.einsum_raw(dr, "ccsd_l_2b_density", rho_eqs)
 
+@drutils.timeme
+def energy_lambda_contribution_T1_trans(dr):
+    # Get T2 operators and sim transform ham
+    T1, L1 = drutils.get_clusters_1(dr)
+    T2, L2 = drutils.get_clusters_2(dr)
+    
+    T = (T2).simplify()
+    L = (L1+L2).simplify()
+    
+    ham = dr.ham
+    ham_bar = drutils.similarity_transform(ham, T)
+
+    energy_eq = (L*ham_bar).eval_fermi_vev().simplify()
+    energy_eq = drutils.define_rk0_rhs(dr, energy_eq)
+    drutils.timer.tock("energy equation")
+
+    eval_seq = grutils.optimize_equations(dr, energy_eq)
+    
+    drutils.save_html(dr, "ccsd_energy_addition_t1transformed", [energy_eq], ["E addition"])
+    grutils.einsum_raw(dr, "ccsd_energy_addition_t1transformed", [energy_eq])
+
+    drutils.save_html(dr, "ccsd_energy_addition_optimized_t1transformed", eval_seq)
+    grutils.einsum_raw(dr, "ccsd_energy_addition_optimized_t1transformed", eval_seq)
+
 
 def main():
     dr = drutils.get_particle_hole_drudge()
@@ -202,6 +225,8 @@ def main():
     # L_densities(dr)
     # energy_lambda_contribution(dr)
 
-    L_equations_T1_trans(dr)
+    # L_equations_T1_trans(dr)
+    energy_lambda_contribution_T1_trans(dr)
+
 if __name__ == "__main__":
     main()

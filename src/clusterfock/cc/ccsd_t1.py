@@ -17,7 +17,7 @@ from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
 
 from clusterfock.cc.densities.l_CCSD_t1transformed import one_body_density, two_body_density
-from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
+from clusterfock.cc.energies.e_inter_ccsd_t1transformed import td_energy_addition
 
 class GCCSD_T1(CoupledCluster_T1):
     def __init__(self, basis: Basis, intermediates: bool = True):
@@ -95,7 +95,7 @@ class GCCSD_T1(CoupledCluster_T1):
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
 
-        l1, t1 = self._l[1], self._t[1]
+        l1 = self._l[1]
         l2, t2 = self._l[2], self._t[2]
         o, v = basis.o, basis.v
 
@@ -108,7 +108,7 @@ class GCCSD_T1(CoupledCluster_T1):
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
 
-        l1, t1 = self._l[1], self._t[1]
+        l1 = self._l[1]
         l2, t2 = self._l[2], self._t[2]
         o, v = basis.o, basis.v
 
@@ -118,9 +118,9 @@ class GCCSD_T1(CoupledCluster_T1):
         return rho
     
     def _evaluate_tdcc_energy(self) -> float:
-        t1, t2 = self._t[1], self._t[2]
+        t2 = self._t[2]
         l1, l2 = self._l[1], self._l[2]
         o, v = self.basis.o, self.basis.v
         f, u = self._f, self._u
 
-        return self.td_energy_addition(np.zeros_like(t1), t2, l1, l2, u, f, o, v)
+        return self.td_energy_addition(t2, l1, l2, u, f, o, v)
