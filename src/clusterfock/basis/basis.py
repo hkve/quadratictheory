@@ -162,16 +162,22 @@ class Basis(ABC):
         Returns:
         - new_basis (Basis): The new copy of self
         """
-        L, N = self._degeneracy * self.L, self._degeneracy * self.N
         new_basis = type(self)(*self._args, **self._kwargs)
         new_basis.orthonormal = self.orthonormal
         new_basis.antisymmetric = self.antisymmetric
+        new_basis._computational_basis = self._computational_basis
+        new_basis.restricted = self.restricted
 
         new_basis.h = self.h.copy()
         new_basis.u = self.u.copy()
         new_basis.s = self.s.copy()
         new_basis.C = self.C.copy()
         new_basis.calculate_fock_matrix()
+
+        cached_operators = self._check_cached_operators()
+        for operator in cached_operators:
+            new_basis.__dict__[operator] = self.__dict__[operator].copy()
+
 
         return new_basis
 
