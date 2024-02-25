@@ -50,6 +50,8 @@ class CoupledCluster(ABC):
         self.rho_ob = None
         self.rho_tb = None
 
+        self.transforms_basis = False
+
     def run(
         self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
     ) -> CoupledCluster:

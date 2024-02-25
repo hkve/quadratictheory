@@ -93,6 +93,10 @@ class TimeDependentCoupledCluster:
             cc._l.dtype = complex
             cc._f = cc._f.astype(complex)
 
+            if cc.transforms_basis:
+                cc._h = cc._h.astype(complex)
+                cc._u = cc._u.astype(complex)
+
         self._setup_sample(basis)
 
         y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._t, cc._l)
@@ -155,10 +159,13 @@ class TimeDependentCoupledCluster:
 
         if self._has_td_one_body:
             external_contribution = self.external_one_body(t, basis)
-            cc._f = basis.f + external_contribution
+            
+            if cc.transforms_basis:
+                cc._external_contribution = self.external_one_body(t, basis)
+            else:
+                cc._f = basis.f + external_contribution
 
             # IF T1-TRANSFORM
-            # cc._external_contribution = self.external_one_body(t, basis)
 
         t_dot = -1j * cc._t_rhs_timedependent(cc._t, cc._l)
         l_dot = 1j * cc._l_rhs_timedependent(cc._t, cc._l)
@@ -235,7 +242,8 @@ class TimeDependentCoupledCluster:
         self._has_td_one_body = True
         self._td_one_body = func_ob
 
-        self.cc._has_td_one_body = self._has_td_one_body # Only needs to be done for transform
+        if self.cc.transforms_basis:
+            self.cc._has_td_one_body = self._has_td_one_body # Only needs to be done for transform
 
     @property
     def sampler(self):

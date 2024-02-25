@@ -18,7 +18,8 @@ class CoupledCluster_T1(CoupledCluster):
         self._u = self.basis.u.copy()
         self._h = self.basis.h.copy()
 
-        self._has_external_onebody = False
+        self.transforms_basis = True
+        self._has_td_one_body = False
 
     def perform_t1_transform(self, t1: np.ndarray):
         basis = self.basis
@@ -36,7 +37,7 @@ class CoupledCluster_T1(CoupledCluster):
         basis.calculate_fock_matrix()
 
         # For time dependent calculations
-        if self._has_external_onebody:
+        if self._has_td_one_body:
             basis.f = basis.f + self.t1_transform_one_body(self._external_contribution, X, Y)
 
     def t1_transform_one_body(self, operator, X, Y):

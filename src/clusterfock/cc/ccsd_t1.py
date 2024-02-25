@@ -121,6 +121,6 @@ class GCCSD_T1(CoupledCluster_T1):
         t2 = self._t[2]
         l1, l2 = self._l[1], self._l[2]
         o, v = self.basis.o, self.basis.v
-        f, u = self._f, self._u
+        f, u = self.basis.f, self.basis.u
 
         return self.td_energy_addition(t2, l1, l2, u, f, o, v)
