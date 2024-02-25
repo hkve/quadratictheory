@@ -2,6 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
 import warnings
+import inspect
+import functools
 
 
 class Basis(ABC):
@@ -202,6 +204,12 @@ class Basis(ABC):
         obj.C = C
         obj.calculate_fock_matrix()
 
+        cached_operators = self._check_cached_operators()
+        for operator in cached_operators:
+            obj.__dict__[operator] = obj._change_basis_one_body(
+                obj.__dict__[operator], C
+            )
+
         return obj
 
     def _antisymmetrize(self):
@@ -289,6 +297,16 @@ class Basis(ABC):
             operator = self._change_basis_two_body(operator, self.C)
 
         return operator
+
+    def _check_cached_operators(self):
+        member_keys = list(self.__dict__.keys())
+
+        cached_operators = [
+            name for name, value in inspect.getmembers(type(self))
+            if isinstance(value, functools.cached_property) and name in member_keys
+        ]
+
+        return cached_operators
 
     """
     Getters and setters for ints (L,N) and slices (o,v). N also performs tweaking on M

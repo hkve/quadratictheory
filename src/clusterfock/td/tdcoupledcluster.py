@@ -99,6 +99,10 @@ class TimeDependentCoupledCluster:
 
         self._setup_sample(basis)
 
+        if cc.transforms_basis:
+            cc.copy_cached_operators()
+            cc.perform_t1_transform(cc._t[1])
+
         y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._t, cc._l)
         t_start, t_end, dt = self._t_start, self._t_end, self._dt
 
@@ -157,15 +161,16 @@ class TimeDependentCoupledCluster:
         cc._t.from_flat(y[self.t_slice])
         cc._l.from_flat(y[self.l_slice])
 
+        # Adds time dependent hamiltonian to fock matrix if present
         if self._has_td_one_body:
             external_contribution = self.external_one_body(t, basis)
             
+            # If T1-transform, pass it to CC class seperatly since it needs to be transformed as well
+            # Else add it to CC storage of Fock matrix
             if cc.transforms_basis:
                 cc._external_contribution = self.external_one_body(t, basis)
             else:
                 cc._f = basis.f + external_contribution
-
-            # IF T1-TRANSFORM
 
         t_dot = -1j * cc._t_rhs_timedependent(cc._t, cc._l)
         l_dot = 1j * cc._l_rhs_timedependent(cc._t, cc._l)

@@ -19,8 +19,17 @@ class CoupledCluster_T1(CoupledCluster):
         self._h = self.basis.h.copy()
 
         self.transforms_basis = True
+        self.transform_cached = False
         self._has_td_one_body = False
 
+    def run(
+        self, tol: float = 1e-8, maxiters: int = 1000, include_l: bool = False, vocal: bool = False
+    ) -> CoupledCluster:
+        super().run(tol, maxiters, include_l, vocal)
+
+        self.copy_cached_operators()
+        self.perform_t1_transform(self._t[1])
+        
     def perform_t1_transform(self, t1: np.ndarray):
         basis = self.basis
         N, M, L = basis.N, basis.M, basis.L
@@ -39,9 +48,24 @@ class CoupledCluster_T1(CoupledCluster):
         # For time dependent calculations
         if self._has_td_one_body:
             basis.f = basis.f + self.t1_transform_one_body(self._external_contribution, X, Y)
+        if self.transform_cached:
+            cached_operators = basis._check_cached_operators()
+            
+            for operator in cached_operators:
+                basis.__dict__[operator] = self.t1_transform_one_body(self.__dict__[operator], X, Y)
+
+
+    def copy_cached_operators(self):
+        self.transform_cached = True
+        basis = self.basis
+        
+        cached_operators = basis._check_cached_operators()
+
+        for operator in cached_operators:
+            self.__dict__[operator] = basis.__dict__[operator].copy()
 
     def t1_transform_one_body(self, operator, X, Y):
-        return np.einsum("pr,qs,rs", X, Y, operator, optimize=True)
+        return np.einsum("pr,qs,...rs->...pq", X, Y, operator, optimize=True)
     
     def t1_transform_two_body(self, operator, X, Y):
         return np.einsum(
