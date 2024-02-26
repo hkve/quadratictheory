@@ -15,7 +15,7 @@ class TimeDependentCoupledCluster:
     def __init__(
         self,
         cc: CoupledCluster,
-        time: tuple = (0, 1.0, 0.0001),
+        time: tuple = (0, 1.0, 0.01),
         integrator="Rk4Integrator",
         integrator_args={},
     ):

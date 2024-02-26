@@ -26,6 +26,15 @@ class Sampler:
     def misc(self, tdcc) -> dict:
         return {}
 
+class ImagTimeSampler(Sampler):
+    def __init__(self, one_body=False, two_body=False, misc=True):
+        super().__init__(one_body, two_body, misc)
+
+    def misc(self, tdcc) -> dict:
+        return {
+            "energy": tdcc.cc.time_dependent_energy(),
+        }
+
 
 class DipoleSampler(Sampler):
     def __init__(self, one_body=True, two_body=False, misc=True):

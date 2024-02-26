@@ -17,10 +17,10 @@ from clusterfock.cc.qccsd import QCCSD
 from clusterfock.cc.ccsd_t1 import GCCSD_T1
 
 from clusterfock.td.tdcoupledcluster import TimeDependentCoupledCluster
+from clusterfock.td import ImaginaryTimeCoupledCluster
 
 from clusterfock.td import pulse
 from clusterfock.td import sampler
-
 
 def HF(basis: Basis):
     return RHF(basis) if basis.restricted else GHF(basis)
@@ -31,7 +31,6 @@ def CCD(basis: Basis, intermediates=True):
 
 
 def CCSD(basis: Basis, intermediates=True):
-    print(basis.restricted)
     return (
         RCCSD(basis, intermediates=intermediates)
         if basis.restricted
