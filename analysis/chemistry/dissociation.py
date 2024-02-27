@@ -1,9 +1,12 @@
 import numpy as np
 import clusterfock as cf
-from fci_utils import run_fci_single
+from utils.runs import run_fci_single
+import plotting.plot_utils as pl
+import matplotlib.pyplot as plt
 
 import pathlib as pl
 import pandas as pd
+
 
 def merge_df(df1, df2):
     df_merged = pd.merge(df1, df2, on="r", how="outer", suffixes=(None, "_new"))
@@ -124,7 +127,15 @@ def calculate_N2():
 
 
 def main():
-    calculate_N2()
+    fig, ax = plt.subplots()
+
+    x = np.linspace(-np.pi, np.pi, 1000)
+    for i in range(1,6):
+        ax.plot(x, np.cos(i*x)*np.exp(-x**2), label=f"{i} $\omega$")
+
+    ax.legend()
+    plt.show()
+    # calculate_N2()
 
 if __name__ == "__main__":
     main()
