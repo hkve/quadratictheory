@@ -137,7 +137,62 @@ class GCCSD(CoupledCluster):
 
         return psit * psitilde_t
 
+    def _overlap_ref_ket(self, t1, t2, l1, l2):
+        return 1
+    
+    def _overlap_singles_ket(self, t1, t2, l1, l2):
+        return t1
+    
+    def _overlap_doubles_ket(self, t1, t2, l1, l2):
+        P = np.einsum("ai,bj->abij", t1, t1)
+        return P - P.transpose(1,0,2,3) + t2
 
+    def _overlap_bra_ref(self, t1, t2, l1, l2):
+        overlap = 1 - np.einsum("ai,ai->", l1, t1)
+        overlap -= 0.25*np.einsum("abij,abij->", l2, t2)
+        overlap += 0.25*np.einsum("abij,ai,bj->", l2, t1, t1)
+        overlap -= 0.25*np.einsum("abij,aj,bi->", l2, t1, t1)
+
+        return overlap
+
+    def _overlap_bra_singles(self, t1, t2, l1, l2):
+        return l1 - np.einsum("aeim,em->ai", l2, t1)
+
+    def _overlap_bra_doubles(self, t1, t2, l1, l2):
+        return l2
+
+    def _if_missing_use_stored(self, t1, t2, l1, l2):
+        if not t1: t1 = self._t[1]
+        if not t2: t2 = self._t[2]
+        if not l1: l1 = self._l[1]
+        if not l2: l2 = self._l[2]
+
+        return t1, t2, l1, l2
+
+    def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+
+        bra = self._overlap_bra_ref(t1,t2,l1,l2)
+        ket = self._overlap_ref_ket(t1,t2,l1,l2)
+
+        return np.multiply(bra, ket)
+    
+    def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+
+        bra = self._overlap_bra_singles(t1,t2,l1,l2)
+        ket = self._overlap_singles_ket(t1,t2,l1,l2)
+
+        return np.multiply(bra, ket)
+
+    def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+
+        bra = self._overlap_bra_doubles(t1,t2,l1,l2)
+        ket = self._overlap_doubles_ket(t1,t2,l1,l2)
+
+        return np.multiply(bra, ket)
+    
 class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates=True):
         assert basis.restricted, f"Restricted CCSD requires restricted basis"
