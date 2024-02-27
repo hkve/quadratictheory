@@ -51,6 +51,11 @@ def get_symmetries(geometry):
 
     return polarisations
 
+def disassociate_2dof(atom1, atom2, distances):
+    return [
+        f"{atom1} 0 0 0; {atom2} 0 0 {distance}" for distance in distances
+    ]
+
 def get_pyscf_mol_custom_basis(filename="chp.dat", geometry=f"C 0.0 0.0 0.0; H 0.0 0.0 2.13713"):
     filename = custom_basis_path(filename)
     mol = gto.M(unit="bohr")
@@ -60,7 +65,7 @@ def get_pyscf_mol_custom_basis(filename="chp.dat", geometry=f"C 0.0 0.0 0.0; H 0
     return mol
 
 def run_fci_single(atom, basis, *args):
-    mol = gto.M(unit="angstrom")
+    mol = gto.M(unit="bohr")
     mol.verbose = 0
     mol.build(atom=atom, basis=basis)
 

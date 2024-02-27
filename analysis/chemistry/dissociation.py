@@ -1,12 +1,20 @@
 import numpy as np
 import clusterfock as cf
-from utils.runs import run_fci_single
+from utils.runs import run_fci_single, disassociate_2dof
+from plotting.plot_dissociation import plot
 import plotting.plot_utils as pl
 import matplotlib.pyplot as plt
 
 import pathlib as pl
 import pandas as pd
 
+def run_fci(atoms, basis, vocal=False):
+    E = np.zeros(len(atoms))
+    for i, atom in enumerate(atoms):
+        E[i] = run_fci_single(atom, basis)
+        if vocal: print(f"FCI\tE = {E[i]:.4f}\t{atom = }\t{basis = }")
+    
+    return E
 
 def merge_df(df1, df2):
     df_merged = pd.merge(df1, df2, on="r", how="outer", suffixes=(None, "_new"))
@@ -42,17 +50,6 @@ def save(filename, df):
             save(filename_new, df)
 
     df_new.to_csv(filename, sep=",", index=True)
-
-def make_N2(distances):
-    atoms = [f"N 0 0 0; N 0 0 {r}" for r in distances]
-    return atoms
-
-def run_fci(atoms, basis, vocal=False):
-    E = np.zeros(len(atoms))
-    for i, atom in enumerate(atoms):
-        E[i] = run_fci_single(atom, basis)
-        if vocal: print(f"FCI\tE = {E[i]:.4f}\t{atom = }\t{basis = }")
-    return E
 
 def run_cc(atoms, basis, method, vocal=False, **kwargs):
     opts = {
@@ -107,35 +104,30 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
     return E
 
 def calculate_N2():
-    # distances = np.array([1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4])
-    distances = np.array([0.6, 0.8])
+    distances = np.array([3.308])
 
     basis = "sto-3g"
-    atoms = make_N2(distances)
+    atoms = disassociate_2dof("N", "N", distances)
 
     E_fci = run_fci(atoms, basis, vocal=True)
     df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    save("N2.csv", df_fci)
+    save("csv/N2.csv", df_fci)
 
     E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
-    save("N2.csv", df_ccd)
+    save("csv/N2.csv", df_ccd)
 
     E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
-    save("N2.csv", df_qccd)
+    save("csv/N2.csv", df_qccd)
 
 
 def main():
-    fig, ax = plt.subplots()
+    calculate_N2()
 
-    x = np.linspace(-np.pi, np.pi, 1000)
-    for i in range(1,6):
-        ax.plot(x, np.cos(i*x)*np.exp(-x**2), label=f"{i} $\omega$")
-
-    ax.legend()
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
+    plot("csv/N2.csv", axes, splines=True, ylabel=True, x_min=0.8, y_max=0.2)
     plt.show()
-    # calculate_N2()
 
 if __name__ == "__main__":
     main()

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
-import plot_utils
+import plotting.plot_utils as pl
 from scipy.interpolate import CubicSpline
 
 def spline(x, y):
@@ -17,7 +17,7 @@ def plot(filename, ax, splines=False, x_min=None, y_max=None, ylabel=True):
     assert ax.shape == (2,), "Wrong shape"
     df = pd.read_csv(filename, sep=",", header=0, index_col=0)
     df.sort_values("r", inplace=True)
-    c, m = plot_utils.colors, plot_utils.markers
+    c, m = pl.colors, pl.markers
 
     r = df["r"]
     methods = df.columns[1:]
@@ -55,7 +55,7 @@ def plot(filename, ax, splines=False, x_min=None, y_max=None, ylabel=True):
     ax[0].legend()
     ax[1].set(xlabel="R [Å]")
     if ylabel: ax[1].set(ylabel=r"$E - E_{FCI}$ [au]")
-    # plot_utils.save("N2")
+    # pl.save("N2")
 
 
 def plot_N2():
