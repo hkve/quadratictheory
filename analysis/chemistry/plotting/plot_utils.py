@@ -30,7 +30,7 @@ fancy = True
 
 # colors = ["black", "orange", "green", "red", "purple", "blue"]
 colors = ["blue", "red", "green", "purple", "darkorange", "slategray"]
-markers = ["o", "^", "s", "x", "+", "<"]
+markers = ["o", "s", "^", "x", "+", "<"]
 
 if fancy:
     # Set all fonts to be equal to tex

@@ -13,17 +13,37 @@ def spline(x, y):
 
     return x_new, y_new
 
-def plot(filename, ax, splines=False, x_min=None, y_max=None, ylabel=True):
+def get_ls(method, dash_quad):
+    if not dash_quad:
+        return "-"
+    else:
+        if method.startswith("Q") or method.startswith("GQ"):
+            return ":"
+        else:
+            return "-"
+
+
+def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=None, ylabel=True, **kwargs):
     assert ax.shape == (2,), "Wrong shape"
     df = pd.read_csv(filename, sep=",", header=0, index_col=0)
     df.sort_values("r", inplace=True)
     c, m = pl.colors, pl.markers
 
+    default = {
+        "dash_quad": False,
+    }
+    default.update(kwargs)
+
+    dash_quad = default["dash_quad"]
+
     r = df["r"]
     methods = df.columns[1:]
-    E0 = df["FCI"].iloc[-1]
+
+    if E0 is None:
+        E0 = df["FCI"].iloc[-1]
 
     for i, method in enumerate(methods):
+        ls = get_ls(method, dash_quad)
         e = df[method].to_numpy() - E0
         ax[0].scatter(r, e, color=c[i], label=method, marker=m[i])
 
@@ -34,18 +54,21 @@ def plot(filename, ax, splines=False, x_min=None, y_max=None, ylabel=True):
                 first_nan = len(e)
 
             r_spline, e_spline = spline(r[:first_nan].to_numpy(), e[:first_nan])
-            ax[0].plot(r_spline, e_spline, color=c[i])
+            ax[0].plot(r_spline, e_spline, color=c[i], ls=ls)
 
     y_lims = ax[0].get_ylim()
     x_lims = ax[0].get_xlim()
     ax[0].hlines(0, *x_lims, color="k", ls="--", alpha=0.4)
     if x_min is not None: ax[0].set_xlim(x_min, x_lims[1])
     if y_max is not None: ax[0].set_ylim(y_lims[0], y_max)
+    if y_min is not None and y_max is not None: ax[0].set_ylim(y_min, y_max)
     if ylabel: ax[0].set(ylabel=r"$E_{bound} - E_{free}$  [au]")
 
     for i, method in enumerate(methods[1:], start=1):
+        ls = get_ls(method, dash_quad)
+        
         de = np.abs(df[method].to_numpy() - df["FCI"].to_numpy())
-        ax[1].plot(r, de, color=c[i], marker=m[i])
+        ax[1].plot(r, de, color=c[i], marker=m[i], ls=ls)
         ax[1].set_yscale("log")
 
     # ax[0].set_xticklabels([])
@@ -54,7 +77,7 @@ def plot(filename, ax, splines=False, x_min=None, y_max=None, ylabel=True):
 
     ax[0].legend()
     ax[1].set(xlabel="R [Å]")
-    if ylabel: ax[1].set(ylabel=r"$E - E_{FCI}$ [au]")
+    if ylabel: ax[1].set(ylabel=r"$|E - E_{FCI}|$ [au]")
     # pl.save("N2")
 
 

@@ -104,7 +104,12 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
     return E
 
 def calculate_N2():
-    distances = np.array([3.308])
+    distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+    distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+
+    distances = np.r_[distances1, distances2]
+
+    distances = np.array([3.4])
 
     basis = "sto-3g"
     atoms = disassociate_2dof("N", "N", distances)
@@ -121,13 +126,71 @@ def calculate_N2():
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/N2.csv", df_qccd)
 
+def calculate_LiH():
+    # distances = np.array([2.5, 3.0, 3.5, 4.0])
+    # distances = np.array([1.0, 1.5, 2.0, 4.5, 5.0, 6.0])
+    distances  = np.array([6.5, 7.0, 7.5, 8.0, 0.5, 9.0])
+
+    basis = "sto-3g"
+    atoms = disassociate_2dof("Li", "H", distances)
+
+    E_fci = run_fci(atoms, basis, vocal=True)
+    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    save("csv/LiH.csv", df_fci)
+
+    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
+    save("csv/LiH.csv", df_ccd)
+
+    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
+    save("csv/LiH.csv", df_qccd)
+
+def calculate_HF():
+    distances = np.arange(1.0, 5.5+0.125, 0.125)
+
+    basis = "DZ"
+    atoms = disassociate_2dof("H", "F", distances)
+
+    E_fci = run_fci(atoms, basis, vocal=True)
+    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    save("csv/HF.csv", df_fci)
+
+    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
+    save("csv/HF.csv", df_ccd)
+
+    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
+    save("csv/HF.csv", df_qccd)
+
+def plot_N2():
+    E_free = -107.43802235
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
+    plot("csv/N2.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2)
+    plt.show()
+
+def plot_LiH():
+    E_free = -7.78249491
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
+    plot("csv/LiH.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.4, y_min=-0.12, y_max=0.05, dash_quad=True)
+    plt.show()
+
+def plot_HF():
+    E_free = -99.98329223
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
+    plot("csv/HF.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=True)
+    plt.show()
 
 def main():
-    calculate_N2()
+    # calculate_N2()
+    # plot_N2()
 
-    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/N2.csv", axes, splines=True, ylabel=True, x_min=0.8, y_max=0.2)
-    plt.show()
+    # calculate_LiH()
+    # plot_LiH()
+
+    # calculate_HF()
+    plot_HF()
 
 if __name__ == "__main__":
     main()
