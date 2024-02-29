@@ -7,7 +7,7 @@ from clusterfock.td.tdcoupledcluster import TimeDependentCoupledCluster
 
 import tqdm
 import numpy as np
-from scipy.integrate import complex_ode, ode
+from scipy.integrate import ode
 from rk4_integrator.rk4 import Rk4Integrator
 from gauss_integrator.gauss import GaussIntegrator
 
@@ -30,15 +30,6 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         cc._l.initialize_zero()
         cc._t_info = {"run": True, "converged": True, "iters": 0}
         cc._l_info = cc._t_info.copy()
-        if not basis.dtype == complex:
-            basis.dtype = complex
-            cc._t.dtype = complex
-            cc._l.dtype = complex
-            cc._f = cc._f.astype(complex)
-
-            if cc.transforms_basis:
-                cc._h = cc._h.astype(complex)
-                cc._u = cc._u.astype(complex)
 
         self._setup_sample(basis)
 
@@ -50,7 +41,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         n_time_points = int((t_end - t_start) / dt) + 1
         time_points = np.linspace(t_start, t_end, n_time_points)
 
-        integrator = complex_ode(self.rhs)
+        integrator = ode(self.rhs)
         integrator.set_integrator(self._integrator, **self._integrator_args)
         integrator.set_initial_value(y_initial, t_start)
 
@@ -100,8 +91,8 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         cc._t.from_flat(y[self.t_slice])
         cc._l.from_flat(y[self.l_slice])
 
-        t_dot = (-1+0j)*cc._t_rhs_timedependent(cc._t, cc._l)
-        l_dot = (-1+0j)*cc._l_rhs_timedependent(cc._t, cc._l)
+        t_dot = -1.0*cc._t_rhs_timedependent(cc._t, cc._l)
+        l_dot = -1.0*cc._l_rhs_timedependent(cc._t, cc._l)
 
         y_dot, _, _ = merge_to_flat(t_dot, l_dot)
 
