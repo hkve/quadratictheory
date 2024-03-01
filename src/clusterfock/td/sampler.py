@@ -31,9 +31,22 @@ class ImagTimeSampler(Sampler):
         super().__init__(one_body, two_body, misc)
 
     def misc(self, tdcc) -> dict:
-        return {
-            "energy": tdcc.cc.time_dependent_energy(),
+        cc, cc_gs = tdcc.cc, tdcc.cc_gs
+        
+        t_norms = {}
+        l_norms = {}
+        for order in cc._t.orders:
+            t_norms[f"delta_t{order}"] = np.linalg.norm(cc_gs._t[order] - cc._t[order])
+            l_norms[f"delta_l{order}"] = np.linalg.norm(cc_gs._l[order] - cc._l[order])
+
+        result = {
+            "energy": cc.time_dependent_energy(),
         }
+
+        result.update(t_norms)
+        result.update(l_norms)
+
+        return result
 
 
 class DipoleSampler(Sampler):

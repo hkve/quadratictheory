@@ -15,6 +15,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
     def __init__(
         self,
         cc: CoupledCluster,
+        cc_gs: CoupledCluster,
         time: tuple = (0, 1.0, 0.01),
         integrator="Rk4Integrator",
         integrator_args={},
@@ -22,6 +23,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
     
         super().__init__(cc, time, integrator, integrator_args)
         self.sampler = sampler.ImagTimeSampler()
+        self.cc_gs = cc_gs
 
     def run(self, vocal: bool = False) -> dict:
         cc, basis = self.cc, self.basis
