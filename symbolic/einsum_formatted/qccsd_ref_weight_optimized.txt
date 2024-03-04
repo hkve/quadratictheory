@@ -1,0 +1,238 @@
+    tau0 = 0
+
+    tau0 += np.einsum(
+        "ai,ai->", l1, t1, optimize=True
+    )
+
+    ref = 0
+
+    ref += tau0**2 * np.einsum(
+        "->", , optimize=True
+    ) / 2
+
+    tau1 = np.zeros((N, N))
+
+    tau1 += np.einsum(
+        "baki,bakj->ij", l2, t2, optimize=True
+    )
+
+    tau18 = np.zeros((N, N))
+
+    tau18 += np.einsum(
+        "ij->ij", tau1, optimize=True
+    )
+
+    ref -= np.einsum(
+        "ij,ji->", tau1, tau1, optimize=True
+    ) / 8
+
+    tau1 = None
+
+    tau2 = np.zeros((M, M))
+
+    tau2 += np.einsum(
+        "caji,cbji->ab", l2, t2, optimize=True
+    )
+
+    ref -= np.einsum(
+        "ab,ba->", tau2, tau2, optimize=True
+    ) / 8
+
+    tau2 = None
+
+    tau3 = np.zeros((N, N, N, N))
+
+    tau3 += np.einsum(
+        "baij,bakl->ijkl", l2, t2, optimize=True
+    )
+
+    ref += np.einsum(
+        "jilk,lkji->", tau3, tau3, optimize=True
+    ) / 32
+
+    tau3 = None
+
+    tau4 = 0
+
+    tau4 += np.einsum(
+        "baji,baji->", l2, t2, optimize=True
+    )
+
+    ref += tau4**2 * np.einsum(
+        "->", , optimize=True
+    ) / 32
+
+    tau4 = None
+
+    tau5 = np.zeros((N, N, N, M))
+
+    tau5 += np.einsum(
+        "bk,abij->ijka", t1, l2, optimize=True
+    )
+
+    tau6 = np.zeros((N, N, N, N))
+
+    tau6 += np.einsum(
+        "al,jika->ijkl", t1, tau5, optimize=True
+    )
+
+    tau7 = np.zeros((N, M))
+
+    tau7 -= np.einsum(
+        "lkja,jilk->ia", tau5, tau6, optimize=True
+    )
+
+    tau6 = None
+
+    ref += np.einsum(
+        "ai,ia->", t1, tau7, optimize=True
+    ) / 8
+
+    tau7 = None
+
+    tau11 = np.zeros((N, M))
+
+    tau11 += np.einsum(
+        "bakj,kjib->ia", t2, tau5, optimize=True
+    )
+
+    tau5 = None
+
+    tau8 = np.zeros((N, M))
+
+    tau8 += np.einsum(
+        "bj,abij->ia", t1, l2, optimize=True
+    )
+
+    tau9 = 0
+
+    tau9 += np.einsum(
+        "ai,ia->", t1, tau8, optimize=True
+    )
+
+    ref += tau9**2 * np.einsum(
+        "->", , optimize=True
+    ) / 8
+
+    tau9 = None
+
+    tau10 = np.zeros((N, M))
+
+    tau10 += 2 * np.einsum(
+        "ia->ia", tau8, optimize=True
+    )
+
+    tau13 = np.zeros((N, M))
+
+    tau13 += np.einsum(
+        "ia->ia", tau8, optimize=True
+    )
+
+    tau8 = None
+
+    tau10 -= np.einsum(
+        "ai->ia", l1, optimize=True
+    )
+
+    tau11 -= np.einsum(
+        "jb,baji->ia", tau10, t2, optimize=True
+    )
+
+    tau10 = None
+
+    ref -= np.einsum(
+        "ai,ia->", l1, tau11, optimize=True
+    ) / 2
+
+    tau11 = None
+
+    tau12 = np.zeros((N, N, M, M))
+
+    tau12 += np.einsum(
+        "caki,cbkj->ijab", l2, t2, optimize=True
+    )
+
+    tau16 = np.zeros((N, N, M, M))
+
+    tau16 -= np.einsum(
+        "caki,kjcb->ijab", t2, tau12, optimize=True
+    )
+
+    tau12 = None
+
+    tau13 += 2 * np.einsum(
+        "ai->ia", l1, optimize=True
+    )
+
+    tau14 = np.zeros((N, N))
+
+    tau14 += np.einsum(
+        "aj,ia->ij", t1, tau13, optimize=True
+    )
+
+    tau13 = None
+
+    tau15 = np.zeros((N, M))
+
+    tau15 += np.einsum(
+        "aj,ji->ia", t1, tau14, optimize=True
+    )
+
+    tau14 = None
+
+    tau16 += 2 * np.einsum(
+        "ai,jb->ijab", t1, tau15, optimize=True
+    )
+
+    tau15 = None
+
+    ref -= np.einsum(
+        "abij,ijab->", l2, tau16, optimize=True
+    ) / 4
+
+    tau16 = None
+
+    tau17 = np.zeros((N, N))
+
+    tau17 += np.einsum(
+        "ai,aj->ij", l1, t1, optimize=True
+    )
+
+    tau18 += np.einsum(
+        "ij->ij", tau17, optimize=True
+    )
+
+    ref -= np.einsum(
+        "ji,ij->", tau17, tau18, optimize=True
+    ) / 2
+
+    tau17 = None
+
+    tau18 = None
+
+    tau19 = np.zeros((N, N, M, M))
+
+    tau19 += np.einsum(
+        "baji->ijab", t2, optimize=True
+    )
+
+    tau19 += 2 * np.einsum(
+        "ai,bj->ijab", t1, t1, optimize=True
+    )
+
+    tau20 = 0
+
+    tau20 += np.einsum(
+        "abij,ijab->", l2, tau19, optimize=True
+    )
+
+    tau19 = None
+
+    ref += tau0*tau20 * np.einsum(
+        "->", , optimize=True
+    ) / 4
+
+    tau0 = None
+
+    tau20 = None
+

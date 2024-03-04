@@ -1,0 +1,117 @@
+    det = zeros((nv, nv, no, no))
+
+    det += einsum(
+        "ai,bj->abij", \lambda^1, \lambda^1
+    )
+
+    det -= einsum(
+        "aj,bi->abij", \lambda^1, \lambda^1
+    )
+
+    det += einsum(
+        "acik,bdlj,cdkl->abij", \lambda^2, \lambda^2, t^2
+    )
+
+    det += einsum(
+        "abil,cdkj,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det += einsum(
+        "ackl,bdij,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det -= einsum(
+        "ackj,bdil,cdkl->abij", \lambda^2, \lambda^2, t^2
+    )
+
+    det -= einsum(
+        "ablj,cdik,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det -= einsum(
+        "adij,bckl,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det -= einsum(
+        "abij,cdkl,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    det -= einsum(
+        "abkl,cdij,cdkl->abij", \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    det += einsum(
+        "ck,dl,ablj,cdik->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det += einsum(
+        "ck,dl,ackj,bdil->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det += einsum(
+        "ck,dl,adij,bckl->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det += einsum(
+        "cl,dk,acik,bdlj->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det += einsum(
+        "ck,dl,abij,cdkl->abij", t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    det += einsum(
+        "ck,dl,abkl,cdij->abij", t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    det -= einsum(
+        "ck,dl,abil,cdkj->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det -= einsum(
+        "ck,dl,acik,bdlj->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det -= einsum(
+        "ck,dl,ackl,bdij->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det -= einsum(
+        "cl,dk,ackj,bdil->abij", t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det += einsum(
+        "ai,ck,bckj->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det += einsum(
+        "aj,ck,bcik->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det += einsum(
+        "bk,ck,acij->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det += einsum(
+        "ci,ck,abkj->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det += einsum(
+        "cj,ck,abik->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det -= einsum(
+        "ak,ck,bcij->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det -= einsum(
+        "bi,ck,ackj->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det -= einsum(
+        "bj,ck,acik->abij", \lambda^1, t^1, \lambda^2
+    )
+
+    det -= einsum(
+        "ck,ck,abij->abij", \lambda^1, t^1, \lambda^2
+    )

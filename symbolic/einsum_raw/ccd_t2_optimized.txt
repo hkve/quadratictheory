@@ -41,7 +41,7 @@
     tau^4 = zeros((no, no, nv, nv))
 
     tau^4 += einsum(
-        "acik,jkbc->ijab", t^2, tau^3
+        "bcjk,ikac->ijab", t^2, tau^3
     )
 
     del tau^3
@@ -67,22 +67,14 @@
     tau^6 = zeros((no, no, nv, nv))
 
     tau^6 += einsum(
-        "acik,kbjc->ijab", t^2, u
+        "ki,abjk->ijab", f, t^2
     )
 
     r^2 -= einsum(
-        "ijab->abij", tau^6
-    )
-
-    r^2 += einsum(
         "ijba->abij", tau^6
     )
 
     r^2 += einsum(
-        "jiab->abij", tau^6
-    )
-
-    r^2 -= einsum(
         "jiba->abij", tau^6
     )
 
@@ -91,14 +83,22 @@
     tau^7 = zeros((no, no, nv, nv))
 
     tau^7 += einsum(
-        "ki,abjk->ijab", f, t^2
+        "acik,kbjc->ijab", t^2, u
     )
 
     r^2 -= einsum(
+        "ijab->abij", tau^7
+    )
+
+    r^2 += einsum(
         "ijba->abij", tau^7
     )
 
     r^2 += einsum(
+        "jiab->abij", tau^7
+    )
+
+    r^2 -= einsum(
         "jiba->abij", tau^7
     )
 
@@ -145,9 +145,9 @@
     del tau^10
 
     r^2 += einsum(
-        "dcji,badc->abij", t^2, u
-    ) / 2
-
-    r^2 += einsum(
         "baji->abij", u
     )
+
+    r^2 += einsum(
+        "dcji,badc->abij", t^2, u
+    ) / 2

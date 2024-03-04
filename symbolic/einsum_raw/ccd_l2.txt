@@ -1,5 +1,17 @@
     r^2 = zeros((nv, nv, no, no))
 
+    r^2 -= einsum(
+        "ik,abkj->abij", f, \lambda^2
+    )
+
+    r^2 -= einsum(
+        "jk,abik->abij", f, \lambda^2
+    )
+
+    r^2 += einsum(
+        "abkl,ijkl->abij", \lambda^2, u
+    ) / 2
+
     r^2 += einsum(
         "ackj,cdkl,ilbd->abij", \lambda^2, t^2, u
     )
@@ -57,26 +69,6 @@
     ) / 4
 
     r^2 += einsum(
-        "abkl,ijkl->abij", \lambda^2, u
-    ) / 2
-
-    r^2 += einsum(
-        "ackj,icbk->abij", \lambda^2, u
-    )
-
-    r^2 += einsum(
-        "bcik,cjak->abij", \lambda^2, u
-    )
-
-    r^2 -= einsum(
-        "acik,cjbk->abij", \lambda^2, u
-    )
-
-    r^2 -= einsum(
-        "bckj,icak->abij", \lambda^2, u
-    )
-
-    r^2 += einsum(
         "cdij,cdab->abij", \lambda^2, u
     ) / 2
 
@@ -92,10 +84,18 @@
         "ijab->abij", u
     )
 
-    r^2 -= einsum(
-        "ik,abkj->abij", f, \lambda^2
+    r^2 += einsum(
+        "ackj,icbk->abij", \lambda^2, u
+    )
+
+    r^2 += einsum(
+        "bcik,cjak->abij", \lambda^2, u
     )
 
     r^2 -= einsum(
-        "jk,abik->abij", f, \lambda^2
+        "acik,cjbk->abij", \lambda^2, u
+    )
+
+    r^2 -= einsum(
+        "bckj,icak->abij", \lambda^2, u
     )

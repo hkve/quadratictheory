@@ -21,7 +21,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         integrator_args={},
     ):
     
-        super().__init__(cc, time, integrator, integrator_args)
+        super().__init__(cc=cc, time=time, integrator=integrator, integrator_args=integrator_args)
         self.sampler = sampler.ImagTimeSampler()
         self.cc_gs = cc_gs
 

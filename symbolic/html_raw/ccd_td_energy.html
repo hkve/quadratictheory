@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ccd_t2</title>
+    <title>ccd_td_energy</title>
 
     <!-- MathJAX intialization -->
     <script type="text/x-mathjax-config">
@@ -31,7 +31,7 @@
 <body>
 <div class="container-fluid">
     <div class="jumbotron">
-        <h1>ccd_t2</h1>
+        <h1>ccd_td_energy</h1>
     </div>
 
     <div class="row">
@@ -40,7 +40,7 @@
             <div class="page-header" id="sect-1">
                 <h2>equation 1</h2>
             </div>
-            <p>\[ r^{2}_{a,b,i,j} = \sum_{c \in V} f_{b,c}  t^{2}_{a,c,i,j}  - \sum_{c \in V} f_{a,c}  t^{2}_{b,c,i,j}   + \sum_{k \in O} \sum_{l \in O} \frac{1}{2} t^{2}_{a,b,k,l}  u_{k,l,i,j}  - \sum_{k \in O} f_{k,i}  t^{2}_{a,b,k,j}  - \sum_{k \in O} f_{k,j}  t^{2}_{a,b,i,k}   + u_{a,b,i,j}   + \sum_{k \in O} \sum_{c \in V} t^{2}_{a,c,k,j}  u_{b,k,i,c}   + \sum_{k \in O} \sum_{c \in V} t^{2}_{b,c,i,k}  u_{a,k,c,j}  - \sum_{k \in O} \sum_{c \in V} t^{2}_{a,c,i,k}  u_{b,k,c,j}  - \sum_{k \in O} \sum_{c \in V} t^{2}_{b,c,k,j}  u_{a,k,i,c}   + \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{2}_{c,d,i,j}  u_{a,b,c,d}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{2}_{a,c,k,j}  t^{2}_{b,d,i,l}  u_{k,l,c,d}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{2}_{a,b,l,j}  t^{2}_{c,d,i,k}  u_{k,l,c,d}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} t^{2}_{a,d,i,j}  t^{2}_{b,c,k,l}  u_{k,l,c,d}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} t^{2}_{a,c,i,k}  t^{2}_{b,d,l,j}  u_{k,l,c,d}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{2}_{a,b,i,l}  t^{2}_{c,d,k,j}  u_{k,l,c,d}  - \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V}  \frac{1}{2} t^{2}_{a,c,k,l}  t^{2}_{b,d,i,j}  u_{k,l,c,d}   + \sum_{k \in O} \sum_{l \in O} \sum_{c \in V} \sum_{d \in V} \frac{1}{4} t^{2}_{a,b,k,l}  t^{2}_{c,d,i,j}  u_{k,l,c,d}  \]</p>
+            <p>\[ e = \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{2} \lambda^2_{a,b,i,j}  t^{2}_{a,c,i,k}  t^{2}_{b,d,j,l}  u_{k,l,c,d}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V}  \frac{1}{4} \lambda^2_{a,b,i,j}  t^{2}_{a,b,i,k}  t^{2}_{c,d,j,l}  u_{k,l,c,d}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V}  \frac{1}{4} \lambda^2_{a,b,i,j}  t^{2}_{a,c,i,j}  t^{2}_{b,d,k,l}  u_{k,l,c,d}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{16} \lambda^2_{a,b,i,j}  t^{2}_{a,b,k,l}  t^{2}_{c,d,i,j}  u_{k,l,c,d}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{l \in O} \sum_{a \in V} \sum_{b \in V} \frac{1}{8} \lambda^2_{a,b,i,j}  t^{2}_{a,b,k,l}  u_{k,l,i,j}   + \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{a \in V} \sum_{b \in V} \frac{1}{2} f_{k,i}  \lambda^2_{a,b,i,j}  t^{2}_{a,b,j,k}   + \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \frac{1}{4} \lambda^2_{a,b,i,j}  u_{a,b,i,j}  - \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V}  \frac{1}{2} f_{a,c}  \lambda^2_{a,b,i,j}  t^{2}_{b,c,i,j}   + \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \sum_{d \in V} \frac{1}{8} \lambda^2_{a,b,i,j}  t^{2}_{c,d,i,j}  u_{a,b,c,d}  - \sum_{i \in O} \sum_{j \in O} \sum_{k \in O} \sum_{a \in V} \sum_{b \in V} \sum_{c \in V} \lambda^2_{a,b,i,j}  t^{2}_{a,c,i,k}  u_{k,b,j,c}  \]</p>
         </div>
 
         <!-- The navigation -->
