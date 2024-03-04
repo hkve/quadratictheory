@@ -10,6 +10,7 @@ from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
 
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
+from clusterfock.cc.weights.ccsd import reference_ccsd, singles_ccsd, doubles_ccsd
 
 from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
@@ -136,31 +137,7 @@ class GCCSD(CoupledCluster):
         psit -= 0.25 * np.einsum("abij,abij->", l0[2], t0[2])
 
         return psit * psitilde_t
-
-    def _overlap_ref_ket(self, t1, t2, l1, l2):
-        return 1
     
-    def _overlap_singles_ket(self, t1, t2, l1, l2):
-        return t1
-    
-    def _overlap_doubles_ket(self, t1, t2, l1, l2):
-        P = np.einsum("ai,bj->abij", t1, t1)
-        return P - P.transpose(1,0,2,3) + t2
-
-    def _overlap_bra_ref(self, t1, t2, l1, l2):
-        overlap = 1 - np.einsum("ai,ai->", l1, t1)
-        overlap -= 0.25*np.einsum("abij,abij->", l2, t2)
-        overlap += 0.25*np.einsum("abij,ai,bj->", l2, t1, t1)
-        overlap -= 0.25*np.einsum("abij,aj,bi->", l2, t1, t1)
-
-        return overlap
-
-    def _overlap_bra_singles(self, t1, t2, l1, l2):
-        return l1 - np.einsum("aeim,em->ai", l2, t1)
-
-    def _overlap_bra_doubles(self, t1, t2, l1, l2):
-        return l2
-
     def _if_missing_use_stored(self, t1, t2, l1, l2):
         if not t1: t1 = self._t[1]
         if not t2: t2 = self._t[2]
@@ -171,27 +148,15 @@ class GCCSD(CoupledCluster):
 
     def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-
-        bra = self._overlap_bra_ref(t1,t2,l1,l2)
-        ket = self._overlap_ref_ket(t1,t2,l1,l2)
-
-        return np.multiply(bra, ket)
+        return reference_ccsd(t1, t2, l1, l2)
     
     def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-
-        bra = self._overlap_bra_singles(t1,t2,l1,l2)
-        ket = self._overlap_singles_ket(t1,t2,l1,l2)
-
-        return np.multiply(bra, ket)
+        return singles_ccsd(t1, t2, l1, l2)
 
     def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-
-        bra = self._overlap_bra_doubles(t1,t2,l1,l2)
-        ket = self._overlap_doubles_ket(t1,t2,l1,l2)
-
-        return np.multiply(bra, ket)
+        return doubles_ccsd(t1, t2, l1, l2)
     
 class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates=True):

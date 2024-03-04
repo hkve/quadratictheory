@@ -10,6 +10,8 @@ from clusterfock.cc.rhs.t_inter_QCCSD import amplitudes_intermediates_qccsd
 from clusterfock.cc.rhs.l_inter_QCCSD import lambda_amplitudes_intermediates_qccsd
 from clusterfock.cc.energies.e_qccsd import energy_qccsd
 from clusterfock.cc.energies.e_inter_qccsd import energy_intermediates_qccsd
+from clusterfock.cc.weights.ccsd import reference_ccsd, singles_ccsd, doubles_ccsd
+from clusterfock.cc.weights.qccsd import reference_addition_qccsd
 
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.densities.l_QCCSD import one_body_density_addition, two_body_density_addition
@@ -152,3 +154,27 @@ class QCCSD(QuadraticCoupledCluster):
 
     def _overlap(self, t0, l0, t, l):
         return 0
+    
+    def _if_missing_use_stored(self, t1, t2, l1, l2):
+        if not t1: t1 = self._t[1]
+        if not t2: t2 = self._t[2]
+        if not l1: l1 = self._l[1]
+        if not l2: l2 = self._l[2]
+
+        return t1, t2, l1, l2
+
+    def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        det = reference_ccsd(t1, t2, l1, l2)
+        det = reference_addition_qccsd(t1, t2, l1, l2, det)
+        return det
+    
+    def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        det =  singles_ccsd(t1, t2, l1, l2)
+        return det
+
+    def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        det =  doubles_ccsd(t1, t2, l1, l2)
+        return det
