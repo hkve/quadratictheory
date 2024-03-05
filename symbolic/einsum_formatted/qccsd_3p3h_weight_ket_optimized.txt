@@ -1,0 +1,54 @@
+    tau0 = np.zeros((N, N, M, M))
+
+    tau0 += np.einsum(
+        "baji->ijab", t2, optimize=True
+    )
+
+    tau0 -= np.einsum(
+        "aj,bi->ijab", t1, t1, optimize=True
+    )
+
+    tau0 += np.einsum(
+        "ai,bj->ijab", t1, t1, optimize=True
+    )
+
+    det = np.zeros((M, M, M, N, N, N))
+
+    det += np.einsum(
+        "ai,kjcb->abcijk", t1, tau0, optimize=True
+    )
+
+    det += np.einsum(
+        "ak,jicb->abcijk", t1, tau0, optimize=True
+    )
+
+    det -= np.einsum(
+        "aj,kicb->abcijk", t1, tau0, optimize=True
+    )
+
+    tau0 = None
+
+    det -= np.einsum(
+        "bi,cakj->abcijk", t1, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "ci,bakj->abcijk", t1, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "bj,caki->abcijk", t1, t2, optimize=True
+    )
+
+    det -= np.einsum(
+        "cj,baki->abcijk", t1, t2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bk,caji->abcijk", t1, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "ck,baji->abcijk", t1, t2, optimize=True
+    )
+

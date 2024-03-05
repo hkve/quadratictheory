@@ -1,0 +1,133 @@
+    tau^0 = zeros((no, nv))
+
+    tau^0 += einsum(
+        "bj,abij->ia", t^1, \lambda^2
+    )
+
+    det = zeros((nv, nv, nv, no, no, no))
+
+    det += einsum(
+        "kc,abji->abcijk", tau^0, \lambda^2
+    )
+
+    det -= einsum(
+        "kb,acji->abcijk", tau^0, \lambda^2
+    )
+
+    det -= einsum(
+        "ka,cbji->abcijk", tau^0, \lambda^2
+    )
+
+    det -= einsum(
+        "jc,abki->abcijk", tau^0, \lambda^2
+    )
+
+    det += einsum(
+        "jb,acki->abcijk", tau^0, \lambda^2
+    )
+
+    det += einsum(
+        "ja,cbki->abcijk", tau^0, \lambda^2
+    )
+
+    det += einsum(
+        "ic,abkj->abcijk", tau^0, \lambda^2
+    )
+
+    det -= einsum(
+        "ib,ackj->abcijk", tau^0, \lambda^2
+    )
+
+    det -= einsum(
+        "ia,cbkj->abcijk", tau^0, \lambda^2
+    )
+
+    del tau^0
+
+    tau^1 = zeros((no, no, no, nv))
+
+    tau^1 += einsum(
+        "bk,abij->ijka", t^1, \lambda^2
+    )
+
+    tau^2 = zeros((no, no, no, nv, nv, nv))
+
+    tau^2 -= einsum(
+        "abil,kjlc->ijkabc", \lambda^2, tau^1
+    )
+
+    del tau^1
+
+    det += einsum(
+        "ikjabc->abcijk", tau^2
+    )
+
+    det -= einsum(
+        "ikjacb->abcijk", tau^2
+    )
+
+    det -= einsum(
+        "ikjcba->abcijk", tau^2
+    )
+
+    det -= einsum(
+        "jkiabc->abcijk", tau^2
+    )
+
+    det += einsum(
+        "jkiacb->abcijk", tau^2
+    )
+
+    det += einsum(
+        "jkicba->abcijk", tau^2
+    )
+
+    det += einsum(
+        "kjiabc->abcijk", tau^2
+    )
+
+    det -= einsum(
+        "kjiacb->abcijk", tau^2
+    )
+
+    det -= einsum(
+        "kjicba->abcijk", tau^2
+    )
+
+    del tau^2
+
+    det += einsum(
+        "ai,cbkj->abcijk", \lambda^1, \lambda^2
+    )
+
+    det -= einsum(
+        "bi,cakj->abcijk", \lambda^1, \lambda^2
+    )
+
+    det += einsum(
+        "ci,bakj->abcijk", \lambda^1, \lambda^2
+    )
+
+    det -= einsum(
+        "aj,cbki->abcijk", \lambda^1, \lambda^2
+    )
+
+    det += einsum(
+        "bj,caki->abcijk", \lambda^1, \lambda^2
+    )
+
+    det -= einsum(
+        "cj,baki->abcijk", \lambda^1, \lambda^2
+    )
+
+    det += einsum(
+        "ak,cbji->abcijk", \lambda^1, \lambda^2
+    )
+
+    det -= einsum(
+        "bk,caji->abcijk", \lambda^1, \lambda^2
+    )
+
+    det += einsum(
+        "ck,baji->abcijk", \lambda^1, \lambda^2
+    )

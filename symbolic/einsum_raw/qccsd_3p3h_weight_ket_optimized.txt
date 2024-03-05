@@ -1,0 +1,53 @@
+    tau^0 = zeros((no, no, nv, nv))
+
+    tau^0 += einsum(
+        "baji->ijab", t^2
+    )
+
+    tau^0 -= einsum(
+        "aj,bi->ijab", t^1, t^1
+    )
+
+    tau^0 += einsum(
+        "ai,bj->ijab", t^1, t^1
+    )
+
+    det = zeros((nv, nv, nv, no, no, no))
+
+    det += einsum(
+        "ai,kjcb->abcijk", t^1, tau^0
+    )
+
+    det += einsum(
+        "ak,jicb->abcijk", t^1, tau^0
+    )
+
+    det -= einsum(
+        "aj,kicb->abcijk", t^1, tau^0
+    )
+
+    del tau^0
+
+    det -= einsum(
+        "bi,cakj->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ci,bakj->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "bj,caki->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "cj,baki->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "bk,caji->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ck,baji->abcijk", t^1, t^2
+    )

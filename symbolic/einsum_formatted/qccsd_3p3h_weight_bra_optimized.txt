@@ -1,0 +1,134 @@
+    tau0 = np.zeros((N, M))
+
+    tau0 += np.einsum(
+        "bj,abij->ia", t1, l2, optimize=True
+    )
+
+    det = np.zeros((M, M, M, N, N, N))
+
+    det += np.einsum(
+        "kc,abji->abcijk", tau0, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "kb,acji->abcijk", tau0, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "ka,cbji->abcijk", tau0, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "jc,abki->abcijk", tau0, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "jb,acki->abcijk", tau0, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ja,cbki->abcijk", tau0, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ic,abkj->abcijk", tau0, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "ib,ackj->abcijk", tau0, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "ia,cbkj->abcijk", tau0, l2, optimize=True
+    )
+
+    tau0 = None
+
+    tau1 = np.zeros((N, N, N, M))
+
+    tau1 += np.einsum(
+        "bk,abij->ijka", t1, l2, optimize=True
+    )
+
+    tau2 = np.zeros((N, N, N, M, M, M))
+
+    tau2 -= np.einsum(
+        "abil,kjlc->ijkabc", l2, tau1, optimize=True
+    )
+
+    tau1 = None
+
+    det += np.einsum(
+        "ikjabc->abcijk", tau2, optimize=True
+    )
+
+    det -= np.einsum(
+        "ikjacb->abcijk", tau2, optimize=True
+    )
+
+    det -= np.einsum(
+        "ikjcba->abcijk", tau2, optimize=True
+    )
+
+    det -= np.einsum(
+        "jkiabc->abcijk", tau2, optimize=True
+    )
+
+    det += np.einsum(
+        "jkiacb->abcijk", tau2, optimize=True
+    )
+
+    det += np.einsum(
+        "jkicba->abcijk", tau2, optimize=True
+    )
+
+    det += np.einsum(
+        "kjiabc->abcijk", tau2, optimize=True
+    )
+
+    det -= np.einsum(
+        "kjiacb->abcijk", tau2, optimize=True
+    )
+
+    det -= np.einsum(
+        "kjicba->abcijk", tau2, optimize=True
+    )
+
+    tau2 = None
+
+    det += np.einsum(
+        "ai,cbkj->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bi,cakj->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ci,bakj->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "aj,cbki->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "bj,caki->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "cj,baki->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ak,cbji->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bk,caji->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ck,baji->abcijk", l1, l2, optimize=True
+    )
+

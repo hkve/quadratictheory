@@ -154,3 +154,114 @@ def doubles_addition_qccsd(t1, t2, l1, l2):
     ket = ket - ket.transpose(1, 0, 2, 3) + t2
 
     return np.multiply(bra, ket)
+
+def triples_qccsd(t1, t2, l1, l2):
+    det = np.einsum(
+        "ai,bcjk->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ak,bcij->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "bj,acik->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ci,abjk->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "ck,abij->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "aj,bcik->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bi,acjk->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bk,acij->abcijk", l1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "cj,abik->abcijk", l1, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,abij,cdlk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,ablk,cdij->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,acik,bdlj->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,acil,bdjk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,acjk,bdil->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,aclj,bdik->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,adij,bclk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det += np.einsum(
+        "dl,adlk,bcij->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,abik,cdlj->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,abil,cdjk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,abjk,cdil->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,ablj,cdik->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,acij,bdlk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,aclk,bdij->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,adik,bclj->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,adil,bcjk->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,adjk,bcil->abcijk", t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "dl,adlj,bcik->abcijk", t1, l2, l2, optimize=True
+    )
+
+    return det

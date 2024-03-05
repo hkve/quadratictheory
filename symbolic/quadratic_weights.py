@@ -149,8 +149,8 @@ def triple_excited(dr):
     bra_res = bra_res.simplify()
     ket_res = ket_res.simplify()
 
-    save(dr, "qccsd_3p3h_weight_ket", ket_res)
-    save(dr, "qccsd_3p3h_weight_bra", bra_res)
+    from IPython import embed
+    embed()
 
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
@@ -158,4 +158,5 @@ if __name__ == "__main__":
     drutils.timer.vocal = True
     # reference(dr)
     # single_excited(dr)
-    double_excited(dr)
+    # double_excited(dr)
+    triple_excited(dr)

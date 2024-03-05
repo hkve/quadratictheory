@@ -1,0 +1,61 @@
+    det = zeros((nv, nv, nv, no, no, no))
+
+    det += einsum(
+        "ai,bcjk->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ak,bcij->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "bj,acik->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ci,abjk->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ck,abij->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "aj,bcik->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "bi,acjk->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "bk,acij->abcijk", t^1, t^2
+    )
+
+    det -= einsum(
+        "cj,abik->abcijk", t^1, t^2
+    )
+
+    det += einsum(
+        "ai,bj,ck->abcijk", t^1, t^1, t^1
+    )
+
+    det += einsum(
+        "aj,bk,ci->abcijk", t^1, t^1, t^1
+    )
+
+    det += einsum(
+        "ak,bi,cj->abcijk", t^1, t^1, t^1
+    )
+
+    det -= einsum(
+        "ai,bk,cj->abcijk", t^1, t^1, t^1
+    )
+
+    det -= einsum(
+        "aj,bi,ck->abcijk", t^1, t^1, t^1
+    )
+
+    det -= einsum(
+        "ak,bj,ci->abcijk", t^1, t^1, t^1
+    )
