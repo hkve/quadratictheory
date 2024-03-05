@@ -54,7 +54,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
             loop_range = tqdm.tqdm(range(n_time_points - 1))
 
         unsuccessful_index = None
-
+        l_dot_norm_prev = 1000
         for i in loop_range:
             integrator.integrate(integrator.t + dt)
 
@@ -64,6 +64,15 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
 
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
+
+            # l_dot = -1.0*cc._l_rhs_timedependent(cc._t, cc._l)
+            # l_dot_norm = np.linalg.norm(l_dot[2])
+
+            # if l_dot_norm > l_dot_norm_prev:
+            #     print("!!! ")
+            # else:
+            #     l_dot_norm_prev = l_dot_norm
+            # print(f"{integrator.t:.3f}", l_dot_norm, np.linalg.norm(cc._l[2]))
 
             self._sample()
 

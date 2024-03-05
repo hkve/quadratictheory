@@ -60,7 +60,7 @@ class PyscfBasis(Basis):
         self.mf = pyscf.scf.RHF(self.mol)
         self.mf.conv_tol_grad = tol
         self.mf.run(verbose=0)
-
+        print(self.mf.converged)
         self.C = self.mf.mo_coeff
 
         if not self.restricted:
