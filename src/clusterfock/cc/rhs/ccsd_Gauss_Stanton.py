@@ -41,7 +41,7 @@ def build_tau(t1, t2, f, u, o, v):
 def build_Fae(t1, t2, f, u, o, v):
     """Builds [Stanton:1991:4334] Eqn. 3"""
     Fae = f[v, v].copy()
-    Fae[np.diag_indices_from(Fae)] = 0
+    # Fae[np.diag_indices_from(Fae)] = 0
 
     Fae -= 0.5 * np.einsum('me,ma->ae', f[o, v], t1)
     Fae += np.einsum('mf,mafe->ae', t1, u[o, v, v, v])
@@ -55,7 +55,7 @@ def build_Fae(t1, t2, f, u, o, v):
 def build_Fmi(t1, t2, f, u, o, v):
     """Builds [Stanton:1991:4334] Eqn. 4"""
     Fmi = f[o, o].copy()
-    Fmi[np.diag_indices_from(Fmi)] = 0
+    # Fmi[np.diag_indices_from(Fmi)] = 0
 
     Fmi += 0.5 * np.einsum('ie,me->mi', t1, f[o, v])
     Fmi += np.einsum('ne,mnie->mi', t1, u[o, o, o, v])
@@ -184,3 +184,4 @@ def ccsd_t_Gauss_Stanton(t1, t2, u, f, o, v):
 
     ### Update t1 and t2 amplitudes
     return rhs_T1.T, rhs_T2.transpose(2,3,0,1)
+

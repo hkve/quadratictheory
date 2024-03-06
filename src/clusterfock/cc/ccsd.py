@@ -7,7 +7,7 @@ from clusterfock.cc.rhs.t_CCSD import amplitudes_ccsd
 from clusterfock.cc.rhs.l_CCSD import lambda_amplitudes_ccsd
 from clusterfock.cc.rhs.t_inter_CCSD import amplitudes_intermediates_ccsd
 from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
-# from clusterfock.cc.rhs.ccsd_Gauss_Stanton import ccsd_t_Gauss_Stanton
+from clusterfock.cc.rhs.ccsd_Gauss_Stanton import ccsd_t_Gauss_Stanton
 
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
@@ -28,7 +28,8 @@ class GCCSD(CoupledCluster):
         l_orders = [1, 2]
         super().__init__(basis, t_orders, l_orders)
 
-        self.t_rhs = amplitudes_intermediates_ccsd if intermediates else amplitudes_ccsd
+        self.t_rhs = ccsd_t_Gauss_Stanton if intermediates else amplitudes_ccsd
+        # self.t_rhs = ccsd_t_Gauss_Stanton
         self.l_rhs = (
             lambda_amplitudes_intermediates_ccsd if intermediates else lambda_amplitudes_ccsd
         )
