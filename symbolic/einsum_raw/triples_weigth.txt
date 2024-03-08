@@ -1,0 +1,61 @@
+    WT = 0
+
+    WT += einsum(
+        "ai,bj,bcjk,acik->", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    WT -= einsum(
+        "ai,aj,bcjk,bcik->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    WT -= einsum(
+        "ai,bi,bcjk,acjk->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    WT += einsum(
+        "ai,ai,bcjk,bcjk->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 4
+
+    WT += einsum(
+        "ai,ai,bj,ck,bcjk->", \lambda^1, t^1, t^1, t^1, \lambda^2
+    ) / 2
+
+    WT -= einsum(
+        "ai,aj,bi,ck,bcjk->", \lambda^1, t^1, t^1, t^1, \lambda^2
+    )
+
+    WT += einsum(
+        "ai,bj,abik,cdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    WT += einsum(
+        "ai,bj,acij,bdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    WT += einsum(
+        "aj,bi,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    WT -= einsum(
+        "ai,bj,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    WT -= einsum(
+        "ai,bj,abij,cdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    WT -= einsum(
+        "ai,bj,abkl,cdij,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    WT -= 2 * einsum(
+        "ai,bj,ck,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    WT -= einsum(
+        "ai,bl,cj,dk,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    WT -= einsum(
+        "aj,bk,ci,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2

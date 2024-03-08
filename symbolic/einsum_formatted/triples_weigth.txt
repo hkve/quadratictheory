@@ -1,0 +1,62 @@
+    WT = 0
+
+    WT += np.einsum(
+        "ai,bj,bcjk,acik->", l1, t1, l2, t2, optimize=True
+    )
+
+    WT -= np.einsum(
+        "ai,aj,bcjk,bcik->", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    WT -= np.einsum(
+        "ai,bi,bcjk,acjk->", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    WT += np.einsum(
+        "ai,ai,bcjk,bcjk->", l1, t1, l2, t2, optimize=True
+    ) / 4
+
+    WT += np.einsum(
+        "ai,ai,bj,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
+    ) / 2
+
+    WT -= np.einsum(
+        "ai,aj,bi,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
+    )
+
+    WT += np.einsum(
+        "ai,bj,abik,cdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    )
+
+    WT += np.einsum(
+        "ai,bj,acij,bdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    )
+
+    WT += np.einsum(
+        "aj,bi,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    )
+
+    WT -= np.einsum(
+        "ai,bj,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    )
+
+    WT -= np.einsum(
+        "ai,bj,abij,cdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WT -= np.einsum(
+        "ai,bj,abkl,cdij,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WT -= 2 * np.einsum(
+        "ai,bj,ck,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True
+    )
+
+    WT -= np.einsum(
+        "ai,bl,cj,dk,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True
+    ) / 2
+
+    WT -= np.einsum(
+        "aj,bk,ci,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True
+    ) / 2
+

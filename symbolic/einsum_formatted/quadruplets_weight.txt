@@ -1,0 +1,46 @@
+    WQ = 0
+
+    WQ -= np.einsum(
+        "abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True
+    ) / 8
+
+    WQ -= np.einsum(
+        "abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True
+    ) / 8
+
+    WQ += np.einsum(
+        "abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True
+    ) / 4
+
+    WQ += np.einsum(
+        "abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True
+    ) / 32
+
+    WQ += np.einsum(
+        "abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True
+    ) / 32
+
+    WQ -= np.einsum(
+        "ai,bj,abik,cdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WQ -= np.einsum(
+        "ai,bj,acij,bdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WQ -= np.einsum(
+        "aj,bi,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WQ += np.einsum(
+        "ai,bj,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 4
+
+    WQ += np.einsum(
+        "ai,bj,abij,cdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 16
+
+    WQ += np.einsum(
+        "ai,bj,abkl,cdij,cdkl->", t1, t1, l2, l2, t2, optimize=True
+    ) / 16
+

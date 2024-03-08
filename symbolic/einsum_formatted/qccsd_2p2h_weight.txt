@@ -1,118 +1,118 @@
-    det = np.zeros((M, M, N, N))
+    bra = np.zeros((M, M, N, N))
 
-    det += np.einsum(
+    bra += np.einsum(
         "ai,bj->abij", l1, l1, optimize=True
     )
 
-    det -= np.einsum(
+    bra -= np.einsum(
         "aj,bi->abij", l1, l1, optimize=True
     )
 
-    det += np.einsum(
-        "acik,bdlj,cdkl->abij", l2, l2, t2, optimize=True
-    )
-
-    det += np.einsum(
-        "abil,cdkj,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "ackl,bdij,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "ackj,bdil,cdkl->abij", l2, l2, t2, optimize=True
-    )
-
-    det -= np.einsum(
-        "ablj,cdik,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "adij,bckl,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "abij,cdkl,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 4
-
-    det -= np.einsum(
-        "abkl,cdij,cdkl->abij", l2, l2, t2, optimize=True
-    ) / 4
-
-    det += np.einsum(
-        "ck,dl,ablj,cdik->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "ck,dl,ackj,bdil->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "ck,dl,adij,bckl->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "cl,dk,acik,bdlj->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "ck,dl,abij,cdkl->abij", t1, t1, l2, l2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "ck,dl,abkl,cdij->abij", t1, t1, l2, l2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "ck,dl,abil,cdkj->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det -= np.einsum(
-        "ck,dl,acik,bdlj->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det -= np.einsum(
-        "ck,dl,ackl,bdij->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det -= np.einsum(
-        "cl,dk,ackj,bdil->abij", t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
+    bra += np.einsum(
         "ai,ck,bckj->abij", l1, t1, l2, optimize=True
     )
 
-    det += np.einsum(
+    bra += np.einsum(
         "aj,ck,bcik->abij", l1, t1, l2, optimize=True
     )
 
-    det += np.einsum(
+    bra += np.einsum(
         "bk,ck,acij->abij", l1, t1, l2, optimize=True
     )
 
-    det += np.einsum(
+    bra += np.einsum(
         "ci,ck,abkj->abij", l1, t1, l2, optimize=True
     )
 
-    det += np.einsum(
+    bra += np.einsum(
         "cj,ck,abik->abij", l1, t1, l2, optimize=True
     )
 
-    det -= np.einsum(
+    bra -= np.einsum(
         "ak,ck,bcij->abij", l1, t1, l2, optimize=True
     )
 
-    det -= np.einsum(
+    bra -= np.einsum(
         "bi,ck,ackj->abij", l1, t1, l2, optimize=True
     )
 
-    det -= np.einsum(
+    bra -= np.einsum(
         "bj,ck,acik->abij", l1, t1, l2, optimize=True
     )
 
-    det -= np.einsum(
+    bra -= np.einsum(
         "ck,ck,abij->abij", l1, t1, l2, optimize=True
+    )
+
+    bra += np.einsum(
+        "acik,bdlj,cdkl->abij", l2, l2, t2, optimize=True
+    )
+
+    bra += np.einsum(
+        "abil,cdkj,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 2
+
+    bra += np.einsum(
+        "ackl,bdij,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 2
+
+    bra -= np.einsum(
+        "ackj,bdil,cdkl->abij", l2, l2, t2, optimize=True
+    )
+
+    bra -= np.einsum(
+        "ablj,cdik,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 2
+
+    bra -= np.einsum(
+        "adij,bckl,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 2
+
+    bra -= np.einsum(
+        "abij,cdkl,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 4
+
+    bra -= np.einsum(
+        "abkl,cdij,cdkl->abij", l2, l2, t2, optimize=True
+    ) / 4
+
+    bra += np.einsum(
+        "ck,dl,ablj,cdik->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra += np.einsum(
+        "ck,dl,ackj,bdil->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra += np.einsum(
+        "ck,dl,adij,bckl->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra += np.einsum(
+        "cl,dk,acik,bdlj->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra += np.einsum(
+        "ck,dl,abij,cdkl->abij", t1, t1, l2, l2, optimize=True
+    ) / 2
+
+    bra += np.einsum(
+        "ck,dl,abkl,cdij->abij", t1, t1, l2, l2, optimize=True
+    ) / 2
+
+    bra -= np.einsum(
+        "ck,dl,abil,cdkj->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra -= np.einsum(
+        "ck,dl,acik,bdlj->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra -= np.einsum(
+        "ck,dl,ackl,bdij->abij", t1, t1, l2, l2, optimize=True
+    )
+
+    bra -= np.einsum(
+        "cl,dk,ackj,bdil->abij", t1, t1, l2, l2, optimize=True
     )
 
