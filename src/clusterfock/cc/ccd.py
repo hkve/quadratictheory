@@ -12,6 +12,8 @@ from clusterfock.cc.rhs.t_RCCD import amplitudes_ccd_restricted
 from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccd import td_energy_addition
 
+from clusterfock.cc.weights.ccd import reference_ccd, ket_doubles_ccd, bra_doubles_ccd
+
 from clusterfock.cc.rhs.t_inter_RCCD import amplitudes_intermediates_rccd
 from clusterfock.cc.rhs.l_inter_RCCD import lambda_amplitudes_intermediates_rccd
 from clusterfock.cc.rhs.l_RCCD import lambda_amplitudes_rccd
@@ -111,6 +113,25 @@ class GCCD(CoupledCluster):
         psit -= 0.25 * np.einsum("abij,abij->", t0[2], l0[2])
 
         return psit * psitilde_t
+    
+    def _if_missing_use_stored(self, t2, l2):
+        if t2 is None: t2 = self._t[2]
+        if l2 is None: l2 = self._l[2]
+
+        return t2, l2
+
+    def reference_weights(self, t2=None, l2=None):
+        t2, l2 = self._if_missing_use_stored(t2,l2)
+        det = reference_ccd(t2, l2)
+ 
+        return det
+    
+    def doubles_weights(self, t2=None, l2=None):
+        t2, l2 = self._if_missing_use_stored(t2,l2)
+        ket =  ket_doubles_ccd(t2, l2)
+        bra =  bra_doubles_ccd(t2, l2)
+
+        return np.multiply(bra, ket)
 
 
 class RCCD(CoupledCluster):

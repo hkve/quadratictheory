@@ -7,11 +7,13 @@ from clusterfock.cc.rhs.t_CCSD import amplitudes_ccsd
 from clusterfock.cc.rhs.l_CCSD import lambda_amplitudes_ccsd
 from clusterfock.cc.rhs.t_inter_CCSD import amplitudes_intermediates_ccsd
 from clusterfock.cc.rhs.l_inter_CCSD import lambda_amplitudes_intermediates_ccsd
-from clusterfock.cc.rhs.ccsd_Gauss_Stanton import ccsd_t_Gauss_Stanton
+from clusterfock.cc.rhs.ccsd_Gauss_Stanton import ccsd_t_Gauss_Stanton, ccsd_l_Gauss_Stanton
 
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.energies.e_inter_ccsd import td_energy_addition
-from clusterfock.cc.weights.ccsd import reference_ccsd, singles_ccsd, doubles_ccsd
+from clusterfock.cc.weights.ccsd import (
+    reference_ccsd, ket_singles_ccsd, bra_singles_ccsd, ket_doubles_ccsd, bra_doubles_ccsd
+)
 
 from clusterfock.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from clusterfock.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
@@ -31,7 +33,7 @@ class GCCSD(CoupledCluster):
         self.t_rhs = ccsd_t_Gauss_Stanton if intermediates else amplitudes_ccsd
         # self.t_rhs = ccsd_t_Gauss_Stanton
         self.l_rhs = (
-            lambda_amplitudes_intermediates_ccsd if intermediates else lambda_amplitudes_ccsd
+            ccsd_l_Gauss_Stanton if intermediates else lambda_amplitudes_ccsd
         )
 
         self.td_energy_addition = td_energy_addition
@@ -150,15 +152,22 @@ class GCCSD(CoupledCluster):
 
     def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        
         return reference_ccsd(t1, t2, l1, l2)
     
     def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        return singles_ccsd(t1, t2, l1, l2)
+        bra = bra_singles_ccsd(t1, t2, l1, l2)
+        ket = ket_singles_ccsd(t1, t2, l1, l2)
+
+        return np.multiply(bra, ket)
 
     def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        return doubles_ccsd(t1, t2, l1, l2)
+        bra = bra_doubles_ccsd(t1, t2, l1, l2)
+        ket = ket_doubles_ccsd(t1, t2,l1,l2)
+
+        return np.multiply(bra, ket)
     
 class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates=True):

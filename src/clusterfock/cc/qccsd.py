@@ -10,9 +10,12 @@ from clusterfock.cc.rhs.t_inter_QCCSD import amplitudes_intermediates_qccsd
 from clusterfock.cc.rhs.l_inter_QCCSD import lambda_amplitudes_intermediates_qccsd
 from clusterfock.cc.energies.e_qccsd import energy_qccsd
 from clusterfock.cc.energies.e_inter_qccsd import energy_intermediates_qccsd
-from clusterfock.cc.weights.ccsd import reference_ccsd, singles_ccsd, doubles_ccsd, triples_ccsd
-from clusterfock.cc.weights.qccsd import reference_addition_qccsd, singles_addition_qccsd, doubles_addition_qccsd, triples_qccsd
-
+from clusterfock.cc.weights.ccsd import (
+    reference_ccsd, ket_singles_ccsd, bra_singles_ccsd, ket_doubles_ccsd, bra_doubles_ccsd
+)
+from clusterfock.cc.weights.qccsd import (
+    reference_addition_qccsd, bra_singles_addition_qccsd, bra_doubles_addition_qccsd, triples_weigth_qccsd, quadruple_weigth_qccsd
+)
 from clusterfock.cc.densities.l_CCSD import one_body_density, two_body_density
 from clusterfock.cc.densities.l_QCCSD import one_body_density_addition, two_body_density_addition
 
@@ -156,10 +159,10 @@ class QCCSD(QuadraticCoupledCluster):
         return 0
     
     def _if_missing_use_stored(self, t1, t2, l1, l2):
-        if not t1: t1 = self._t[1]
-        if not t2: t2 = self._t[2]
-        if not l1: l1 = self._l[1]
-        if not l2: l2 = self._l[2]
+        if t1 is None: t1 = self._t[1]
+        if t2 is None: t2 = self._t[2]
+        if l1 is None: l1 = self._l[1]
+        if l2 is None: l2 = self._l[2]
 
         return t1, t2, l1, l2
 
@@ -167,22 +170,31 @@ class QCCSD(QuadraticCoupledCluster):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
         det = reference_ccsd(t1, t2, l1, l2)
         det += reference_addition_qccsd(t1, t2, l1, l2)
+ 
         return det
     
     def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        det =  singles_ccsd(t1, t2, l1, l2)
-        det +=  singles_addition_qccsd(t1, t2, l1, l2)
-        return det
+        ket = ket_singles_ccsd(t1, t2, l1, l2)
+        bra = bra_singles_ccsd(t1, t2, l1, l2)
+        bra += bra_singles_addition_qccsd(t1, t2, l1, l2)
+
+        return np.multiply(bra, ket)
 
     def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
         t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        det =  doubles_ccsd(t1, t2, l1, l2)
-        det +=  doubles_addition_qccsd(t1, t2, l1, l2)
-        return det
-    
-    def triples_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        ket =  triples_ccsd(t1, t2, l1, l2)
-        bra =  triples_qccsd(t1, t2, l1, l2)
+        ket =  ket_doubles_ccsd(t1, t2, l1, l2)
+        bra =  bra_doubles_ccsd(t1, t2, l1, l2)
+        bra += bra_doubles_addition_qccsd(t1, t2, l1, l2)
+
         return np.multiply(bra, ket)
+    
+    def triples_weight(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+
+        return triples_weigth_qccsd(t1, t2, l1, l2)
+    
+    def quadruple_weight(self, t1=None, t2=None, l1=None, l2=None):
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+
+        return quadruple_weigth_qccsd(t1, t2, l1, l2)

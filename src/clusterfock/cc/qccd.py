@@ -13,6 +13,9 @@ from clusterfock.cc.energies.e_qccd import energy_qccd
 from clusterfock.cc.energies.e_inter_qccd import energy_intermediates_qccd
 from clusterfock.cc.densities.l_CCD import one_body_density, two_body_density
 from clusterfock.cc.densities.l_QCCD import two_body_density_addition
+from clusterfock.cc.weights.ccd import reference_ccd, ket_doubles_ccd, bra_doubles_ccd
+from clusterfock.cc.weights.qccd import reference_addition_qccd, bra_doubles_addition_qccd, quadruple_weigth_qccd
+
 
 # Restricted
 from clusterfock.cc.rhs.t_inter_RQCCD import t_intermediates_qccd_restricted
@@ -123,6 +126,32 @@ class QCCD(QuadraticCoupledCluster):
 
     def _overlap(self, t0, l0, t, l):
         return 0
+
+    def _if_missing_use_stored(self, t2, l2):
+        if t2 is None: t2 = self._t[2]
+        if l2 is None: l2 = self._l[2]
+
+        return t2, l2
+
+    def reference_weights(self, t2=None, l2=None):
+        t2, l2 = self._if_missing_use_stored(t2,l2)
+        det = reference_ccd(t2, l2)
+        det += reference_addition_qccd(t2, l2)
+ 
+        return det
+    
+    def doubles_weights(self, t2=None, l2=None):
+        t2, l2 = self._if_missing_use_stored(t2,l2)
+        ket =  ket_doubles_ccd(t2, l2)
+        bra =  bra_doubles_ccd(t2, l2)
+        bra += bra_doubles_addition_qccd(t2, l2)
+
+        return np.multiply(bra, ket)
+
+    def quadruple_weight(self, t2=None, l2=None):
+        t2, l2 = self._if_missing_use_stored(t2,l2)
+
+        return quadruple_weigth_qccd(t2, l2)
 
 class RQCCD(QuadraticCoupledCluster):
     def __init__(self, basis: Basis, intermediates: bool = True):
