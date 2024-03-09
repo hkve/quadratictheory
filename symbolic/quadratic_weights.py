@@ -41,7 +41,7 @@ def reference(dr):
     
     # # Triple excitations
     expr += 2*L1*L2*T1*T2
-    expr -= Rational(1,6)*L1*L2*T1*T1*T1
+    expr -= Rational(1,3)*L1*L2*T1*T1*T1
 
     # # Quadruple excitations
     expr += Rational(1,2)*L2*L2*T2*T2
