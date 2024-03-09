@@ -37,22 +37,36 @@ def reference(dr):
 
     # Double excitations
     expr = -L1*L1*T2
-    expr += Rational(1,2)*L1*L1*T1*T1
-    
-    # # Triple excitations
-    expr += 2*L1*L2*T1*T2
-    expr -= Rational(1,3)*L1*L2*T1*T1*T1
+    res = (expr).eval_fermi_vev().simplify()
 
+    expr = Rational(1,2)*L1*L1*T1*T1
+    res += (expr).eval_fermi_vev().simplify()
+
+    drutils.timer.tock("Double excitations", res)
+
+    # Triple excitations
+    expr = 2*L1*L2*T1*T2
+    res += (expr).eval_fermi_vev().simplify()
+
+    expr = -Rational(1,3)*L1*L2*T1*T1*T1
+    res += (expr).eval_fermi_vev().simplify()
+
+    drutils.timer.tock("Triple excitations", res)
+    
     # # Quadruple excitations
-    expr += Rational(1,2)*L2*L2*T2*T2
-    expr += Rational(1,24)*L2*L2*T1*T1*T1*T1
+    expr = Rational(1,2)*L2*L2*T2*T2
+    res += (expr).eval_fermi_vev().simplify()
 
-    # # Add overall factor and calculate
-    expr *= Rational(1,2)
-    expr = expr.simplify()
-    expr = expr.eval_fermi_vev().simplify()
+    expr = Rational(1,24)*L2*L2*T1*T1*T1*T1
+    res += (expr).eval_fermi_vev().simplify()
     
-    res = dr.define(Symbol("ref"), expr)
+    drutils.timer.tock("Quadruple excitations", res)
+    
+    # # Add overall factor and calculate
+    res *= Rational(1,2)
+    res = res.simplify()
+    
+    res = dr.define(Symbol("ref"), res)
     
     grutils.einsum_raw(dr, "qccsd_ref_weight", res)
 
@@ -73,29 +87,29 @@ def single_excited(dr):
     # Double excitations
     expr = -L1*L1*T1
     res = (expr*X1).eval_fermi_vev().simplify()
-    print("Dobules done")
+    drutils.timer.tock("Dobules done", res)
 
     # Triple excitations
     expr = -2*L1*L2*T2
     res += (expr*X1).eval_fermi_vev().simplify()
-    print("Tripls 1 done")
+    drutils.timer.tock("Tripls 1 done", res)
 
-    expr = -L1*L2*T1*T1
+    expr = L1*L2*T1*T1
     res += (expr*X1).eval_fermi_vev().simplify()
-    print("Tripls 2 done")
+    drutils.timer.tock("Tripls 2 done", res)
     
     # Quadruple excitations
-    expr = L2*L2*T1*T2
+    expr = 2*L2*L2*T1*T2
     res += (expr*X1).eval_fermi_vev().simplify()
-    print("Quad 1 done")
+    drutils.timer.tock("Quad 1 done", res)
 
     expr = Rational(1,6)*L2*L2*T1*T1*T1
     res += (expr*X1).eval_fermi_vev().simplify()
-    print("Quad 2 done")
+    drutils.timer.tock("Quad 2 done", res)
 
     # Add overall factor and calculate
     res = (Rational(1,2)*res).simplify()
-    print("Overal factor")
+    drutils.timer.tock("Overal factor", res)
 
     res = dr.define(IndexedBase(f"det")[a,i], res)
     save(dr, "qccsd_1p1h_weight", res)
