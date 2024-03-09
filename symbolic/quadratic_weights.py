@@ -41,7 +41,7 @@ def reference(dr):
     
     # # Triple excitations
     expr += 2*L1*L2*T1*T2
-    expr += Rational(1,3)*L1*L2*T1*T1*T1
+    expr -= Rational(1,6)*L1*L2*T1*T1*T1
 
     # # Quadruple excitations
     expr += Rational(1,2)*L2*L2*T2*T2
@@ -53,7 +53,12 @@ def reference(dr):
     expr = expr.eval_fermi_vev().simplify()
     
     res = dr.define(Symbol("ref"), expr)
-    save(dr, "qccsd_ref_weight", res)
+    
+    grutils.einsum_raw(dr, "qccsd_ref_weight", res)
+
+    from IPython import embed
+    embed()
+    # save(dr, "qccsd_ref_weight", res)
 
 @drutils.timeme
 def single_excited(dr):
@@ -185,8 +190,8 @@ if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
 
     drutils.timer.vocal = True
-    # reference(dr)
+    reference(dr)
     # single_excited(dr)
-    double_excited(dr)
+    # double_excited(dr)
     # triple_excited(dr)
     # quadrouple_excited(dr)
