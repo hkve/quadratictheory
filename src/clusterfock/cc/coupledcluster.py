@@ -100,6 +100,7 @@ class CoupledCluster(ABC):
 
         t, epsinv = self._t, self._epsinv
         converged = False
+        self._t_norms = []
 
         while (iters < maxiters) and not converged:
             rhs = self._next_t_iteration(t)
@@ -115,6 +116,7 @@ class CoupledCluster(ABC):
 
             iters += 1
 
+            self._t_norms.append(rhs_norms)
             if vocal:
                 print(f"i = {iters}, {corr_energy = :.6e}, rhs_norms = {rhs_norms}")
 
@@ -137,6 +139,7 @@ class CoupledCluster(ABC):
 
         t, l, epsinv = self._t, self._l, self._epsinv
         converged = False
+        self._l_norms = []
 
         while (iters < maxiters) and not converged:
             rhs = self._next_l_iteration(t, l)
@@ -150,6 +153,7 @@ class CoupledCluster(ABC):
             l.from_flat(l_next_flat)
 
             iters += 1
+            self._l_norms.append(rhs_norms)
 
             if vocal:
                 print(f"i = {iters}, rhs_norms = {rhs_norms}")
@@ -381,6 +385,15 @@ class CoupledCluster(ABC):
     def overlap(self, t0, l0, t, l):
         return self._overlap(t0, l0, t, l)
 
+    def get_lowest_norm(self):
+        if self.t_info["run"]:
+            norms = np.array([list(norm.values()) for norm in self._t_norms])
+        if self.t_info["run"]:
+            l_norms = np.array([list(norm.values()) for norm in self._l_norms])
+            norms = np.concatenate(norms, l_norms)
+
+        return norms.min()
+    
     # Property wrappers for convergence info dicts
     @property
     def t_info(self):

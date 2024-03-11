@@ -24,6 +24,8 @@ class QuadraticCoupledCluster(CoupledCluster):
         iters, diff = 0, 1000
         converged = False
 
+        self._t_norms, self._l_norms = [], []
+
         while (iters < maxiters) and not converged:
             rhs_t = self._next_t_iteration(t, l)
             rhs_l = self._next_l_iteration(t, l)
@@ -44,6 +46,8 @@ class QuadraticCoupledCluster(CoupledCluster):
             l.from_flat(tl_next_flat[l_slice])
 
             iters += 1
+            self._t_norms.append(rhs_norms_t)
+            self._l_norms.append(rhs_norms_l)
             if vocal:
                 print(f"i = {iters}, rhs_norms_t = {rhs_norms_t}, rhs_norms_l = {rhs_norms_l}")
 
