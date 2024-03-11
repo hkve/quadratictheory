@@ -1,29 +1,5 @@
     ref = 0
 
-    ref += np.einsum(
-        "ai,bj,bcjk,acik->", l1, t1, l2, t2, optimize=True
-    )
-
-    ref -= np.einsum(
-        "ai,aj,bcjk,bcik->", l1, t1, l2, t2, optimize=True
-    ) / 2
-
-    ref -= np.einsum(
-        "ai,bi,bcjk,acjk->", l1, t1, l2, t2, optimize=True
-    ) / 2
-
-    ref += np.einsum(
-        "ai,ai,bcjk,bcjk->", l1, t1, l2, t2, optimize=True
-    ) / 4
-
-    ref += np.einsum(
-        "ai,ai,bj,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
-    ) / 2
-
-    ref -= np.einsum(
-        "ai,aj,bi,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
-    )
-
     ref -= np.einsum(
         "ai,bj,abij->", l1, l1, t2, optimize=True
     ) / 2
@@ -67,4 +43,28 @@
     ref += np.einsum(
         "aj,bk,ci,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True
     ) / 8
+
+    ref += np.einsum(
+        "ai,bj,bcjk,acik->", l1, t1, l2, t2, optimize=True
+    )
+
+    ref -= np.einsum(
+        "ai,aj,bcjk,bcik->", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    ref -= np.einsum(
+        "ai,bi,bcjk,acjk->", l1, t1, l2, t2, optimize=True
+    ) / 2
+
+    ref += np.einsum(
+        "ai,ai,bcjk,bcjk->", l1, t1, l2, t2, optimize=True
+    ) / 4
+
+    ref += np.einsum(
+        "ai,aj,bi,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
+    )
+
+    ref -= np.einsum(
+        "ai,ai,bj,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True
+    ) / 2
 

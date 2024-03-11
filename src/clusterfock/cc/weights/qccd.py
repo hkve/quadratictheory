@@ -2,17 +2,19 @@ import numpy as np
 
 
 def reference_addition_qccd(t2, l2):
-    det = -np.einsum("abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True) / 8
+    ref = 0
 
-    det -= np.einsum("abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True) / 8
+    ref -= np.einsum("abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True) / 8
 
-    det += np.einsum("abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True) / 4
+    ref -= np.einsum("abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True) / 8
 
-    det += np.einsum("abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True) / 32
+    ref += np.einsum("abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True) / 4
 
-    det += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
+    ref += np.einsum("abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True) / 32
 
-    return det
+    ref += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
+
+    return ref
 
 
 def bra_doubles_addition_qccd(t2, l2):
@@ -38,24 +40,14 @@ def bra_doubles_addition_qccd(t2, l2):
 def quadruple_weigth_qccd(t2, l2):
     WQ = 0
 
-    WQ -= np.einsum(
-        "abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True
-    ) / 8
+    WQ -= np.einsum("abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True) / 8
 
-    WQ -= np.einsum(
-        "abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True
-    ) / 8
+    WQ -= np.einsum("abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True) / 8
 
-    WQ += np.einsum(
-        "abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True
-    ) / 4
+    WQ += np.einsum("abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True) / 4
 
-    WQ += np.einsum(
-        "abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True
-    ) / 32
+    WQ += np.einsum("abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True) / 32
 
-    WQ += np.einsum(
-        "abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True
-    ) / 32
+    WQ += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
 
     return WQ

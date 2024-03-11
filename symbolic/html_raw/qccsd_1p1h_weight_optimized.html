@@ -48,11 +48,11 @@
             <div class="page-header" id="sect-3">
                 <h2>equation 3</h2>
             </div>
-            <p>\[ \tau^{2}_{i,a} = - \lambda^1_{a,i}   + \tau^{1}_{i,a}  \]</p>
+            <p>\[ \tau^{2}_{i,a} = - \lambda^1_{a,i}   + 2 \tau^{1}_{i,a}  \]</p>
             <div class="page-header" id="sect-4">
                 <h2>equation 4</h2>
             </div>
-            <p>\[ \tau^{3}_{i,j,a,b} = 2 t^{2}_{b,a,j,i}  - t^{1}_{a,j}  t^{1}_{b,i}  \]</p>
+            <p>\[ \tau^{3}_{i,j,a,b} = t^{1}_{a,j}  t^{1}_{b,i}   + 4 t^{2}_{b,a,j,i}  \]</p>
             <div class="page-header" id="sect-5">
                 <h2>equation 5</h2>
             </div>
@@ -64,7 +64,7 @@
             <div class="page-header" id="sect-7">
                 <h2>equation 7</h2>
             </div>
-            <p>\[ \tau^{6}_{i,j,a,b} = t^{2}_{b,a,j,i}   + 2 t^{1}_{a,i}  t^{1}_{b,j}  \]</p>
+            <p>\[ \tau^{6}_{i,j,a,b} = t^{2}_{b,a,j,i}  - t^{1}_{a,i}  t^{1}_{b,j}  \]</p>
             <div class="page-header" id="sect-8">
                 <h2>equation 8</h2>
             </div>
@@ -72,39 +72,43 @@
             <div class="page-header" id="sect-9">
                 <h2>equation 9</h2>
             </div>
-            <p>\[ \tau^{8}_{i,j} = - 2 \tau^{5}_{i,j}   + \tau^{7}_{j,i}  \]</p>
+            <p>\[ \tau^{8}_{i,j} = \tau^{5}_{i,j}   + \tau^{7}_{j,i}  \]</p>
             <div class="page-header" id="sect-10">
                 <h2>equation 10</h2>
             </div>
-            <p>\[ \tau^{9}_{i,j,k,a} = - \sum_{l \in O} t^{1}_{a,l}  \tau^{0}_{i,l,k,j}   + \sum_{b \in V} 2 \tau^{2}_{i,b}  t^{2}_{b,a,k,j}   + \sum_{l \in O} \sum_{b \in V} 2 \tau^{3}_{l,j,b,a}  \tau^{4}_{l,i,k,b}   + 2 t^{1}_{a,j}  \tau^{8}_{i,k}  \]</p>
+            <p>\[ \tau^{9}_{i,j,k,a} = - \sum_{l \in O} t^{1}_{a,l}  \tau^{0}_{i,l,k,j}   + \sum_{b \in V} \tau^{2}_{i,b}  t^{2}_{b,a,k,j}   + \sum_{l \in O} \sum_{b \in V} \tau^{3}_{l,j,b,a}  \tau^{4}_{l,i,k,b}   + 2 t^{1}_{a,j}  \tau^{8}_{i,k}  \]</p>
             <div class="page-header" id="sect-11">
                 <h2>equation 11</h2>
             </div>
-            <p>\[ \tau^{10}_{i,a} = \sum_{j \in O} \sum_{k \in O} \sum_{b \in V} t^{2}_{b,a,k,j}  \tau^{4}_{k,j,i,b}  - \sum_{j \in O} \sum_{b \in V} 2 \tau^{2}_{j,b}  t^{2}_{b,a,j,i}   + \sum_{j \in O} t^{1}_{a,j}  \tau^{8}_{j,i}  \]</p>
+            <p>\[ \tau^{10}_{i,a} = \sum_{j \in O} \sum_{k \in O} \sum_{b \in V} t^{2}_{b,a,k,j}  \tau^{4}_{k,j,i,b}  - \sum_{j \in O} \sum_{b \in V} \tau^{2}_{j,b}  t^{2}_{b,a,j,i}   + \sum_{j \in O} t^{1}_{a,j}  \tau^{8}_{j,i}  \]</p>
             <div class="page-header" id="sect-12">
                 <h2>equation 12</h2>
             </div>
-            <p>\[ \tau^{11}_{i,j} = 2 \tau^{5}_{i,j}   + \tau^{7}_{j,i}  \]</p>
+            <p>\[ \tau^{11}_{i,j,a,b} = - t^{2}_{b,a,j,i}   + 2 t^{1}_{a,i}  t^{1}_{b,j}  \]</p>
             <div class="page-header" id="sect-13">
                 <h2>equation 13</h2>
             </div>
-            <p>\[ \tau^{12} = \sum_{i \in O} \sum_{j \in O} \sum_{a \in V} \sum_{b \in V} \lambda^2_{a,b,i,j}  \tau^{6}_{i,j,a,b}  \]</p>
+            <p>\[ \tau^{12}_{i,j} = 2 \tau^{5}_{i,j}  - \sum_{k \in O} \sum_{a \in V} \sum_{b \in V} \lambda^2_{a,b,k,i}  \tau^{11}_{k,j,a,b}  \]</p>
             <div class="page-header" id="sect-14">
                 <h2>equation 14</h2>
             </div>
-            <p>\[ \tau^{13}_{i,a} = \lambda^1_{a,i}  - \tau^{1}_{i,a}  \]</p>
+            <p>\[ \tau^{13}_{i,a} = 2 \lambda^1_{a,i}  - \tau^{1}_{i,a}  \]</p>
             <div class="page-header" id="sect-15">
                 <h2>equation 15</h2>
             </div>
-            <p>\[ \tau^{14} = \sum_{i \in O} \sum_{a \in V} \lambda^1_{a,i}  t^{1}_{a,i}  \]</p>
+            <p>\[ \tau^{14} = \sum_{i \in O} \sum_{a \in V} t^{1}_{a,i}  \tau^{13}_{i,a}  \]</p>
             <div class="page-header" id="sect-16">
                 <h2>equation 16</h2>
             </div>
-            <p>\[ \tau^{15}_{i,a} = \lambda^1_{a,i}   + \tau^{1}_{i,a}  \]</p>
+            <p>\[ \tau^{15}_{i,a} = \lambda^1_{a,i}  - \tau^{1}_{i,a}  \]</p>
             <div class="page-header" id="sect-17">
                 <h2>equation 17</h2>
             </div>
-            <p>\[ det_{a,i} = - \sum_{j \in O} \sum_{k \in O} \sum_{b \in V}  \frac{1}{4} \lambda^2_{b,a,j,k}  \tau^{9}_{i,j,k,b}  - \sum_{j \in O} \sum_{b \in V}  \frac{1}{2} \tau^{10}_{j,b}  \lambda^2_{b,a,j,i}   + \sum_{j \in O} \frac{1}{2} \lambda^1_{a,j}  \tau^{11}_{i,j}  -  \frac{\tau^{12}}{4} \tau^{13}_{i,a}  -  \tau^{14} \tau^{15}_{i,a}  \]</p>
+            <p>\[ \tau^{16} = \sum_{i \in O} \sum_{a \in V} \sum_{j \in O} \sum_{b \in V} \lambda^2_{b,a,j,i}  t^{2}_{b,a,j,i}  \]</p>
+            <div class="page-header" id="sect-18">
+                <h2>equation 18</h2>
+            </div>
+            <p>\[ det_{a,i} = - \sum_{j \in O} \sum_{k \in O} \sum_{b \in V}  \frac{1}{2} \lambda^2_{b,a,j,k}  \tau^{9}_{i,j,k,b}  - \sum_{j \in O} \sum_{b \in V} \tau^{10}_{j,b}  \lambda^2_{b,a,j,i}   + \sum_{j \in O} \frac{1}{2} \lambda^1_{a,j}  \tau^{12}_{i,j}  -  \frac{\tau^{14}}{2} \tau^{15}_{i,a}   + \frac{\tau^{16}}{4} \tau^{2}_{i,a}  \]</p>
         </div>
 
         <!-- The navigation -->
@@ -127,6 +131,7 @@
                 <li ><a href="#sect-15">equation 15</a></li>
                 <li ><a href="#sect-16">equation 16</a></li>
                 <li ><a href="#sect-17">equation 17</a></li>
+                <li ><a href="#sect-18">equation 18</a></li>
             </ul>
         </div>
     </div> <!-- end the main row -->

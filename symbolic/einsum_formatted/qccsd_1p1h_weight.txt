@@ -1,54 +1,6 @@
     det = np.zeros((M, N))
 
     det += np.einsum(
-        "bj,adil,bcjk,cdkl->ai", t1, l2, l2, t2, optimize=True
-    )
-
-    det += np.einsum(
-        "bj,adkl,bcij,cdkl->ai", t1, l2, l2, t2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "bl,adil,bcjk,cdjk->ai", t1, l2, l2, t2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "dj,adil,bcjk,bckl->ai", t1, l2, l2, t2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "bk,adkl,bcij,cdjl->ai", t1, l2, l2, t2, optimize=True
-    )
-
-    det -= np.einsum(
-        "dk,adkl,bcij,bcjl->ai", t1, l2, l2, t2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "dj,adkl,bcij,bckl->ai", t1, l2, l2, t2, optimize=True
-    ) / 4
-
-    det += np.einsum(
-        "dl,adil,bcjk,bcjk->ai", t1, l2, l2, t2, optimize=True
-    ) / 4
-
-    det += np.einsum(
-        "bj,ck,dl,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "bj,ck,dl,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True
-    ) / 2
-
-    det += np.einsum(
-        "bk,cl,dj,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True
-    ) / 2
-
-    det -= np.einsum(
-        "bj,cl,dk,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True
-    )
-
-    det += np.einsum(
         "aj,bcik,bcjk->ai", l1, l2, t2, optimize=True
     ) / 2
 
@@ -65,24 +17,24 @@
     ) / 4
 
     det += np.einsum(
-        "aj,bj,ck,bcik->ai", l1, t1, t1, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "bi,bj,ck,acjk->ai", l1, t1, t1, l2, optimize=True
-    )
-
-    det += np.einsum(
-        "bj,bk,cj,acik->ai", l1, t1, t1, l2, optimize=True
-    )
-
-    det -= np.einsum(
         "bj,bj,ck,acik->ai", l1, t1, t1, l2, optimize=True
     )
 
-    det -= np.einsum(
+    det += np.einsum(
         "ai,bj,ck,bcjk->ai", l1, t1, t1, l2, optimize=True
     ) / 2
+
+    det -= np.einsum(
+        "aj,bj,ck,bcik->ai", l1, t1, t1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bi,bj,ck,acjk->ai", l1, t1, t1, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bj,bk,cj,acik->ai", l1, t1, t1, l2, optimize=True
+    )
 
     det += np.einsum(
         "aj,bi,bj->ai", l1, l1, t1, optimize=True
@@ -91,4 +43,52 @@
     det -= np.einsum(
         "ai,bj,bj->ai", l1, l1, t1, optimize=True
     )
+
+    det += np.einsum(
+        "bj,adkl,bcij,cdkl->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "bl,adil,bcjk,cdjk->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "dj,adil,bcjk,bckl->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "dj,adkl,bcij,bckl->ai", t1, l2, l2, t2, optimize=True
+    ) / 2
+
+    det += np.einsum(
+        "dl,adil,bcjk,bcjk->ai", t1, l2, l2, t2, optimize=True
+    ) / 2
+
+    det -= np.einsum(
+        "dk,adkl,bcij,bcjl->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det -= 2 * np.einsum(
+        "bk,adkl,bcij,cdjl->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det += 2 * np.einsum(
+        "bj,adil,bcjk,cdkl->ai", t1, l2, l2, t2, optimize=True
+    )
+
+    det += np.einsum(
+        "bj,cl,dk,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bj,ck,dl,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True
+    )
+
+    det -= np.einsum(
+        "bj,ck,dl,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True
+    ) / 2
+
+    det -= np.einsum(
+        "bk,cl,dj,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True
+    ) / 2
 

@@ -1,6 +1,7 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
 from sympy import Rational, Symbol, IndexedBase
+from sympy.physics.secondquant import PermutationOperator
 from permutations import permutations
 from IPython import embed
 
@@ -81,9 +82,6 @@ def single_excited(dr):
     i, a = drutils.get_indicies(dr, num=1)
     X1 = drutils.get_X(dr, 1, i, a)
     
-    X1 = X1.simplify()
-    X1.cache()
-    
     # Double excitations
     expr = -L1*L1*T1
     res = (expr*X1).eval_fermi_vev().simplify()
@@ -103,7 +101,7 @@ def single_excited(dr):
     res += (expr*X1).eval_fermi_vev().simplify()
     drutils.timer.tock("Quad 1 done", res)
 
-    expr = Rational(1,6)*L2*L2*T1*T1*T1
+    expr = -Rational(1,6)*L2*L2*T1*T1*T1
     res += (expr*X1).eval_fermi_vev().simplify()
     drutils.timer.tock("Quad 2 done", res)
 
@@ -204,8 +202,8 @@ if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
 
     drutils.timer.vocal = True
-    reference(dr)
-    # single_excited(dr)
+    # reference(dr)
+    single_excited(dr)
     # double_excited(dr)
     # triple_excited(dr)
     # quadrouple_excited(dr)
