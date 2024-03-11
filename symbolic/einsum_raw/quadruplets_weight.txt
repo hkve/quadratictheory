@@ -20,26 +20,38 @@
         "abjk,cdil,abjk,cdil->", \lambda^2, \lambda^2, t^2, t^2
     ) / 32
 
+    WQ += einsum(
+        "ai,bj,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
     WQ -= einsum(
         "ai,bj,abik,cdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 4
+    ) / 2
 
     WQ -= einsum(
         "ai,bj,acij,bdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 4
+    ) / 2
 
     WQ -= einsum(
         "aj,bi,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 4
-
-    WQ += einsum(
-        "ai,bj,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 4
+    ) / 2
 
     WQ += einsum(
         "ai,bj,abij,cdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 16
+    ) / 8
 
     WQ += einsum(
         "ai,bj,abkl,cdij,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
-    ) / 16
+    ) / 8
+
+    WQ += einsum(
+        "ai,bj,ck,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    WQ += einsum(
+        "ai,bl,cj,dk,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 8
+
+    WQ += einsum(
+        "aj,bk,ci,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 8

@@ -202,16 +202,22 @@ def quadruple_weigth_qccsd(t1, t2, l1, l2):
 
     WQ += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
 
-    WQ -= np.einsum("ai,bj,abik,cdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 4
+    WQ += np.einsum("ai,bj,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
 
-    WQ -= np.einsum("ai,bj,acij,bdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 4
+    WQ -= np.einsum("ai,bj,abik,cdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
 
-    WQ -= np.einsum("aj,bi,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 4
+    WQ -= np.einsum("ai,bj,acij,bdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
 
-    WQ += np.einsum("ai,bj,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 4
+    WQ -= np.einsum("aj,bi,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
 
-    WQ += np.einsum("ai,bj,abij,cdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 16
+    WQ += np.einsum("ai,bj,abij,cdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 8
 
-    WQ += np.einsum("ai,bj,abkl,cdij,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 16
+    WQ += np.einsum("ai,bj,abkl,cdij,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 8
+
+    WQ += np.einsum("ai,bj,ck,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 2
+
+    WQ += np.einsum("ai,bl,cj,dk,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
+
+    WQ += np.einsum("aj,bk,ci,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
 
     return WQ

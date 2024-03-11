@@ -139,7 +139,7 @@ def triple_excited(dr):
     expr = T1*T2 + Rational(1,6)*T1*T1*T1
     ket_res = (Y3*expr).eval_fermi_vev().simplify()
 
-    expr = 2*L1*L2 -L2*L2*T1
+    expr = 2*L1*L2 - L2*L2*T1
     bra_res = (expr*X3).eval_fermi_vev().simplify()
 
     bra_res = bra_res.simplify()
@@ -170,7 +170,7 @@ def quadrouple_excited(dr):
     X4 = drutils.get_X(dr, 4, (i,j,k,l), (a,b,c,d))
     Y4 = drutils.get_Y(dr, 4, (i,j,k,l), (a,b,c,d))
    
-    expr = Rational(1,2)*T2*T2 + Rational(1,4)*T1*T1*T2
+    expr = Rational(1,2)*T2*T2 + Rational(1,2)*T1*T1*T2 + Rational(1,24)*T1*T1*T1*T1
     ket_res = (Y4*expr).eval_fermi_vev().simplify()
 
     expr = L2*L2
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     drutils.timer.vocal = True
     # reference(dr)
-    single_excited(dr)
-    # double_excited(dr)
+    # single_excited(dr)
+    double_excited(dr)
     # triple_excited(dr)
     # quadrouple_excited(dr)
