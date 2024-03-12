@@ -8,6 +8,8 @@ def amplitudes_intermediates_qccsd(t1, t2, l1, l2, u, f, v, o):
     amplitudes_intermediates_qccsd_t1_addition(r1, t1, t2, l1, l2, u, f, v, o)
     amplitudes_intermediates_qccsd_t2_addition(r2, t1, t2, l1, l2, u, f, v, o)
 
+    r2 = 0.25*(r2 - r2.transpose(1,0,2,3) - r2.transpose(0,1,3,2) + r2.transpose(1,0,3,2))
+
     return r1, r2
 
 

@@ -232,4 +232,6 @@ def lambda_amplitudes_intermediates_ccd(t2, l2, u, f, v, o):
         "jiba->abij", u[o, o, v, v], optimize=True
     )
 
+    r2 = 0.25*(r2 - r2.transpose(1,0,2,3) - r2.transpose(0,1,3,2) + r2.transpose(1,0,3,2))
+
     return r2

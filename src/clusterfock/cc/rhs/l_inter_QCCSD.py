@@ -11,6 +11,8 @@ def lambda_amplitudes_intermediates_qccsd(t1, t2, l1, l2, u, f, v, o):
     lambda_amplitudes_intermediates_qccsd_l2_addition_L1L2(r2, t1, t2, l1, l2, u, f, v, o)
     lambda_amplitudes_intermediates_qccsd_l2_addition_L1L2(r2, t1, t2, l1, l2, u, f, v, o)
 
+    r2 = 0.25*(r2 - r2.transpose(1,0,2,3) - r2.transpose(0,1,3,2) + r2.transpose(1,0,3,2))
+    
     return r1, r2
 
 

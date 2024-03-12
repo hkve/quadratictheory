@@ -30,10 +30,9 @@ class GCCSD(CoupledCluster):
         l_orders = [1, 2]
         super().__init__(basis, t_orders, l_orders)
 
-        self.t_rhs = ccsd_t_Gauss_Stanton if intermediates else amplitudes_ccsd
-        # self.t_rhs = ccsd_t_Gauss_Stanton
+        self.t_rhs = amplitudes_intermediates_ccsd if intermediates else amplitudes_ccsd
         self.l_rhs = (
-            ccsd_l_Gauss_Stanton if intermediates else lambda_amplitudes_ccsd
+            lambda_amplitudes_intermediates_ccsd if intermediates else lambda_amplitudes_ccsd
         )
 
         self.td_energy_addition = td_energy_addition
