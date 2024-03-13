@@ -21,9 +21,9 @@ def make_figs_path(filename):
 
     return str(figs_path)
 
-def save(filename, addition):
+def save(filename):
     if filename:
-        filename = make_figs_path(filename + addition)
+        filename = make_figs_path(filename)
         plt.savefig(filename)
 
 fancy = True

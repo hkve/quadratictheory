@@ -31,10 +31,12 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
 
     default = {
         "dash_quad": False,
+        "save": False,
     }
     default.update(kwargs)
 
     dash_quad = default["dash_quad"]
+    save = default["save"]
 
     r = df["r"]
     methods = df.columns[1:]
@@ -76,9 +78,10 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
     ax[1].set(xlim=xlims)
 
     ax[0].legend()
-    ax[1].set(xlabel="R [Å]")
+    ax[1].set(xlabel="R [au]")
     if ylabel: ax[1].set(ylabel=r"$|E - E_{FCI}|$ [au]")
-    # pl.save("N2")
+    
+    if save: pl.save(filename.replace(".csv", "").replace("csv/", ""))
 
 
 def plot_N2():

@@ -59,17 +59,20 @@ def plot_imag_timeprop(filename):
     dE = np.abs(results["gs_energy"] - results["energy"])
     time = results["t"]
 
+    print(dE)
+
     fig, ax = plt.subplots()
     ax.plot(time, dE, label=r"$\Delta E$")
-    # ax.plot(time, results["delta_t1"], label=r"$|\Delta t_1|$")
-    # ax.plot(time, results["delta_t2"], label=r"$|\Delta t_2|$")
-    # ax.plot(time, results["delta_l1"], label=r"$|\Delta l_1|$")
-    # ax.plot(time, results["delta_l2"], label=r"$|\Delta l_2|$")
+    ax.plot(time, results["delta_t1"], label=r"$|\Delta t_1|$")
+    ax.plot(time, results["delta_t2"], label=r"$|\Delta t_2|$")
+    ax.plot(time, results["delta_l1"], label=r"$|\Delta l_1|$")
+    ax.plot(time, results["delta_l2"], label=r"$|\Delta l_2|$")
+    ax.set(xlabel=r"$\pi_{\pm}$")
     ax.legend()
     ax.set_yscale("log")
     plt.show()
 
-def main():
+def run():
     # integrator = "GaussIntegrator"
     # integrator_args = {"s": 3, "maxit": 20, "eps": 1e-10, "method": "A", "mu": 1.75}
     integrator = "Rk4Integrator"
@@ -94,7 +97,10 @@ def main():
     run_imag_timeprop("lih", lih, "cc-pVDZ", cf.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
     run_imag_timeprop("lih", lih, "cc-pVDZ", cf.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
-    # plot_imag_timeprop("ImagTimeProp_RCCSD_he_cc-pVDZ_Rk4Integrator_0_50_0.1_True.npz")
+
+def plot():
+    plot_imag_timeprop("ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0_100_0.05.npz")
 
 if __name__ == "__main__":
-    main()
+    # run()
+    plot()
