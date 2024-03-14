@@ -40,6 +40,24 @@ def _default_restricted_permutations(dr):
 
     return [P]
 
+def get_permutation_until_order(dr, order):
+    o_dumms, v_dumms = drutils.get_indicies(dr, num=order)
+
+    P_holes = []
+    P_parts = []
+    for p in range(order):
+        for q in range(p+1, order):
+            i, a = o_dumms[p], v_dumms[p]
+            j, b = o_dumms[q], v_dumms[q]
+
+            Pij = PermutationOperator(i,j)
+            Pab = PermutationOperator(a,b)
+            
+            P_holes.append(Pij)
+            P_parts.append(Pab)
+    
+    return P_holes + P_parts
+
 def _is_in_alphabetical_order(indicies):
     str_indicies = [str(i) for i in indicies]
     return str_indicies == sorted(str_indicies)

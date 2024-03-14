@@ -1,8 +1,10 @@
 import clusterfock as cf
-from geometries import LiH_ccpVDZ
+from geometries import LiH_ccpVDZ, disassociate_2dof, disassociate_h2o
 from fci_pyscf import fci_pyscf
 
 import matplotlib.pyplot as plt
+import numpy as np
+import plot_utils as pl
 import pandas as pd
 
 pack_as_list = lambda x: x if type(x) in (list, tuple) else [x]
@@ -76,18 +78,22 @@ def run_cc(basis, CC, **kwargs):
 
 def run_weights_CC(geomtries, basis, CC, **kwargs):
     default = {
-        "vocal": False
+        "vocal": False,
+        "hf_tol": 1e-6,
+        "cc_tol": 1e-6,
     }
 
     default.update(kwargs)
 
     vocal = default["vocal"]
+    hf_tol = default["hf_tol"]
+    cc_tol = default["cc_tol"]
 
     geomtries = pack_as_list(geomtries)
     weights = []
     for geometry in geomtries:
-        b = run_hf(geometry, basis, restricted=False)
-        W = run_cc(b, CC, vocal=vocal)
+        b = run_hf(geometry, basis, restricted=False, tol=hf_tol)
+        W = run_cc(b, CC, vocal=vocal, tol=cc_tol)
         print(f"Done {geometry}, {CC.__name__}")
         weights.append(W)
 
@@ -114,6 +120,37 @@ def _rename_weigths(weights):
 
     return renamed_weigths
 
+def format_weigths(weights, R):
+    weights = pack_as_list(weights)
+    keys = list(weights[0].keys())
+
+    new_weights = {k: [] for k in keys}
+
+    for weight in weights:
+        for k in keys:
+            new_weights[k].append(weight[k])
+
+    new_weights["R"]  = R
+    return new_weights
+
+def save(names, weigths):
+
+    names = pack_as_list(names)
+    weigths = pack_as_list(weigths)
+
+    for name, weigth in zip(names, weigths):
+        np.savez(f"dat/{name}",  **weigth)
+
+
+def load(names):
+    names = pack_as_list(names)
+    weigths = []
+
+    for name in names:
+        weigth = np.load(f"dat/{name}.npz", allow_pickle=True)
+        weigths.append(weigth)
+
+    return weigths
 
 def make_diatom_table(weights_CC, R, weights_FCI=None):
     df_r = pd.DataFrame({"R": R})
@@ -153,11 +190,98 @@ def make_diatom_table(weights_CC, R, weights_FCI=None):
     # from IPython import embed
     # embed()
 
+def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
+    default = {
+        "names": ["!"]*len(weights),
+        "legend_cols": 3,
+        "y_max": None,
+        "filename": None,
+    }
+
+    default.update(kwargs)
+
+    names = default["names"]
+    legend_cols = default["legend_cols"]
+    y_max = default["y_max"]
+    filename = default["filename"]
+
+    ls = ["solid", "dashed", "dotted", "dasheddot"]
+
+    fig, ax = plt.subplots()
+    for i, name in enumerate(names):
+        W = dict(weights[i])
+        R = W.pop("R")
+        new_keys = list(set(W.keys()).difference(drop_weights))
+        new_keys = [tuple for x in ["0", "S", "D", "T", "Q"] for tuple in new_keys if tuple[0] == x]
+        W = {k: W[k] for k in new_keys}
+
+        for j, (k, v) in enumerate( W.items()):
+            label = "$W_{" + k + "}^{" + name + "}$"
+            ax.plot(R, v, label=label, ls=ls[j], color=pl.colors[i])
+
+
+    if y_max is not None:
+        ylims = ax.get_ylim()
+        ylims = (ylims[0], y_max)
+        ax.set_ylim(ylims)
+
+    ax.set(xlabel=r"$R$ [au]", ylabel=r"$W_\mu$")
+    ax.legend(ncols=legend_cols, loc="upper left")
+
+    if filename:
+        pl.save(filename)
+
+    plt.show()
+
+def plot_h2o():
+    run = False
+
+    names = [f"H20_{met}" for met in ["CCD", "QCCD", "FCI"]]
+    if run:
+        distances  =  [1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5]
+        geoms = disassociate_h2o(distances)
+
+        weights_CC = run_weights_CC(geoms, "sto-3g", cf.CCD) 
+        weights_QCC = run_weights_CC(geoms, "sto-3g", cf.QCCD)
+        weights_FCI = run_weights_FCI(geoms, "sto-3g")
+
+        weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
+
+        save(names, weights)
+    else:
+        weights = load(names)
+
+    plot_weights(weights, names=["CCD", "QCCD", "FCI"], y_max=1.4, filename="H2O_weights")
+
+def plot_n2():
+    run = False
+
+    names = [f"N2_{met}" for met in ["CCD", "QCCD", "FCI"]]
+    if run:
+        distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+        distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+
+        distances = np.r_[distances1, distances2]
+        geoms = disassociate_2dof("N", "N", distances)
+
+        weights_CC = run_weights_CC(geoms, "sto-3g", cf.CCD) 
+        weights_QCC = run_weights_CC(geoms, "sto-3g", cf.QCCD)
+        weights_FCI = run_weights_FCI(geoms, "sto-3g")
+
+        weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
+
+        save(names, weights)
+    else:
+        weights = load(names)
+
+    plot_weights(weights, names=["CCD", "QCCD", "FCI"], filename="N2_weights")
+
 if __name__ == "__main__":
+    # geom = LiH_ccpVDZ["geometry"]
+    # R = LiH_ccpVDZ["R"]
+    # weights_CC = run_weights_CC(geom, "cc-pVDZ", cf.QCCSD, vocal=True)
+    # weights_FCI = run_weights_FCI(geom, "cc-pVDZ")
 
-    geom = LiH_ccpVDZ["geometry"]
-    R = LiH_ccpVDZ["R"]
-    weights_CC = run_weights_CC(geom, "cc-pVDZ", cf.QCCSD, vocal=True)
-    weights_FCI = run_weights_FCI(geom, "cc-pVDZ")
-
-    make_diatom_table(weights_CC, R, weights_FCI)
+    # make_diatom_table(weights_CC, R, weights_FCI)
+    plot_h2o()
+    plot_n2()

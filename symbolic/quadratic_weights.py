@@ -2,7 +2,7 @@ import drudge_utils as drutils
 import gristmill_utils as grutils
 from sympy import Rational, Symbol, IndexedBase
 from sympy.physics.secondquant import PermutationOperator
-from permutations import permutations
+from permutations import permutations, get_permutation_until_order
 from IPython import embed
 
 def save(dr, name, equation):
@@ -181,6 +181,9 @@ def quadrouple_excited(dr):
     
     ket_res = ket_res.simplify()
 
+    from IPython import embed
+    embed()
+
     bra_lhs = IndexedBase("bra")
     dr.set_dbbar_base(bra_lhs, 4)
     bra = dr.define(bra_lhs[a,b,c,d,i,j,k,l], bra_res)
@@ -197,13 +200,13 @@ def quadrouple_excited(dr):
     grutils.einsum_raw(dr, "quadruplets_weight", W_Q)
 
 
-
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
 
     drutils.timer.vocal = True
     # reference(dr)
     # single_excited(dr)
-    double_excited(dr)
+    # double_excited(dr)
     # triple_excited(dr)
-    # quadrouple_excited(dr)
+    quadrouple_excited(dr)
+

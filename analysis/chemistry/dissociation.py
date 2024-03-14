@@ -222,5 +222,26 @@ def main():
     # calculate_H2O()
     plot_H2O()
 
+def test():
+    geom, = disassociate_h2o([2.1])
+    basis = "sto-3g"
+
+    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
+    
+    cc = cf.CCSD(b).run(tol=1e-6, vocal=True)
+    qcc = cf.QCCSD(b).run(tol=1e-6, vocal=True)
+    e_fci = run_fci_single(geom, basis)
+
+    e_cc, e_qcc = cc.energy(), qcc.energy()
+
+    print(
+        f"E(CCSD) = {e_cc}",
+        f"E(QCCSD) = {e_qcc}",
+        f"E(FCI) = {e_fci}"
+    )
+
+    print(f"E(CCSD-FCI) = {e_cc - e_fci}")
+    print(f"E(QCCSD-FCI) = {e_qcc - e_fci}")
 if __name__ == "__main__":
-    main()
+    # main()
+    test()

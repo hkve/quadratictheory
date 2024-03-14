@@ -1,5 +1,23 @@
 import numpy as np
 
+def disassociate_2dof(atom1, atom2, distances):
+    return [
+        f"{atom1} 0 0 0; {atom2} 0 0 {distance}" for distance in distances
+    ]
+
+def disassociate_h2o(distances):
+    distances = distances if type(distances) in [list, tuple, np.ndarray] else [distances]
+    theta = np.deg2rad(109.5)
+    alpha = theta/2
+
+    geometries = []
+    for distance in distances:
+        x, y = distance*np.cos(alpha), distance*np.sin(alpha)
+        geometry = f"O 0 0 0; H {x} {y} 0; H {x} {-y} 0;"
+        geometries.append(geometry)
+
+    return geometries
+
 LiH_ccpVDZ = {
     "R": [3.050, 6.100, 9.150],
     "geometry": [
