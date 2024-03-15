@@ -65,15 +65,6 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
             cc._t.from_flat(integrator.y[self.t_slice])
             cc._l.from_flat(integrator.y[self.l_slice])
 
-            # l_dot = -1.0*cc._l_rhs_timedependent(cc._t, cc._l)
-            # l_dot_norm = np.linalg.norm(l_dot[2])
-
-            # if l_dot_norm > l_dot_norm_prev:
-            #     print("!!! ")
-            # else:
-            #     l_dot_norm_prev = l_dot_norm
-            # print(f"{integrator.t:.3f}", l_dot_norm, np.linalg.norm(cc._l[2]))
-
             self._sample()
 
         if unsuccessful_index is not None:
@@ -83,6 +74,55 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
 
         return self.results
     
+    def run_until_convergence(self, tol: float, vocal: bool = False):
+        cc, basis = self.cc, self.basis
+        
+        cc._t.initialize_zero()
+        cc._l.initialize_zero()
+        cc._t_info = {"run": True, "converged": True, "iters": 0}
+        cc._l_info = cc._t_info.copy()
+
+        self._setup_sample(basis)
+
+        y_initial, self.t_slice, self.l_slice = merge_to_flat(cc._t, cc._l)
+        dt = self._dt
+
+        assert dt > 0
+
+        integrator = ode(self.rhs)
+        integrator.set_integrator(self._integrator, **self._integrator_args)
+        integrator.set_initial_value(y_initial, 0)
+
+        self._sample()
+
+        unsuccessful_index = None
+        l_dot_norm_prev = 1000
+        converged = False
+        time_points = [0]
+
+        while not converged:
+            integrator.integrate(integrator.t + dt)
+
+            cc._t.from_flat(integrator.y[self.t_slice])
+            cc._l.from_flat(integrator.y[self.l_slice])
+
+            t_norm = cc._t_rhs_timedependent(cc._t, cc._l).norm()
+            l_norm = cc._l_rhs_timedependent(cc._t, cc._l).norm()
+
+            converged = self._check_convergence(t_norm, l_norm, tol)
+            
+            if vocal:
+                print(f"t = {integrator.t:.2f}, converged = {converged}, {t_norm = }, {l_norm = }")
+
+            self._sample()
+            time_points.append(integrator.t)
+
+        time_points = np.array(time_points)
+        self.results = self._construct_results(time_points)
+
+        return self.results
+   
+
     def rhs(self, t: float, y: np.ndarray) -> np.ndarray:
         """
         Evaluates the rhs for each partial step. Since scipy integrater requires flat arrays
@@ -110,6 +150,13 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         return y_dot
 
 
+    def _check_convergence(self, t_norms, l_norms, tol):
+        t_norm_max = max([v for v in t_norms.values()])
+        l_norm_max = max([v for v in l_norms.values()])
+
+        norm_max = max([t_norm_max, l_norm_max])
+
+        return norm_max < tol
     @property
     def external_one_body(self):
         raise NotImplementedError(f"{self.__class__.__name__} is a ground state solver!")

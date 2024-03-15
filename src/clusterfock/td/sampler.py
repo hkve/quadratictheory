@@ -35,9 +35,15 @@ class ImagTimeSampler(Sampler):
         
         t_norms = {}
         l_norms = {}
+        rhs_t_norms = {}
+        rhs_l_norms = {}
+
+        rhs_t_norms_, rhs_l_norms_ = cc._t_rhs_timedependent(cc._t, cc._l).norm(), cc._l_rhs_timedependent(cc._t, cc._l).norm()
         for order in cc._t.orders:
             t_norms[f"delta_t{order}"] = np.linalg.norm(cc_gs._t[order] - cc._t[order])
             l_norms[f"delta_l{order}"] = np.linalg.norm(cc_gs._l[order] - cc._l[order])
+            rhs_t_norms[f"rhs_t{order}"] = rhs_t_norms_[order]
+            rhs_l_norms[f"rhs_l{order}"] = rhs_l_norms_[order]
 
         result = {
             "energy": cc.time_dependent_energy(),
@@ -45,6 +51,8 @@ class ImagTimeSampler(Sampler):
 
         result.update(t_norms)
         result.update(l_norms)
+        result.update(rhs_t_norms)
+        result.update(rhs_l_norms)
 
         return result
 
