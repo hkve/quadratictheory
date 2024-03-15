@@ -6,7 +6,7 @@ def reformat_sums(string):
     terms = re.split(r"\s*[+-]\s*", string)
 
     new_string = ""
-    print(signs)
+    
     num_terms = len(terms)
     for i, term in enumerate(terms):
         indicies = re.findall(r"\\sum_{([a-z])}", term)
@@ -41,10 +41,12 @@ def pretty(latex_str, einst=False):
 
     latex_str = re.sub(r"\\lambda_{([a-h]),([i-o])}", r"\\lambda^{\2}_{\1}", latex_str)
     latex_str = re.sub(r"\\lambda_{([a-h]),([a-h]),([i-o]),([i-o])}", r"\\lambda^{\3\4}_{\1\2}", latex_str)
-
+    
+    latex_str = re.sub(r"u_{([a-z]),([a-z]),([a-z]),([a-z])}", r"u^{\1\2}_{\3\4}", latex_str)
     latex_str = re.sub(r"P", r"\\hat{P}", latex_str)
 
-    print(latex_str)
+    return latex_str
+
     # latex_str = re.sub(r"t\^{\d}_{(.*?),(.*?),(.*?),(.*?)}", r"t^{\1\2}_{\3\4}", latex_str)
     # latex_str = re.sub(r"u_{(.*?),(.*?),(.*?),(.*?)}", r"u^{\1\2}_{\3\4}", latex_str)
     # latex_str = re.sub(r"f_{(.*?),(.*?)}", r"f_{\1\2}", latex_str).strip()

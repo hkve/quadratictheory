@@ -244,7 +244,7 @@ def similarity_transform(tensor, clusters):
     tensor_bar = tensor
 
     for order in range(0, 4):
-        curr = (curr | clusters).simplify() / (order + 1)
+        curr = (curr | clusters).simplify() * Rational(1, order + 1)
         curr.cache()
         tensor_bar += curr
         timer.tock(f"Commutator at order {order+1}")
