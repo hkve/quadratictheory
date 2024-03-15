@@ -244,4 +244,6 @@ def test():
     print(f"E(QCCSD-FCI) = {e_qcc - e_fci}")
 if __name__ == "__main__":
     # main()
-    test()
+    # test()
+    plot_H2O()
+    plot_N2()

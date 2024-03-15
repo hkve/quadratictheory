@@ -21,9 +21,24 @@ def make_figs_path(filename):
 
     return str(figs_path)
 
-def save(filename):
+def make_latex_path(filename):
+    root_path = pl.Path("/home/hakon/Documents/skole/MastersThesis/tex/figs")
+
+    if not root_path.exists():
+        return None
+    if not filename.endswith(".pdf"):
+        filename += ".pdf"
+
+    root_path /= filename
+
+    return str(root_path)
+
+def save(filename, latex_figs=False):
     if filename:
-        filename = make_figs_path(filename)
+        if latex_figs:
+            filename = make_latex_path(filename)
+        else:           
+            filename = make_figs_path(filename)
         plt.savefig(filename)
 
 fancy = True
