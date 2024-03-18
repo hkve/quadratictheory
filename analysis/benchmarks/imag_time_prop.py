@@ -42,7 +42,7 @@ def run_imag_timeprop(name, geometry, basis, CC, **kwargs):
 
     cc = CC(b)
     itdcc = cf.ImaginaryTimeCoupledCluster(cc, cc_gs, time, integrator, integrator_args)
-    itdcc.run_until_convergence(tol=cc_tol, vocal=True)
+    itdcc.run_until_convergence(tol=cc_tol, vocal=False)
 
     results = itdcc.results
     results["gs_energy"] = energy_gs
@@ -54,39 +54,88 @@ def plot_imag_timeprop(filename, **kwargs):
     defaults = {
         "path": "dat",
         "tol": None,
+        "orders": [2],
     }
 
     defautls = defaults.update(**kwargs)
 
     tol = defaults["tol"]
     path = defaults["path"]
+    orders = defaults["orders"]
 
     results = np.load(f"{path}/{filename}", allow_pickle=True)
     
     dE_i = np.abs(results["energy"][1:] - results["energy"][0:-1])
-
     dE = np.abs(results["gs_energy"] - results["energy"])
     time = results["t"]
 
-    fig, ax = plt.subplots()
-    ax.plot(time, dE, label=r"$\Delta E$")
-    ax.plot(time[1:], dE_i, label=r"$|E_{i+1} - E_i|$")
-    ax.plot(time, results["delta_t2"], label=r"$|\Delta t_2|$")
-    ax.plot(time, results["delta_l2"], label=r"$|\Delta l_2|$")
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(14, 6))
+    color1, color2 = pl.colors.copy(), pl.colors.copy()
 
-    keys = list(results.keys())
-    if "delta_t1" in keys:
-        ax.plot(time, results["delta_t1"], label=r"$|\Delta t_1|$")
-    if "delta_l1" in keys:
-        ax.plot(time, results["delta_l1"], label=r"$|\Delta l_1|$")
+    ax1 = axes[0]
+    ax1_amps = ax1.twinx()
+    ax1.set_yscale("log")
+    ax1_amps.set_yscale("log")
 
-    if tol:
-        ax.hlines(tol, time.min(), time.max(), color="gray", alpha=0.5, ls="--")
+    line1 = ax1.plot(time[1:], dE_i, color=color1.pop(0), label="$\delta E_i$")
+    lines = []
+    for i, order in enumerate(orders, start=1):
+        line_t = ax1_amps.plot(time, results[f"rhs_t{order}"], color=color1.pop(0), label=r"$|\dot{\tau}_{" + str(order) + "}|$")
+        line_l = ax1_amps.plot(time, results[f"rhs_l{order}"], color=color1.pop(0), label=r"$|\dot{\lambda}_{" + str(order) + "}|$")
+
+        lines = lines + line_t + line_l
     
-    ax.set(xlabel=r"$\pi_{\pm}$")
-    ax.legend()
-    ax.set_yscale("log")
+    lines = line1 + lines
+    
+    labels = [l.get_label() for l in lines]
+    
+    ax1.set(xlabel="$\pi_{\pm}$ [au]")
+    ax1.set(ylabel="Energy [au]")
+    ax1_amps.set(ylabel=r"$\delta \tau, \delta \lambda$")
+    ax1.legend(lines, labels)
+    ax1_amps.hlines(1e-10, time[-1]*0.8, time[-1]*1.05, color="gray", alpha=0.4, ls="--")
+
+    ax2 = axes[1]
+    ax2_amps = ax2.twinx()
+    ax2.set_yscale("log")
+    ax2_amps.set_yscale("log")
+
+    line2 = ax2.plot(time, dE, color=color2.pop(0), label="$\delta E$")
+    lines = []
+    for i, order in enumerate(orders, start=1):
+        line_t = ax2_amps.plot(time, results[f"delta_t{order}"], color=color2.pop(0), label=r"$\delta \tau_{" + str(order) + "}$")
+        line_l = ax2_amps.plot(time, results[f"delta_l{order}"], color=color2.pop(0), label=r"$\delta \lambda_{" + str(order) + "}$")
+
+        lines = lines + line_t + line_l
+
+    lines = line2 + lines
+    labels = [l.get_label() for l in lines]
+   
+    ax2_amps.hlines(1e-10, time[-1]*0.8, time[-1]*1.05, color="gray", alpha=0.4, ls="--")
+    ax2.set(ylabel="Energy [au]")
+    ax2_amps.set(ylabel=r"$\delta \tau, \delta \lambda$")
+    ax2.set(xlabel="$\pi_{\pm}$ [au]")
+    ax2.legend(lines, labels)
     plt.show()
+
+    # ax.plot(time, dE, label=r"$\Delta E$")
+    # ax.plot(time[1:], dE_i, label=r"$|E_{i+1} - E_i|$")
+    # ax.plot(time, results["delta_t2"], label=r"$|\Delta t_2|$")
+    # ax.plot(time, results["delta_l2"], label=r"$|\Delta l_2|$")
+
+    # keys = list(results.keys())
+    # if "delta_t1" in keys:
+    #     ax.plot(time, results["delta_t1"], label=r"$|\Delta t_1|$")
+    # if "delta_l1" in keys:
+    #     ax.plot(time, results["delta_l1"], label=r"$|\Delta l_1|$")
+
+    # if tol:
+    #     ax.hlines(tol, time.min(), time.max(), color="gray", alpha=0.5, ls="--")
+    
+    # ax.set(xlabel=r"$\pi_{\pm}$")
+    # ax.legend()
+    # ax.set_yscale("log")
+    # plt.show()
 
 def plot_two_imag_timeprop(filenames, **kwargs):
     defaults = {
@@ -189,18 +238,57 @@ def run():
 
 
 def plot():
-    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0_200_0.05.npz"
+    filename = "ImagTimeProp_QCCD_chp_cc-pVDZ_Rk4Integrator_0.05.npz"
     plot_imag_timeprop(filename, tol=1e-10)
 
-    results = np.load(f"dat/{filename}", allow_pickle=True)
+def format_scientific_notation(number):
+    sigfig = 3
 
-    from IPython import embed
-    embed()
-    # filenames = [
-    #     "ImagTimeProp_CCD_lih_cc-pVDZ_Rk4Integrator_0_100_0.05.npz",
-    #     "ImagTimeProp_QCCD_lih_cc-pVDZ_Rk4Integrator_0_100_0.05.npz"
-    # ]
-    # plot_two_imag_timeprop(filenames, tol=1e-10)
+    mantissa = f"{number:.3e}"[:sigfig+2]
+    exponent = int(np.floor(np.log10(number)))
+
+    string = f"${mantissa} \cdot " + "10^{" + str(exponent) + "}$" 
+
+    return string
+
+
+def list_results(method):
+    import os
+
+    order = [2]
+    if "S" in method:
+        order = [1, 2]
+
+    for filename in os.listdir("dat/"):
+        l = filename.split("_")
+        if len(l) != 6:
+            continue
+
+        met = l[1]
+        sys = l[2]
+        basis = l[3]
+
+        if met == method:
+            results = np.load(f"dat/{filename}", allow_pickle=True)
+
+            time_end = results["t"][-1]
+            dE_end = np.abs(results["energy"][-1] - results["gs_energy"])            
+            
+            print(sys, basis, met)
+            for o in order:
+                rhs_t_last = results[f"delta_t{o}"][-1]
+                rhs_l_last = results[f"delta_l{o}"][-1]
+
+                
+                rhs_t = format_scientific_notation(rhs_t_last)
+                rhs_l = format_scientific_notation(rhs_l_last)
+
+                print(f"& {rhs_t} & {rhs_l}", end="")
+
+            print(f"\t{time_end:.2f}")
+
 if __name__ == "__main__":
-    run()
-    # plot()
+    # run()
+    plot()
+    # list_results("CCD")
+    pass
