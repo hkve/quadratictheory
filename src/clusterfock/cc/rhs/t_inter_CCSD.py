@@ -354,6 +354,8 @@ def amplitudes_intermediates_ccsd(t1, t2, u, f, v, o):
 
     r2 += np.einsum("baji->abij", u[v, v, o, o], optimize=True)
 
-    r2 = 0.25*(r2 - r2.transpose(1,0,2,3) - r2.transpose(0,1,3,2) + r2.transpose(1,0,3,2))
+    r2 = 0.25 * (
+        r2 - r2.transpose(1, 0, 2, 3) - r2.transpose(0, 1, 3, 2) + r2.transpose(1, 0, 3, 2)
+    )
 
     return r1, r2
