@@ -1,206 +1,129 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
+from sympy import Rational
 
-def define_rhs(dr, term, rank):
-    if rank == 0:
-        equation = drutils.define_rk0_rhs(dr, term)
-    elif rank == 1:
-        equation = drutils.define_rk1_rhs(dr, term)
-    elif rank == 2:
-        equation = drutils.define_rk2_rhs(dr, term)
-    else:
-        print("Uknown rank here, how manu free indicies do you have?")
-        exit()
+from IPython import embed
+from permutations import permutations
+from latex import pretty
 
-    return equation
-
-def load(dr, basename):
-    equations = {}
-    names = ["t1", "t2"]
-
-    for name in names:
-        equation = drutils.load_from_pickle(dr, basename + f"_{name}")
-        equations[name] = equation
-
-    return equations
-
-@drutils.timeme
-def get_energy_equations_addition(dr, ham_bar, deex, filename=None):
-    term = (deex * ham_bar).eval_fermi_vev().simplify()
-    equation = define_rhs(dr, term, 0)
-
-    if filename is not None: drutils.save_to_pickle(equation, filename)
-
-    return equation
-
-@drutils.timeme
-def get_t_equation(dr, ham_bar, Y, L, filename=None):
-    term = (Y * L * ham_bar).eval_fermi_vev().simplify()
-    rank = len(Y.terms[0].args[2]) // 2
-    equation = define_rhs(dr, term, rank)
-
-    if filename is not None: drutils.save_to_pickle(equation, filename)
-
-    return equation
-
-@drutils.timeme
-def get_l_equation(dr, H, X, T, deex, filename=None):
-    comm = H | X
-    comm_bar = drutils.similarity_transform(comm, T)
-    deex = deex.simplify()
-    term = (deex * comm_bar).eval_fermi_vev().simplify()
-    rank = len(X.terms[0].args[2]) // 2
-    equation = define_rhs(dr, term, rank)
-
-    if filename is not None: drutils.save_to_pickle(equation, filename)
-
-    return equation
-
-def calculate_expressions(dr, basename):
+def get_bits(dr):
     T1, L1 = drutils.get_clusters_1(dr)
     T2, L2 = drutils.get_clusters_2(dr)
-    T, L = T1+T2, L1+L2
-
     ham = dr.ham
-    
-    # Free indicies for de-excitation operator
-    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
-    Y1 = drutils.get_Y(dr, 1, (i,), (a,))
-    Y2 = drutils.get_Y(dr, 2, (i, j), (a, b))
-    X1 = drutils.get_X(dr, 1, (i,), (a,))
-    X2 = drutils.get_X(dr, 2, (i, j), (a, b))
 
-
-    equations = {}
-    # Energy addition
-    names = ["11", "12", "22"]
-    deexes = [L1*L1/2, L1*L2, L2*L2/2]
-    ham_bar = drutils.similarity_transform(ham, T)
-    for name, deex in zip(names, deexes):
-        energy_equation = get_energy_equations_addition(dr, ham_bar, deex, basename + f"_energy_addition_{name}")
-        equations[f"energy_{name}"] = energy_equation
-        grutils.einsum_raw(dr, basename + f"_energy_addition_{name}", energy_equation)
-    drutils.timer.tock("QCCSD energy done")
-
-
-    # ham_bar = drutils.similarity_transform(ham, T)
-    # T1 QCCSD addition
-    t1_equation = get_t_equation(dr, ham_bar, Y1, L, basename + "_t1")
-    equations["t1"] = t1_equation
-    grutils.einsum_raw(dr, basename + "_t1", t1_equation)
-    drutils.timer.tock("QCCSD t1 done")
-
-    # # T2 QCCSD addition
-    t2_equation = get_t_equation(dr, ham_bar, Y2, L, basename + "_t2")
-    equations["t2"] = t2_equation
-    grutils.einsum_raw(dr, basename + "_t2", t2_equation)
-    drutils.timer.tock("QCCSD t2 done")
-
-    # L1 QCCSD addition
-    l1_equation = get_l_equation(dr, ham, X1, T, L*L/2, basename + "_l1")
-    equations["l1"] = l1_equation
-    grutils.einsum_raw(dr, basename + "_l1", l1_equation)
-    drutils.timer.tock("QCCSD l1 done")
-
-    # L2 QCCSD addition
-    names = ["11", "12", "22"]
-    deexes = [L1*L1/2, L1*L2, L2*L2/2]
-
-    for name, deex in zip(names, deexes):
-        l2_equation_additon = get_l_equation(dr, ham, X2, T, deex, basename + f"_l2_{name}")
-        equations[f"l2_{name}"] = l2_equation_additon
-        grutils.einsum_raw(dr, basename + f"_l2_{name}", l2_equation_additon)
-        drutils.timer.tock(f"QCCSD l2 done, {name} term")
-
-    return equations
-
-def _run_blocks(dr, blocks, block_names):
-    # Get clusters
-    T1, L1 = drutils.get_clusters_1(dr)
-    T2, L2 = drutils.get_clusters_2(dr)
     T = (T1+T2).simplify()
     L = (L1+L2).simplify()
-    rho = [None] * len(blocks)
 
-    # Loop over each block, sim trans and resolve 1 and L term
-    for i, block in enumerate(blocks):
-        block_sim = drutils.similarity_transform(block, T)
+    T.cache()
+    L.cache()
+    ham.cache()
 
-        rho_block = (L*L/2 * block_sim).eval_fermi_vev().simplify()
-        rho[i] = rho_block
-        drutils.timer.tock(f"Density {block_names[i]}. = 0? {rho_block == 0}")
-    
-    return rho
-
-def drop_zeros(eqs, names=None):
-    new_eqs, new_names = [], []
-
-    for i, eq in enumerate(eqs):
-        if eq.rhs != 0:
-            new_eqs.append(eq)
-            if names != None:
-                new_names.append(names[i])
-
-    return new_eqs, new_names
+    return T, L, ham
 
 @drutils.timeme
-def L_densities(dr):
-    # One body
-    # o_dums, v_dums = drutils.get_indicies(dr, num=2)
-    # blocks, block_names = drutils.get_ob_density_blocks(dr, o_dums, v_dums)
-    # rho = _run_blocks(dr, blocks, block_names)
-    
-    # rho_eqs = drutils.define_ob_density_blocks(dr, rho, block_names, o_dums, v_dums)
-    # drutils.save_to_pickle(rho_eqs, "qccsd_1b_density")
-    # drutils.save_html(dr, f"qccsd_1b_density", rho_eqs, block_names)
-    # grutils.einsum_raw(dr, "qccsd_1b_density", rho_eqs)
+def energy_addition(dr, filename, L, ham_bar):
+    energy = (Rational(1,2)*L*L*ham_bar).eval_fermi_vev().simplify()
+    energy_eq = drutils.define_rk0_rhs(dr, energy)
+    drutils.timer.tock(f"Done QCCSD energy addition, saving to {filename}", energy_eq)
 
-    # rho_eqs, block_names = drop_zeros(rho_eqs, block_names)
+    drutils.save_html(dr, filename, energy_eq)
+    drutils.save_to_pickle(energy_eq, filename)
+    grutils.einsum_raw(dr, filename, energy_eq)
 
-    # if rho_eqs != [0]:
-    #     for rho_eq, name in zip(rho_eqs, block_names):
-    #         rho_eval_seq = grutils.optimize_equations(dr, rho_eq)
-    #         drutils.save_html(dr, f"qccsd_1b_density_opti_{name}", rho_eval_seq)
-    #         grutils.einsum_raw(dr, f"qccsd_1b_density_opti_{name}", rho_eval_seq)
-    #         drutils.save_to_pickle(rho_eval_seq, f"qccsd_1b_density_{name}")
+@drutils.timeme
+def t1_additon(dr, filename, L, ham_bar):
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    Y1 = drutils.get_Y(dr, 1, (i,), (a,))
 
-    o_dums, v_dums = drutils.get_indicies(dr, num=4)
-    blocks, block_names = drutils.get_tb_density_blocks(dr, o_dums, v_dums)
-    rho = _run_blocks(dr, blocks, block_names)
-    
-    rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
-    drutils.save_html(dr, "qccsd_2b_density", rho_eqs, block_names)
-    grutils.einsum_raw(dr, "qccsd_2b_density", rho_eqs)
-    drutils.save_to_pickle(rho_eqs, "qccsd_2b_density")
-    # rho_eqs = drutils.load_from_pickle(dr, "qccd_2b_density")
+    t1 = (Y1*L*ham_bar).eval_fermi_vev().simplify()
+    t1_eq = drutils.define_rk1_rhs(dr, t1)
+    drutils.timer.tock(f"Done QCCSD T1 addition, saving to {filename}", t1_eq)
 
-    rho_eqs, block_names = drop_zeros(rho_eqs, block_names)
+    drutils.save_html(dr, filename, t1_eq)
+    drutils.save_to_pickle(t1_eq, filename)
+    grutils.einsum_raw(dr, filename, t1_eq)
 
-    if rho_eqs != [0]:
-        for rho_eq, name in zip(rho_eqs, block_names):
-            drutils.timer.tock(f"QCCSD starting two-body {name} block")
-            rho_eval_seq = grutils.optimize_equations(dr, rho_eq)
-            drutils.save_html(dr, f"qccsd_2b_density_opti_{name}", rho_eval_seq)
-            grutils.einsum_raw(dr, f"qccsd_2b_density_opti_{name}", rho_eval_seq)
-            drutils.save_to_pickle(rho_eval_seq, f"qccsd_2b_density_{name}")
+@drutils.timeme
+def t2_additon(dr, filename, L, ham_bar):
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    Y2 = drutils.get_Y(dr, 2, (i,j), (a,b))
 
-def optimize_expressions(dr, equations):
-    for name, eq in equations.items():
-        eval_seq = grutils.optimize_equations(dr, eq)
-        drutils.timer.tock(f"QCCSD {name} optimization done")
+    t2 = (Y2*L*ham_bar).eval_fermi_vev().simplify()
+    t2_eq = drutils.define_rk2_rhs(dr, t2)
+    drutils.timer.tock(f"Done QCCSD T2 addition, saving to {filename}", t2_eq)
 
-        drutils.save_to_pickle(eval_seq, basename + "_opti_" + name)
-        drutils.save_html(dr, basename + "_opti_" + name, eval_seq)
-        grutils.einsum_raw(dr, basename + "_opti_" + name, eval_seq)
+    drutils.save_html(dr, filename, t2_eq)
+    drutils.save_to_pickle(t2_eq, filename)
+    grutils.einsum_raw(dr, filename, t2_eq)
+
+@drutils.timeme
+def l1_additon(dr, filename, L, ham_bar):
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    X1 = drutils.get_X(dr, 1, (i,), (a,))
+
+    com = ham_bar | X1
+
+    l1 = (Rational(1,2)*L*L*com).eval_fermi_vev().simplify()
+    l1_eq = drutils.define_rk1_rhs(dr, l1)
+    drutils.timer.tock(f"Done QCCSD L1 addition, saving to {filename}", l1_eq)
+
+    drutils.save_html(dr, filename, l1_eq)
+    drutils.save_to_pickle(l1_eq, filename)
+    grutils.einsum_raw(dr, filename, l1_eq)
+
+@drutils.timeme
+def l2_additon(dr, filename, L, ham_bar):
+    (i, j), (a, b) = drutils.get_indicies(dr, num=2)
+    X2 = drutils.get_X(dr, 2, (i,j), (a,b))
+
+    com = ham_bar | X2
+
+    l2 = (Rational(1,2)*L*L*com).eval_fermi_vev().simplify()
+    l2_eq = drutils.define_rk2_rhs(dr, l2)
+    drutils.timer.tock(f"Done QCCSD L2 addition, saving to {filename}", l2_eq)
+
+    drutils.save_html(dr, filename, l2_eq)
+    drutils.save_to_pickle(l2_eq, filename)
+    grutils.einsum_raw(dr, filename, l2_eq)
+
+@drutils.timeme
+def optimize(dr, filename):
+    eq = drutils.load_from_pickle(dr, filename)
+    new_filename = f"{filename}_optimized"
+
+    eval_seq_eq = grutils.optimize_equations(dr, eq)
+    drutils.timer.tock(f"Done QCCSD optimazation from {filename}, saving to {new_filename}", eq)
+
+    drutils.save_html(dr, new_filename, eval_seq_eq)
+    drutils.save_to_pickle(eval_seq_eq, new_filename)
+    grutils.einsum_raw(dr, new_filename, eval_seq_eq)
 
 if __name__ == "__main__":
-    dr = drutils.get_particle_hole_drudge()
+    dr = drutils.get_particle_hole_drudge(dummy=True)
+
     drutils.timer.vocal = True
     
-    basename = "qccsd"
+    
 
-    equations = calculate_expressions(dr, basename)
-    # equations = load(dr, basename)
-    optimize_expressions(dr, equations)
+    filenames = {
+        "e": "TEST_qccsd_energy_addition",
+        "t1": "TEST_qccsd_t1_addition",
+        "t2": "TEST_qccsd_t2_addition",
+        "l1": "TEST_qccsd_l1_addition",
+        "l2": "TEST_qccsd_l2_addition",
+    }
 
-    # L_densities(dr)
+
+    T, L, ham = get_bits(dr)
+    ham_bar = drutils.similarity_transform(ham, T)
+
+    energy_addition(dr, filename=filenames["e"], L=L, ham_bar=ham_bar)
+
+    t1_additon(dr, filename=filenames["t1"], L=L, ham_bar=ham_bar)
+    t2_additon(dr, filename=filenames["t2"], L=L, ham_bar=ham_bar)
+
+    l1_additon(dr, filename=filenames["l1"], L=L, ham_bar=ham_bar)
+    l2_additon(dr, filename=filenames["l2"], L=L, ham_bar=ham_bar)
+
+    for name, filename in filenames.items():
+        optimize(dr, filename)
