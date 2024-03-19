@@ -31,12 +31,12 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
 
     default = {
         "dash_quad": False,
-        "save": False,
+        "save_name": None,
     }
     default.update(kwargs)
 
     dash_quad = default["dash_quad"]
-    save = default["save"]
+    save_name = default["save_name"]
 
     r = df["r"]
     methods = df.columns[1:]
@@ -81,7 +81,7 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
     ax[1].set(xlabel="R [au]")
     if ylabel: ax[1].set(ylabel=r"$|E - E_{FCI}|$ [au]")
     
-    if save: pl.save(filename.replace(".csv", "").replace("csv/", ""))
+    if save_name: pl.save(save_name)
 
 
 def plot_N2():

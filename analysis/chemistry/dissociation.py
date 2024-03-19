@@ -17,6 +17,8 @@ def run_fci(atoms, basis, vocal=False):
     return E
 
 def merge_df(df1, df2):
+    df1 = df1.round({"r": 3})
+    df2 = df2.round({"r": 3})
     df_merged = pd.merge(df1, df2, on="r", how="outer", suffixes=(None, "_new"))
     cols_new = [col for col in df_merged.columns if col.endswith("_new")]
     cols_to_update = [col.rstrip("_new") for col in cols_new]
@@ -192,7 +194,7 @@ def calculate_H2O_ccd():
 def plot_N2_ccd():
     E_free = -107.43802235
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/N2_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save=True)
+    plot("csv/N2_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save_name="N2_diss_ccd")
     plt.show()
 
 def plot_LiH_ccd():
@@ -210,12 +212,34 @@ def plot_HF_ccd():
 def plot_H2O_ccd():
     E_free = -74.73731393275897
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save=True)
+    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save_name="H2O_diss_ccd")
     plt.show()
 
 """
 SINGLES AND DOUBLES TRUNCATION --------------------------------------------------------
 """
+
+def calculate_N2_ccsd():
+    distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+    distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+
+    distances = np.r_[distances1, distances2]
+
+    basis = "sto-3g"
+    atoms = disassociate_2dof("N", "N", distances)
+
+    E_fci = run_fci(atoms, basis, vocal=True)
+    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    save("csv/N2_ccsd.csv", df_fci)
+
+    E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
+    df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
+    save("csv/N2_ccsd.csv", df_ccsd)
+
+    E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True)
+    df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
+    save("csv/N2_ccsd.csv", df_qccsd)
+    
 
 def calculate_H2O_ccsd():
     distances = np.array([1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5])
@@ -234,10 +258,16 @@ def calculate_H2O_ccsd():
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
     save("csv/H2O_ccsd.csv", df_qccsd)       
 
+def plot_N2_ccsd():
+    E_free = -107.43802235
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
+    plot("csv/N2_ccsd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save_name="N2_diss_ccsd")
+    plt.show()
+
 def plot_H2O_ccsd():
     E_free = -74.73731393275897
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/H2O_ccsd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save=False)
+    plot("csv/H2O_ccsd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save_name="H2O_diss_ccsd")
     plt.show()
 
 def main():
@@ -256,6 +286,9 @@ def main():
     # calculate_H2O_ccsd()
     plot_H2O_ccsd()
 
+    # calculate_N2_ccsd()
+    plot_N2_ccsd()
+
 def test():
     geom, = disassociate_h2o([2.1])
     basis = "sto-3g"
@@ -264,7 +297,7 @@ def test():
     
     cc = cf.CCSD(b).run(tol=1e-6, vocal=True)
     qcc = cf.QCCSD(b).run(tol=1e-6, vocal=True)
-    e_fci = run_fci_single(geom, basis)
+    e_fci = run_fci_single(geom, basis) 
 
     e_cc, e_qcc = cc.energy(), qcc.energy()
 

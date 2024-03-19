@@ -242,6 +242,8 @@ def plot():
     plot_imag_timeprop(filename, tol=1e-10)
 
 def format_scientific_notation(number):
+    if number == 0.0:
+        return str(number)
     sigfig = 3
 
     mantissa = f"{number:.3e}"[:sigfig+2]
@@ -268,7 +270,9 @@ def list_results(method):
         sys = l[2]
         basis = l[3]
 
+
         if met == method:
+            print(filename)
             results = np.load(f"dat/{filename}", allow_pickle=True)
 
             time_end = results["t"][-1]
@@ -289,6 +293,11 @@ def list_results(method):
 
 if __name__ == "__main__":
     # run()
-    plot()
-    # list_results("CCD")
-    pass
+    # plot()
+    list_results("CCSD")
+    # list_results("QCCSD")
+
+    # results = np.load("dat/ImagTimeProp_CCSD_be_sto-3g_Rk4Integrator_0.05.npz")
+    # from IPython import embed
+    # embed()
+    # pass
