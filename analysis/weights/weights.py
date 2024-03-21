@@ -190,6 +190,15 @@ def make_diatom_table(weights_CC, R, weights_FCI=None):
     # from IPython import embed
     # embed()
 
+def get_color(name):
+    if "CC" in name:
+        if "Q" in name:
+            return pl.colors[2]
+        else:
+            return pl.colors[1]
+    else:
+        return pl.colors[0]
+    
 def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
     default = {
         "names": ["!"]*len(weights),
@@ -205,19 +214,26 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
     y_max = default["y_max"]
     filename = default["filename"]
 
-    ls = ["solid", "dashed", "dotted", "dasheddot"]
+    ls = {
+        "0": "solid",
+        "S": "dotted",
+        "D": "dashed",
+        "T": "dashdot",
+        "Q": (0, (3, 1, 1, 1, 1, 1)),
+    }
 
     fig, ax = plt.subplots()
     for i, name in enumerate(names):
         W = dict(weights[i])
         R = W.pop("R")
+        print(list(W.keys()))
         new_keys = list(set(W.keys()).difference(drop_weights))
         new_keys = [tuple for x in ["0", "S", "D", "T", "Q"] for tuple in new_keys if tuple[0] == x]
         W = {k: W[k] for k in new_keys}
 
         for j, (k, v) in enumerate( W.items()):
             label = "$W_{" + k + "}^{" + name + "}$"
-            ax.plot(R, v, label=label, ls=ls[j], color=pl.colors[i])
+            ax.plot(R, v, label=label, ls=ls[k], color=get_color(name))
 
 
     if y_max is not None:
@@ -233,16 +249,18 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
 
     plt.show()
 
-def plot_h2o():
-    run = False
+def plot_h2o(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False):
+    mets_map = {"CCD": cf.CCD, "CCSD": cf.CCSD} 
+    qmets_map = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD} 
+    all_mets = [standard, quad] + ["FCI"]
 
-    names = [f"H20_{met}" for met in ["CCD", "QCCD", "FCI"]]
+    names = [f"H20_{met}" for met in all_mets]
     if run:
         distances  =  [1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5]
         geoms = disassociate_h2o(distances)
 
-        weights_CC = run_weights_CC(geoms, "sto-3g", cf.CCD) 
-        weights_QCC = run_weights_CC(geoms, "sto-3g", cf.QCCD)
+        weights_CC = run_weights_CC(geoms, "sto-3g", mets_map[standard]) 
+        weights_QCC = run_weights_CC(geoms, "sto-3g", qmets_map[quad])
         weights_FCI = run_weights_FCI(geoms, "sto-3g")
 
         weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
@@ -251,12 +269,16 @@ def plot_h2o():
     else:
         weights = load(names)
 
-    plot_weights(weights, names=["CCD", "QCCD", "FCI"], y_max=1.4, filename="H2O_weights")
+    filename = f"H2O_weights_{standard}" if save else None
+    plot_weights(weights, names=all_mets, y_max=1.5, filename=filename, drop_weights=drop_weights)
 
-def plot_n2():
-    run = False
+def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False):
+    mets_map = {"CCD": cf.CCD, "CCSD": cf.CCSD} 
+    qmets_map = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD} 
+    all_mets = [standard, quad] + ["FCI"]
 
-    names = [f"N2_{met}" for met in ["CCD", "QCCD", "FCI"]]
+    names = [f"N2_{met}" for met in all_mets]
+
     if run:
         distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
         distances2 = np.arange(2.0, 3.8+0.1, 0.1)
@@ -264,8 +286,8 @@ def plot_n2():
         distances = np.r_[distances1, distances2]
         geoms = disassociate_2dof("N", "N", distances)
 
-        weights_CC = run_weights_CC(geoms, "sto-3g", cf.CCD) 
-        weights_QCC = run_weights_CC(geoms, "sto-3g", cf.QCCD)
+        weights_CC = run_weights_CC(geoms, "sto-3g", mets_map[standard]) 
+        weights_QCC = run_weights_CC(geoms, "sto-3g", qmets_map[quad])
         weights_FCI = run_weights_FCI(geoms, "sto-3g")
 
         weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
@@ -274,7 +296,8 @@ def plot_n2():
     else:
         weights = load(names)
 
-    plot_weights(weights, names=["CCD", "QCCD", "FCI"], filename="N2_weights")
+    filename = f"N2_weights_{standard}" if save else None
+    plot_weights(weights, names=all_mets, filename=filename, drop_weights=drop_weights)
 
 if __name__ == "__main__":
     # geom = LiH_ccpVDZ["geometry"]
@@ -283,5 +306,8 @@ if __name__ == "__main__":
     # weights_FCI = run_weights_FCI(geom, "cc-pVDZ")
 
     # make_diatom_table(weights_CC, R, weights_FCI)
-    plot_h2o()
-    plot_n2()
+    plot_h2o(False, standard="CCD", quad="QCCD", save=False)
+    plot_h2o(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
+    
+    plot_n2(False, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False)
+    plot_n2(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)

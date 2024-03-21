@@ -75,6 +75,24 @@ class PyscfBasis(Basis):
         r = self.mol.intor("int1e_r")
         return self._new_one_body_operator(r)
 
+    @cached_property
+    def Q(self) -> np.ndarray:
+        L = self.L
+        
+        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
+        
+        # r = self.mol.intor("int1e_r")
+        # r2 = np.einsum("xpq,xpq->pq", r, r)
+        # delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
+
+        r2 = np.einsum("iipq->pq", rr)
+        delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
+
+        Q = 3*rr - delta_ij_r2 
+
+        return self._new_one_body_operator(Q)
+    
+
     def density(self, rho, r=None):
         if r is None:
             N = 10
