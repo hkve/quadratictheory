@@ -1,12 +1,46 @@
 import numpy as np
 import clusterfock as cf
 from utils.runs import run_fci_single, disassociate_2dof, disassociate_h2o
-from plotting.plot_dissociation import plot
+from plotting.plot_dissociation import plot, plot_no_error
 import plotting.plot_utils as pl
 import matplotlib.pyplot as plt
+import pyscf
 
 import pathlib as pl
 import pandas as pd
+
+def run_hf(atoms, basis, vocal=False):
+    E = np.zeros(len(atoms))
+    for i, atom in enumerate(atoms):
+        mol = pyscf.gto.Mole()
+        mol.unit = "bohr"
+        mol.build(atom=atom, basis=basis)
+        mol.verbose = 0
+        mf = mol.HF().run()
+
+        E[i] = mf.e_tot
+        
+        if vocal: print(f"HF\tE = {E[i]:.4f}\t{atom = }\t{basis = }")
+    
+    return E
+
+def run_cisd(atoms, basis, vocal=False):
+    E = np.zeros(len(atoms))
+    for i, atom in enumerate(atoms):
+        mol = pyscf.gto.Mole()
+        mol.unit = "bohr"
+        mol.build(atom=atom, basis=basis)
+        mol.verbose = 0
+        mf = mol.HF().run()
+        cisd = mf.CISD()
+        cisd.verbose = 0
+        cisd  = cisd.run()
+
+        E[i] = cisd.e_tot
+        
+        if vocal: print(f"CISD\tE = {E[i]:.4f}\t{atom = }\t{basis = }")
+    
+    return E
 
 def run_fci(atoms, basis, vocal=False):
     E = np.zeros(len(atoms))
@@ -246,17 +280,21 @@ def calculate_H2O_ccsd():
     basis = "sto-3g"
     atoms = disassociate_h2o(distances)
 
-    E_fci = run_fci(atoms, basis, vocal=True)
-    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    save("csv/H2O_ccsd.csv", df_fci)
+    E_hf = run_hf(atoms, basis, vocal=True)
+    df_hf = pd.DataFrame({"r": distances, "HF": E_hf})
+    save("csv/H2O_ccsd_TZ.csv", df_hf)
+
+    E_cisd = run_cisd(atoms, basis, vocal=True)
+    df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
+    save("csv/H2O_ccsd_TZ.csv", df_cisd)
 
     E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
     df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
-    save("csv/H2O_ccsd.csv", df_ccsd)
+    save("csv/H2O_ccsd_TZ.csv", df_ccsd)
 
     E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True)
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
-    save("csv/H2O_ccsd.csv", df_qccsd)       
+    save("csv/H2O_ccsd_TZ.csv", df_qccsd)       
 
 def plot_N2_ccsd():
     E_free = -107.43802235
@@ -265,9 +303,7 @@ def plot_N2_ccsd():
     plt.show()
 
 def plot_H2O_ccsd():
-    E_free = -74.73731393275897
-    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/H2O_ccsd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save_name="H2O_diss_ccsd")
+    plot_no_error("csv/H2O_ccsd_TZ.csv", splines=True, y_min=-75.05, y_max=-74.5, x_min=1.1)
     plt.show()
 
 def main():
@@ -283,31 +319,21 @@ def main():
     # calculate_H2O_ccd()
     # plot_H2O_ccd()
 
-    # calculate_H2O_ccsd()
-    plot_H2O_ccsd()
+    calculate_H2O_ccsd()
+    # plot_H2O_ccsd()
 
     # calculate_N2_ccsd()
-    plot_N2_ccsd()
+    # plot_N2_ccsd()
 
 def test():
-    geom, = disassociate_h2o([2.1])
-    basis = "sto-3g"
+    b = cf.PyscfBasis("N 0 0 0; N 0 0 3.0", "cc-pVTZ").pyscf_hartree_fock()
 
-    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
-    
-    cc = cf.CCSD(b).run(tol=1e-6, vocal=True)
-    qcc = cf.QCCSD(b).run(tol=1e-6, vocal=True)
-    e_fci = run_fci_single(geom, basis) 
-
-    e_cc, e_qcc = cc.energy(), qcc.energy()
+    cc = cf.CCSD(b).run(tol=1e-6, include_l=True)
 
     print(
-        f"E(CCSD) = {e_cc}",
-        f"E(QCCSD) = {e_qcc}",
-        f"E(FCI) = {e_fci}"
+        cc.energy()
     )
 
-    print(f"E(CCSD-FCI) = {e_cc - e_fci}")
-    print(f"E(QCCSD-FCI) = {e_qcc - e_fci}")
 if __name__ == "__main__":
-    main()
+    # main()
+    test()
