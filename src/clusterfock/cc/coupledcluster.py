@@ -389,14 +389,47 @@ class CoupledCluster(ABC):
     def overlap(self, t0, l0, t, l):
         return self._overlap(t0, l0, t, l)
 
-    def get_lowest_norm(self):
+    def _norm_search_mean_and_max(self, norms):
+        """
+        Performs mean and max search for norms. Drops first iter (MP2) guess.
+
+        Args:
+            norms (np.ndarray): Norms at different iterations
+            min_amp_norm (float): Max norm where the mean norms are the lowest
+        """
+        
+        # Drop MP2
+        norms = norms[1:]
+
+        norms_mean = norms.mean(axis=1)
+        min_idx = norms_mean.argmin()
+
+        return norms[min_idx,:].max()
+    
+    def get_lowest_norm(self, pad=0):
+        """
+        Goes through the norms calculated at different iterations and finds the iteration with 
+        the smallest mean norm across the different t and l amplitudes respectively. The maximum
+        amplitude norm for this iteration is returned
+
+        Args:
+            pad (float): Optional % increase of the norm, to ensure convergence next time
+        
+        Returns:
+            min_t_norm: Guaranteed convergence for t amplitudes
+            min_l_norm: Guaranteed convergence for l amplitudes
+        """
+        min_t_norm, min_l_norm = None, None
+    
+        # For each amp, collect them and find the right norm. Optinally increase it through pad
         if self.t_info["run"]:
             norms = np.array([list(norm.values()) for norm in self._t_norms])
-        if self.t_info["run"]:
-            l_norms = np.array([list(norm.values()) for norm in self._l_norms])
-            norms = np.concatenate(norms, l_norms)
+            min_t_norm = self._norm_search_mean_and_max(norms)*(1+pad)
+        if self.l_info["run"]:
+            norms = np.array([list(norm.values()) for norm in self._l_norms])
+            min_l_norm = self._norm_search_mean_and_max(norms)*(1+pad)
 
-        return norms.min()
+        return min_t_norm, min_l_norm
     
     # Property wrappers for convergence info dicts
     @property
