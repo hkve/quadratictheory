@@ -137,12 +137,12 @@ def get_Y(dr, order, o_dums, v_dums):
 
     c_, c_dag = get_secondquant_operators(dr)
 
-    X = c_dag[o_dums[0]] * c_[v_dums[0]]
+    Y = c_dag[o_dums[0]] * c_[v_dums[0]]
 
     for z in range(1, order):
-        X = X * c_dag[o_dums[z]] * c_[v_dums[z]]
+        Y = Y * c_dag[o_dums[z]] * c_[v_dums[z]]
 
-    return X
+    return Y
 
 def get_restricted_X(dr):
     e_ = get_restricted_secondquant_operator(dr)
