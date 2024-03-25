@@ -70,7 +70,9 @@ class CoupledCluster(ABC):
         """
         basis = self.basis
 
-        self._t.initialize_zero()
+        if self._t.is_empty():
+            self._t.initialize_zero()
+    
         self._epsinv.initialize_epsilon(epsilon=np.diag(self._f), inv=True)
 
         self._iterate_t(tol, maxiters, vocal)
@@ -80,7 +82,9 @@ class CoupledCluster(ABC):
                 self._l is not None
             ), f"This scheme does not implment lambda equations, {self._l = }"
 
-            self._l.initialize_zero()
+            if self._l.is_empty():
+                self._l.initialize_zero()
+    
             self.mixer.reset()
             self._iterate_l(tol, maxiters, vocal)
 

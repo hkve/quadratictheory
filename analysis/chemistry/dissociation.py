@@ -254,29 +254,32 @@ SINGLES AND DOUBLES TRUNCATION -------------------------------------------------
 """
 
 def calculate_N2_ccsd():
-    distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-    distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+    # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+    # distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+    distances = np.array([1.25, 1.5, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75, 4.00, 4.25, 4.50])
 
-    distances = np.r_[distances1, distances2]
-
-    basis = "sto-3g"
+    basis = "cc-pVTZ"
     atoms = disassociate_2dof("N", "N", distances)
 
-    E_fci = run_fci(atoms, basis, vocal=True)
-    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    save("csv/N2_ccsd.csv", df_fci)
+    E_hf = run_hf(atoms, basis, vocal=True)
+    df_hf = pd.DataFrame({"r": distances, "HF": E_hf})
+    save("csv/N2_ccsd_TZ.csv", df_hf)
+
+    E_cisd = run_cisd(atoms, basis, vocal=True)
+    df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
+    save("csv/N2_ccsd_TZ.csv", df_cisd)
 
     E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
     df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
-    save("csv/N2_ccsd.csv", df_ccsd)
+    save("csv/N2_ccsd_TZ.csv", df_ccsd)
 
     E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True)
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
-    save("csv/N2_ccsd.csv", df_qccsd)
-    
+    save("csv/N2_ccsd_TZ.csv", df_qccsd)       
 
 def calculate_H2O_ccsd():
-    distances = np.array([1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5])
+    # distances = np.array([1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5])
+    distances = np.array([1.0, 1.5, 1.9, 2.25, 2.50, 3.00, 3.50, 4.00, 4.50, 5.00])
     basis = "sto-3g"
     atoms = disassociate_h2o(distances)
 
@@ -297,13 +300,11 @@ def calculate_H2O_ccsd():
     save("csv/H2O_ccsd_TZ.csv", df_qccsd)       
 
 def plot_N2_ccsd():
-    E_free = -107.43802235
-    fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/N2_ccsd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save_name="N2_diss_ccsd")
+    plot_no_error("csv/N2_ccsd_TZ.csv", splines=True)
     plt.show()
 
 def plot_H2O_ccsd():
-    plot_no_error("csv/H2O_ccsd_TZ.csv", splines=True, y_min=-75.05, y_max=-74.5, x_min=1.1)
+    plot_no_error("csv/H2O_ccsd_TZ.csv", splines=False)
     plt.show()
 
 def main():
@@ -319,21 +320,33 @@ def main():
     # calculate_H2O_ccd()
     # plot_H2O_ccd()
 
-    calculate_H2O_ccsd()
+    # calculate_H2O_ccsd()
     # plot_H2O_ccsd()
 
     # calculate_N2_ccsd()
-    # plot_N2_ccsd()
+    plot_N2_ccsd()
 
 def test():
-    b = cf.PyscfBasis("N 0 0 0; N 0 0 3.0", "cc-pVTZ").pyscf_hartree_fock()
+    geom, = disassociate_h2o(4.5)
+    b = cf.PyscfBasis(geom, "cc-pVTZ").pyscf_hartree_fock()
 
-    cc = cf.CCSD(b).run(tol=1e-6, include_l=True)
+    cc = cf.CCSD(b).run(tol=1e-6, include_l=True, vocal=True)
 
     print(
         cc.energy()
     )
 
+    from pyscf import gto, scf, cc
+    mol = gto.M(
+        atom = geom,  # in Angstrom
+        basis = 'ccpvtz',
+        unit="bohr"
+    )
+
+    mf = scf.HF(mol).run()
+    mycc = cc.CCSD(mf).run()
+    print(mycc.e_tot)
+
 if __name__ == "__main__":
-    # main()
-    test()
+    main()
+    # test()
