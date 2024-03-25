@@ -89,14 +89,13 @@ def save(filename, df):
 
 def run_cc(atoms, basis, method, vocal=False, **kwargs):
     opts = {
-        "tol": 1e-6,
-        "maxiters": 200,
-        "mixer": cf.mix.DIISMixer(n_vectors=20), 
+        "tol": 1e-5,
+        "maxiters": 400,
     }
 
     opts.update(kwargs)
 
-    tol_hf = 1e-8
+    tol_hf = 1e-4
     tol_cc = opts["tol"]
 
     E = np.zeros(len(atoms))
@@ -118,7 +117,6 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
 
         cc = method(b)
         cc.run(tol=tol_cc, maxiters=opts["maxiters"])
-        cc.mixer = opts["mixer"]
 
         if not cc.info["t_converged"]:
             print(f"{method.__name__} did not converge at {tol_cc = }!")
@@ -144,27 +142,30 @@ DOUBLES TRUNCATION --------------------------------------------------------
 """
 
 def calculate_N2_ccd():
-    distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-    distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+    # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+    # distances2 = np.arange(2.0, 3.8+0.1, 0.1)
 
-    distances = np.r_[distances1, distances2]
+    # distances = np.r_[distances1, distances2]
 
-    distances = np.array([3.4])
+    # distances = np.array([3.4])
+    distances = np.arange(1.25, 7.00+0.1, 0.25)
+    distances_ccd = np.arange(1.25, 4.00+0.1, 0.25)
 
     basis = "sto-3g"
     atoms = disassociate_2dof("N", "N", distances)
+    atoms_ccd = disassociate_2dof("N", "N", distances_ccd)
 
-    E_fci = run_fci(atoms, basis, vocal=True)
-    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    save("csv/N2_ccd.csv", df_fci)
+    # E_fci = run_fci(atoms, basis, vocal=True)
+    # df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    # save("csv/N2_ccd_test.csv", df_fci)
 
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
-    df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
-    save("csv/N2_ccd.csv", df_ccd)
+    # E_ccd = run_cc(atoms_ccd, basis, method=cf.CCD, vocal=True)
+    # df_ccd = pd.DataFrame({"r": distances_ccd, "CCD": E_ccd})
+    # save("csv/N2_ccd_test.csv", df_ccd)
 
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
-    df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
-    save("csv/N2_ccd.csv", df_qccd)
+    E_qccd = run_cc(atoms_ccd, basis, method=cf.QCCD, vocal=True)
+    df_qccd = pd.DataFrame({"r": distances_ccd, "QCCD": E_qccd})
+    save("csv/N2_ccd_test.csv", df_qccd)
     
 
 def calculate_LiH_ccd():
@@ -228,7 +229,7 @@ def calculate_H2O_ccd():
 def plot_N2_ccd():
     E_free = -107.43802235
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/N2_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save_name="N2_diss_ccd")
+    plot("csv/N2_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2)#, save_name="N2_diss_ccd")
     plt.show()
 
 def plot_LiH_ccd():
@@ -309,7 +310,7 @@ def plot_H2O_ccsd():
 
 def main():
     # calculate_N2_ccd()
-    # plot_N2_ccd()
+    plot_N2_ccd()
 
     # calculate_LiH_ccd()
     # plot_LiH_ccd()
