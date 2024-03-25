@@ -1,6 +1,6 @@
 from __future__ import annotations
 from clusterfock.basis import Basis
-from clusterfock.mix import DIISMixer
+from clusterfock.mix import SoftStartDIISMixer
 from clusterfock.cc.parameter import CoupledClusterParameter
 from abc import ABC, abstractmethod
 from functools import reduce
@@ -38,7 +38,8 @@ class CoupledCluster(ABC):
         basis.calculate_fock_matrix()
         self._f = self.basis.f.copy()
 
-        self.mixer = DIISMixer(n_vectors=8)
+        # self.mixer = DIISMixer(n_vectors=8)
+        self.mixer = SoftStartDIISMixer(alpha=0.7, start_DIIS_after=7, n_vectors=4)
 
         self._t = CoupledClusterParameter(t_orders, basis.N, basis.M, self.basis.dtype)
         self._l = CoupledClusterParameter(l_orders, basis.N, basis.M, self.basis.dtype)

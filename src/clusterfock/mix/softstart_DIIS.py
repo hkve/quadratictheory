@@ -24,8 +24,6 @@ class SoftStartDIISMixer(Mixer):
         self.iter += 1
 
         if self.iter <= self.start_DIIS_after:
-            print("MIX STEP")
             return self.relaxed_mixer(p, dp)
         else:
-            print("DIIS STEP")
             return self.diis_mixer(p, dp)
