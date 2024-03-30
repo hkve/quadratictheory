@@ -15,6 +15,7 @@ from clusterfock.cc.qccd import QCCD, RQCCD
 from clusterfock.cc.qccsd import QCCSD
 
 from clusterfock.cc.ccsd_t1 import GCCSD_T1
+from clusterfock.cc.qccsd_t1 import QCCSD_T1
 
 from clusterfock.td.tdcoupledcluster import TimeDependentCoupledCluster
 from clusterfock.td import ImaginaryTimeCoupledCluster

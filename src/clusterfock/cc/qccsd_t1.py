@@ -27,7 +27,7 @@ from clusterfock.cc.energies.e_inter_qccsd_t1transformed import t1transformed_qc
 # from clusterfock.cc.densities.l_CCSD_t1transformed import one_body_density, two_body_density
 # from clusterfock.cc.energies.e_inter_ccsd_t1transformed import td_energy_addition
 
-class GQCCSD_T1(QuadCoupledCluster_T1):
+class QCCSD_T1(QuadCoupledCluster_T1):
     def __init__(self, basis: Basis, intermediates: bool = True, copy=False):
         assert not basis.restricted, "T1-transformed CCSD can not deal with restricted basis"
 
