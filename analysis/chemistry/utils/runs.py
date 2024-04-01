@@ -1,5 +1,6 @@
 import numpy as np
 from pyscf import gto, scf, cc, fci, ao2mo
+from pyscf.fci.rdm import make_rdm1
 from utils.misc import custom_basis_path
 
 def get_geometries():
@@ -101,3 +102,25 @@ def run_fci_single(atom, basis, *args):
     )
 
     return e_fci
+
+def run_fci_density_matrix(atom, basis, *args):
+    mol = gto.M(unit="bohr")
+    mol.verbose = 0
+    mol.build(atom=atom, basis=basis)
+
+    myhf = scf.RHF(mol)
+    myhf.kernel()
+
+    cisolver = fci.FCI(mol, myhf.mo_coeff)
+    e, fcivec = cisolver.kernel()
+
+    #
+    # Spin-traced 1-particle density matrix
+    #
+    norb = myhf.mo_coeff.shape[1]
+
+    # alpha electrons and beta electrons. spin = nelec_a-nelec_b
+    nelec_a, nelec_b = mol.nelec
+    dm1 = cisolver.make_rdm1(fcivec, norb, (nelec_a,nelec_b))
+    
+    return dm1

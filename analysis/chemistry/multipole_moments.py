@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from utils.runs import run_fci_density_matrix
+
 geometries = {
     "HF": "H 0 0 0; F 0 0 1.7325007863",
     "LiH": "Li 0 0 0; H 0 0 3.0141129518",
@@ -76,6 +78,19 @@ def run_expvals(name, basis, CC):
 
     return delta_rho_ob, delta_rho_tb, dipole, quadropole
 
+def run_expvals_fci(name, basis):
+    geom = geometries[name]
+    charge = charges[name]
+
+    b = cf.PyscfBasis(geom, basis, charge=charge, restricted=True).pyscf_hartree_fock()
+
+    rho = run_fci_density_matrix(geom, basis)
+    r = b.r
+
+    dipole = np.einsum("...ij,ji->...", r, rho)    
+
+    return dipole
+
 def make_CC_table(names, basis, CC, convert_units=True):
     df = pd.DataFrame(columns=["molecule", "delta_rho_ob", "delta_rho_tb", "dipole"])
     for i, name in enumerate(names):
@@ -120,4 +135,17 @@ def make_table():
     embed()
 
 if __name__ == "__main__":
-    make_table()
+    name = "HF"
+    basis = "cc-pVDZ"
+    
+    print(
+        run_expvals_fci(name, basis)
+    )
+
+    print(
+        run_expvals(name, basis, cf.CCSD)
+    )
+
+    print(
+        run_expvals(name, basis, cf.QCCSD)
+    )
