@@ -4,28 +4,6 @@ import numpy as np
 def reference_addition_qccsd(t1, t2, l1, l2):
     ref = 0
 
-    ref -= np.einsum("ai,bj,abij->", l1, l1, t2, optimize=True) / 2
-
-    ref += np.einsum("ai,bj,ai,bj->", l1, l1, t1, t1, optimize=True) / 2
-
-    ref -= np.einsum("ai,bj,aj,bi->", l1, l1, t1, t1, optimize=True) / 2
-
-    ref -= np.einsum("abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True) / 8
-
-    ref -= np.einsum("abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True) / 8
-
-    ref += np.einsum("abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True) / 4
-
-    ref += np.einsum("abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True) / 32
-
-    ref += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
-
-    ref += np.einsum("ai,bj,ck,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 2
-
-    ref += np.einsum("ai,bl,cj,dk,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
-
-    ref += np.einsum("aj,bk,ci,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
-
     ref += np.einsum("ai,bj,bcjk,acik->", l1, t1, l2, t2, optimize=True)
 
     ref -= np.einsum("ai,aj,bcjk,bcik->", l1, t1, l2, t2, optimize=True) / 2
@@ -38,11 +16,75 @@ def reference_addition_qccsd(t1, t2, l1, l2):
 
     ref -= np.einsum("ai,ai,bj,ck,bcjk->", l1, t1, t1, t1, l2, optimize=True) / 2
 
+    ref -= np.einsum("abjk,cdil,abjl,cdik->", l2, l2, t2, t2, optimize=True) / 8
+
+    ref -= np.einsum("abjk,cdil,acjk,bdil->", l2, l2, t2, t2, optimize=True) / 8
+
+    ref += np.einsum("abjk,cdil,acjl,bdik->", l2, l2, t2, t2, optimize=True) / 4
+
+    ref += np.einsum("abjk,cdil,abil,cdjk->", l2, l2, t2, t2, optimize=True) / 32
+
+    ref += np.einsum("abjk,cdil,abjk,cdil->", l2, l2, t2, t2, optimize=True) / 32
+
+    ref += np.einsum("ai,bj,abik,cdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
+
+    ref += np.einsum("ai,bj,acij,bdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
+
+    ref += np.einsum("aj,bi,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
+
+    ref -= np.einsum("ai,bj,acik,bdjl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 2
+
+    ref -= np.einsum("ai,bj,abij,cdkl,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 8
+
+    ref -= np.einsum("ai,bj,abkl,cdij,cdkl->", t1, t1, l2, l2, t2, optimize=True) / 8
+
+    ref += np.einsum("ai,bj,ck,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 2
+
+    ref += np.einsum("ai,bl,cj,dk,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
+
+    ref += np.einsum("aj,bk,ci,dl,abjk,cdil->", t1, t1, t1, t1, l2, l2, optimize=True) / 8
+
+    ref -= np.einsum("ai,bj,abij->", l1, l1, t2, optimize=True) / 2
+
+    ref += np.einsum("ai,bj,ai,bj->", l1, l1, t1, t1, optimize=True) / 2
+
+    ref -= np.einsum("ai,bj,aj,bi->", l1, l1, t1, t1, optimize=True) / 2
+
     return ref
 
 
 def bra_singles_addition_qccsd(t1, t2, l1, l2):
-    bra = np.einsum("aj,bcik,bcjk->ai", l1, l2, t2, optimize=True) / 2
+    bra = np.zeros(t1.shape)
+
+    bra += np.einsum("bj,adil,bcjk,cdkl->ai", t1, l2, l2, t2, optimize=True)
+
+    bra += np.einsum("bj,adkl,bcij,cdkl->ai", t1, l2, l2, t2, optimize=True) / 2
+
+    bra += np.einsum("bl,adil,bcjk,cdjk->ai", t1, l2, l2, t2, optimize=True) / 2
+
+    bra += np.einsum("dj,adil,bcjk,bckl->ai", t1, l2, l2, t2, optimize=True) / 2
+
+    bra -= np.einsum("bk,adkl,bcij,cdjl->ai", t1, l2, l2, t2, optimize=True)
+
+    bra -= np.einsum("dk,adkl,bcij,bcjl->ai", t1, l2, l2, t2, optimize=True) / 2
+
+    bra += np.einsum("dj,adkl,bcij,bckl->ai", t1, l2, l2, t2, optimize=True) / 4
+
+    bra += np.einsum("dl,adil,bcjk,bcjk->ai", t1, l2, l2, t2, optimize=True) / 4
+
+    bra += np.einsum("bj,cl,dk,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True)
+
+    bra -= np.einsum("bj,ck,dl,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True)
+
+    bra -= np.einsum("bj,ck,dl,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True) / 2
+
+    bra -= np.einsum("bk,cl,dj,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True) / 2
+
+    bra += np.einsum("aj,bi,bj->ai", l1, l1, t1, optimize=True)
+
+    bra -= np.einsum("ai,bj,bj->ai", l1, l1, t1, optimize=True)
+
+    bra += np.einsum("aj,bcik,bcjk->ai", l1, l2, t2, optimize=True) / 2
 
     bra += np.einsum("bi,acjk,bcjk->ai", l1, l2, t2, optimize=True) / 2
 
@@ -59,34 +101,6 @@ def bra_singles_addition_qccsd(t1, t2, l1, l2):
     bra -= np.einsum("bi,bj,ck,acjk->ai", l1, t1, t1, l2, optimize=True)
 
     bra -= np.einsum("bj,bk,cj,acik->ai", l1, t1, t1, l2, optimize=True)
-
-    bra += np.einsum("aj,bi,bj->ai", l1, l1, t1, optimize=True)
-
-    bra -= np.einsum("ai,bj,bj->ai", l1, l1, t1, optimize=True)
-
-    bra += np.einsum("bj,adkl,bcij,cdkl->ai", t1, l2, l2, t2, optimize=True)
-
-    bra += np.einsum("bl,adil,bcjk,cdjk->ai", t1, l2, l2, t2, optimize=True)
-
-    bra += np.einsum("dj,adil,bcjk,bckl->ai", t1, l2, l2, t2, optimize=True)
-
-    bra += np.einsum("dj,adkl,bcij,bckl->ai", t1, l2, l2, t2, optimize=True) / 2
-
-    bra += np.einsum("dl,adil,bcjk,bcjk->ai", t1, l2, l2, t2, optimize=True) / 2
-
-    bra -= np.einsum("dk,adkl,bcij,bcjl->ai", t1, l2, l2, t2, optimize=True)
-
-    bra -= 2 * np.einsum("bk,adkl,bcij,cdjl->ai", t1, l2, l2, t2, optimize=True)
-
-    bra += 2 * np.einsum("bj,adil,bcjk,cdkl->ai", t1, l2, l2, t2, optimize=True)
-
-    bra += np.einsum("bj,cl,dk,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True)
-
-    bra -= np.einsum("bj,ck,dl,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True)
-
-    bra -= np.einsum("bj,ck,dl,adil,bcjk->ai", t1, t1, t1, l2, l2, optimize=True) / 2
-
-    bra -= np.einsum("bk,cl,dj,adkl,bcij->ai", t1, t1, t1, l2, l2, optimize=True) / 2
 
     return bra
 

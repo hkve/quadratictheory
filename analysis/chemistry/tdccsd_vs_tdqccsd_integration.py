@@ -42,7 +42,7 @@ def run(dts, omega=2.87, atom_name="he"):
                     METHOD,
                     integrator,
                     integrator_args=integrator_args,
-                    subfolder="he_integrator_test"
+                    subfolder="he_integrator_test_new"
                 )
 
 from IPython import embed
@@ -59,7 +59,7 @@ def plot(dts, omega=2.87, atom_name="he"):
 
 def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test"
+    path = dat_path() / "he_integrator_test_new"
 
     cycle_length = (2 * np.pi / omega)
 
@@ -91,7 +91,7 @@ def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussInteg
 
 def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test"
+    path = dat_path() / "he_integrator_test_new"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -124,7 +124,7 @@ def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk
 
 def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD", "QCCSD"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test"
+    path = dat_path() / "he_integrator_test_new"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -149,7 +149,7 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD",
     ax.plot(np.nan, np.nan, label="CCSD", ls="--", color="gray")
     ax.plot(np.nan, np.nan, label="QCCSD", ls="-", color="gray")
 
-    ax.set(title=integrator, xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')$")
+    ax.set(title=integrator, xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$")
     ax.set_yscale("log")
     ax.legend(ncol=3)
     plt.show()

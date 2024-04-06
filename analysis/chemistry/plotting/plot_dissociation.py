@@ -6,7 +6,7 @@ import plotting.plot_utils as pl
 from scipy.interpolate import CubicSpline
 
 def spline(x, y):
-    spl = CubicSpline(x, y, bc_type=((2, 0.0), (2, 0.0)))
+    spl = CubicSpline(x, y, bc_type=((2, 0.0), (1, 0.0)))
 
     x_new = np.linspace(x[0], x[-1], 1000)
     y_new = spl(x_new)
@@ -87,7 +87,7 @@ def plot_no_error(filename, splines=False, x_min=None, y_min=None, y_max=None, *
     df = pd.read_csv(filename, sep=",", header=0, index_col=0)
     df.sort_values("r", inplace=True)
     c, m = pl.colors, pl.markers
-
+    
     r = df["r"]
     methods = df.columns[1:]
 
@@ -95,7 +95,7 @@ def plot_no_error(filename, splines=False, x_min=None, y_min=None, y_max=None, *
     for i, method in enumerate(methods):
         e = df[method].to_numpy()
         ax.scatter(r, e, color=c[i], label=method, marker=m[i])
-
+        
         if splines:
             if np.any(np.isnan(e)):
                 first_nan = np.isnan(e).argmax()
