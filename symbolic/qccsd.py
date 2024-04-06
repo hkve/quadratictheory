@@ -6,12 +6,12 @@ from IPython import embed
 from permutations import permutations
 from latex import pretty
 
-def get_bits(dr):
+def get_bits(dr, T1_trans=False):
     T1, L1 = drutils.get_clusters_1(dr)
     T2, L2 = drutils.get_clusters_2(dr)
     ham = dr.ham
 
-    T = (T1+T2).simplify()
+    T = T2 if T1_trans else (T1+T2).simplify()
     L = (L1+L2).simplify()
 
     T.cache()
@@ -103,18 +103,25 @@ if __name__ == "__main__":
 
     drutils.timer.vocal = True
     
-    
+    # Use these for full qccsd
+    # filenames = {
+    #     "e": "TEST_qccsd_energy_addition",
+    #     "t1": "TEST_qccsd_t1_addition",
+    #     "t2": "TEST_qccsd_t2_addition",
+    #     "l1": "TEST_qccsd_l1_addition",
+    #     "l2": "TEST_qccsd_l2_addition",
+    # }
 
+    # Filenames for T1-transformed Hamiltonian
     filenames = {
-        "e": "TEST_qccsd_energy_addition",
-        "t1": "TEST_qccsd_t1_addition",
-        "t2": "TEST_qccsd_t2_addition",
-        "l1": "TEST_qccsd_l1_addition",
-        "l2": "TEST_qccsd_l2_addition",
+        "e": "TEST_qccsd_t1trans_energy_addition",
+        "t1": "TEST_qccsd_t1trans_t1_addition",
+        "t2": "TEST_qccsd_t1trans_t2_addition",
+        "l1": "TEST_qccsd_t1trans_l1_addition",
+        "l2": "TEST_qccsd_t1trans_l2_addition",
     }
 
-
-    T, L, ham = get_bits(dr)
+    T, L, ham = get_bits(dr, T1_trans=True)
     ham_bar = drutils.similarity_transform(ham, T)
 
     energy_addition(dr, filename=filenames["e"], L=L, ham_bar=ham_bar)

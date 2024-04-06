@@ -1,6 +1,8 @@
 import drudge_utils as drutils
 import gristmill_utils as grutils
+import gristmill 
 from sympy import Rational
+
 
 from IPython import embed
 from permutations import permutations
@@ -61,7 +63,11 @@ def optimize(dr, filename):
     eq = drutils.load_from_pickle(dr, filename)
     new_filename = f"{filename}_optimized"
 
-    eval_seq_eq = grutils.optimize_equations(dr, eq)
+    # gristmill.ContrStrat.GREEDY
+    # gristmill.ContrStrat.OPT
+    # gristmill.ContrStrat.TRAV
+    # gristmill.ContrStrat.EXHAUST
+    eval_seq_eq = grutils.optimize_equations(dr, eq, contr_strat=gristmill.ContrStrat.OPT)
     drutils.timer.tock(f"Done RQCCD optimazation from {filename}, saving to {new_filename}", eq)
 
     drutils.save_html(dr, new_filename, eval_seq_eq)
@@ -69,22 +75,22 @@ def optimize(dr, filename):
     grutils.einsum_raw(dr, new_filename, eval_seq_eq)
 
 if __name__ == "__main__":
-    dr = drutils.get_restricted_particle_hole_drudge(dummy=True)
+    dr = drutils.get_restricted_particle_hole_drudge(dummy=False)
     drutils.timer.vocal = True
     
     filenames = {
         "e": "TEST_rqccd_energy_addition",
-        "t2": "TEST_rqccd_t2_addition",
-        "l2": "TEST_rqccd_l2_addition",
+        # "t2": "TEST_rqccd_t2_addition",
+        # "l2": "TEST_rqccd_l2_addition",
     }
 
 
-    T, L, ham = get_bits(dr)
-    ham_bar = drutils.similarity_transform(ham, T)
+    # T, L, ham = get_bits(dr)
+    # ham_bar = drutils.similarity_transform(ham, T)
 
-    energy_addition(dr, filename=filenames["e"], L=L, ham_bar=ham_bar)
-    t2_additon(dr, filename=filenames["t2"], L=L, ham_bar=ham_bar)
-    l2_additon(dr, filename=filenames["l2"], L=L, ham_bar=ham_bar)
+    # energy_addition(dr, filename=filenames["e"], L=L, ham_bar=ham_bar)
+    # t2_additon(dr, filename=filenames["t2"], L=L, ham_bar=ham_bar)
+    # l2_additon(dr, filename=filenames["l2"], L=L, ham_bar=ham_bar)
 
     for name, filename in filenames.items():
         optimize(dr, filename)
