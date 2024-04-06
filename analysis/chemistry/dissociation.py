@@ -89,33 +89,26 @@ def save(filename, df):
 
 def run_cc(atoms, basis, method, vocal=False, **kwargs):
     opts = {
-        "tol": 1e-5,
+        "tol": 1e-4,
         "maxiters": 400,
+        "mixer": None,
+        "hf_args": {"tol": 1e-4, "max_cycle": 750}
     }
 
     opts.update(kwargs)
 
-    tol_hf = 1e-4
+    hf_args = opts["hf_args"]
     tol_cc = opts["tol"]
+    mixer = opts["mixer"]
 
     E = np.zeros(len(atoms))
     for i, atom in enumerate(atoms):
-        b = cf.PyscfBasis(atom, basis, restricted=True).pyscf_hartree_fock()
-
-        # hf = cf.HF(b).run(tol=tol_hf)
-        # if not hf.converged:
-        #     print(f"Hartree-Fock did not converge at {tol_hf = }!")
-        #     while not hf.converged:
-        #         tol_hf *= 5
-        #         hf = cf.HF(b).run(tol=tol_hf)
-        #         if tol_hf > 0.1:
-        #             print("Stopping iterations")
-        #             break
-
-        # b.change_basis(hf.C)
-        b.from_restricted()
+        b = cf.PyscfBasis(atom, basis, restricted=False).pyscf_hartree_fock(**hf_args)
 
         cc = method(b)
+
+        if mixer is not None: cc.mix = mixer
+
         cc.run(tol=tol_cc, maxiters=opts["maxiters"])
 
         if not cc.info["t_converged"]:
@@ -142,29 +135,24 @@ DOUBLES TRUNCATION --------------------------------------------------------
 """
 
 def calculate_N2_ccd():
-    # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-    # distances2 = np.arange(2.0, 3.8+0.1, 0.1)
 
-    # distances = np.r_[distances1, distances2]
-
-    # distances = np.array([3.4])
     distances = np.arange(1.25, 7.00+0.1, 0.25)
-    distances_ccd = np.arange(1.25, 4.00+0.1, 0.25)
 
     basis = "sto-3g"
     atoms = disassociate_2dof("N", "N", distances)
-    atoms_ccd = disassociate_2dof("N", "N", distances_ccd)
 
-    # E_fci = run_fci(atoms, basis, vocal=True)
-    # df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    # save("csv/N2_ccd_test.csv", df_fci)
+    E_fci = run_fci(atoms, basis, vocal=True)
+    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    save("csv/N2_ccd_test.csv", df_fci)
 
-    # E_ccd = run_cc(atoms_ccd, basis, method=cf.CCD, vocal=True)
-    # df_ccd = pd.DataFrame({"r": distances_ccd, "CCD": E_ccd})
-    # save("csv/N2_ccd_test.csv", df_ccd)
+    ccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
+    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True, mixer=ccd_mixer)
+    df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
+    save("csv/N2_ccd_test.csv", df_ccd)
 
-    E_qccd = run_cc(atoms_ccd, basis, method=cf.QCCD, vocal=True)
-    df_qccd = pd.DataFrame({"r": distances_ccd, "QCCD": E_qccd})
+    qccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=7, n_vectors=5)
+    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True, mixer=qccd_mixer)
+    df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/N2_ccd_test.csv", df_qccd)
     
 
@@ -207,29 +195,31 @@ def calculate_HF_ccd():
     save("csv/HF_ccd.csv", df_qccd)
 
 def calculate_H2O_ccd():
-    # distances = np.array([1.0, 1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.8, 3.1, 3.3, 3.5, 3.7, 3.9, 4.1, 4.3, 4.5])
-    # distances = np.array([1.0, 1.5, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75, 4.00, 4.25, 4.50])
-    # distances = np.array([1.0, 1.75, 2.50, 2.75, 3.30, 3.60, 4.00, 4.25, 4.50])
-    distances = np.array([2.25, 3.0])
+    # distances = np.arange(1.25, 7.00+0.1, 0.25)
+    distances = np.r_[np.arange(1.25, 4.75+0.1, 0.25), np.arange(6.00, 7.00+0.1, 0.25)]
     basis = "sto-3g"
     atoms = disassociate_h2o(distances)
 
-    E_fci = run_fci(atoms, basis, vocal=True)
-    df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
-    save("csv/H2O_ccd.csv", df_fci)
+    # HF DOES NOT CONVERGE FOR R = 5.00 to 5.50
 
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    # E_fci = run_fci(atoms, basis, vocal=True)
+    # df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
+    # save("csv/H2O_ccd.csv", df_fci)
+
+    ccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
+    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True, mixer=ccd_mixer)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
     save("csv/H2O_ccd.csv", df_ccd)
 
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    qccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True, mixer=qccd_mixer)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/H2O_ccd.csv", df_qccd)       
 
 def plot_N2_ccd():
     E_free = -107.43802235
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/N2_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2)#, save_name="N2_diss_ccd")
+    plot("csv/N2_ccd_test.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.61, y_max=0.2, save_name="N2_diss_ccd")
     plt.show()
 
 def plot_LiH_ccd():
@@ -247,7 +237,7 @@ def plot_HF_ccd():
 def plot_H2O_ccd():
     E_free = -74.73731393275897
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save_name="H2O_diss_ccd")
+    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False)#, save_name="H2O_diss_ccd")
     plt.show()
 
 """
@@ -310,7 +300,7 @@ def plot_H2O_ccsd():
 
 def main():
     # calculate_N2_ccd()
-    plot_N2_ccd()
+    # plot_N2_ccd()
 
     # calculate_LiH_ccd()
     # plot_LiH_ccd()
@@ -319,13 +309,13 @@ def main():
     # plot_HF_ccd()
 
     # calculate_H2O_ccd()
-    # plot_H2O_ccd()
+    plot_H2O_ccd()
 
     # calculate_H2O_ccsd()
     # plot_H2O_ccsd()
 
     # calculate_N2_ccsd()
-    plot_N2_ccsd()
+    # plot_N2_ccsd()
 
 def test():
     geom, = disassociate_h2o(4.5)
