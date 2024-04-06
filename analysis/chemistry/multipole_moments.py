@@ -45,9 +45,12 @@ df_experimental_dipole = pd.DataFrame.from_dict(experimental_dipole, orient="ind
 df_experimental_dipole.reset_index(inplace=True)
 df_experimental_dipole.rename(columns={"index":"molecule"}, inplace=True)
 
+au_to_angstrom = lambda x: x/1.8897259886
+angstrom_to_au = lambda x: x*1.8897259886
 au_to_debye = lambda x: x*2.541746473
 debye_to_au = lambda x: x/2.541746473
-
+au_to_debye_angstrom = lambda x: au_to_angstrom(au_to_debye(x))
+debye_angstrom_to_au = lambda x: angstrom_to_au(debye_to_au(x))
 
 
 def get_run_kwargs(CC, **kwargs):

@@ -32,7 +32,8 @@ def run_cc(basis, CC, **kwargs):
     default = {
         "tol": 1e-6,
         "vocal": False,
-        "lowest_allowed_tol": 1e-4
+        "lowest_allowed_tol": 1e-4,
+        "mixer": cf.mix.SoftStartDIISMixer(alpha=0.7, start_DIIS_after=10, n_vectors=4)
     }
 
     default.update(kwargs)
@@ -40,6 +41,7 @@ def run_cc(basis, CC, **kwargs):
     tol = default["tol"]
     vocal = default["vocal"]
     lowest_allowed_tol = default["lowest_allowed_tol"]
+    mixer = default["mixer"]
 
     is_quadratic = False
     is_SD = False
@@ -52,7 +54,9 @@ def run_cc(basis, CC, **kwargs):
     if "SD" in CC.__name__:
         is_SD = True
 
-    cc = CC(basis).run(**run_kwargs)
+    cc = CC(basis)
+    cc.mixer = mixer
+    cc.run(**run_kwargs)
 
     W = {}
     if cc.t_info["converged"] and cc.l_info["converged"]:
@@ -81,6 +85,7 @@ def run_weights_CC(geomtries, basis, CC, **kwargs):
         "vocal": False,
         "hf_tol": 1e-6,
         "cc_tol": 1e-6,
+        "mixer": cf.mix.SoftStartDIISMixer(alpha=0.7, start_DIIS_after=10, n_vectors=4)
     }
 
     default.update(kwargs)
@@ -88,12 +93,13 @@ def run_weights_CC(geomtries, basis, CC, **kwargs):
     vocal = default["vocal"]
     hf_tol = default["hf_tol"]
     cc_tol = default["cc_tol"]
+    mixer = default["mixer"]
 
     geomtries = pack_as_list(geomtries)
     weights = []
     for geometry in geomtries:
         b = run_hf(geometry, basis, restricted=False, tol=hf_tol)
-        W = run_cc(b, CC, vocal=vocal, tol=cc_tol)
+        W = run_cc(b, CC, vocal=vocal, tol=cc_tol, mixer=mixer)
         print(f"Done {geometry}, {CC.__name__}")
         weights.append(W)
 
@@ -226,7 +232,7 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
     for i, name in enumerate(names):
         W = dict(weights[i])
         R = W.pop("R")
-        print(list(W.keys()))
+
         new_keys = list(set(W.keys()).difference(drop_weights))
         new_keys = [tuple for x in ["0", "S", "D", "T", "Q"] for tuple in new_keys if tuple[0] == x]
         W = {k: W[k] for k in new_keys}
@@ -280,14 +286,17 @@ def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fals
     names = [f"N2_{met}" for met in all_mets]
 
     if run:
-        distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-        distances2 = np.arange(2.0, 3.8+0.1, 0.1)
+        # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
+        distances = np.arange(3.5, 5.0+0.1, 0.1)
 
-        distances = np.r_[distances1, distances2]
+        # distances = np.r_[distances1, distances2]
         geoms = disassociate_2dof("N", "N", distances)
 
-        weights_CC = run_weights_CC(geoms, "sto-3g", mets_map[standard]) 
-        weights_QCC = run_weights_CC(geoms, "sto-3g", qmets_map[quad])
+        cc_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=25, n_vectors=10)
+        qcc_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+
+        weights_CC = run_weights_CC(geoms, "sto-3g", mets_map[standard], mixer=cc_mixer) 
+        weights_QCC = run_weights_CC(geoms, "sto-3g", qmets_map[quad], mixer=qcc_mixer)
         weights_FCI = run_weights_FCI(geoms, "sto-3g")
 
         weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
@@ -306,8 +315,8 @@ if __name__ == "__main__":
     # weights_FCI = run_weights_FCI(geom, "cc-pVDZ")
 
     # make_diatom_table(weights_CC, R, weights_FCI)
-    plot_h2o(False, standard="CCD", quad="QCCD", save=False)
-    plot_h2o(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
+    # plot_h2o(False, standard="CCD", quad="QCCD", save=False)
+    # plot_h2o(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
     
-    plot_n2(False, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False)
-    plot_n2(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
+    # plot_n2(False, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False)
+    plot_n2(True, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
