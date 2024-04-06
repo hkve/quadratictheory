@@ -1,6 +1,62 @@
     det = zeros((nv, no))
 
     det += einsum(
+        "bj,adil,bcjk,cdkl->ai", t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    det += einsum(
+        "bj,adkl,bcij,cdkl->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det += einsum(
+        "bl,adil,bcjk,cdjk->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det += einsum(
+        "dj,adil,bcjk,bckl->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det -= einsum(
+        "bk,adkl,bcij,cdjl->ai", t^1, \lambda^2, \lambda^2, t^2
+    )
+
+    det -= einsum(
+        "dk,adkl,bcij,bcjl->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    det += einsum(
+        "dj,adkl,bcij,bckl->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    det += einsum(
+        "dl,adil,bcjk,bcjk->ai", t^1, \lambda^2, \lambda^2, t^2
+    ) / 4
+
+    det += einsum(
+        "bj,cl,dk,adil,bcjk->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det -= einsum(
+        "bj,ck,dl,adkl,bcij->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
+    )
+
+    det -= einsum(
+        "bj,ck,dl,adil,bcjk->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    det -= einsum(
+        "bk,cl,dj,adkl,bcij->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    det += einsum(
+        "aj,bi,bj->ai", \lambda^1, \lambda^1, t^1
+    )
+
+    det -= einsum(
+        "ai,bj,bj->ai", \lambda^1, \lambda^1, t^1
+    )
+
+    det += einsum(
         "aj,bcik,bcjk->ai", \lambda^1, \lambda^2, t^2
     ) / 2
 
@@ -35,59 +91,3 @@
     det -= einsum(
         "bj,bk,cj,acik->ai", \lambda^1, t^1, t^1, \lambda^2
     )
-
-    det += einsum(
-        "aj,bi,bj->ai", \lambda^1, \lambda^1, t^1
-    )
-
-    det -= einsum(
-        "ai,bj,bj->ai", \lambda^1, \lambda^1, t^1
-    )
-
-    det += einsum(
-        "bj,adkl,bcij,cdkl->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det += einsum(
-        "bl,adil,bcjk,cdjk->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det += einsum(
-        "dj,adil,bcjk,bckl->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det += einsum(
-        "dj,adkl,bcij,bckl->ai", t^1, \lambda^2, \lambda^2, t^2
-    ) / 2
-
-    det += einsum(
-        "dl,adil,bcjk,bcjk->ai", t^1, \lambda^2, \lambda^2, t^2
-    ) / 2
-
-    det -= einsum(
-        "dk,adkl,bcij,bcjl->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det -= 2 * einsum(
-        "bk,adkl,bcij,cdjl->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det += 2 * einsum(
-        "bj,adil,bcjk,cdkl->ai", t^1, \lambda^2, \lambda^2, t^2
-    )
-
-    det += einsum(
-        "bj,cl,dk,adil,bcjk->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
-    )
-
-    det -= einsum(
-        "bj,ck,dl,adkl,bcij->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
-    )
-
-    det -= einsum(
-        "bj,ck,dl,adil,bcjk->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
-    ) / 2
-
-    det -= einsum(
-        "bk,cl,dj,adkl,bcij->ai", t^1, t^1, t^1, \lambda^2, \lambda^2
-    ) / 2

@@ -1,0 +1,93 @@
+    ref = 0
+
+    ref += einsum(
+        "ai,bj,bcjk,acik->", \lambda^1, t^1, \lambda^2, t^2
+    )
+
+    ref -= einsum(
+        "ai,aj,bcjk,bcik->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    ref -= einsum(
+        "ai,bi,bcjk,acjk->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 2
+
+    ref += einsum(
+        "ai,ai,bcjk,bcjk->", \lambda^1, t^1, \lambda^2, t^2
+    ) / 4
+
+    ref += einsum(
+        "ai,aj,bi,ck,bcjk->", \lambda^1, t^1, t^1, t^1, \lambda^2
+    )
+
+    ref -= einsum(
+        "ai,ai,bj,ck,bcjk->", \lambda^1, t^1, t^1, t^1, \lambda^2
+    ) / 2
+
+    ref -= einsum(
+        "abjk,cdil,abjl,cdik->", \lambda^2, \lambda^2, t^2, t^2
+    ) / 8
+
+    ref -= einsum(
+        "abjk,cdil,acjk,bdil->", \lambda^2, \lambda^2, t^2, t^2
+    ) / 8
+
+    ref += einsum(
+        "abjk,cdil,acjl,bdik->", \lambda^2, \lambda^2, t^2, t^2
+    ) / 4
+
+    ref += einsum(
+        "abjk,cdil,abil,cdjk->", \lambda^2, \lambda^2, t^2, t^2
+    ) / 32
+
+    ref += einsum(
+        "abjk,cdil,abjk,cdil->", \lambda^2, \lambda^2, t^2, t^2
+    ) / 32
+
+    ref += einsum(
+        "ai,bj,abik,cdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    ref += einsum(
+        "ai,bj,acij,bdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    ref += einsum(
+        "aj,bi,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    ref -= einsum(
+        "ai,bj,acik,bdjl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 2
+
+    ref -= einsum(
+        "ai,bj,abij,cdkl,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 8
+
+    ref -= einsum(
+        "ai,bj,abkl,cdij,cdkl->", t^1, t^1, \lambda^2, \lambda^2, t^2
+    ) / 8
+
+    ref += einsum(
+        "ai,bj,ck,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 2
+
+    ref += einsum(
+        "ai,bl,cj,dk,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 8
+
+    ref += einsum(
+        "aj,bk,ci,dl,abjk,cdil->", t^1, t^1, t^1, t^1, \lambda^2, \lambda^2
+    ) / 8
+
+    ref -= einsum(
+        "ai,bj,abij->", \lambda^1, \lambda^1, t^2
+    ) / 2
+
+    ref += einsum(
+        "ai,bj,ai,bj->", \lambda^1, \lambda^1, t^1, t^1
+    ) / 2
+
+    ref -= einsum(
+        "ai,bj,aj,bi->", \lambda^1, \lambda^1, t^1, t^1
+    ) / 2

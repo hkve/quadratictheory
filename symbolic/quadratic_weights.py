@@ -55,6 +55,9 @@ def reference(dr):
     drutils.timer.tock("Triple excitations", res)
     
     # # Quadruple excitations
+    expr = -Rational(1,2)*L2*L2*T1*T1*T2
+    res += (expr).eval_fermi_vev().simplify()
+    
     expr = Rational(1,2)*L2*L2*T2*T2
     res += (expr).eval_fermi_vev().simplify()
 
@@ -97,7 +100,7 @@ def single_excited(dr):
     drutils.timer.tock("Tripls 2 done", res)
     
     # Quadruple excitations
-    expr = 2*L2*L2*T1*T2
+    expr = L2*L2*T1*T2
     res += (expr*X1).eval_fermi_vev().simplify()
     drutils.timer.tock("Quad 1 done", res)
 
@@ -204,9 +207,9 @@ if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
 
     drutils.timer.vocal = True
-    # reference(dr)
-    # single_excited(dr)
+    reference(dr)
+    single_excited(dr)
     # double_excited(dr)
     # triple_excited(dr)
-    quadrouple_excited(dr)
+    # quadrouple_excited(dr)
 
