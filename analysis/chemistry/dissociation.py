@@ -109,7 +109,7 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
 
         if mixer is not None: cc.mix = mixer
 
-        cc.run(tol=tol_cc, maxiters=opts["maxiters"])
+        cc.run(tol=tol_cc, maxiters=opts["maxiters"], vocal=True)
 
         if not cc.info["t_converged"]:
             print(f"{method.__name__} did not converge at {tol_cc = }!")
@@ -126,7 +126,7 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
                     print(f"Did not converge at {tol_cc = }\t{atom = }\t{basis = }")
 
         E[i] = cc.energy()
-        if vocal: print(f"{method.__name__}\tE = {E[i]:.4f}\t{atom = }\t{basis = }")
+        if vocal: print(f"{method.__name__}\tE = {E[i]}\t{atom = }\t{basis = }")
 
     return E
 
@@ -245,26 +245,26 @@ SINGLES AND DOUBLES TRUNCATION -------------------------------------------------
 """
 
 def calculate_N2_ccsd():
-    # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-    # distances2 = np.arange(2.0, 3.8+0.1, 0.1)
-    distances = np.array([1.25, 1.5, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75, 4.00, 4.25, 4.50])
+    distances = np.array([4.75, 5.00, 5.25, 5.50, 5.75, 6.00])
+    # distances = np.array([1.25, 1.5, 1.75, 2.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75, 4.00, 4.25, 4.50])
 
     basis = "cc-pVTZ"
     atoms = disassociate_2dof("N", "N", distances)
 
-    E_hf = run_hf(atoms, basis, vocal=True)
-    df_hf = pd.DataFrame({"r": distances, "HF": E_hf})
-    save("csv/N2_ccsd_TZ.csv", df_hf)
+    # E_hf = run_hf(atoms, basis, vocal=True)
+    # df_hf = pd.DataFrame({"r": distances, "HF": E_hf})
+    # save("csv/N2_ccsd_TZ.csv", df_hf)
 
-    E_cisd = run_cisd(atoms, basis, vocal=True)
-    df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
-    save("csv/N2_ccsd_TZ.csv", df_cisd)
+    # E_cisd = run_cisd(atoms, basis, vocal=True)
+    # df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
+    # save("csv/N2_ccsd_TZ.csv", df_cisd)
 
-    E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
-    df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
-    save("csv/N2_ccsd_TZ.csv", df_ccsd)
+    # E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
+    # df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
+    # save("csv/N2_ccsd_TZ.csv", df_ccsd)
 
-    E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True)
+    mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=8, n_vectors=8)
+    E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True, mixer=mixer)
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
     save("csv/N2_ccsd_TZ.csv", df_qccsd)       
 
@@ -309,12 +309,12 @@ def main():
     # plot_HF_ccd()
 
     # calculate_H2O_ccd()
-    plot_H2O_ccd()
+    # plot_H2O_ccd()
 
     # calculate_H2O_ccsd()
     # plot_H2O_ccsd()
 
-    # calculate_N2_ccsd()
+    calculate_N2_ccsd()
     # plot_N2_ccsd()
 
 def test():
