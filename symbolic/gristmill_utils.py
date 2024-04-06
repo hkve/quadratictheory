@@ -34,6 +34,7 @@ def get_working_equations(dr, equations, ranks=[0, 2]):
 def optimize_equations(dr, equations, **kwargs):
     options = {
         "contr_strat": gristmill.ContrStrat.EXHAUST,
+        "repeated_terms_strat": gristmill.RepeatedTermsStrat.NATURAL,
         "check_result": False
     }
     options.update(kwargs)
