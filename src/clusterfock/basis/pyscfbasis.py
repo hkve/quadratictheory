@@ -2,7 +2,7 @@ from clusterfock.basis import Basis
 from functools import cached_property
 import numpy as np
 import pyscf
-
+from pyscf import lib
 
 class PyscfBasis(Basis):
     def __init__(self, atom: str, basis: str, restricted: bool = True, dtype=float, **kwargs):
@@ -51,21 +51,31 @@ class PyscfBasis(Basis):
         if not self.restricted:
             self.from_restricted()
 
-    def pyscf_hartree_fock(self, tol=1e-8, inplace=True):
+    def pyscf_hartree_fock(self, inplace=True, **kwargs):
         """
         Uses pyscf to perform hf basis and changes to this basis
         """
+        lib.num_threads(1)
 
-        # Make and run mean field object
-        
+        default = {
+            "tol": 1e-6,
+            "max_cycle": 50,
+            "init_guess": "minao", 
+        }
+        default.update(kwargs)
+
+        # Make and setup mean field object
         self.mf = pyscf.scf.RHF(self.mol)
-        self.mf.conv_tol_grad = tol
+        
+        self.mf.conv_tol_grad = default["tol"]
+        self.mf.max_cycle = default["max_cycle"]
+        self.mf.init_guess = default["init_guess"]
+        
         self.mf.run(verbose=0)
-        # self.mf = self.mol.HF().run()
         self.C = self.mf.mo_coeff
 
         if not self.mf.converged:
-            raise ValueError("Pyscf Hartree-Fock did not converge")
+            raise ValueError(f"Pyscf Hartree-Fock did not converge with options {default}")
 
         if not self.restricted:
             self.C = self._add_spin_one_body(self.C)
@@ -79,18 +89,14 @@ class PyscfBasis(Basis):
 
     @cached_property
     def Q(self) -> np.ndarray:
-        L = self.L
-        
-        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
-        
-        # r = self.mol.intor("int1e_r")
-        # r2 = np.einsum("xpq,xpq->pq", r, r)
-        # delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
+        L = self.L // self._degeneracy
+        if not self.restricted: L //= 2
 
+        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
         r2 = np.einsum("iipq->pq", rr)
         delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
 
-        Q = 3*rr - delta_ij_r2 
+        Q = 0.5*(3*rr - delta_ij_r2) 
 
         return self._new_one_body_operator(Q)
     
