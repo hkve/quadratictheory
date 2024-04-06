@@ -1,0 +1,1345 @@
+    e = 0
+
+    e -= einsum(
+        "acik,bdjl,acjn,bdim,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= einsum(
+        "acik,bdjl,adjn,bcim,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abij,cdkl,abim,cdjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acik,bdjl,abim,cdjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdkl,acim,bdjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acik,bdjl,acim,bdjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acik,bdjl,adim,bcjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 16 * einsum(
+        "acik,bdjl,adim,cbjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 11 * einsum(
+        "abij,cdkl,adim,cbjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= 7 * einsum(
+        "acik,bdjl,acim,bdjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "acik,bdjl,adim,bcjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "abij,cdkl,abim,cdjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "abij,cdkl,abjm,cdin,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += einsum(
+        "adik,bcjl,adim,cbjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "acik,bdjl,abim,cdjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acik,bdjl,abjm,cdin,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "adik,bcjl,adim,cbjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abij,cdkl,adjm,cbin,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "adik,bcjl,abim,cdjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "acik,bdjl,adjm,cbin,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 4 * einsum(
+        "adik,bcjl,abjm,cdin,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,caim,dbjn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acik,bdjl,acjn,bdim,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "adik,bcjl,adjm,cbin,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,caim,dbjn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 5 * einsum(
+        "abij,cdkl,cbim,dajn,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "acik,bdjl,adjn,bcim,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 19 * einsum(
+        "acik,bdjl,cbjn,daim,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "abij,cdkl,cbim,dajn,mnlk->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "acik,bdjl,cajn,dbim,mnkl->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e -= einsum(
+        "acki,bdlj,abmn,ceik,dfjl,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= einsum(
+        "acki,bdlj,abmn,ceil,dfjk,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= einsum(
+        "acki,bdlj,acln,bdkm,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= einsum(
+        "acki,bdlj,adln,bckm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 8 * einsum(
+        "abik,cdjl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 8 * einsum(
+        "acij,bdkl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 8 * einsum(
+        "adil,bckj,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abij,cdkl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abij,cdkl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abij,cdlk,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abik,cdjl,abmn,cfjl,deik,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abik,cdjl,acln,bdkm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abil,cdjk,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abil,cdjk,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abil,cdkj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abjk,cdli,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "ablk,cdji,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "ablk,cdji,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acij,bdkl,abmn,cfjl,deik,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acij,bdkl,acln,bdkm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acik,bdjl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acik,bdjl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acik,bdlj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acjl,bdki,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "ackj,bdil,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "ackj,bdil,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "ackl,bdij,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "aclj,bdki,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "aclj,bdki,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adik,bcjl,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adik,bclj,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adik,bclj,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adkj,bcil,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adkl,bcij,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "adkl,bcij,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abkl,cdij,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abkl,cdij,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acki,bdlj,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acki,bdlj,abmn,ceil,dfjk,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acki,bdlj,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acki,bdlj,adkm,bcln,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "abij,cdkl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "abik,cdjl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "abik,cdjl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "abik,cdlj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "abil,cdjk,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "ablk,cdji,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "acij,bdkl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "acij,bdkl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "acik,bdjl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "acil,bdkj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "ackj,bdil,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "aclj,bdki,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "adij,bckl,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "adik,bclj,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "adil,bckj,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "adil,bckj,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e += 4 * einsum(
+        "adkl,bcij,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    )
+
+    e -= 23 * einsum(
+        "ablj,cdki,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 23 * einsum(
+        "aclk,bdji,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 20 * einsum(
+        "abjl,cdik,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 20 * einsum(
+        "ackl,bdij,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 19 * einsum(
+        "adjk,bcli,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 19 * einsum(
+        "adkj,bcil,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 16 * einsum(
+        "abik,cdjl,abmn,cfjk,deil,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 16 * einsum(
+        "abik,cdjl,adln,bckm,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "abjk,cdil,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "abjk,cdil,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "ablk,cdij,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "acij,bdkl,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "acil,bdkj,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 14 * einsum(
+        "acil,bdkj,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 11 * einsum(
+        "acij,bdkl,abmn,cfjk,deil,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e -= 11 * einsum(
+        "acij,bdkl,adln,bckm,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e -= 10 * einsum(
+        "abjl,cdki,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "ablj,cdik,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "ackl,bdji,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "aclk,bdij,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 8 * einsum(
+        "adjk,bcil,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 8 * einsum(
+        "adkj,bcli,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 7 * einsum(
+        "acki,bdlj,abmn,cfjk,deil,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 7 * einsum(
+        "acki,bdlj,ackm,bdln,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "adij,bckl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "adil,bckj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "adjl,bcki,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "adjl,bcki,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "adlj,bcki,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 5 * einsum(
+        "acki,bdlj,abmn,cfjl,deik,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e -= 5 * einsum(
+        "acki,bdlj,adkm,bcln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e -= 4 * einsum(
+        "abjk,cdli,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "abkj,cdil,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "acil,bdjk,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "acji,bdkl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= 2 * einsum(
+        "abkj,cdli,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "acjl,bdki,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "acjl,bdki,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "aclj,bdki,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "adij,bclk,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= einsum(
+        "adjl,bcik,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e -= einsum(
+        "acij,bdkl,abmn,ceil,dfjk,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acij,bdkl,acln,bdkm,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acjl,bdik,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acjl,bdik,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "aclj,bdik,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acij,bdkl,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e -= einsum(
+        "acij,bdkl,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += einsum(
+        "acji,bdkl,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e += einsum(
+        "acji,bdkl,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e += einsum(
+        "acli,bdkj,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e += einsum(
+        "acik,bdlj,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "acik,bdlj,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adij,bclk,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adij,bclk,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adil,bcjk,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adjl,bcik,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adjl,bcik,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "adlj,bcik,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "abik,cdjl,abmn,ceil,dfjk,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abik,cdjl,abmn,cfjk,deil,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abik,cdjl,ackm,bdln,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abik,cdjl,acln,bdkm,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abkj,cdli,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abkj,cdli,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abkl,cdji,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acik,bdlj,abmn,cfjk,deil,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acik,bdlj,ackm,bdln,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acij,bdkl,abmn,cfjl,deik,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "acij,bdkl,adkm,bcln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "acik,bdlj,abmn,cfjl,deik,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "acik,bdlj,adkm,bcln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "abik,cdjl,abmn,ceil,dfjk,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += einsum(
+        "abik,cdjl,adkm,bcln,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 2 * einsum(
+        "abjk,cdli,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "abjk,cdli,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "abkj,cdil,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "abkj,cdil,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "abkl,cdij,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "ablk,cdji,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "acij,bdlk,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "acil,bdjk,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "acil,bdjk,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "acjl,bdik,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "acik,bdlj,abmn,cfjk,deil,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "acik,bdlj,adln,bckm,efij,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "acjl,bdki,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adjk,bcil,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adjk,bcil,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adkj,bcli,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adkj,bcli,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adkl,bcji,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 4 * einsum(
+        "adlk,bcij,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abjl,cdik,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abjl,cdki,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abjl,cdki,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ablj,cdik,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ablj,cdik,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ablj,cdki,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acik,bdlj,abmn,cfjl,deik,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acik,bdlj,acln,bdkm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acjk,bdil,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acki,bdlj,abmn,cfjl,deik,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acki,bdlj,acln,bdkm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ackj,bdli,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ackl,bdji,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "ackl,bdji,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "aclk,bdij,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "aclk,bdij,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,abmn,ceik,dfjl,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 5 * einsum(
+        "abij,cdkl,ackm,bdln,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 5 * einsum(
+        "abij,cdlk,abmn,ceik,dfjl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 5 * einsum(
+        "abij,cdlk,ackm,bdln,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 10 * einsum(
+        "adij,bckl,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e += 10 * einsum(
+        "adjl,bcki,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 3
+
+    e += 10 * einsum(
+        "abjl,cdik,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 10 * einsum(
+        "abjl,cdik,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 10 * einsum(
+        "ablj,cdik,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 10 * einsum(
+        "ackj,bdil,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 10 * einsum(
+        "ackl,bdij,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 10 * einsum(
+        "ackl,bdij,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 19 * einsum(
+        "adjk,bcli,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "adjk,bcli,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "adkj,bcil,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "adkj,bcil,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "adkl,bcij,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "adlk,bcji,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "acik,bdjl,abmn,cfjk,deil,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 19 * einsum(
+        "acik,bdjl,adln,bckm,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 19 * einsum(
+        "acki,bdlj,abmn,cfjk,deil,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 19 * einsum(
+        "acki,bdlj,adln,bckm,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "abjl,cdki,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "ablj,cdki,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "ablj,cdki,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "acjk,bdli,aeij,bckm,dfnl,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "aclk,bdji,aeij,bckm,dfln,mnfe->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "aclk,bdji,aeij,bckm,dfnl,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 18
+
+    e += 23 * einsum(
+        "abij,cdlk,abmn,ceik,dfjl,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "abij,cdlk,ackm,bdln,efij,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "acik,bdjl,abmn,cfjl,deik,nmef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "acik,bdjl,acln,bdkm,efij,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 36
+
+    e += 28 * einsum(
+        "abjk,cdil,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e += 28 * einsum(
+        "acil,bdkj,aeij,bckm,dfln,mnef->", \lambda^2, \lambda^2, t^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "abij,cdkl,aeij,cbkm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 4 * einsum(
+        "abij,cdkl,aeik,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 4 * einsum(
+        "abij,cdlk,aeik,bcjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 4 * einsum(
+        "abji,cdkl,abjm,ceki,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 4 * einsum(
+        "adij,bckl,acim,bekj,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 4 * einsum(
+        "adij,bckl,aeij,bckm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdkl,abkm,ceij,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdkl,aeij,bckm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdkl,aeik,cbjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdlk,aeij,bckm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdlk,aeik,cbjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdlk,aeki,bcjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abji,cdkl,aeki,cbjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,abim,cejk,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,acim,bejk,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,ackm,beij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,aeik,bcjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,aeik,cbjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,aekj,bcim,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,bakm,ceji,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,beki,cajm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "adij,bckl,bekj,caim,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 23 * einsum(
+        "abij,cdlk,aeki,cbjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 23 * einsum(
+        "adij,bckl,abkm,ceji,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 23 * einsum(
+        "adij,bckl,baim,cejk,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 23 * einsum(
+        "adij,bckl,bejk,caim,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 19 * einsum(
+        "abij,cdkl,abkm,ceij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 19 * einsum(
+        "abji,cdlk,abkm,ceij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 19 * einsum(
+        "adij,bckl,aeki,cbjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 19 * einsum(
+        "adij,bckl,aekj,bcim,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e -= 10 * einsum(
+        "abji,cdkl,aeki,cbjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "adij,bckl,ackm,beij,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "adij,bckl,bajm,ceik,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 10 * einsum(
+        "adij,bckl,beik,cajm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "abij,cdkl,aeki,cbjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "abji,cdlk,aeki,cbjm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,abkm,ceij,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,ackm,beji,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,baim,cejk,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,bajm,ceik,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,beik,cajm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "adij,bckl,bejk,caim,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "abij,cdlk,abkm,ceij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "abji,cdkl,abkm,ceij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "adij,bckl,aeki,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 4 * einsum(
+        "adij,bckl,aekj,cbim,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "abij,cdlk,aeij,cbkm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "abij,cdlk,aeki,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "abji,cdkl,aeki,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "adij,bckl,acjm,beki,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "adij,bckl,bakm,ceji,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 2 * einsum(
+        "adij,bckl,beij,cakm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "abji,cdkl,aeij,cbkm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e -= einsum(
+        "adij,bckl,abim,cekj,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e -= einsum(
+        "abij,cdkl,abjm,ceik,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "abij,cdkl,abjm,ceki,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "abij,cdlk,abjm,ceik,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "adij,bckl,aeij,cbkm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "abji,cdlk,aeki,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "adij,bckl,beji,cakm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "adij,bckl,abjm,ceik,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "adij,bckl,acjm,beik,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "adij,bckl,abim,cejk,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 2 * einsum(
+        "adij,bckl,acim,bejk,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abji,cdkl,abjm,ceik,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e += 5 * einsum(
+        "abji,cdkl,abjm,ceki,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e += 5 * einsum(
+        "abji,cdlk,abjm,ceik,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e += 5 * einsum(
+        "adij,bckl,aeij,bckm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 3
+
+    e += 14 * einsum(
+        "abij,cdkl,aeij,cbkm,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 14 * einsum(
+        "abij,cdkl,aeki,bcjm,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 14 * einsum(
+        "adij,bckl,acim,bekj,mdel->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 14 * einsum(
+        "adij,bckl,bakm,ceij,mdle->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acik,bdjl,afjk,beil,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= einsum(
+        "acik,bdjl,afjl,beik,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "abij,cdkl,aeij,bfkl,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 2 * einsum(
+        "acik,bdjl,aeij,bfkl,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "abij,cdkl,aeik,bfjl,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acik,bdjl,aeik,bfjl,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e += 2 * einsum(
+        "acik,bdjl,aeil,bfjk,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    )
+
+    e -= 16 * einsum(
+        "abij,cdkl,aeil,bfkj,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 11 * einsum(
+        "acik,bdjl,aeil,bfkj,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= 7 * einsum(
+        "acik,bdjl,aeil,bfjk,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= 5 * einsum(
+        "acik,bdjl,aeik,bfjl,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e -= einsum(
+        "acik,bdjl,aeil,bfkj,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e -= einsum(
+        "acik,bdjl,afkl,beij,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += einsum(
+        "acil,bdjk,aeil,bfkj,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 6
+
+    e += einsum(
+        "abij,cdkl,aeil,bfkj,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "abij,cdkl,afkj,beil,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acil,bdjk,aeij,bfkl,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += einsum(
+        "acik,bdjl,afkl,beij,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "acil,bdjk,aeil,bfkj,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 12
+
+    e += einsum(
+        "abij,cdkl,afkj,beil,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 4 * einsum(
+        "acil,bdjk,afkl,beij,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,aeki,bflj,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acik,bdjl,afjl,beik,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "acil,bdjk,afkj,beil,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 9
+
+    e += 5 * einsum(
+        "abij,cdkl,aeki,bflj,dcef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 5 * einsum(
+        "abij,cdkl,aflj,beki,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 18
+
+    e += 19 * einsum(
+        "acik,bdjl,aeli,bfkj,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 19 * einsum(
+        "acik,bdjl,afjk,beil,cdef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "abij,cdkl,aflj,beki,dcef->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
+
+    e += 23 * einsum(
+        "acik,bdjl,aflj,beki,cdfe->", \lambda^2, \lambda^2, t^2, t^2, u
+    ) / 36
