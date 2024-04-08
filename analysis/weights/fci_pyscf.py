@@ -12,7 +12,7 @@ def fci_pyscf(geometry, basis, nroots=5):
     s = mol.intor_symmetric("int1e_ovlp")
 
     hf = scf.RHF(mol)
-    hf.conv_tol_grad = 1e-10
+    hf.conv_tol_grad = 1e-5
     hf.max_cycle = 1000
     hf.kernel()
 

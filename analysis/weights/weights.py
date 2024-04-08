@@ -28,24 +28,10 @@ def run_hf(geometry, basis, restricted=False, **kwargs):
 
     return b
 
-def run_cc(basis, CC, **kwargs):
-    default = {
-        "tol": 1e-6,
-        "vocal": False,
-        "lowest_allowed_tol": 1e-4,
-        "mixer": cf.mix.SoftStartDIISMixer(alpha=0.7, start_DIIS_after=10, n_vectors=4)
-    }
-
-    default.update(kwargs)
-
-    tol = default["tol"]
-    vocal = default["vocal"]
-    lowest_allowed_tol = default["lowest_allowed_tol"]
-    mixer = default["mixer"]
-
+def run_cc(basis, CC, tol, maxiters, mixer, vocal):
     is_quadratic = False
     is_SD = False
-    run_kwargs = {"tol": tol, "vocal": vocal}
+    run_kwargs = {"tol": tol, "vocal": vocal, "maxiters": maxiters}
     if not CC.__name__.startswith("Q"):
         run_kwargs = {"include_l": True}
     else:
@@ -70,13 +56,9 @@ def run_cc(basis, CC, **kwargs):
             if is_SD: 
                 W["T"] = cc.triples_weight()
     else:
-        lowest_tol = cc.get_lowest_norm()
-        if lowest_tol > lowest_allowed_tol:
-            raise ValueError("UPSID")
-        else:
-            default[tol] = lowest_tol*1.1
-            print(f"Did not converge, rerun with tol = {lowest_tol}")
-            run_cc(basis, CC, **default)
+        print("New attempt")
+        new_mixer = cf.mix.SoftStartDIISMixer(alpha=mixer.alpha + 0.1, start_DIIS_after=mixer.start_DIIS_after+10, n_vectors=mixer.n_vectors+4)
+        return run_cc(basis, CC, tol, maxiters, mixer, vocal)
 
     return W
 
@@ -84,8 +66,9 @@ def run_weights_CC(geomtries, basis, CC, **kwargs):
     default = {
         "vocal": False,
         "hf_tol": 1e-6,
-        "cc_tol": 1e-6,
-        "mixer": cf.mix.SoftStartDIISMixer(alpha=0.7, start_DIIS_after=10, n_vectors=4)
+        "cc_tol": 1e-4,
+        "mixer": cf.mix.RelaxedMixer(alpha=0.5),
+        "maxiters": 300
     }
 
     default.update(kwargs)
@@ -94,12 +77,13 @@ def run_weights_CC(geomtries, basis, CC, **kwargs):
     hf_tol = default["hf_tol"]
     cc_tol = default["cc_tol"]
     mixer = default["mixer"]
+    maxiters = default["maxiters"]
 
     geomtries = pack_as_list(geomtries)
     weights = []
     for geometry in geomtries:
         b = run_hf(geometry, basis, restricted=False, tol=hf_tol)
-        W = run_cc(b, CC, vocal=vocal, tol=cc_tol, mixer=mixer)
+        W = run_cc(b, CC, vocal=vocal, tol=cc_tol, maxiters=maxiters, mixer=mixer)
         print(f"Done {geometry}, {CC.__name__}")
         weights.append(W)
 
@@ -139,7 +123,7 @@ def format_weigths(weights, R):
     new_weights["R"]  = R
     return new_weights
 
-def save(names, weigths):
+def perform_save(names, weigths):
 
     names = pack_as_list(names)
     weigths = pack_as_list(weigths)
@@ -241,7 +225,6 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
             label = "$W_{" + k + "}^{" + name + "}$"
             ax.plot(R, v, label=label, ls=ls[k], color=get_color(name))
 
-
     if y_max is not None:
         ylims = ax.get_ylim()
         ylims = (ylims[0], y_max)
@@ -271,7 +254,7 @@ def plot_h2o(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fal
 
         weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
 
-        save(names, weights)
+        perform_save(names, weights)
     else:
         weights = load(names)
 
@@ -286,22 +269,42 @@ def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fals
     names = [f"N2_{met}" for met in all_mets]
 
     if run:
-        # distances1 = np.array([1.2, 1.4, 1.6, 1.7, 1.8, 1.9])
-        distances = np.arange(3.5, 5.0+0.1, 0.1)
+        distances = np.arange(2.00,7.00+0.1,0.25)
 
-        # distances = np.r_[distances1, distances2]
+        distances_ccd_1 = np.arange(2.00, 5.00+0.1, 0.25)
+        distances_ccd_2 = np.arange(5.25, 7.00+0.1, 0.25)
+
+        distances_qccd_1 = np.arange(2.00, 5.5+0.1, 0.25)
+        distances_qccd_2 = np.arange(5.75, 7.0+0.1, 0.25)
+        
+
         geoms = disassociate_2dof("N", "N", distances)
+        geoms_ccd_1 = disassociate_2dof("N", "N", distances_ccd_1)
+        geoms_ccd_2 = disassociate_2dof("N", "N", distances_ccd_2)
 
-        cc_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=25, n_vectors=10)
-        qcc_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+        geoms_qccd_1 = disassociate_2dof("N", "N", distances_qccd_1)
+        geoms_qccd_2 = disassociate_2dof("N", "N", distances_qccd_2)
+        
+        cc_mixer_1 = cf.mix.RelaxedMixer(alpha=0.5)
+        cc_mixer_2 = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=10)
+        
+        qcc_mixer_1 = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=5)
+        qcc_mixer_2 = cf.mix.SoftStartDIISMixer(alpha=0.9, start_DIIS_after=30, n_vectors=20)
 
-        weights_CC = run_weights_CC(geoms, "sto-3g", mets_map[standard], mixer=cc_mixer) 
-        weights_QCC = run_weights_CC(geoms, "sto-3g", qmets_map[quad], mixer=qcc_mixer)
-        weights_FCI = run_weights_FCI(geoms, "sto-3g")
+        # weights_CC_1 = run_weights_CC(geoms_ccd_1, "sto-3g", mets_map[standard], mixer=cc_mixer_1)
+        # weights_CC_2 = run_weights_CC(geoms_ccd_2, "sto-3g", mets_map[standard], mixer=cc_mixer_2)
+        # weights_CC = weights_CC_1 + weights_CC_2
 
-        weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
+        weights_QCC_1 = run_weights_CC(geoms_qccd_1, "sto-3g", qmets_map[quad],maxiters=500, mixer=qcc_mixer_1)
+        weights_QCC_2 = run_weights_CC(geoms_qccd_2, "sto-3g", qmets_map[quad],maxiters=500, mixer=qcc_mixer_2)
+        weights_QCC =  weights_QCC_1 + weights_QCC_2
 
-        save(names, weights)
+        # weights_FCI = run_weights_FCI(geoms, "sto-3g")
+
+        # weights = [format_weigths(W, distances) for W in [weights_CC, weights_QCC, weights_FCI]]
+        weights = [format_weigths(W, distances) for W in [weights_QCC]]
+
+        perform_save(names[1], weights)
     else:
         weights = load(names)
 
@@ -318,5 +321,5 @@ if __name__ == "__main__":
     # plot_h2o(False, standard="CCD", quad="QCCD", save=False)
     # plot_h2o(False, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
     
-    # plot_n2(False, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False)
-    plot_n2(True, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)
+    plot_n2(False, standard="CCD", quad="QCCD", drop_weights=["S", "T", "Q"], save=True)
+    # plot_n2(True, standard="CCSD", quad="QCCSD", drop_weights=["T", "Q"], save=False)

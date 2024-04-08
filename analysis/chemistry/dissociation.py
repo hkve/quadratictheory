@@ -314,8 +314,8 @@ def main():
     # calculate_H2O_ccsd()
     # plot_H2O_ccsd()
 
-    calculate_N2_ccsd()
-    # plot_N2_ccsd()
+    # calculate_N2_ccsd()
+    plot_N2_ccsd()
 
 def test():
     geom, = disassociate_h2o(4.5)
