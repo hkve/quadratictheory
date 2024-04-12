@@ -10,8 +10,8 @@ from pyscf.cc.ccsd import CCSD
 
 def run_cf_CC(geometry, basis, CC, restricted, **kwargs):
     mixer = kwargs.get("mixer", None)
-    
-    b = cf.PyscfBasis(geometry, basis, restricted=restricted).pyscf_hartree_fock()
+    charge = kwargs.get("charge", 0)
+    b = cf.PyscfBasis(geometry, basis, restricted=restricted, charge=charge).pyscf_hartree_fock()
     cc = CC(b)
     
 
@@ -24,9 +24,12 @@ def run_cf_CC(geometry, basis, CC, restricted, **kwargs):
 
     return cc.energy()
 
-def run_FCI(geometry, basis):
+def run_FCI(geometry, basis, **kwargs):
+    charge = kwargs.get("charge", 0)
+    
     mol = gto.M(unit="bohr")
     mol.verbose = 3
+    mol.charge = charge
     mol.build(atom=geometry, basis=basis)
 
     s = mol.intor_symmetric("int1e_ovlp")
@@ -48,11 +51,14 @@ def run_FCI(geometry, basis):
 
     return e_fci[0]
 
-def run_pyscf_cc(geometry, basis, CC):
+def run_pyscf_cc(geometry, basis, CC, **kwargs):
+    charge = kwargs.get("charge", 0)
+
     mol = gto.M(
         atom = geometry,
         basis = basis,
         verbose = 0,
+        charge = charge,
         unit="bohr"
     )
 
@@ -65,17 +71,15 @@ def run_pyscf_cc(geometry, basis, CC):
 
     return mycc.e_tot
 
-def run_pyscf_ccsd(geometry, basis):
-    pass
 
 def save(results, name, basis, folder="static_energy_tests"):
-    path = f"{folder}/{name}_{basis}.csv"
+    path = f"{folder}/{name}_{basis}.json"
     
     with open(path, 'w') as f:
         json.dump(results, f, indent=4)
 
 def load(name, basis, folder="static_energy_tests"):
-    path = f"{folder}/{name}_{basis}.csv"
+    path = f"{folder}/{name}_{basis}.json"
 
     with open(path) as f:
         data = json.load(f)    
@@ -123,7 +127,7 @@ def two_particles(run=False):
 
     print(df.to_latex(column_format="lccccc"))
 
-def diatoms(run=False):
+def atoms(run=False):
     geometries = {
         "Be": "Be 0 0 0",
         "O": "O 0 0 0",
@@ -161,6 +165,16 @@ def diatoms(run=False):
                 
                 save(results, name, b)
 
+
+    name = "Ar"
+    data = {}
+    for b in basis:
+        data[b] = load(name, b)
+        
+    df = pd.DataFrame(data).T
+    df = df.reindex(["GCCD", "RCCD", "p_CCD", "GCCSD", "RCCSD", "p_CCSD"], axis=1)
+    print(df.to_latex(column_format="lcccccc"))
+
 def other_atoms(run=False):
     geometries = {
         "LiH": "Li 0 0 0; H 0 0",
@@ -174,29 +188,47 @@ def other_atoms(run=False):
         "HF": 1.7290992795,
     }
 
-    basis = "sto-3g"
+    charge = {
+        "LiH": 0,
+        "CHp": 1,
+        "HF": 0,
+    }
+
+    basis = "cc-pVTZ"
 
     cc_methods = [cf.CCD, cf.CCSD]
     if run:
         for name, geometry in geometries.items():
             R = equilibrium[name]
-            
-            for d in [1,2]:
-                geometry += f" {d*R}"
-                name += f"_{d}Re"
+            q = charge[name]
 
+            for d in [1,2]:
+                geometry_dist = geometry + f" {d*R}"
+                name_dist = name + f"_{d}Re"
+                
                 results = {}
 
                 for CC in cc_methods:
-                    cc_energy = run_cf_CC(geometry, basis, CC, restricted=True)
+                    cc_energy = run_cf_CC(geometry_dist, basis, CC, restricted=True, charge=q)
                     results[CC.__name__] = cc_energy
 
-                results["p_CCD"] = run_pyscf_cc(geometry, basis, CCD)
-                results["p_CCSD"] = run_pyscf_cc(geometry, basis, CCSD)
+                results["p_CCD"] = run_pyscf_cc(geometry_dist, basis, CCD, charge=q)
+                results["p_CCSD"] = run_pyscf_cc(geometry_dist, basis, CCSD, charge=q)
                 
-                save(results, name, basis)
+                save(results, name_dist, basis)
+
+    name = "HF"
+    data = {}
+    for d in [1,2]:
+        key = r"$R_e$" if d == 1 else rf"${d}R_e$" 
+        data[key] = load(name + f"_{d}Re", basis)
+        
+    df = pd.DataFrame(data).T
+    df = df.reindex(["CCD", "p_CCD", "CCSD", "p_CCSD"], axis=1)
+    print(df.to_latex(column_format="llcccc"))
+
 
 if __name__ == '__main__':
     # two_particles(run=False)
-    # diatoms(run=True)
-    other_atoms(run=True)
+    # atoms(run=False)
+    other_atoms(run=False)
