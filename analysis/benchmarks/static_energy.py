@@ -10,13 +10,15 @@ from pyscf.cc.ccsd import CCSD
 
 def run_cf_CC(geometry, basis, CC, restricted, **kwargs):
     mixer = kwargs.get("mixer", None)
+    tol = kwargs.get("tol", 1e-8)
     charge = kwargs.get("charge", 0)
+    maxiters = kwargs.get("maxiters", 100)
     b = cf.PyscfBasis(geometry, basis, restricted=restricted, charge=charge).pyscf_hartree_fock()
     cc = CC(b)
     
 
     if mixer: cc.mixer = mixer
-    cc.run(tol=1e-8, vocal=True, maxiters=100)
+    cc.run(tol=tol, vocal=True, maxiters=maxiters)
     if mixer: mixer.reset()
 
     if not cc.info["t_converged"]:
@@ -228,7 +230,67 @@ def other_atoms(run=False):
     print(df.to_latex(column_format="llcccc"))
 
 
+def QCCSD_benchmark(run=False):
+    distances = np.arange(1.5,8.0+0.1,0.5)
+    basis = "sto-3g"
+    folder = "static_energy_tests"
+    filename_qcc = f"{folder}/N2_QCCSD.npz"
+    filename_fci = f"{folder}/N2_FCI.npz"
+
+    E_fci_fanetal = np.array([-106.720117, -107.623240, -107.651880, -107.546614, -107.473442, -107.447822, -107.441504, -107.439549, -107.438665, -107.438265, -107.438054, -107.438029])
+    E_qcc_fanetal = np.array([0.886,1.988,3.443,3.909,5.294,15.815,27.792,35.335,39.983,42.609,44.839,45.508])
+    distances_fanetal = np.array([1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,7.0,8.0])
+
+    if run:
+        E_qcc = np.zeros_like(distances)
+        for i, d in enumerate(distances):
+            geometry = f"N 0 0 0; N 0 0 {d}"
+            mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=20, n_vectors=20)
+            E_qcc[i] = run_cf_CC(geometry, basis, cf.QCCSD, False, tol=1e-4, maxiters=200, mixer=mixer)
+        np.savez(filename_qcc, E_qcc)
+
+        E_fci = np.zeros_like(distances)
+        for i, d in enumerate(distances):
+            geometry = f"N 0 0 0; N 0 0 {d}"
+            E_fci[i] = run_FCI(geometry, basis)
+        np.savez(filename_fci, E_fci)
+
+    E_qcc = np.load(filename_qcc)["arr_0"]
+    E_fci = np.load(filename_fci)["arr_0"]
+
+    E_qcc_cut, E_fci_cut = [], []
+    for i, d in enumerate(distances):
+        if d in distances_fanetal:
+            E_qcc_cut.append(E_qcc[i]) 
+            E_fci_cut.append(E_fci[i]) 
+
+    E_qcc_cut = np.array(E_qcc_cut)
+    E_fci_cut = np.array(E_fci_cut)
+    
+    df = {
+        "R": distances_fanetal,
+        "FCI_f": E_fci_fanetal,
+        "QCCSD_f": E_qcc_fanetal,
+        "FCI": E_fci_cut,
+        "QCCSD": (E_qcc_cut - E_fci_cut)*1000,
+    }
+
+    formatters = {
+        "R": lambda x: f"{x:.2f}",
+        "FCI_f": lambda x: f"{x:.5f}",
+        "QCCSD_f": lambda x: f"{x:.3f}",
+        "FCI": lambda x: f"{x:.5f}",
+        "QCCSD": lambda x: f"{x:.3f}",
+    }
+    df = pd.DataFrame(df)
+
+    print(
+        df.to_latex(index=False, formatters=formatters)
+    )
+
 if __name__ == '__main__':
     # two_particles(run=False)
     # atoms(run=False)
-    other_atoms(run=False)
+    # other_atoms(run=False)
+    
+    QCCSD_benchmark(run=False)
