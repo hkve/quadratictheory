@@ -1,0 +1,75 @@
+import clusterfock as cf
+import numpy as np
+import pathlib as pl
+import matplotlib.pyplot as plt
+
+def run_lie_et_al(quadratic=False):
+    r = 1.389704492
+    E_max = 0.07
+    omega = 0.1
+    u = np.array([0,0,1], dtype=float)
+    t_end = 2 #225
+    dt = 0.01
+
+    
+    integrator = "GaussIntegrator"
+    integrator_args = {"s": 3, "maxit": 20, "eps": 1e-6, "method": "A", "mu": 1.75}
+    
+    b = cf.PyscfBasis(f"H 0 0 0; H 0 0 {r}", basis="6-311++Gss", restricted=False).pyscf_hartree_fock()
+
+    if quadratic:
+        cc = cf.QCCSD(b).run(tol=1e-8, vocal=True)
+    else:
+        cc = cf.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
+
+    tdcc = cf.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
+    
+    tdcc.external_one_body = cf.pulse.LieEtAl(u, E_max, omega)
+    tdcc.sampler = cf.sampler.DipoleSampler()
+
+    results = tdcc.run(vocal=True)
+
+    name = "QCCSD" if quadratic else "CCSD"
+
+    path = pl.Path("dat")
+    filename = pl.Path(f"LieEtAl_{name}_6-311++Gss.npz")
+
+    np.savez(path / filename, **results)
+
+def plot():
+    path = pl.Path("dat")
+    filename_ccsd = pl.Path("LieEtAl_CCSD_6-311++Gss.npz")
+    filename_qccsd = pl.Path("LieEtAl_QCCSD_6-311++Gss.npz")
+
+    results_ccsd = np.load(path / filename_ccsd)
+    results_qccsd = np.load(path / filename_qccsd)
+
+    time = results_ccsd["t"]
+    dipole_ccsd = results_ccsd["r"][:,2].real
+    dipole_qccsd = results_qccsd["r"][:,2].real
+
+    fig, ax = plt.subplots()
+
+    ax.plot(time, dipole_ccsd, label="CCSD")
+    ax.plot(time, dipole_qccsd, label="QCCSD")
+
+    ax.set(xlabel="Time", ylabel="d(t)")
+    ax.legend()
+    
+    plt.show()
+
+    fig, ax = plt.subplots()
+
+    ax.plot(time, np.abs(dipole_ccsd-dipole_qccsd), label="Diff")
+
+    ax.set(xlabel="Time", ylabel="d(t)")
+    ax.legend()
+    
+    plt.show()
+
+
+if __name__ == "__main__":
+    run_lie_et_al(quadratic=False)
+    run_lie_et_al(quadratic=True)
+
+    # plot()

@@ -118,4 +118,4 @@ def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
     plot_spectrum(freqs, S_tots, methods, ev=ev, cutoff=plot_cutoff)
 
 if __name__ == '__main__':
-    compare_two(methods=["CCD", "QCCD"], cutoff=20, plot_cutoff=1000)
+    compare_two(methods=["CCSD"], cutoff=20, plot_cutoff=1000)

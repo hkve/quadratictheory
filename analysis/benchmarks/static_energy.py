@@ -230,7 +230,7 @@ def other_atoms(run=False):
     print(df.to_latex(column_format="llcccc"))
 
 
-def QCCSD_benchmark(run=False):
+def QCCSD_benchmark_N2(run=False):
     distances = np.arange(1.5,8.0+0.1,0.5)
     basis = "sto-3g"
     folder = "static_energy_tests"
@@ -276,7 +276,7 @@ def QCCSD_benchmark(run=False):
     }
 
     formatters = {
-        "R": lambda x: f"{x:.2f}",
+        "R": lambda x: f"{x:.1f}",
         "FCI_f": lambda x: f"{x:.5f}",
         "QCCSD_f": lambda x: f"{x:.3f}",
         "FCI": lambda x: f"{x:.5f}",
@@ -288,9 +288,37 @@ def QCCSD_benchmark(run=False):
         df.to_latex(index=False, formatters=formatters)
     )
 
+def QCCSD_benhmark_Cooper_and_Knowls(run=False):
+    folder = "static_energy_tests"
+    filename_HF = f"{folder}/HF_QCCSD.npz"
+
+    basis = "cc-pVDZ"
+
+    # Distances from angstrom to bohr
+    r = np.array([1.0,1.5,2.0,2.5,3.0])
+    r *= 1.8897259886
+
+    E0_fci = -100.230466
+    fci_article = np.array([-0.000852,-0.004682,-0.023859,-0.085758,-0.176039]) + E0_fci
+    qccsd_article = np.array([9.333,7.859,5.536,3.154,1.595])
+
+    qccsd = np.zeros_like(r)
+
+    if run:
+        for i, d in enumerate(r):
+            geometry = f"H 0 0 0; F 0 0 {d};"
+            qccsd[i] = run_cf_CC(geometry, basis, cf.QCCSD, restricted=False, tol=1e-4)
+
+        np.savez(filename_HF, qccsd)
+    
+    qccsd = np.load(filename_HF)["arr_0"] - fci_article
+
+    from IPython import embed
+    embed()
 if __name__ == '__main__':
     # two_particles(run=False)
     # atoms(run=False)
     # other_atoms(run=False)
     
-    QCCSD_benchmark(run=False)
+    # QCCSD_benchmark_N2(run=False)
+    QCCSD_benhmark_Cooper_and_Knowls()
