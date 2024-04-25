@@ -74,3 +74,27 @@ class LieEtAl(Pulse):
             amplitude = (3 - ot/(2*np.pi)) * E_max
         
         return amplitude*np.sin(ot)
+    
+class Luzanov(Pulse):
+    def __init__(self, u, E_max, T, omega):
+        super().__init__(u)
+        
+        self._omega = omega
+        self._E_max = E_max
+        self._T = T
+
+    def E(self, t):
+        T = self._T
+        E_max = self._E_max
+        omega = self._omega
+
+        amplitude = 0
+
+        if 0 < t <= T/3:
+            amplitude = (3*t/T) * E_max
+        elif T/3 <= t <= 2*T/3:
+            amplitude = E_max
+        elif 2*T/3 <= t <= T:
+            amplitude = 3*E_max*(1- t/T)
+
+        return amplitude * np.sin(omega*t)

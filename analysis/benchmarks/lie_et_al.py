@@ -2,6 +2,7 @@ import clusterfock as cf
 import numpy as np
 import pathlib as pl
 import matplotlib.pyplot as plt
+import plot_utils as pu
 
 def run_lie_et_al(quadratic=False):
     r = 1.389704492
@@ -48,28 +49,45 @@ def plot():
     dipole_ccsd = results_ccsd["r"][:,2].real
     dipole_qccsd = results_qccsd["r"][:,2].real
 
+    omega = 0.1
+    time = omega*time
+
     fig, ax = plt.subplots()
 
     ax.plot(time, dipole_ccsd, label="CCSD")
-    ax.plot(time, dipole_qccsd, label="QCCSD")
-
-    ax.set(xlabel="Time", ylabel="d(t)")
+    ax.plot(time, dipole_qccsd, label="QCCSD", ls="--", dashes=(4,4))
+    ax.set(xlabel=r"$\omega t$", ylabel=r"$\mu_z (t)$")
     ax.legend()
-    
+    pu.save("LieEtAl_dipoles")
     plt.show()
+
 
     fig, ax = plt.subplots()
 
-    ax.plot(time, np.abs(dipole_ccsd-dipole_qccsd), label="Diff")
+    ax.plot(time, np.abs(dipole_ccsd-dipole_qccsd))
 
-    ax.set(xlabel="Time", ylabel="d(t)")
-    ax.legend()
-    
+    ax.set(xlabel=r"$\omega t$", ylabel=r"$\Delta \mu_z (t)$")
+    ax.set_yscale("log")
+
+    ylims = ax.get_ylim()
+    ax.set_ylim((1e-16, ylims[1]))
+    pu.save("LieEtAl_dipoles_differences")
     plt.show()
 
 
 if __name__ == "__main__":
-    run_lie_et_al(quadratic=False)
-    run_lie_et_al(quadratic=True)
+    # run_lie_et_al(quadratic=False)
+    # run_lie_et_al(quadratic=True)
 
     # plot()
+
+    geom = ""
+
+    for i in range(10):
+        geom += f"H 0 0 {i};"
+
+    print(geom)
+    b = cf.PyscfBasis(geom, basis="sto-3g").pyscf_hartree_fock()
+
+    b.from_restricted()
+    print(b.h.shape)
