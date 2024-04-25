@@ -238,8 +238,8 @@ def run():
 
 
 def plot():
-    filename = "ImagTimeProp_QCCD_chp_cc-pVDZ_Rk4Integrator_0.05.npz"
-    plot_imag_timeprop(filename, tol=1e-10)
+    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
+    plot_imag_timeprop(filename, orders=[1,2], tol=1e-10)
 
 def format_scientific_notation(number):
     if number == 0.0:
@@ -291,10 +291,75 @@ def list_results(method):
 
             print(f"\t{time_end:.2f}")
 
+def plot_energy():
+    path = "dat"
+    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
+    
+    fig, ax = plt.subplots()
+
+    results = np.load(f"{path}/{filename}", allow_pickle=True)
+
+    t = results["t"]
+    E = results["energy"]
+    E_gs = results["gs_energy"]
+
+    E_iter = np.abs(E[1:] - E[:-1])
+    E_diff = np.abs(E - E_gs)
+
+    ax.plot(t[1:], E_iter, label=r"$\delta E^{(n)}$")
+    ax.plot(t, E_diff, label=r"$\delta E$")
+    ax.set(xlabel=r"$\pi_{\pm}$ [au]", ylabel=r"Energy [au]")
+    ax.set_yscale("log")
+    ax.legend()
+    pl.save("Imag_time_prop_Be_QCCSD_energy")
+    plt.show()
+
+def plot_amplitudes():
+    orders = [1, 2]
+    path = "dat"
+    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
+    
+    fig, ax = plt.subplots()
+
+    results = np.load(f"{path}/{filename}", allow_pickle=True)
+
+    time = results["t"]
+    E = results["energy"]
+    E_gs = results["gs_energy"]
+
+    t, l = np.zeros_like(time), np.zeros_like(time)
+    for order in orders:
+        t += results[f"delta_t{order}"]**2
+        l += results[f"delta_l{order}"]**2
+
+    t = np.sqrt(t)
+    l = np.sqrt(l)
+
+    t_dot, l_dot = np.zeros_like(time), np.zeros_like(time)
+    for order in orders:
+        t_dot += results[f"rhs_t{order}"]**2
+        l_dot += results[f"rhs_l{order}"]**2
+
+    t_dot = np.sqrt(t_dot)
+    l_dot = np.sqrt(l_dot)
+
+    ax.plot(time, t, label=r"$\delta \tau$", c=pl.colors[0])
+    ax.plot(time, l, label=r"$\delta \lambda$", c=pl.colors[1])
+    ax.plot(time, t_dot, label=r"$|\!|\dot{\tau}|\!|$", c=pl.colors[2], ls="--")
+    ax.plot(time, l_dot, label=r"$|\!|\dot{\lambda}|\!|$", c=pl.colors[3], ls="--")
+
+    ax.legend()
+    ax.set(xlabel="$\pi_{\pm}$ [au]")
+    ax.set_yscale("log")
+    pl.save("Imag_time_prop_Be_QCCSD_amplitudes")
+    plt.show()
 if __name__ == "__main__":
     # run()
     # plot()
-    list_results("CCSD")
+    plot_energy()
+    # plot_amplitudes()
+    
+    # list_results("CCSD")
     # list_results("QCCSD")
 
     # results = np.load("dat/ImagTimeProp_CCSD_be_sto-3g_Rk4Integrator_0.05.npz")
