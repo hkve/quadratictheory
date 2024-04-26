@@ -30,7 +30,6 @@ def get_geometry(theta):
     return geometry
 
 def fci_pyscf(hf, mol, nroots=5):
-
     myfci = fci.direct_spin0.FCI(mol)
     myfci.conv_tol = 1e-10
     h1 = hf.mo_coeff.T.dot(hf.get_hcore()).dot(hf.mo_coeff)
@@ -94,10 +93,10 @@ def run_fci(geometry, basis):
             )
         )
 
-    return W0, WS_max, WD_max
+    return e_fci, W0, WS_max, WD_max
 
 
-def run_cc(geometry, basis, quad=False):
+def run_ccsd(geometry, basis, quad=False):
     b = cf.PyscfBasis(geometry, basis, restricted=False).pyscf_hartree_fock()
     b.from_restricted()
 
@@ -121,5 +120,70 @@ def run_cc(geometry, basis, quad=False):
 
     return e_cc, W0, WS, WD, WT, WQ
 
+def run():
+    thetas = np.arange(80,100+1,1)
+    basis = "DZ"
+
+    print(thetas)
+    exit()
+    filename = f"dat/H4_rectangle_{basis}_"
+    filename_fci = filename + "fci.npz"
+    filename_ccsd = filename + "ccsd.npz"
+    filename_qccsd = filename + "qccsd.npz"
+
+    fci = {
+        "energy": np.zeros_like(thetas),
+        "W0": np.zeros_like(thetas),
+        "WS": np.zeros_like(thetas),
+        "WD": np.zeros_like(thetas),
+    }
+    for i, theta in next(thetas):
+        geometry = get_geometry(theta) 
+        e_fci, W0, WS_max, WD_max = run_fci(geometry, basis)
+        fci["energy"][i] = e_fci
+        fci["W0"][i] = W0
+        fci["WS"][i] = WS_max
+        fci["WD"][i] = WD_max
+        print(f"FCI {theta = } done")
+    np.saves(filename_fci, **fci)
+
+    ccsd = {
+        "energy": np.zeros_like(thetas),
+        "W0": np.zeros_like(thetas),
+        "WS": np.zeros_like(thetas),
+        "WD": np.zeros_like(thetas),
+    }
+    for i, theta in next(thetas):
+        geometry = get_geometry(theta) 
+        e_ccsd, W0, WS_max, WD_max, _, _ = run_ccsd(geometry, basis, quad=False)
+        ccsd["energy"][i] = e_ccsd
+        ccsd["W0"][i] = W0
+        ccsd["WS"][i] = WS_max
+        ccsd["WD"][i] = WD_max
+        print(f"CCSD {theta = } done")
+
+    np.saves(filename_ccsd, **ccsd)
+
+    qccsd = {
+        "energy": np.zeros_like(thetas),
+        "W0": np.zeros_like(thetas),
+        "WS": np.zeros_like(thetas),
+        "WD": np.zeros_like(thetas),
+        "WT": np.zeros_like(thetas),
+        "WQ": np.zeros_like(thetas),
+    }
+    for i, theta in next(thetas):
+        geometry = get_geometry(theta) 
+        e_qccsd, W0, WS_max, WD_max, WT, WQ = run_ccsd(geometry, basis, quad=True)
+        qccsd["energy"][i] = e_qccsd
+        qccsd["W0"][i] = W0
+        qccsd["WS"][i] = WS_max
+        qccsd["WD"][i] = WD_max
+        qccsd["WT"][i] = WT
+        qccsd["WQ"][i] = WQ
+        print(f"QCCSD {theta = } done")
+
+    np.saves(filename_qccsd, **qccsd)
+
 if __name__ == "__main__":
-    pass
+    run()
