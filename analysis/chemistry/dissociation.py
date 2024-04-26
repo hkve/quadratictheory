@@ -1,8 +1,8 @@
 import numpy as np
 import clusterfock as cf
 from utils.runs import run_fci_single, disassociate_2dof, disassociate_h2o
-from plotting.plot_dissociation import plot, plot_no_error
-import plotting.plot_utils as pl
+from plotting.plot_dissociation import plot, plot_no_error, plot_correlation
+import plotting.plot_utils as pu
 import matplotlib.pyplot as plt
 import pyscf
 
@@ -291,7 +291,11 @@ def calculate_H2O_ccsd():
     save("csv/H2O_ccsd_TZ.csv", df_qccsd)       
 
 def plot_N2_ccsd():
-    plot_no_error("csv/N2_ccsd_TZ.csv", splines=True)
+    plot_no_error("csv/N2_ccsd_TZ.csv", splines=True, y_max=-108.3, x_min=1.25)
+    pu.save("N2_cc-pVDZ_dissociation_energy")
+    plt.show()
+    plot_correlation("csv/N2_ccsd_TZ.csv", splines=True)
+    pu.save("N2_cc-pVDZ_dissociation_correlation_energy")
     plt.show()
 
 def plot_H2O_ccsd():

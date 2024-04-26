@@ -329,24 +329,19 @@ def plot_amplitudes():
 
     t, l = np.zeros_like(time), np.zeros_like(time)
     for order in orders:
-        t += results[f"delta_t{order}"]**2
-        l += results[f"delta_l{order}"]**2
-
-    t = np.sqrt(t)
-    l = np.sqrt(l)
+        t += results[f"delta_t{order}"]
+        l += results[f"delta_l{order}"]
 
     t_dot, l_dot = np.zeros_like(time), np.zeros_like(time)
     for order in orders:
-        t_dot += results[f"rhs_t{order}"]**2
-        l_dot += results[f"rhs_l{order}"]**2
+        t_dot += results[f"rhs_t{order}"]
+        l_dot += results[f"rhs_l{order}"]
 
-    t_dot = np.sqrt(t_dot)
-    l_dot = np.sqrt(l_dot)
 
-    ax.plot(time, t, label=r"$\delta \tau$", c=pl.colors[0])
-    ax.plot(time, l, label=r"$\delta \lambda$", c=pl.colors[1])
-    ax.plot(time, t_dot, label=r"$|\!|\dot{\tau}|\!|$", c=pl.colors[2], ls="--")
-    ax.plot(time, l_dot, label=r"$|\!|\dot{\lambda}|\!|$", c=pl.colors[3], ls="--")
+    ax.plot(time, t, label=r"$\delta \tau_1 + \delta \tau_2$", c=pl.colors[0])
+    ax.plot(time, l, label=r"$\delta \lambda_1 + \delta \lambda_2$", c=pl.colors[1])
+    ax.plot(time, t_dot, label=r"$|\!|\dot{\tau}_1|\!|_F + |\!|\dot{\tau}_2|\!|_F$", c=pl.colors[2], ls="--")
+    ax.plot(time, l_dot, label=r"$|\!|\dot{\lambda}_1|\!|_F + |\!|\dot{\lambda}_2|\!|_F$", c=pl.colors[3], ls="--")
 
     ax.legend()
     ax.set(xlabel="$\pi_{\pm}$ [au]")
@@ -356,13 +351,19 @@ def plot_amplitudes():
 if __name__ == "__main__":
     # run()
     # plot()
-    plot_energy()
+    # plot_energy()
     # plot_amplitudes()
     
     # list_results("CCSD")
     # list_results("QCCSD")
 
-    # results = np.load("dat/ImagTimeProp_CCSD_be_sto-3g_Rk4Integrator_0.05.npz")
-    # from IPython import embed
-    # embed()
-    # pass
+    results = np.load("dat/ImagTimeProp_QCCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz")
+
+    print(list(results.keys()))
+
+    print(
+        results["energy"][-1]
+    )
+    print(
+        results["gs_energy"]
+    )

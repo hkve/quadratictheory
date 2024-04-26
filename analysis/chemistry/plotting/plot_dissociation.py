@@ -116,6 +116,42 @@ def plot_no_error(filename, splines=False, x_min=None, y_min=None, y_max=None, *
     ax.set(ylabel=r"Energy  [au]")
 
 
+def plot_correlation(filename, splines=False, x_min=None, y_min=None, y_max=None, **kwargs):
+    df = pd.read_csv(filename, sep=",", header=0, index_col=0)
+    df.sort_values("r", inplace=True)
+    c, m = pl.colors[1:], pl.markers[1:]
+    
+    r = df["r"]
+    methods = df.columns[1:]
+
+    assert "HF" in methods
+    e_hf = df["HF"].to_numpy()
+    methods = methods[1:]
+
+    fig, ax = plt.subplots()
+    for i, method in enumerate(methods):
+        e = df[method].to_numpy() - e_hf
+        ax.scatter(r, e, color=c[i], label=method, marker=m[i])
+        
+        if splines:
+            if np.any(np.isnan(e)):
+                first_nan = np.isnan(e).argmax()
+            else:
+                first_nan = len(e)
+
+            r_spline, e_spline = spline(r[:first_nan].to_numpy(), e[:first_nan])
+            ax.plot(r_spline, e_spline, color=c[i])
+
+    y_lims = ax.get_ylim()
+    x_lims = ax.get_xlim()
+    if x_min is not None: ax.set_xlim(x_min, x_lims[1])
+    if y_max is not None: ax.set_ylim(y_lims[0], y_max)
+    if y_min is not None and y_max is not None: ax.set_ylim(y_min, y_max)
+
+    ax.legend()    
+    ax.set(xlabel=r"$R$ [au]")
+    ax.set(ylabel=r"Correlation Energy  [au]")
+
 def plot_N2():
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
     plot("N2.csv", axes, splines=True, ylabel=True, x_min=0.8, y_max=0.2)
