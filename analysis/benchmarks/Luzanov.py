@@ -97,7 +97,53 @@ def run_Luzanov_H10(quadratic=False):
 
     np.savez(path / filename, **results)
 
+def plot_dipole():
+    ccsd = np.load("dat/Luzanov_CCSD_sto-3g.npz", allow_pickle=True)
+    qccsd = np.load("dat/Luzanov_QCCSD_sto-3g.npz", allow_pickle=True)
+
+    time = ccsd["t"]
+    dipole_ccsd = ccsd["r"][:,2].real
+    dipole_qccsd = qccsd["r"][:,2].real
+
+    fig, ax =  plt.subplots()
+
+    ax.plot(time, dipole_ccsd, label="CCSD")
+    ax.plot(time, dipole_qccsd, label="QCCSD")
+    ax.legend()
+    plt.show()
+
+def plot_energy():
+    ccsd = np.load("dat/Luzanov_CCSD_sto-3g.npz", allow_pickle=True)
+    qccsd = np.load("dat/Luzanov_QCCSD_sto-3g.npz", allow_pickle=True)
+
+    time = ccsd["t"]
+    energy_ccsd = ccsd["energy"].real
+    energy_qccsd = qccsd["energy"].real
+
+    fig, ax =  plt.subplots()
+
+    ax.plot(time, energy_ccsd, label="CCSD")
+    ax.plot(time, energy_qccsd, label="QCCSD")
+    ax.legend()
+    plt.show()
+
+def plot_overlap(): 
+    ccsd = np.load("dat/Luzanov_CCSD_sto-3g.npz", allow_pickle=True)
+    qccsd = np.load("dat/Luzanov_QCCSD_sto-3g.npz", allow_pickle=True)
+
+    time = ccsd["t"]
+    overlap_ccsd = ccsd["overlap"].real
+
+    fig, ax =  plt.subplots()
+
+    ax.plot(time, overlap_ccsd, label="CCSD")
+    ax.legend()
+    plt.show()
 
 if __name__ == '__main__':
     # run_Luzanov_Li2(quadratic=False)
-    run_Luzanov_H10(quadratic=False)
+    # run_Luzanov_H10(quadratic=False)
+
+    # plot_dipole()
+    # plot_energy()
+    plot_overlap()
