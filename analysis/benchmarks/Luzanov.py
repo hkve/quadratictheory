@@ -136,7 +136,7 @@ def plot_overlap():
 
     fig, ax =  plt.subplots()
 
-    ax.plot(time, overlap_ccsd, label="CCSD")
+    ax.plot(time, np.sqrt(overlap_ccsd), label="CCSD")
     ax.legend()
     plt.show()
 
@@ -144,6 +144,6 @@ if __name__ == '__main__':
     # run_Luzanov_Li2(quadratic=False)
     # run_Luzanov_H10(quadratic=False)
 
-    # plot_dipole()
-    # plot_energy()
+    plot_dipole()
+    plot_energy()
     plot_overlap()

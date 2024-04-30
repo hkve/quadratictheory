@@ -215,6 +215,7 @@ def plot_energy():
     ax[1].plot(thetas, np.abs(qccsd["energy"]-fci["energy"]), ls="-", marker=".", label="QCCSD", c=c[2])
     ax[1].legend()
     ax[1].set(xlabel=r"$\theta$", ylabel=r"$|E - E_{FCI}|$ [au]")
+    pl.save("h4_square_energy_dzps")
     plt.show()
 
 def plot_weigths():
@@ -243,17 +244,18 @@ def plot_weigths():
     labels = ["FCI", "CCSD", "QCCSD"]
     plt.figlegend(lines, labels, bbox_to_anchor=(0.89,1.0), ncol=5, labelspacing=0.)
     ax[2].set(xlabel=r"$\theta$")
+    pl.save("h4_square_weigths_dzp")
     plt.show()
 
 
-    exit()
-    fig, ax = plt.subplots()
-    ax.plot(thetas, qccsd["WT"], label="WT", ls="-", marker=".")
-    ax.plot(thetas, qccsd["WQ"], label="WQ", ls="-", marker=".")
-    ax.legend()
-    plt.show()
+    # exit()
+    # fig, ax = plt.subplots()
+    # ax.plot(thetas, qccsd["WT"], label="WT", ls="-", marker=".")
+    # ax.plot(thetas, qccsd["WQ"], label="WQ", ls="-", marker=".")
+    # ax.legend()
+    # plt.show()
 
 if __name__ == "__main__":
     # run()
-    # plot_energy()
-    plot_weigths()
+    plot_energy()
+    # plot_weigths()
