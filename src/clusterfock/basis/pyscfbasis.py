@@ -100,6 +100,10 @@ class PyscfBasis(Basis):
 
         return self._new_one_body_operator(Q)
     
+    def Q_nuclei(self) -> np.ndarray:
+        pass
+        # Add the nuclei degree of freedom. This not an operator
+        # in the born-oppenheimer approximation. but a constant term.
 
     def density(self, rho, r=None):
         if r is None:

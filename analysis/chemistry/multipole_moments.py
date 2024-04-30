@@ -137,6 +137,7 @@ def make_table():
     from IPython import embed
     embed()
 
+
 if __name__ == "__main__":
     name = "HF"
     basis = "cc-pVDZ"
