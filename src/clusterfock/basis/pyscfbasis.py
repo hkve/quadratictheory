@@ -22,8 +22,11 @@ class PyscfBasis(Basis):
         if center:
             charges = mol.atom_charges()
             coords = mol.atom_coords()
-            nuc_charge_center = np.einsum("z,zx->x", charges, coords) / charges.sum()
-            mol.set_common_orig_(nuc_charge_center)
+            origin = np.einsum("z,zx->x", charges, coords) / charges.sum()
+            mol.set_common_orig_(origin)
+            self.origin = origin
+        else:
+            self.origin = np.array([0.0, 0.0, 0.0])
 
         self.mol = mol
 
@@ -88,8 +91,16 @@ class PyscfBasis(Basis):
         return self._new_one_body_operator(r)
 
     @cached_property
+    def rr(self) -> np.ndarray:
+        L = self.L
+        if not self.restricted: L //= 2
+        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
+        
+        return self._new_one_body_operator(rr)
+
+    @cached_property
     def Q(self) -> np.ndarray:
-        L = self.L // self._degeneracy
+        L = self.L
         if not self.restricted: L //= 2
 
         rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
@@ -100,10 +111,28 @@ class PyscfBasis(Basis):
 
         return self._new_one_body_operator(Q)
     
-    def Q_nuclei(self) -> np.ndarray:
-        pass
-        # Add the nuclei degree of freedom. This not an operator
-        # in the born-oppenheimer approximation. but a constant term.
+    def r_nuc(self) -> np.ndarray:
+        Z = self.mol.atom_charges()
+        r = self.mol.atom_coords() - self.origin
+
+        dipole = np.einsum("i,ir->r", Z, r)
+
+        return dipole
+
+    def Q_nuc(self) -> np.ndarray:
+        Z = self.mol.atom_charges()
+        r = self.mol.atom_coords() - self.origin
+        
+        r2 = np.linalg.norm(r, axis=1)**2
+        
+        delta = np.eye(3)
+
+        rr = np.einsum("l,lx,ly->xy", Z, r, r)
+        delta_ij_r2 = np.einsum("l,xy,l->xy", Z, delta, r2)
+        
+        Q =  0.5*(3*rr - delta_ij_r2)
+        
+        return Q
 
     def density(self, rho, r=None):
         if r is None:
