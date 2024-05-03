@@ -199,4 +199,5 @@ runner.py
 sandkasse/
 dat/
 csv/
+json/
 analysis/benchmarks/static_energy_tests/

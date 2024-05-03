@@ -139,17 +139,18 @@ def make_table():
 
 
 if __name__ == "__main__":
-    name = "HF"
-    basis = "cc-pVDZ"
+    make_table()
+    # name = "HF"
+    # basis = "cc-pVDZ"
     
-    print(
-        run_expvals_fci(name, basis)
-    )
+    # print(
+    #     run_expvals_fci(name, basis)
+    # )
 
-    print(
-        run_expvals(name, basis, cf.CCSD)
-    )
+    # print(
+    #     run_expvals(name, basis, cf.CCSD)
+    # )
 
-    print(
-        run_expvals(name, basis, cf.QCCSD)
-    )
+    # print(
+    #     run_expvals(name, basis, cf.QCCSD)
+    # )
