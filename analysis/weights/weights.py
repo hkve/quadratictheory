@@ -309,7 +309,7 @@ def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fals
         weights = load(names)
 
     filename = f"N2_weights_{standard}" if save else None
-    plot_weights(weights, names=all_mets, filename=filename, drop_weights=drop_weights)
+    plot_weights(weights, names=all_mets, filename=filename, drop_weights=drop_weights, y_max=2.8)
 
 if __name__ == "__main__":
     # geom = LiH_ccpVDZ["geometry"]

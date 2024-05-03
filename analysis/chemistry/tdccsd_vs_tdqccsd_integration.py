@@ -51,6 +51,7 @@ import matplotlib.pyplot as plt
 def plot(dts, omega=2.87, atom_name="he"):
 
     energy_diff_ccsd_qccsd(dts, omega)
+    
     energy_diff_after_pulse_off_integrators(dts, "CCSD", omega=omega)
     energy_diff_after_pulse_off_integrators(dts, "QCCSD", omega=omega)
 
@@ -154,8 +155,38 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD",
     ax.legend(ncol=3)
     plt.show()
 
+def plot_pulse():
+    omega = 2.87
+
+    cycle_length = (2 * np.pi / omega)
+    t_end = 3*cycle_length
+    tprime = 2*cycle_length
+
+    u = np.array([1.0, 0.0, 0.0])
+    F_str = 1
+    pulse = cf.pulse.Sin2(u, F_str, omega, tprime)
+
+    fig, ax = plt.subplots()
+
+    time = np.linspace(0, t_end, 1000) 
+    E = np.zeros_like(time)
+
+    for i, t in enumerate(time): 
+        E[i] = pulse.E(t)
+
+    ax.plot(time/ cycle_length, E, label=r"$\omega = 2.87$")
+    ax.set(xlabel=r"$\omega t / 2\pi$", ylabel="$E(t)\sin(\omega t)$ [au]")
+
+    y1, y2 = ax.get_ylim()
+    ax.vlines(2, y1*1.1, y2*1.1, ls="--", color="gray", label="$t' = 4\pi/\omega$")
+    ax.legend()
+    ax.set_ylim((y1,y2))
+    plt.show()
+
 if __name__ == '__main__':
     dts = np.array([0.1, 0.05, 0.01, 0.005])
     # run(dts)
 
-    plot(dts)
+    # plot(dts)
+
+    plot_pulse()
