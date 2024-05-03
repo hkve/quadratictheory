@@ -6,12 +6,14 @@ pack_as_list = lambda thing: [thing] if not type(thing) in [list, tuple] else th
 def plot_spectrum(freqs, S_tots, labels, ev=True, filename=None, **kwargs):
     default = {
         "cutoff": 0.05,
-        "line_styles": ["-", ":"]
+        "line_styles": ["-", ":"],
+        "colors": ["blue", "black"]
     }
     default.update(kwargs)
     
     cutoff = default["cutoff"]
     line_styles = default["line_styles"]
+    colors = default["colors"]
 
     freqs = pack_as_list(freqs)
     S_tots = pack_as_list(S_tots)
@@ -19,7 +21,7 @@ def plot_spectrum(freqs, S_tots, labels, ev=True, filename=None, **kwargs):
 
 
     fig, ax = plt.subplots()
-    for freq, S_tot, label, ls in zip(freqs, S_tots, labels, line_styles):
+    for freq, S_tot, label, ls, color in zip(freqs, S_tots, labels, line_styles, colors):
         xunit = "[au]"
         one_ev = 27.211386245988468
         if ev:
@@ -38,7 +40,7 @@ def plot_spectrum(freqs, S_tots, labels, ev=True, filename=None, **kwargs):
         freq = freq[:cutoff_idx]
         S_tot = S_tot[:cutoff_idx]
 
-        ax.plot(freq, S_tot, label=label, ls=ls)
+        ax.plot(freq, S_tot, label=label, ls=ls, color=color)
     ax.legend()
     ax.set(xlabel=rf"$\omega$ {xunit}", ylabel="Intensity [arb. unit]")
     ax.set_ylim((-0.05, 1.05))

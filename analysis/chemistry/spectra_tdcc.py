@@ -42,6 +42,7 @@ def get_spectral_lines(time_points, dipole_moment):
         / dt
     )
 
+    dipole_moment = dipole_moment - dipole_moment[0,...]
     a = scipy.fftpack.fftshift(scipy.fftpack.fft(dipole_moment))
 
     return freq, a
@@ -108,6 +109,7 @@ def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
         results = load_files(method=method, name=name, basis="custom", Tend=500, dt=0.01, integrator="Rk4Integrator", pulse="DeltaKick", polarisation=[1,2])
         
         time, dipole_moments, pol_dirs = absorption_spectrum_preprocess(results, 2)
+        
         freq, S_tot = compute_absorption_spectrum(time, dipole_moments, pol_dirs)
         print(method)
         absorption_spectrum_peaks(S_tot, freq, ev=ev, cutoff=cutoff)
@@ -118,4 +120,5 @@ def compare_two(methods=["CCD", "CCSD"], name="chp", **kwargs):
     plot_spectrum(freqs, S_tots, methods, ev=ev, cutoff=plot_cutoff)
 
 if __name__ == '__main__':
-    compare_two(methods=["CCSD"], cutoff=20, plot_cutoff=1000)
+    compare_two(methods=["CCD", "QCCD"], cutoff=20, plot_cutoff=150)
+    compare_two(methods=["CCSD"], cutoff=20, plot_cutoff=150)
