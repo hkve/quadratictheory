@@ -5,7 +5,7 @@ import numpy as np
 def run_hf(geometry, basis, restricted=False, **kwargs):
     default = {
         "charge": 0,
-        "tol": 1e-10,
+        "tol": 1e-4,
     }
 
     default.update(kwargs)
@@ -14,7 +14,7 @@ def run_hf(geometry, basis, restricted=False, **kwargs):
     tol = default["tol"]
 
     b = cf.PyscfBasis(geometry, basis, charge=charge)
-    b.pyscf_hartree_fock(tol=tol)
+    b.pyscf_hartree_fock(tol=tol, max_cycle=500)
 
     if not restricted:
         b.from_restricted()
@@ -73,10 +73,14 @@ def calculate_dissociation(filename, distances, geometries, basis, CC, **kwargs)
 
 
 def N2_ccPVTZ():
+    distances = np.arange(4.00,7.00+0.1,0.25)
+    geometries = [f"N 0 0 0; N 0 0 {r}" for r in distances]
+    calculate_dissociation("dat/N2_CCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.CCSD)
+    
     distances = np.arange(2.00,7.00+0.1,0.25)
     geometries = [f"N 0 0 0; N 0 0 {r}" for r in distances]
-    calculate_dissociation("dat/N2_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.CCSD)
-    calculate_dissociation("dat/N2_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.QCCSD)
+    
+    calculate_dissociation("dat/N2_QCCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.QCCSD)
 
 if __name__ == "__main__":
     N2_ccPVTZ()
