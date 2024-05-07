@@ -227,19 +227,19 @@ def plot_weigths():
     fci_line, = ax[0].plot(thetas, fci["W0"], ls="-", marker=".", label="FCI $W_0$")
     ccsd_line, = ax[0].plot(thetas, ccsd["W0"], ls="-", marker=".", label="CCSD $W_0$")
     qccsd_line, = ax[0].plot(thetas, qccsd["W0"], ls="-", marker=".", label="QCCSD $W_0$")
-    ax[0].set(ylabel="$W_0, P_0$")
+    ax[0].set(ylabel="$W_0$")
     ax[0].set_title("-", pad=10)
 
     ax[1].plot(thetas, fci["WS"], ls="-", marker=".", label="FCI max($W_S$)")
     ax[1].plot(thetas, ccsd["WS"], ls="-", marker=".", label="CCSD max($W_S$)")
     ax[1].plot(thetas, qccsd["WS"], ls="-", marker=".", label="QCCSD max($W_S$)")
-    ax[1].set(ylabel="max($W^a_i$), max($P^a_i$)")
+    ax[1].set(ylabel="max($W^a_i$)")
 
 
     ax[2].plot(thetas, fci["WD"], ls="-", marker=".", label="FCI max($W_D$)")
     ax[2].plot(thetas, ccsd["WD"], ls="-", marker=".", label="CCSD max($W_D$)")
     ax[2].plot(thetas, qccsd["WD"], ls="-", marker=".", label="QCCSD max($W_D$)")
-    ax[2].set(ylabel="max($W^{ab}_{ij}$), max($P^{ab}_{ij}$)")
+    ax[2].set(ylabel="max($W^{ab}_{ij}$)")
     lines = [fci_line, ccsd_line, qccsd_line]
     labels = ["FCI", "CCSD", "QCCSD"]
     plt.figlegend(lines, labels, bbox_to_anchor=(0.89,1.0), ncol=5, labelspacing=0.)
@@ -257,5 +257,5 @@ def plot_weigths():
 
 if __name__ == "__main__":
     # run()
-    plot_energy()
-    # plot_weigths()
+    # plot_energy()
+    plot_weigths()

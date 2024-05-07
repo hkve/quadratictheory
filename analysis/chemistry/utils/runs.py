@@ -104,6 +104,9 @@ def run_fci_single(atom, basis, *args):
     return e_fci
 
 def run_fci_density_matrix(atom, basis, *args):
+    from pyscf import lib
+    lib.num_threads(1)
+    
     mol = gto.M(unit="bohr")
     mol.verbose = 0
     mol.build(atom=atom, basis=basis)
@@ -121,6 +124,14 @@ def run_fci_density_matrix(atom, basis, *args):
 
     # alpha electrons and beta electrons. spin = nelec_a-nelec_b
     nelec_a, nelec_b = mol.nelec
-    dm1 = cisolver.make_rdm1(fcivec, norb, (nelec_a,nelec_b))
+    # dm1 = cisolver.make_rdm1(fcivec, norb, (nelec_a,nelec_b))
     
+
+    dm1_a, dm1_b = cisolver.make_rdm1s(fcivec, norb, mol.nelec)
+
+    dm1 = np.zeros((2*mol.nao, 2*mol.nao), dtype=dm1_a.dtype)
+
+    dm1[::2,::2] = dm1_a
+    dm1[1::2,1::2] = dm1_b
+
     return dm1

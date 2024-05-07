@@ -9,12 +9,14 @@ from utils.runs import run_fci_density_matrix
 geometries = {
     "HF": "H 0 0 0; F 0 0 1.7325007863",
     "LiH": "Li 0 0 0; H 0 0 3.0141129518",
+    "N2": "N 0 0 0; N 0 0 2.4",
 }
 
 
 charges = {
     "HF": 0,
     "LiH": 0,
+    "N2": 0,
 }
 
 def get_run_kwargs(CC, **kwargs):
@@ -82,17 +84,13 @@ def run_expvals_fci(name, basis):
     geom = geometries[name]
     charge = charges[name]
 
-    b = cf.PyscfBasis(geom, basis, restricted=True, center=True).pyscf_hartree_fock()
+    b = cf.PyscfBasis(geom, basis, restricted=False, center=True).pyscf_hartree_fock()
     rho_ob = run_fci_density_matrix(geom, basis)
     print(f"Done {name}, {basis}, FCI")
 
     dipole = np.einsum("pq,...qp->...", rho_ob, b.r)
-    rr = b.rr
-
-    r2 = np.einsum("iipq->pq", rr)
-    delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
-    Q_e = 0.5*(3*rr - delta_ij_r2)
-    quadropole_e = np.einsum("pq,...qp->...", rho_ob, Q_e)
+    
+    quadropole_e = np.einsum("pq,...qp->...", rho_ob, b.Q)
     quadropole_nuc = b.Q_nuc()
 
     data = {
@@ -157,13 +155,52 @@ def compare_with_fci(run=False):
 
             mu_z = np.array(mu_z)
             mu_z[0:2] = mu_z[0:2] - mu_z[-1]
-            mu_z[0:2] = 100 * mu_z[0:2]/mu_z[-1]
+            # mu_z[0:2] = 100 * mu_z[0:2]/mu_z[-1]
             table[basis] = mu_z
                     
         table_df = pd.DataFrame(table)
         
         print(table_df)
 
+
+def run_density_test():
+    basis = "cc-pVDZ"
+    geom = geometries["LiH"]
+
+    fci = run_fci_density_matrix(geom, basis)
+
+
+    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
+
+    cc = cf.CCSD(b).run(tol=1e-6, include_l=True)
+    qcc = cf.QCCSD(b).run(tol=1e-6)
+
+    ccsd = cc.one_body_density()
+    qccsd = qcc.one_body_density()
+
+    diff_cc = np.abs(fci - ccsd)
+    diff_qcc = np.abs(fci - qccsd)
+
+    print(
+        np.linalg.norm(diff_cc),
+        np.linalg.norm(ccsd - ccsd.T),
+        np.linalg.norm(diff_qcc),
+        np.linalg.norm(qccsd - qccsd.T),
+        np.linalg.norm(diff_cc)/np.linalg.norm(diff_qcc)
+    )
+
+def run_expval_test():
+    basis = "cc-pVDZ"
+    name = "LiH"
+
+    fci = run_expvals_fci(name, basis)
+    ccsd = run_expvals(name, basis, cf.CCSD)
+    qccsd = run_expvals(name, basis, cf.QCCSD)
+
+    from IPython import embed
+    embed()
+
 if __name__ == "__main__":
-    compare_with_fci(run=False)
-    # test()
+    # compare_with_fci(run=False)
+    # run_density_test()
+    run_expval_test()

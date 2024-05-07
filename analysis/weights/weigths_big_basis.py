@@ -1,6 +1,9 @@
 import clusterfock as cf
 import csv
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import plot_utils as pl
 
 def run_hf(geometry, basis, restricted=False, **kwargs):
     default = {
@@ -72,15 +75,72 @@ def calculate_dissociation(filename, distances, geometries, basis, CC, **kwargs)
         append_to_file(filename, W)
 
 
-def N2_ccPVTZ():
-    distances = np.arange(4.00,7.00+0.1,0.25)
-    geometries = [f"N 0 0 0; N 0 0 {r}" for r in distances]
-    calculate_dissociation("dat/N2_CCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.CCSD)
-    
+def N2_ccPVTZ(run=False):
     distances = np.arange(2.00,7.00+0.1,0.25)
     geometries = [f"N 0 0 0; N 0 0 {r}" for r in distances]
     
-    calculate_dissociation("dat/N2_QCCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.QCCSD)
+    if run:
+        calculate_dissociation("dat/N2_CCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.CCSD)
+        calculate_dissociation("dat/N2_QCCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.QCCSD)
+
+    df_ccsd = pd.read_csv("dat/N2_CCSD_cc-pVTZ.csv")
+    df_qccsd = pd.read_csv("dat/N2_QCCSD_cc-pVTZ.csv")
+
+    plot_weights(df_ccsd, df_qccsd, weights=["0", "D"], y_max=3.0, filename="N2_weights_CCSD_cc-pVTZ.pdf")
+
+def get_color(name):
+    if "CC" in name:
+        if "Q" in name:
+            return pl.colors[2]
+        else:
+            return pl.colors[1]
+    else:
+        return pl.colors[0]
+   
+
+def plot_weights(df1, df2, weights=["0", "S", "D"], **kwargs):
+    default = {
+        "names": ["CCSD", "QCCSD"],
+        "legend_cols": 2,
+        "y_max": None,
+        "filename": None,
+    }
+
+    default.update(kwargs)
+
+    names = default["names"]
+    legend_cols = default["legend_cols"]
+    y_max = default["y_max"]
+    filename = default["filename"]
+
+    ls = {
+        "0": "solid",
+        "S": "dotted",
+        "D": "dashed",
+        "T": "dashdot",
+        "Q": (0, (3, 1, 1, 1, 1, 1)),
+    }
+
+    fig, ax = plt.subplots()
+    for i, (name, df) in enumerate(zip(names, [df1, df2])):
+        r = df["r"]
+
+        for w in weights:
+            label = "$W_{" + w + "}^{" + name + "}$"
+            ax.plot(r, df[w], label=label, ls=ls[w], color=get_color(name))
+
+    if y_max is not None:
+        ylims = ax.get_ylim()
+        ylims = (ylims[0], y_max)
+        ax.set_ylim(ylims)
+
+    ax.set(xlabel=r"$R$ [au]", ylabel=r"$W_\mu$")
+    ax.legend(ncols=legend_cols, loc="upper left")
+
+    if filename:
+        pl.save(filename)
+
+    plt.show()
 
 if __name__ == "__main__":
     N2_ccPVTZ()

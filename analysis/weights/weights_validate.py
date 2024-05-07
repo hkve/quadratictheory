@@ -252,8 +252,30 @@ def dissociation_hf(run=False):
             append_to_file("QCCSD_dzp.csv", W_qccsd)
             print(f"QCCSD {geom}")
 
+def size_extensivity():
+    geom1 = "H 0 0 0; H 0 0 1.4378925047;"
+    geom2 = geom1 + "H 1000 0 0; H 1000 0 1.4378925047;"
+    
+    print(geom1)
+    print(geom2)
+    basis = "sto-3g"
+
+    E1_fci, W1_fci = fci_pyscf(geom1, basis, nroots=2)
+    E2_fci, W2_fci = fci_pyscf(geom2, basis, nroots=2)
+
+    b1 = run_hf(geom1, basis)
+    E1_cc, W1_cc = run_cc(b1, cf.CCSD)
+
+    b2 = run_hf(geom2, basis)
+    E2_cc, W2_cc = run_cc(b2, cf.CCSD)
+
+    from IPython import embed
+    embed()
+
 if __name__ == "__main__":
     # atom_tests(run=False)
 
-    dissociation_lih(run=False)
+    # dissociation_lih(run=False)
     # dissociation_hf(run=False)
+
+    size_extensivity()
