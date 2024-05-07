@@ -52,18 +52,15 @@ def fci_pyscf(geometry, basis, nroots=5):
 
         d_weights.append((cid_aa**2, cid_bb**2, cid_ab**2))
 
-    sum_s_weights_fci = np.sum(s_weights[0][0].ravel()) + np.sum(
-        s_weights[0][1].ravel()
-    )
-    sum_d_weights_fci = (
-        np.sum(d_weights[0][0].ravel())
-        + np.sum(d_weights[0][1].ravel())
-        + np.sum(d_weights[0][2].ravel())
-    )
+    s_weights_fci = np.r_[s_weights[0][0].ravel() + s_weights[0][1].ravel()]
+    
+    d_weights_fci = np.r_[d_weights[0][0].ravel(), d_weights[0][1].ravel(), d_weights[0][2].ravel()]
 
-    W = {"0": ref_weights[0], "S": sum_s_weights_fci, "D": sum_d_weights_fci}
 
-    return e_fci, W
+    W = {"0": ref_weights[0], "S": np.sum(s_weights_fci), "D": np.sum(d_weights_fci)}
+    W_max = {"0": ref_weights[0], "S": np.max(s_weights_fci), "D": np.max(d_weights_fci)}
+
+    return e_fci, W, W_max
 
     # if mol.nelectron >= 4:
     #     cit_aab = np.einsum('ij,i,j->ij', c_fci[0][t2addrs[:,None], t1addrs], t2signs, t1signs)

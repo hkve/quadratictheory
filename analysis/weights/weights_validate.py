@@ -7,6 +7,8 @@ import os
 import matplotlib.pyplot as plt
 import plot_utils as pl
 
+from IPython import embed
+
 PATH = "dat/validate/"
 
 def run_hf(geometry, basis, restricted=False, **kwargs):
@@ -45,20 +47,24 @@ def run_cc(basis, CC, **kwargs):
     cc.run(**run_kwargs)
 
     W = {"0": 0.0,"S": 0.0,"D": 0.0,"T": 0.0,"Q": 0.0}
+    W_max = {"0": 0.0,"S": 0.0,"D": 0.0,"T": 0.0,"Q": 0.0}
     if cc.t_info["converged"] and cc.l_info["converged"]:
         W["0"], W["D"] = cc.reference_weights(), 0.25*cc.doubles_weights().sum()
+        W_max["0"], W_max["D"] = W["0"], cc.doubles_weights().max()
 
         if is_SD:
             W["S"] = cc.singles_weights().sum()
-        
+            W_max["S"] = cc.singles_weights().max()
+
         if is_quadratic:
             W["Q"] = cc.quadruple_weight()
+
             if is_SD: 
                 W["T"] = cc.triples_weight()
     else:
         print("Did not converge")
     
-    return cc.energy(), W
+    return cc.energy(), W, W_max
 
 def append_to_file(filename, W):
     fields = [key for key in W.keys()]
@@ -76,6 +82,9 @@ def append_to_file(filename, W):
         writer.writerow(W)
 
 def float_format(x):
+    if type(x) == int:
+        return x
+    
     if np.abs(x) > 0.01:
         return f"{x:.4f}"
     else:
@@ -94,20 +103,20 @@ def atom_tests(run=False):
 
     if run:
         for atom, geom in zip(atoms, geometries):
-            _, W_fci = fci_pyscf(geom, basis)
+            _, W_fci, _ = fci_pyscf(geom, basis)
             W_fci["atom"] = atom
 
             append_to_file("FCI_atoms.csv", W_fci)
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis)
-            _, W_ccsd = run_cc(b, cf.CCSD)
+            _, W_ccsd, _ = run_cc(b, cf.CCSD)
             W_ccsd["atom"] = atom
             
             append_to_file("CCSD_atoms.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            _, W_qccsd = run_cc(b, cf.QCCSD)
+            _, W_qccsd, _ = run_cc(b, cf.QCCSD)
             W_qccsd["atom"] = atom
             
             append_to_file("QCCSD_atoms.csv", W_qccsd)
@@ -146,7 +155,7 @@ def dissociation_lih(run=False):
 
     if run:
         for r, geom in zip(distances, geometries):
-            E, W_fci = fci_pyscf(geom, basis)
+            E, W_fci, _ = fci_pyscf(geom, basis)
             W_fci["r"] = r
             W_fci["E"] = E
 
@@ -154,14 +163,14 @@ def dissociation_lih(run=False):
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis)
-            E, W_ccsd = run_cc(b, cf.CCSD)
+            E, W_ccsd, _ = run_cc(b, cf.CCSD)
             W_ccsd["r"] = r
             W_ccsd["E"] = E
             
             append_to_file("CCSD_lih.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            E, W_qccsd = run_cc(b, cf.QCCSD)
+            E, W_qccsd, _ = run_cc(b, cf.QCCSD)
             W_qccsd["r"] = r
             W_qccsd["E"] = E
 
@@ -170,6 +179,12 @@ def dissociation_lih(run=False):
 
     fig, ax = plt.subplots()
 
+
+    df_ccsd = pd.read_csv("dat/validate/CCSD_lih.csv", header=0)
+    df_qccsd = pd.read_csv("dat/validate/QCCSD_lih.csv", header=0)
+
+    for w in ["0", "S", "D", "T", "Q"]:
+        print(f"QCCSD-CCSD {w} mean deviation:", np.mean(df_qccsd[w] - df_ccsd[w]))
 
     methods = ["FCI", "CCSD"]
     for method in methods:
@@ -230,7 +245,7 @@ def dissociation_hf(run=False):
 
     if run:
         for r, geom in zip(distances, geometries):
-            E, W_fci = fci_pyscf(geom, basis)
+            E, W_fci, _ = fci_pyscf(geom, basis)
             W_fci["r"] = r
             W_fci["E"] = E
 
@@ -253,29 +268,80 @@ def dissociation_hf(run=False):
             print(f"QCCSD {geom}")
 
 def size_extensivity():
-    geom1 = "H 0 0 0; H 0 0 1.4378925047;"
-    geom2 = geom1 + "H 1000 0 0; H 1000 0 1.4378925047;"
-    
-    print(geom1)
-    print(geom2)
-    basis = "sto-3g"
+    CC = cf.QCCSD
+    R_e = 1.4378925047
+    R = 3*R_e
 
-    E1_fci, W1_fci = fci_pyscf(geom1, basis, nroots=2)
-    E2_fci, W2_fci = fci_pyscf(geom2, basis, nroots=2)
+    data1, data2 = [], []  
+    for i in [1,2,3,4]:
+        R = i*R_e
+        geom1 = f"H 0 0 0; H 0 0 {R};"
+        geom2 = geom1 + f"H 1000 0 0; H 1000 0 {R};"
+        
+        basis = "cc-pVDZ"
 
-    b1 = run_hf(geom1, basis)
-    E1_cc, W1_cc = run_cc(b1, cf.CCSD)
+        E1_fci, W1_fci, W1_max_fci = fci_pyscf(geom1, basis, nroots=2)
+        E2_fci, W2_fci, W2_max_fci = fci_pyscf(geom2, basis, nroots=2)
 
-    b2 = run_hf(geom2, basis)
-    E2_cc, W2_cc = run_cc(b2, cf.CCSD)
+        E1_fci = min(E1_fci)
+        E2_fci = min(E2_fci)
 
-    from IPython import embed
+        b1 = run_hf(geom1, basis)
+        E1_cc, W1_cc, W1_max_cc = run_cc(b1, CC)
+
+        b2 = run_hf(geom2, basis)
+        E2_cc, W2_cc, W2_max_cc = run_cc(b2, CC)
+
+        row1, row2 = {}, {}
+
+        label = CC.__name__
+        row1 = {
+            "R": i,
+            "E": np.abs(E1_cc - E1_fci),
+            f"{label} W0": W1_cc["0"],
+            f"FCI W0": W1_fci["0"],
+            f"{label} WS": W1_cc["S"],
+            f"FCI WS": W1_fci["S"],
+            f"{label} WD": W1_cc["D"],
+            f"FCI WD": W1_fci["D"],
+        }
+
+        row2 = {
+            "R": i,
+            "E": np.abs(E2_cc - E2_fci),
+            f"{label} W0": W2_cc["0"],
+            f"FCI W0": W2_fci["0"],
+            f"{label} WS": W2_cc["S"],
+            f"FCI WS": W2_fci["S"],
+            f"{label} WD": W2_cc["D"],
+            f"FCI WD": W2_fci["D"],
+        }
+
+        if label == "QCCSD":
+            row2["WT"] = W2_cc["T"]
+            row2["WQ"] = W2_cc["Q"]
+
+        data1.append(row1)
+        data2.append(row2)
+
+
+    df1 = pd.DataFrame(data1)
+    df2 = pd.DataFrame(data2)
+
+    formatters1 = [float_format for _ in range(len(df1.columns))]
+    formatters2 = [float_format for _ in range(len(df2.columns))]
+
+    print(
+        df1.to_latex(index=False, formatters=formatters1)
+    )
+    print(
+        df2.to_latex(index=False, formatters=formatters2)
+    )
     embed()
-
 if __name__ == "__main__":
     # atom_tests(run=False)
 
-    # dissociation_lih(run=False)
+    dissociation_lih(run=False)
     # dissociation_hf(run=False)
 
-    size_extensivity()
+    # size_extensivity()
