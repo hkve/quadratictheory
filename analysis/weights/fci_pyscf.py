@@ -4,10 +4,10 @@ from pyscf import gto, scf, cc, fci, ao2mo
 from pyscf.ci.cisd import tn_addrs_signs
 from scipy.linalg import eigh
 
-def fci_pyscf(geometry, basis, nroots=5):
+def fci_pyscf(geometry, basis, nroots=5, charge=0):
     mol = gto.M(unit="bohr")
     mol.verbose = 3
-    mol.build(atom=geometry, basis=basis)
+    mol.build(atom=geometry, basis=basis, charge=charge)
 
     s = mol.intor_symmetric("int1e_ovlp")
 

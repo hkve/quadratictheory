@@ -169,29 +169,74 @@ def run_density_test():
 
     fci = run_fci_density_matrix(geom, basis)
 
-
     b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
 
     cc = cf.CCSD(b).run(tol=1e-6, include_l=True)
     qcc = cf.QCCSD(b).run(tol=1e-6)
 
+
     ccsd = cc.one_body_density()
     qccsd = qcc.one_body_density()
 
-    diff_cc = np.abs(fci - ccsd)
-    diff_qcc = np.abs(fci - qccsd)
+    # qccsd[b.o,b.o] = ccsd[b.o,b.o]
+    # qccsd[b.v,b.v] = ccsd[b.v,b.v]
+    # qccsd[b.o,b.v] = ccsd[b.o,b.v]
+    # qccsd[b.v,b.o] = ccsd[b.v,b.o]
 
-    print(
-        np.linalg.norm(diff_cc),
-        np.linalg.norm(ccsd - ccsd.T),
-        np.linalg.norm(diff_qcc),
-        np.linalg.norm(qccsd - qccsd.T),
-        np.linalg.norm(diff_cc)/np.linalg.norm(diff_qcc)
-    )
 
+
+    diff_cc = fci - ccsd
+    diff_qcc = fci - qccsd
+
+    # b = cf.PyscfBasis(geom, basis, restricted=False)
+
+    def print_diff(diff, rho):
+        print(f"""
+            norm = {np.linalg.norm(diff)}
+            max = {np.max(diff)}
+            mean = {np.mean(diff)}
+            mean abs = {np.mean(np.abs(diff))}
+            asym norm = {np.linalg.norm(rho - rho.T)}
+            asym max = {np.max(rho - rho.T)}
+            asym mean = {np.mean(rho - rho.T)}
+            """)
+
+    fci_occ = fci[:b.N,:b.N]
+    ccsd_occ = ccsd[:b.N,:b.N]
+    qccsd_occ = qccsd[:b.N,:b.N]
+
+    print_diff(diff_cc, ccsd)
+    print_diff(diff_qcc, qccsd)
+
+    r_qcc = np.einsum("...pq,pq->...", b.r, qccsd)
+    r_cc = np.einsum("...pq,pq->...", b.r, ccsd)
+    r_fci = np.einsum("...pq,pq->...", b.r, fci)
+
+
+    print(f"""
+        mu(z) FCI: {r_fci[2]}
+        mu(z) CCSD: {r_cc[2]} \t diff {r_cc[2] - r_fci[2]}
+        mu(z) QCCSD: {r_qcc[2]} \t diff {r_qcc[2] - r_fci[2]}
+    """)
+
+    fci_diag = np.diag( b.r[2,...] @ fci)
+    cc_diag = np.diag( b.r[2,...] @ ccsd)
+    qcc_diag = np.diag( b.r[2,...] @ qccsd)
+
+    print(fci_diag)
+    print(cc_diag)
+    print(qcc_diag)
+
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+
+    im1 = ax[0].imshow(np.abs(diff_cc))
+    im2 = ax[1].imshow(np.abs(diff_qcc))
+
+    fig.colorbar(im2, ax=ax.ravel().tolist())
+    plt.show()
 def run_expval_test():
-    basis = "cc-pVDZ"
-    name = "LiH"
+    basis = "3-21g*"
+    name = "HF"
 
     fci = run_expvals_fci(name, basis)
     ccsd = run_expvals(name, basis, cf.CCSD)
@@ -202,5 +247,5 @@ def run_expval_test():
 
 if __name__ == "__main__":
     # compare_with_fci(run=False)
-    # run_density_test()
-    run_expval_test()
+    run_density_test()
+    # run_expval_test()

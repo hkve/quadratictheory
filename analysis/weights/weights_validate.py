@@ -85,7 +85,7 @@ def float_format(x):
     if type(x) == int:
         return x
     
-    if np.abs(x) > 0.01:
+    if np.abs(x) > 0.0001:
         return f"{x:.4f}"
     else:
         exponent = np.floor(np.log10(x))
@@ -122,7 +122,7 @@ def atom_tests(run=False):
             append_to_file("QCCSD_atoms.csv", W_qccsd)
             print(f"QCCSD {geom}")
 
-    atom, W = "He", ["0", "S", "D"]
+    atom, W = "Ne", ["0", "S", "D"]
     methods = ["CCSD", "QCCSD", "FCI"]
     df_combined = pd.DataFrame(columns=[
         f"{method}{w}" for w in W for method in methods 
@@ -134,6 +134,61 @@ def atom_tests(run=False):
             df.drop(columns=["T", "Q"], inplace=True)
     
         elm = df[df["atom"] == atom]
+        
+        for w in W:
+            df_combined[method + w] = elm[w]
+    
+    formatters = [float_format for _ in range(len(df_combined.columns))]
+    print(df_combined.to_latex(index=False, formatters=formatters))
+
+def molecule_tests(run=False):
+    atoms = ["LiH", "HF", "CH+", "BeH2"]
+
+    geometries = [
+        "Li 0 0 0; H 0 0 3.1592439077",
+        "H 0 0 0; F 0 0 1.7912712646",
+        "C 0.0 0.0 0.0; H 0.0 0.0 2.13713",
+        "Be 0 0 0; H 0 0 -2.5265636467; H 0 0 2.5265636467",
+    ]
+
+    charges = [
+        0, 0, 1, 0
+    ]
+    basis = "6-31g"
+
+    if run:
+        for atom, geom, charge in zip(atoms, geometries, charges):
+            _, W_fci, _ = fci_pyscf(geom, basis, charge=charge)
+            W_fci["name"] = atom
+
+            append_to_file("FCI_molecules.csv", W_fci)
+            print(f"FCI {geom}")
+
+            b = run_hf(geom, basis, charge=charge)
+            _, W_ccsd, _ = run_cc(b, cf.CCSD)
+            W_ccsd["name"] = atom
+            
+            append_to_file("CCSD_molecules.csv", W_ccsd)
+            print(f"CCSD {geom}")
+
+            _, W_qccsd, _ = run_cc(b, cf.QCCSD)
+            W_qccsd["name"] = atom
+            
+            append_to_file("QCCSD_molecules.csv", W_qccsd)
+            print(f"QCCSD {geom}")
+    
+    atom, W = "BeH2", ["0", "S", "D"]
+    methods = ["CCSD", "QCCSD", "FCI"]
+    df_combined = pd.DataFrame(columns=[
+        f"{method}{w}" for w in W for method in methods 
+    ])
+
+    for method in methods:
+        df = pd.read_csv(f"dat/validate/{method}_molecules.csv", header=0)
+        if "T" in df.columns or "Q" in df.columns:
+            df.drop(columns=["T", "Q"], inplace=True)
+    
+        elm = df[df["name"] == atom]
         
         for w in W:
             df_combined[method + w] = elm[w]
@@ -339,9 +394,10 @@ def size_extensivity():
     )
     embed()
 if __name__ == "__main__":
-    # atom_tests(run=False)
+    atom_tests(run=False)
+    # molecule_tests(run=False)
 
-    dissociation_lih(run=False)
+    # dissociation_lih(run=False)
     # dissociation_hf(run=False)
 
     # size_extensivity()
