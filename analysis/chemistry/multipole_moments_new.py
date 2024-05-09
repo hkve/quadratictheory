@@ -163,8 +163,36 @@ def compare_with_fci(run=False):
         print(table_df)
 
 
+def partial_expvals(rho, A, o, v, name, fci_reslts=None):
+    oo = np.einsum("...pq,pq->...", A[:,o, o], rho[o, o])[2]
+    vv = np.einsum("...pq,pq->...", A[:,v, v], rho[v, v])[2]
+    ov = np.einsum("...pq,pq->...", A[:,o, v], rho[o, v])[2]
+    vo = np.einsum("...pq,pq->...", A[:,v, o], rho[v, o])[2]
+
+    if fci_reslts == None:
+        print(f"""
+            {name}
+            {oo = }
+            {vv = }
+            {ov = }
+            {vo = }
+            sum = {oo+vv+ov+vo}
+            """)
+    else:
+        oo_fci, vv_fci, ov_fci, vo_fci = fci_reslts
+        print(f"""
+            {name}
+            {oo = } \t deviation = {oo-oo_fci:.4e} 
+            {vv = } \t deviation = {vv-vv_fci:.4e}
+            {ov = } \t deviation = {ov-ov_fci:.4e}
+            {vo = } \t deviation = {vo-vo_fci:.4e}
+            sum = {oo+vv+ov+vo}
+            """)
+
+    return oo, vv, ov, vo
+
 def run_density_test():
-    basis = "cc-pVDZ"
+    basis = "6-31g*"
     geom = geometries["LiH"]
 
     fci = run_fci_density_matrix(geom, basis)
@@ -184,9 +212,8 @@ def run_density_test():
     # qccsd[b.v,b.o] = ccsd[b.v,b.o]
 
 
-
-    diff_cc = fci - ccsd
-    diff_qcc = fci - qccsd
+    diff_cc = ccsd - fci
+    diff_qcc = qccsd - fci
 
     # b = cf.PyscfBasis(geom, basis, restricted=False)
 
@@ -219,20 +246,33 @@ def run_density_test():
         mu(z) QCCSD: {r_qcc[2]} \t diff {r_qcc[2] - r_fci[2]}
     """)
 
-    fci_diag = np.diag( b.r[2,...] @ fci)
-    cc_diag = np.diag( b.r[2,...] @ ccsd)
-    qcc_diag = np.diag( b.r[2,...] @ qccsd)
+    fci_partial = partial_expvals(fci, b.r, b.o, b.v, "FCI")
+    partial_expvals(ccsd, b.r, b.o, b.v, "CCSD", fci_partial)
+    partial_expvals(qccsd, b.r, b.o, b.v, "QCCSD", fci_partial)
 
-    print(fci_diag)
-    print(cc_diag)
-    print(qcc_diag)
+    # fci_diag = np.diag( b.r[2,...] @ fci)
+    # cc_diag = np.diag( b.r[2,...] @ ccsd)
+    # qcc_diag = np.diag( b.r[2,...] @ qccsd)
 
     fig, ax = plt.subplots(nrows=1, ncols=2)
 
-    im1 = ax[0].imshow(np.abs(diff_cc))
-    im2 = ax[1].imshow(np.abs(diff_qcc))
+    vmin, vmax = min([diff_cc.min(),diff_qcc.min()]), max([diff_cc.max(),diff_qcc.max()])
+    vabs = max(abs(vmin), abs(vmax))
 
-    fig.colorbar(im2, ax=ax.ravel().tolist())
+    im1 = ax[0].imshow(diff_cc, vmin=-vabs, vmax=vabs, cmap="seismic")
+    im2 = ax[1].imshow(diff_qcc, vmin=-vabs, vmax=vabs, cmap="seismic")
+
+    ax[0].hlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+    ax[0].vlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+
+    ax[1].hlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+    ax[1].vlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+
+    ax[0].set_title(r"$\rho^{CCSD} - \rho^{FCI}$")
+    ax[1].set_title(r"$\rho^{QCCSD} - \rho^{FCI}$")
+
+    cbar = fig.colorbar(im1, ax=ax.ravel().tolist())
+    
     plt.show()
 def run_expval_test():
     basis = "3-21g*"
