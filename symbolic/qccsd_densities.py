@@ -9,7 +9,7 @@ def _run_blocks(dr, blocks, block_names):
     L = (L1+L2).simplify()
     rho = [None] * len(blocks)
 
-    # Loop over each block, sim trans and resolve 1 and L term
+    # Loop over each block, sim trans and resolve L^2 term
     for i, block in enumerate(blocks):
         block_sim = drutils.similarity_transform(block, T)
 

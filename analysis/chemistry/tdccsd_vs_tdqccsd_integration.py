@@ -60,7 +60,7 @@ def plot(dts, omega=2.87, atom_name="he"):
 
 def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_new"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = (2 * np.pi / omega)
 
@@ -92,7 +92,7 @@ def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussInteg
 
 def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_new"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -125,7 +125,7 @@ def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk
 
 def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD", "QCCSD"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_new"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -187,6 +187,6 @@ if __name__ == '__main__':
     dts = np.array([0.1, 0.05, 0.01, 0.005])
     # run(dts)
 
-    # plot(dts)
+    plot(dts)
 
-    plot_pulse()
+    # plot_pulse()
