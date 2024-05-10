@@ -176,17 +176,20 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None):
             {vv = }
             {ov = }
             {vo = }
-            sum = {oo+vv+ov+vo}
+            sum = {oo+vv+ov+vo} 
             """)
     else:
         oo_fci, vv_fci, ov_fci, vo_fci = fci_reslts
+        total_fci = oo_fci+vv_fci+ov_fci+vo_fci
+        total_cc = oo+vv+ov+vo
+        total_diff = total_cc - total_fci
         print(f"""
             {name}
-            {oo = } \t deviation = {oo-oo_fci:.4e} 
-            {vv = } \t deviation = {vv-vv_fci:.4e}
-            {ov = } \t deviation = {ov-ov_fci:.4e}
-            {vo = } \t deviation = {vo-vo_fci:.4e}
-            sum = {oo+vv+ov+vo}
+            {oo = } \t deviation = {oo-oo_fci:.4e} \t {100 * (oo-oo_fci)/total_diff}
+            {vv = } \t deviation = {vv-vv_fci:.4e} \t {100 * (vv-vv_fci)/total_diff}
+            {ov = } \t deviation = {ov-ov_fci:.4e} \t {100 * (ov-ov_fci)/total_diff}
+            {vo = } \t deviation = {vo-vo_fci:.4e} \t {100 * (vo-vo_fci)/total_diff}
+            sum = {total_cc} \t deviation {total_diff}
             """)
 
     return oo, vv, ov, vo
@@ -217,12 +220,15 @@ def run_density_test():
 
     # b = cf.PyscfBasis(geom, basis, restricted=False)
 
-    def print_diff(diff, rho):
+    def print_diff(diff, rho, name):
         print(f"""
+        {name}
+        diff:
             norm = {np.linalg.norm(diff)}
             max = {np.max(diff)}
             mean = {np.mean(diff)}
             mean abs = {np.mean(np.abs(diff))}
+        rho:
             asym norm = {np.linalg.norm(rho - rho.T)}
             asym max = {np.max(rho - rho.T)}
             asym mean = {np.mean(rho - rho.T)}
@@ -232,13 +238,12 @@ def run_density_test():
     ccsd_occ = ccsd[:b.N,:b.N]
     qccsd_occ = qccsd[:b.N,:b.N]
 
-    print_diff(diff_cc, ccsd)
-    print_diff(diff_qcc, qccsd)
+    print_diff(diff_cc, ccsd, "CCSD")
+    print_diff(diff_qcc, qccsd, "QCCSD")
 
     r_qcc = np.einsum("...pq,pq->...", b.r, qccsd)
     r_cc = np.einsum("...pq,pq->...", b.r, ccsd)
     r_fci = np.einsum("...pq,pq->...", b.r, fci)
-
 
     print(f"""
         mu(z) FCI: {r_fci[2]}
@@ -246,6 +251,7 @@ def run_density_test():
         mu(z) QCCSD: {r_qcc[2]} \t diff {r_qcc[2] - r_fci[2]}
     """)
 
+    print("Partitioned expval into blocks")
     fci_partial = partial_expvals(fci, b.r, b.o, b.v, "FCI")
     partial_expvals(ccsd, b.r, b.o, b.v, "CCSD", fci_partial)
     partial_expvals(qccsd, b.r, b.o, b.v, "QCCSD", fci_partial)
