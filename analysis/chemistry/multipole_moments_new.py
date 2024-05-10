@@ -9,14 +9,21 @@ from utils.runs import run_fci_density_matrix
 geometries = {
     "HF": "H 0 0 0; F 0 0 1.7325007863",
     "LiH": "Li 0 0 0; H 0 0 3.0141129518",
-    "N2": "N 0 0 0; N 0 0 2.4",
+    "CH+": "C 0.0 0.0 0.0; H 0.0 0.0 2.13713",
+    "BeO": "Be 0 0 0; O 0 0 2.5269415919",
+    "N2": "N 0 0 0; N 0 0 2.1013752993",
+    "H20": "O 0 0 0.2286568446; H 0 1.4191842174 -0.9146273785; H 0 -1.4191842174 -0.9146273785;",
+    "BeH2": "Be 0 0 0; H 0 0 -2.5265636467; H 0 0 2.5265636467",
 }
 
 
 charges = {
     "HF": 0,
     "LiH": 0,
+    "CH+": 1,
+    "BeO": 0,
     "N2": 0,
+    "BeH2": 0,
 }
 
 def get_run_kwargs(CC, **kwargs):
@@ -101,8 +108,45 @@ def run_expvals_fci(name, basis):
 
     return data
 
+def density_matrix_asymmetry(run=False):
+    names = ["HF", "LiH", "CH+", "BeO", "N2", "H20", "BeH2"]
+    basis = "cc-pVDZ"
+
+    if run:
+        for name in names:
+            data_ccsd = run_expvals(name, basis, cf.CCSD)
+            save_json(data_ccsd, f"{name}_{basis}_ccsd")
+            print(f"DONE CCSD {name}")
+
+            data_qccsd = run_expvals(name, basis, cf.QCCSD)
+            save_json(data_qccsd, f"{name}_{basis}_qccsd")
+            print(f"DONE QCCSD {name}")
+
+    table = {"CCSD1": [], "QCCSD1": [], "CCSD2": [], "QCCSD2": []}
+    for name in names:
+        methods = ["CCSD", "QCCSD"]
+
+        for method in methods:
+            data = load_json(f"{name}_{basis}_{method.lower()}")
+            table[f"{method}1"].append(data["delta_rho_ob"])
+            table[f"{method}2"].append(data["delta_rho_tb"])
+
+    table_df = pd.DataFrame(table)
+    table_df.insert(loc=0, column="basis", value=names)
+
+    table_df["ratio1"] = table_df["CCSD1"]/table_df["QCCSD1"]
+    table_df["ratio2"] = table_df["CCSD2"]/table_df["QCCSD2"]
+
+    for col in ["CCSD1", "CCSD2", "QCCSD1", "QCCSD2"]:
+        table_df[col] = table_df[col].map(lambda x: format_tex(x))        
+    for col in ["ratio1", "ratio2"]:
+        table_df[col] = table_df[col].map(lambda x: f"{x:.2f}")      
+
+    print(table_df.to_latex(index=False))
+
+
 def compare_with_fci(run=False):
-    names = ["LiH", "HF"]
+    names = ["LiH"]
     basis_sets = ["6-31g", "6-31g*"]
 
     if run:
@@ -117,50 +161,51 @@ def compare_with_fci(run=False):
                 data_fci = run_expvals_fci(name, basis)
                 save_json(data_fci, f"{name}_{basis}_fci")
     
-    # value = "delta_rho_tb"
+
+    name = "LiH"
+    table = {"CCSD1": [], "QCCSD1": [], "CCSD2": [], "QCCSD2": []}
+    for basis in basis_sets:
+        methods = ["CCSD", "QCCSD"]
+
+        for method in methods:
+            data = load_json(f"{name}_{basis}_{method.lower()}")
+            table[f"{method}1"].append(data["delta_rho_ob"])
+            table[f"{method}2"].append(data["delta_rho_tb"])
+
+
+    table_df = pd.DataFrame(table)
+    table_df.insert(loc=0, column="basis", value=basis_sets)
+
+    table_df["ratio1"] = table_df["CCSD1"]/table_df["QCCSD1"]
+    table_df["ratio2"] = table_df["CCSD2"]/table_df["QCCSD2"]
+
+    for col in ["CCSD1", "CCSD2", "QCCSD1", "QCCSD2"]:
+        table_df[col] = table_df[col].map(lambda x: format_tex(x))        
+    for col in ["ratio1", "ratio2"]:
+        table_df[col] = table_df[col].map(lambda x: f"{x:.2f}")      
+
+    print(table_df.to_latex(index=False))
+
+
     # for name in names:
-    #     methods = ["CCSD", "QCCSD"]
-    #     table = {"met": methods + ["ratio"]}
-    #     # "6-31g": [], "6-31g*": []
+    #     methods = ["CCSD", "QCCSD", "FCI"]
+    #     table = {"met": methods}
+
 
     #     for basis in basis_sets:
-    #         delta_rho = []
+    #         mu_z = []
     #         for method in methods:
     #             data = load_json(f"{name}_{basis}_{method.lower()}")
-    #             delta_rho.append(data[value])
+    #             mu_z.append(data["dipole"][2])
 
-    #         ratio = delta_rho[0] / delta_rho[1]
-    #         delta_rho.append(ratio)
-    #         table[basis] = delta_rho
+    #         mu_z = np.array(mu_z)
+    #         mu_z[0:2] = mu_z[0:2] - mu_z[-1]
+    #         # mu_z[0:2] = 100 * mu_z[0:2]/mu_z[-1]
+    #         table[basis] = mu_z
                     
     #     table_df = pd.DataFrame(table)
-
-    #     for basis in basis_sets:
-    #         table_df[basis].iloc[:-1] = table_df[basis].iloc[:-1].map(lambda x: format_tex(x))        
-    #         table_df[basis].iloc[-1] = round(table_df[basis].iloc[-1], ndigits=3)        
-
-    #     print(table_df.to_latex(index=False))
-
-
-    for name in names:
-        methods = ["CCSD", "QCCSD", "FCI"]
-        table = {"met": methods}
-
-
-        for basis in basis_sets:
-            mu_z = []
-            for method in methods:
-                data = load_json(f"{name}_{basis}_{method.lower()}")
-                mu_z.append(data["dipole"][2])
-
-            mu_z = np.array(mu_z)
-            mu_z[0:2] = mu_z[0:2] - mu_z[-1]
-            # mu_z[0:2] = 100 * mu_z[0:2]/mu_z[-1]
-            table[basis] = mu_z
-                    
-        table_df = pd.DataFrame(table)
         
-        print(table_df)
+    #     print(table_df)
 
 
 def partial_expvals(rho, A, o, v, name, fci_reslts=None):
@@ -195,15 +240,15 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None):
     return oo, vv, ov, vo
 
 def run_density_test():
-    basis = "6-31g*"
-    geom = geometries["LiH"]
+    basis = "6-31g"
+    geom = geometries["HF"]
 
     fci = run_fci_density_matrix(geom, basis)
 
-    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
+    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
 
-    cc = cf.CCSD(b).run(tol=1e-6, include_l=True)
-    qcc = cf.QCCSD(b).run(tol=1e-6)
+    cc = cf.CCSD(b).run(tol=1e-10, include_l=True)
+    qcc = cf.QCCSD(b).run(tol=1e-10)
 
 
     ccsd = cc.one_body_density()
@@ -292,6 +337,7 @@ def run_expval_test():
     embed()
 
 if __name__ == "__main__":
+    density_matrix_asymmetry(run=True)
     # compare_with_fci(run=False)
-    run_density_test()
+    # run_density_test()
     # run_expval_test()
