@@ -12,7 +12,7 @@ geometries = {
     "CH+": "C 0.0 0.0 0.0; H 0.0 0.0 2.13713",
     "BeO": "Be 0 0 0; O 0 0 2.5269415919",
     "N2": "N 0 0 0; N 0 0 2.1013752993",
-    "H20": "O 0 0 0.2286568446; H 0 1.4191842174 -0.9146273785; H 0 -1.4191842174 -0.9146273785;",
+    "H2O": "O 0 0 0.2286568446; H 0 1.4191842174 -0.9146273785; H 0 -1.4191842174 -0.9146273785;",
     "BeH2": "Be 0 0 0; H 0 0 -2.5265636467; H 0 0 2.5265636467",
 }
 
@@ -23,6 +23,7 @@ charges = {
     "CH+": 1,
     "BeO": 0,
     "N2": 0,
+    "H2O": 0,
     "BeH2": 0,
 }
 
@@ -109,7 +110,7 @@ def run_expvals_fci(name, basis):
     return data
 
 def density_matrix_asymmetry(run=False):
-    names = ["HF", "LiH", "CH+", "BeO", "N2", "H20", "BeH2"]
+    names = ["HF", "LiH", "CH+", "BeO", "N2", "H2O", "BeH2"]
     basis = "cc-pVDZ"
 
     if run:
@@ -241,7 +242,7 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None):
 
 def run_density_test():
     basis = "6-31g"
-    geom = geometries["HF"]
+    geom = geometries["LiH"]
 
     fci = run_fci_density_matrix(geom, basis)
 
@@ -337,7 +338,7 @@ def run_expval_test():
     embed()
 
 if __name__ == "__main__":
-    density_matrix_asymmetry(run=True)
+    # density_matrix_asymmetry(run=False)
     # compare_with_fci(run=False)
-    # run_density_test()
+    run_density_test()
     # run_expval_test()
