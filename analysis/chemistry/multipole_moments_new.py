@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import json
 
+import plotting.plot_utils as pl
 from utils.runs import run_fci_density_matrix
 
 geometries = {
@@ -148,7 +149,7 @@ def density_matrix_asymmetry(run=False):
 
 def compare_with_fci(run=False):
     names = ["LiH", "HF"]
-    basis_sets = ["cc-pVDZ"] #["6-31g", "6-31g*"]
+    basis_sets = ["6-31g", "6-31g*", "cc-pVDZ"] #["6-31g", "6-31g*"]
 
     if run:
         for basis in basis_sets:
@@ -162,61 +163,61 @@ def compare_with_fci(run=False):
                 data_fci = run_expvals_fci(name, basis)
                 save_json(data_fci, f"{name}_{basis}_fci")
     
-
-    # name = "LiH"
-    # table = {"CCSD1": [], "QCCSD1": [], "CCSD2": [], "QCCSD2": []}
-    # for basis in basis_sets:
-    #     methods = ["CCSD", "QCCSD"]
-
-    #     for method in methods:
-    #         data = load_json(f"{name}_{basis}_{method.lower()}")
-    #         table[f"{method}1"].append(data["delta_rho_ob"])
-    #         table[f"{method}2"].append(data["delta_rho_tb"])
-
+    # Dipole and Quadropole combined
+    # table = {"name": [], "basis": [], "CCSDm": [], "QCCSDm": [], "FCIm": [], "CCSDq": [], "QCCSDq": [], "FCIq": []}
+    # for name in names:
+    #     for basis in basis_sets:
+    #         for method in ["CCSD", "QCCSD", "FCI"]:
+    #             data = load_json(f"{name}_{basis}_{method.lower()}")
+    #             table[f"{method}m"].append(data["dipole"][2])
+    #             table[f"{method}q"].append(data["quadropole_e"][2][2])
+                        
+    #         table["name"].append(name)
+    #         table["basis"].append(basis)
 
     # table_df = pd.DataFrame(table)
-    # table_df.insert(loc=0, column="basis", value=basis_sets)
 
-    # table_df["ratio1"] = table_df["CCSD1"]/table_df["QCCSD1"]
-    # table_df["ratio2"] = table_df["CCSD2"]/table_df["QCCSD2"]
+    # for method in ["CCSD", "QCCSD"]:
+    #     table_df[f"{method}m"] = 1000*(table_df[f"{method}m"] - table_df[f"FCIm"])
+    #     table_df[f"{method}q"] = 1000*(table_df[f"{method}q"] - table_df[f"FCIq"])
 
-    # for col in ["CCSD1", "CCSD2", "QCCSD1", "QCCSD2"]:
-    #     table_df[col] = table_df[col].map(lambda x: format_tex(x))        
-    # for col in ["ratio1", "ratio2"]:
-    #     table_df[col] = table_df[col].map(lambda x: f"{x:.2f}")      
+    #     table_df[f"{method}m"] = table_df[f"{method}m"].map(lambda x: f"{x:.3f}")
+    #     table_df[f"{method}q"] = table_df[f"{method}q"].map(lambda x: f"{x:.3f}")
 
     # print(table_df.to_latex(index=False))
 
-    table = {"name": [], "basis": [], "CCSDm": [], "QCCSDm": [], "FCIm": [], "CCSDq": [], "QCCSDq": [], "FCIq": []}
+    # Just one
+    expval = "quadropole_e"
+    table = {"name": [], "basis": [], "CCSD": [], "QCCSD": [], "FCI": []}
     for name in names:
         for basis in basis_sets:
             for method in ["CCSD", "QCCSD", "FCI"]:
                 data = load_json(f"{name}_{basis}_{method.lower()}")
-                table[f"{method}m"].append(data["dipole"][2])
-                table[f"{method}q"].append(data["quadropole_e"][2][2])
+                if expval == "dipole":
+                    table[f"{method}"].append(data["dipole"][2])
+                if expval == "quadropole_e":
+                    table[f"{method}"].append(data["quadropole_e"][2][2])
                         
             table["name"].append(name)
             table["basis"].append(basis)
 
     table_df = pd.DataFrame(table)
-
+    print(table_df)
     for method in ["CCSD", "QCCSD"]:
-        table_df[f"{method}m"] = 1000*(table_df[f"{method}m"] - table_df[f"FCIm"])
-        table_df[f"{method}q"] = 1000*(table_df[f"{method}q"] - table_df[f"FCIq"])
+        table_df[f"{method}d"] = 1000*(table_df[f"{method}"] - table_df[f"FCI"])
 
-        table_df[f"{method}m"] = table_df[f"{method}m"].map(lambda x: f"{x:.3f}")
-        table_df[f"{method}q"] = table_df[f"{method}q"].map(lambda x: f"{x:.3f}")
+        table_df[f"{method}d"] = table_df[f"{method}d"].map(lambda x: f"{x:.3f}")
 
     print(table_df.to_latex(index=False))
 
 
-def partial_expvals(rho, A, o, v, name, fci_reslts=None):
+def partial_expvals(rho, A, o, v, name, fci_reslts=None, vocal=True):
     oo = np.einsum("...pq,pq->...", A[:,o, o], rho[o, o])[2]
     vv = np.einsum("...pq,pq->...", A[:,v, v], rho[v, v])[2]
     ov = np.einsum("...pq,pq->...", A[:,o, v], rho[o, v])[2]
     vo = np.einsum("...pq,pq->...", A[:,v, o], rho[v, o])[2]
 
-    if fci_reslts == None:
+    if fci_reslts == None and vocal:
         print(f"""
             {name}
             {oo = }
@@ -225,7 +226,7 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None):
             {vo = }
             sum = {oo+vv+ov+vo} 
             """)
-    else:
+    elif vocal:
         oo_fci, vv_fci, ov_fci, vo_fci = fci_reslts
         total_fci = oo_fci+vv_fci+ov_fci+vo_fci
         total_cc = oo+vv+ov+vo
@@ -241,9 +242,107 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None):
 
     return oo, vv, ov, vo
 
+def run_density_diff(run=False, show=False):
+    names = ["LiH", "HF"]
+    basis_sets = ["6-31g", "6-31g*", "cc-pVDZ"]
+
+    folder = "dat/density"
+    if run:
+        for name in names:
+            geom = geometries[name]
+
+            for basis in basis_sets:
+                b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+                fci = run_fci_density_matrix(geom, basis)
+                np.savez(f"{folder}/density_FCI_{name}_{basis}", fci)
+                print(f"Done FCI {name} {basis}")
+
+                cc = cf.CCSD(b).run(tol=1e-10, include_l=True)
+                ccsd = cc.one_body_density()
+                np.savez(f"{folder}/density_CCSD_{name}_{basis}", ccsd)
+                print(f"Done CCSD {name} {basis}")
+
+
+                qcc = cf.QCCSD(b).run(tol=1e-10)
+                qccsd = qcc.one_body_density()
+                np.savez(f"{folder}/density_QCCSD_{name}_{basis}", qccsd)
+                print(f"Done QCCSD {name} {basis}")
+
+    if show:
+        for name in names:
+            geom = geometries[name]
+            for basis in basis_sets:
+                b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+                fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+                ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+                qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+
+                diff_cc = ccsd - fci
+                diff_qcc = qccsd - fci
+
+                fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(8,4), layout="constrained")
+
+                vmin, vmax = min([diff_cc.min(),diff_qcc.min()]), max([diff_cc.max(),diff_qcc.max()])
+                vabs = max(abs(vmin), abs(vmax))
+
+                im1 = ax[0].imshow(diff_cc, vmin=-vabs, vmax=vabs, cmap="seismic")
+                im2 = ax[1].imshow(diff_qcc, vmin=-vabs, vmax=vabs, cmap="seismic")
+
+                ax[0].hlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+                ax[0].vlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+
+                ax[1].hlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+                ax[1].vlines(b.N-0.5, -0.5, b.L-0.5, color="k")
+
+                ax[0].set_title(r"$\gamma^{CCSD} - \gamma^{FCI}$")
+                ax[1].set_title(r"$\gamma^{QCCSD} - \gamma^{FCI}$")
+
+                cbar = fig.colorbar(im1, ax=ax.ravel().tolist(), pad=0.025)
+                
+                ytickslocs0 = ax[0].get_yticks()[1:-1]
+                ytickslocs1 = ax[1].get_yticks()[1:-1]
+                ax[0].set_xticks(ytickslocs0)
+                ax[1].set_xticks(ytickslocs1)
+
+                plt.show()
+
+    prefix = 1000
+    table = {"name": [], "basis": [], "CCSDoo": [], "CCSDvv": [], "CCSDov": [], "CCSDvo": [],"QCCSDoo": [], "QCCSDvv": [], "QCCSDov": [], "QCCSDvo": []}
+    for name in names:
+        geom = geometries[name]
+        for basis in basis_sets:
+            b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+            fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+            ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+            qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+    
+            oo_fci, vv_fci, ov_fci, vo_fci = partial_expvals(fci, b.r, b.o, b.v, name, vocal=False)
+            
+            oo, vv, ov, vo = partial_expvals(ccsd, b.r, b.o, b.v, name, vocal=False)
+            diff_oo, diff_vv, diff_ov, diff_vo = oo-oo_fci, vv-vv_fci, ov-ov_fci, vo-vo_fci
+
+            table["CCSDoo"].append(prefix*diff_oo)
+            table["CCSDvv"].append(prefix*diff_vv)
+            table["CCSDov"].append(prefix*diff_ov)
+            table["CCSDvo"].append(prefix*diff_vo)
+
+            oo, vv, ov, vo = partial_expvals(qccsd, b.r, b.o, b.v, name, vocal=False)
+            diff_oo, diff_vv, diff_ov, diff_vo = oo-oo_fci, vv-vv_fci, ov-ov_fci, vo-vo_fci
+
+            table["QCCSDoo"].append(prefix*diff_oo)
+            table["QCCSDvv"].append(prefix*diff_vv)
+            table["QCCSDov"].append(prefix*diff_ov)
+            table["QCCSDvo"].append(prefix*diff_vo)
+        
+        table["basis"].append(basis)
+    table["name"].append(name)
+
+    df_table = pd.DataFrame(table)
+    print(df_table)
+
 def run_density_test():
     basis = "6-31g"
-    geom = geometries["LiH"]
+    geom = geometries["HF"]
 
     fci = run_fci_density_matrix(geom, basis)
 
@@ -251,7 +350,6 @@ def run_density_test():
 
     cc = cf.CCSD(b).run(tol=1e-10, include_l=True)
     qcc = cf.QCCSD(b).run(tol=1e-10)
-
 
     ccsd = cc.one_body_density()
     qccsd = qcc.one_body_density()
@@ -340,6 +438,8 @@ def run_expval_test():
 
 if __name__ == "__main__":
     # density_matrix_asymmetry(run=False)
-    compare_with_fci(run=True)
+    # compare_with_fci(run=False)
     # run_density_test()
     # run_expval_test()
+
+    run_density_diff(run=True, show=False)
