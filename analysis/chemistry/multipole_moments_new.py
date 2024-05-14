@@ -304,6 +304,7 @@ def run_density_diff(run=False, show=False):
                 ax[0].set_xticks(ytickslocs0)
                 ax[1].set_xticks(ytickslocs1)
 
+                pl.save(f"density_diff_{name}_{basis}")
                 plt.show()
 
     prefix = 1000
@@ -334,12 +335,43 @@ def run_density_diff(run=False, show=False):
             table["QCCSDov"].append(prefix*diff_ov)
             table["QCCSDvo"].append(prefix*diff_vo)
         
-        table["basis"].append(basis)
-    table["name"].append(name)
+            table["basis"].append(basis)
+            table["name"].append(name)
 
     df_table = pd.DataFrame(table)
-    print(df_table)
+    for method in ["CCSD", "QCCSD"]:
+        for block in ["oo", "vv", "ov", "vo"]:
+            df_table[f"{method}{block}"] = df_table[f"{method}{block}"].map(lambda x: f"{x:.3f}")
 
+    print(
+        df_table.to_latex(index=False)
+    )
+
+    table = {"name": [], "basis": [], "CCSD": [], "QCCSD": []}
+    for name in names:
+        geom = geometries[name]
+        for basis in basis_sets:
+            b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+            fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+            ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+            qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+
+            ccsd_diff = np.sum(np.abs(ccsd - fci))
+            qccsd_diff = np.sum(np.abs(qccsd - fci))
+
+            table["CCSD"].append(ccsd_diff)
+            table["QCCSD"].append(qccsd_diff)
+            table["name"].append(name)
+            table["basis"].append(basis)
+
+    df_table = pd.DataFrame(table)
+
+    for col in ["CCSD", "QCCSD"]:
+        df_table[col] = df_table[col].map(lambda x: f"{x:.4f}")
+
+    print(
+        df_table.to_latex(index=False)
+    )
 def run_density_test():
     basis = "6-31g"
     geom = geometries["HF"]
@@ -442,4 +474,4 @@ if __name__ == "__main__":
     # run_density_test()
     # run_expval_test()
 
-    run_density_diff(run=True, show=False)
+    run_density_diff(run=False, show=False)
