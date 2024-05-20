@@ -4,6 +4,7 @@ from sympy import Rational, Symbol, IndexedBase
 from sympy.physics.secondquant import PermutationOperator
 from permutations import permutations, get_permutation_until_order
 from IPython import embed
+import latex
 
 def save(dr, name, equation):
     drutils.save_html(dr, name, equation)
@@ -73,10 +74,7 @@ def reference(dr):
     res = dr.define(Symbol("ref"), res)
     
     grutils.einsum_raw(dr, "qccsd_ref_weight", res)
-
-    from IPython import embed
-    embed()
-    # save(dr, "qccsd_ref_weight", res)
+    save(dr, "qccsd_ref_weight", res)
 
 @drutils.timeme
 def single_excited(dr):
@@ -128,7 +126,7 @@ def double_excited(dr):
     res = (Rational(1,2)*expr*X2).eval_fermi_vev().simplify()
 
     res = dr.define(IndexedBase(f"bra")[a,b,i,j], res)
-    # save(dr, "qccsd_2p2h_weight", res)
+    save(dr, "qccsd_2p2h_weight", res)
     from IPython import embed
     embed()
 
@@ -149,6 +147,13 @@ def triple_excited(dr):
     bra_res *= Rational(1,2)
     
     ket_res = ket_res.simplify()
+
+    # print("3p3h ket")
+    # print(latex.texify_weigth(dr, ket_res, rank=3))
+
+    # print("3p3h bra")
+    # print(latex.texify_weigth(dr, bra_res, rank=3))
+    # return None
 
     bra_lhs = IndexedBase("bra")
     dr.set_dbbar_base(bra_lhs, 3)
@@ -184,8 +189,12 @@ def quadrouple_excited(dr):
     
     ket_res = ket_res.simplify()
 
-    from IPython import embed
-    embed()
+    # print("4p4h ket")
+    # print(latex.texify_weigth(dr, ket_res, rank=4))
+
+    # print("4p4h bra")
+    # print(latex.texify_weigth(dr, bra_res, rank=4))
+    # return None
 
     bra_lhs = IndexedBase("bra")
     dr.set_dbbar_base(bra_lhs, 4)
@@ -202,6 +211,21 @@ def quadrouple_excited(dr):
 
     grutils.einsum_raw(dr, "quadruplets_weight", W_Q)
 
+def print_tex_addition(dr):
+    filenames = [
+        "qccsd_ref_weight",
+        "qccsd_1p1h_weight",
+        "qccsd_2p2h_weight",
+    ]
+
+    num_terms = [4,4,4]
+
+    for i, filename in enumerate(filenames):
+        latex_str = latex.texify(dr, filename, num_terms=num_terms[i])
+
+        print(f"{filename}\n\n")
+        print(latex_str)
+        print("\n\n")
 
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
@@ -209,7 +233,8 @@ if __name__ == "__main__":
     drutils.timer.vocal = True
     reference(dr)
     single_excited(dr)
-    # double_excited(dr)
-    # triple_excited(dr)
-    # quadrouple_excited(dr)
+    double_excited(dr)
+    triple_excited(dr)
+    quadrouple_excited(dr)
 
+    print_tex_addition(dr)

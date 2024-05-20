@@ -227,3 +227,4 @@ if __name__ == '__main__':
     new_term = permutations(term)
 
     embed()
+

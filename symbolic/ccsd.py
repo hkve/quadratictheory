@@ -18,13 +18,14 @@ def energy_lambda_contribution(dr):
     energy_eq = drutils.define_rk0_rhs(dr, energy_eq)
     drutils.timer.tock("energy equation")
 
-    eval_seq = grutils.optimize_equations(dr, energy_eq)
+    drutils.save_to_pickle(energy_eq, "ccsd_lambda_energy")
+    # eval_seq = grutils.optimize_equations(dr, energy_eq)
     
-    drutils.save_html(dr, "ccsd_energy_addition", [energy_eq], ["E addition"])
-    grutils.einsum_raw(dr, "ccsd_energy_addition", [energy_eq])
+    # drutils.save_html(dr, "ccsd_energy_addition", [energy_eq], ["E addition"])
+    # grutils.einsum_raw(dr, "ccsd_energy_addition", [energy_eq])
 
-    drutils.save_html(dr, "ccsd_energy_addition_optimized", eval_seq)
-    grutils.einsum_raw(dr, "ccsd_energy_addition_optimized", eval_seq)
+    # drutils.save_html(dr, "ccsd_energy_addition_optimized", eval_seq)
+    # grutils.einsum_raw(dr, "ccsd_energy_addition_optimized", eval_seq)
 
 @drutils.timeme
 def T_equations(dr):
@@ -48,24 +49,27 @@ def T_equations(dr):
     amplitude_t2_eq = (Y2 * ham_bar).eval_fermi_vev().simplify()
     drutils.timer.tock("T2 amplitude equation")
 
-    drutils.save_html(
-        dr,
-        "ccsd_energy_and_t",
-        [energy_eq, amplitude_t1_eq, amplitude_t2_eq],
-        ["E", "t1 = 0", "t2 = 0"],
-    )
+    # drutils.save_html(
+    #     dr,
+    #     "ccsd_energy_and_t",
+    #     [energy_eq, amplitude_t1_eq, amplitude_t2_eq],
+    #     ["E", "t1 = 0", "t2 = 0"],
+    # )
 
     e = drutils.define_rk0_rhs(dr, energy_eq)
     t1 = drutils.define_rk1_rhs(dr, amplitude_t1_eq)
     t2 = drutils.define_rk2_rhs(dr, amplitude_t2_eq)
 
+    drutils.save_to_pickle(e, "ccsd_energy_raw")
+    drutils.save_to_pickle(t1, "ccsd_t1_raw")
+    drutils.save_to_pickle(t2, "ccsd_t2_raw")
 
-    grutils.einsum_raw(dr, "ccsd_t", [t1, t2])
-    grutils.einsum_raw(dr, "ccsd_t1", [t1])
-    eval_seq = grutils.optimize_equations(dr, [t1, t2])
-    eval_seq_t1 = grutils.optimize_equations(dr, t1)
-    grutils.einsum_raw(dr, "ccsd_t1_optimized", eval_seq_t1)
-    grutils.einsum_raw(dr, "ccsd_t_optimized", eval_seq)
+    # grutils.einsum_raw(dr, "ccsd_t", [t1, t2])
+    # grutils.einsum_raw(dr, "ccsd_t1", [t1])
+    # eval_seq = grutils.optimize_equations(dr, [t1, t2])
+    # eval_seq_t1 = grutils.optimize_equations(dr, t1)
+    # grutils.einsum_raw(dr, "ccsd_t1_optimized", eval_seq_t1)
+    # grutils.einsum_raw(dr, "ccsd_t_optimized", eval_seq)
 
 
 @drutils.timeme
@@ -102,14 +106,17 @@ def L_equations(dr):
 
     amplitude_l2_eq = (A + B).simplify()
 
-    drutils.save_html(dr, "ccsd_l", [amplitude_l1_eq, amplitude_l2_eq], ["l1 = 0", "l2 = 0"])
+    # drutils.save_html(dr, "ccsd_l", [amplitude_l1_eq, amplitude_l2_eq], ["l1 = 0", "l2 = 0"])
 
     l1 = drutils.define_rk1_rhs(dr, amplitude_l1_eq).simplify()
     l2 = drutils.define_rk2_rhs(dr, amplitude_l2_eq).simplify()
 
-    grutils.einsum_raw(dr, "ccsd_l", [l1, l2])
-    eval_seq = grutils.optimize_equations(dr, [l1, l2])
-    grutils.einsum_raw(dr, "ccsd_l_optimized", eval_seq)
+    drutils.save_to_pickle(l1, "ccsd_l1_raw")
+    drutils.save_to_pickle(l2, "ccsd_l2_raw")
+
+    # grutils.einsum_raw(dr, "ccsd_l", [l1, l2])
+    # eval_seq = grutils.optimize_equations(dr, [l1, l2])
+    # grutils.einsum_raw(dr, "ccsd_l_optimized", eval_seq)
 
 
 @drutils.timeme
@@ -205,6 +212,7 @@ def energy_lambda_contribution_T1_trans(dr):
 
     energy_eq = (L*ham_bar).eval_fermi_vev().simplify()
     energy_eq = drutils.define_rk0_rhs(dr, energy_eq)
+
     drutils.timer.tock("energy equation")
 
     eval_seq = grutils.optimize_equations(dr, energy_eq)
@@ -217,7 +225,7 @@ def energy_lambda_contribution_T1_trans(dr):
 
 
 def main():
-    dr = drutils.get_particle_hole_drudge()
+    dr = drutils.get_particle_hole_drudge(dummy=True)
 
     drutils.timer.vocal = True
     # T_equations(dr)
@@ -226,7 +234,25 @@ def main():
     # energy_lambda_contribution(dr)
 
     # L_equations_T1_trans(dr)
-    energy_lambda_contribution_T1_trans(dr)
+    # energy_lambda_contribution_T1_trans(dr)
+    num_terms = [0, 6, 4, 6, 4, 6]
+    filenames = [
+        "ccsd_energy_raw",
+        "ccsd_t1_raw",
+        "ccsd_t2_raw",
+        "ccsd_l1_raw",
+        "ccsd_l2_raw",
+        "ccsd_lambda_energy",
+    ]
+
+    import latex
+    for i, filename in enumerate(filenames):
+        eq = latex.texify(dr, filename, num_terms=num_terms[i])
+        
+        print(f"This is {filename}\n\n")
+        print(eq)
+        print("\n\n")
+    
 
 if __name__ == "__main__":
     main()
