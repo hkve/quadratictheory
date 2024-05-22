@@ -129,10 +129,10 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD",
 
     cycle_length = 2*np.pi/omega
     ls = {
-        "CCSD": "--",
-        "QCCSD": "-"
+        "CCSD": "-",
+        "QCCSD": "--"
     }
-    labels = [[None, rf"$\Delta t$ = {dt}"] for dt in dts]
+    labels = [[rf"$\Delta t$ = {dt}", None] for dt in dts]
 
     for i, dt in enumerate(dts):
         for j, method in enumerate(methods):
@@ -147,13 +147,37 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD",
 
             ax.plot(time, energy, label=labels[i][j], ls=ls[method], color=pl.colors[i])
 
-    ax.plot(np.nan, np.nan, label="CCSD", ls="--", color="gray")
-    ax.plot(np.nan, np.nan, label="QCCSD", ls="-", color="gray")
+    ax.plot(np.nan, np.nan, label="CCSD", ls=ls["CCSD"], color="gray")
+    ax.plot(np.nan, np.nan, label="QCCSD", ls=ls["QCCSD"], color="gray")
 
-    ax.set(title=integrator, xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$")
+    ax.set(xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$")
     ax.set_yscale("log")
     ax.legend(ncol=3)
+    pl.save(f"energy_diff_after_pulse_{integrator}")
     plt.show()
+
+def plot_dipole(dts, integrator, methods=["CCSD", "QCCSD"]):
+    path = dat_path() / "he_integrator_long"
+    omega = 2.87
+    cycle_length = 2*np.pi/omega
+    ls = {
+        "CCSD": "-",
+        "QCCSD": "--"
+    }
+
+    for i, dt in enumerate(dts):
+        fig, ax = plt.subplots()
+        for j, method in enumerate(methods):
+            result, = load_files(path=path, dt=dt, integrator=integrator, method=method)
+
+            time, energy = result["t"]/ cycle_length, result["energy"].imag
+            pulse_off = np.argmin(np.abs(time - 2)) + 1
+
+            ax.plot(time, energy, label=method, ls=ls[method], color=pl.colors[i])
+        
+        ax.legend()
+        plt.show()
+
 
 def plot_pulse():
     omega = 2.87
@@ -187,6 +211,6 @@ if __name__ == '__main__':
     dts = np.array([0.1, 0.05, 0.01, 0.005])
     # run(dts)
 
-    plot(dts)
+    # plot(dts)
 
     # plot_pulse()

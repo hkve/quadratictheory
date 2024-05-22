@@ -104,6 +104,5 @@ plt.yticks(fontsize=8)
 plt.legend(loc="upper center", fontsize=8, frameon=False)
 spacing = 0.600
 fig.subplots_adjust(bottom=spacing)
-
 plt.show()
 
