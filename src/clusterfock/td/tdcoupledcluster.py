@@ -179,6 +179,40 @@ class TimeDependentCoupledCluster:
 
         return y_dot
 
+    def save_amplitudes(self, filename: str):
+        cc = self.cc
+
+        t_amplitudes = {f"t{order}": cc._t[order] for order in cc._t.orders}
+        l_amplitudes = {f"l{order}": cc._l[order] for order in cc._l.orders}
+        
+        np.savez(
+           filename,
+            **{**t_amplitudes, **l_amplitudes}
+        )
+
+    def load_amplitudes(self, filename: str):
+        cc = self.cc
+
+        amplitudes = np.load(
+            filename,
+            allow_pickle=True
+        )
+
+        for order in cc._t.orders:
+            amp = amplitudes[f"t{order}"]
+            assert amp.shape == cc._t._data_shape[order]
+            cc._t._data[order] = amp
+
+        for order in cc._l.orders:
+            amp = amplitudes[f"l{order}"]
+            assert amp.shape == cc._l._data_shape[order]
+            cc._l._data[order] = amp
+
+        cc._t_info["run"] = True
+        cc._l_info["run"] = True
+        cc._t_info["converged"] = True
+        cc._l_info["converged"] = True
+
     def _sample(self):
         """
         Internal function for sampling. Stores the results in '_one_body_results' dict.
