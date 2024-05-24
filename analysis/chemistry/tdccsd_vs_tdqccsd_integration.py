@@ -50,17 +50,17 @@ import plotting.plot_utils  as pl
 import matplotlib.pyplot as plt
 def plot(dts, omega=2.87, atom_name="he"):
 
-    energy_diff_ccsd_qccsd(dts, omega)
+    # energy_diff_ccsd_qccsd(dts, omega)
     
-    energy_diff_after_pulse_off_integrators(dts, "CCSD", omega=omega)
-    energy_diff_after_pulse_off_integrators(dts, "QCCSD", omega=omega)
+    # energy_diff_after_pulse_off_integrators(dts, "CCD", omega=omega)
+    # energy_diff_after_pulse_off_integrators(dts, "QCCD", omega=omega)
 
     energy_diff_after_pulse_off_methods(dts, "Rk4Integrator", omega)
     energy_diff_after_pulse_off_methods(dts, "GaussIntegrator", omega)
 
 def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_long"
+    path = dat_path() / "he_integrator_test_ccd"
 
     cycle_length = (2 * np.pi / omega)
 
@@ -69,11 +69,11 @@ def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussInteg
         "GaussIntegrator": "-"
     }
     labels = [[None, rf"$\Delta t$ = {dt}"] for dt in dts]
-
+    
     for i, dt in enumerate(dts):
         for j, integrator in enumerate(integrators):
-            results_ccsd, = load_files(path=path, dt=dt, integrator=integrator, method="CCSD")
-            results_qccsd, = load_files(path=path, dt=dt, integrator=integrator, method="QCCSD")
+            results_ccsd, = load_files(path=path, dt=dt, integrator=integrator, method="CCD")
+            results_qccsd, = load_files(path=path, dt=dt, integrator=integrator, method="QCCD")
     
             realtive_error = (results_ccsd["energy"] - results_qccsd["energy"]).real
             realtive_error = np.abs(realtive_error)
@@ -92,7 +92,7 @@ def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussInteg
 
 def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_long"
+    path = dat_path() / "he_integrator_test_ccd"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -123,14 +123,16 @@ def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk
     plt.show()
 
 
-def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD", "QCCSD"]):
+def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCD", "QCCD"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_long"
+    path = dat_path() / "he_integrator_test_ccd"
 
     cycle_length = 2*np.pi/omega
     ls = {
         "CCSD": "-",
-        "QCCSD": "--"
+        "CCD": "-",
+        "QCCSD": "--",
+        "QCCD": "--",
     }
     labels = [[rf"$\Delta t$ = {dt}", None] for dt in dts]
 
@@ -153,11 +155,11 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD",
     ax.set(xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$")
     ax.set_yscale("log")
     ax.legend(ncol=3)
-    pl.save(f"energy_diff_after_pulse_{integrator}")
+    # pl.save(f"energy_diff_after_pulse_{integrator}")
     plt.show()
 
-def plot_dipole(dts, integrator, methods=["CCSD", "QCCSD"]):
-    path = dat_path() / "he_integrator_long"
+def plot_dipole(dts, integrator, methods=["CCD", "QCCD"]):
+    path = dat_path() / "he_integ_test_ccd"
     omega = 2.87
     cycle_length = 2*np.pi/omega
     ls = {
@@ -211,6 +213,6 @@ if __name__ == '__main__':
     dts = np.array([0.1, 0.05, 0.01, 0.005])
     # run(dts)
 
-    # plot(dts)
+    plot(dts)
 
     # plot_pulse()
