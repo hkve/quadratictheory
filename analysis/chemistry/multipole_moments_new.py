@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -64,7 +64,7 @@ def run_expvals(name, basis, CC):
     geom = geometries[name]
     charge = charges[name]
 
-    b = cf.PyscfBasis(geom, basis, charge=charge, restricted=False).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geom, basis, charge=charge, restricted=False).pyscf_hartree_fock()
 
     run_kwargs = get_run_kwargs(CC)
     cc = CC(b).run(**run_kwargs)
@@ -93,7 +93,7 @@ def run_expvals_fci(name, basis):
     geom = geometries[name]
     charge = charges[name]
 
-    b = cf.PyscfBasis(geom, basis, restricted=False, center=True).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geom, basis, restricted=False, center=True).pyscf_hartree_fock()
     rho_ob = run_fci_density_matrix(geom, basis)
     print(f"Done {name}, {basis}, FCI")
 
@@ -116,11 +116,11 @@ def density_matrix_asymmetry(run=False):
 
     if run:
         for name in names:
-            data_ccsd = run_expvals(name, basis, cf.CCSD)
+            data_ccsd = run_expvals(name, basis, qt.CCSD)
             save_json(data_ccsd, f"{name}_{basis}_ccsd")
             print(f"DONE CCSD {name}")
 
-            data_qccsd = run_expvals(name, basis, cf.QCCSD)
+            data_qccsd = run_expvals(name, basis, qt.QCCSD)
             save_json(data_qccsd, f"{name}_{basis}_qccsd")
             print(f"DONE QCCSD {name}")
 
@@ -154,10 +154,10 @@ def compare_with_fci(run=False):
     if run:
         for basis in basis_sets:
             for name in names:
-                data_ccsd = run_expvals(name, basis, cf.CCSD)
+                data_ccsd = run_expvals(name, basis, qt.CCSD)
                 save_json(data_ccsd, f"{name}_{basis}_ccsd")
 
-                data_qccsd = run_expvals(name, basis, cf.QCCSD)
+                data_qccsd = run_expvals(name, basis, qt.QCCSD)
                 save_json(data_qccsd, f"{name}_{basis}_qccsd")
 
                 data_fci = run_expvals_fci(name, basis)
@@ -252,18 +252,18 @@ def run_density_diff(run=False, show=False):
             geom = geometries[name]
 
             for basis in basis_sets:
-                b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+                b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
                 fci = run_fci_density_matrix(geom, basis)
                 np.savez(f"{folder}/density_FCI_{name}_{basis}", fci)
                 print(f"Done FCI {name} {basis}")
 
-                cc = cf.CCSD(b).run(tol=1e-10, include_l=True)
+                cc = qt.CCSD(b).run(tol=1e-10, include_l=True)
                 ccsd = cc.one_body_density()
                 np.savez(f"{folder}/density_CCSD_{name}_{basis}", ccsd)
                 print(f"Done CCSD {name} {basis}")
 
 
-                qcc = cf.QCCSD(b).run(tol=1e-10)
+                qcc = qt.QCCSD(b).run(tol=1e-10)
                 qccsd = qcc.one_body_density()
                 np.savez(f"{folder}/density_QCCSD_{name}_{basis}", qccsd)
                 print(f"Done QCCSD {name} {basis}")
@@ -272,7 +272,7 @@ def run_density_diff(run=False, show=False):
         for name in names:
             geom = geometries[name]
             for basis in basis_sets:
-                b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+                b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
                 fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
                 ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
                 qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
@@ -312,7 +312,7 @@ def run_density_diff(run=False, show=False):
     for name in names:
         geom = geometries[name]
         for basis in basis_sets:
-            b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+            b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
             fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
             ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
             qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
@@ -351,7 +351,7 @@ def run_density_diff(run=False, show=False):
     for name in names:
         geom = geometries[name]
         for basis in basis_sets:
-            b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+            b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
             fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
             ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
             qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
@@ -378,10 +378,10 @@ def run_density_test():
 
     fci = run_fci_density_matrix(geom, basis)
 
-    b = cf.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
+    b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
 
-    cc = cf.CCSD(b).run(tol=1e-10, include_l=True)
-    qcc = cf.QCCSD(b).run(tol=1e-10)
+    cc = qt.CCSD(b).run(tol=1e-10, include_l=True)
+    qcc = qt.QCCSD(b).run(tol=1e-10)
 
     ccsd = cc.one_body_density()
     qccsd = qcc.one_body_density()
@@ -395,7 +395,7 @@ def run_density_test():
     diff_cc = ccsd - fci
     diff_qcc = qccsd - fci
 
-    # b = cf.PyscfBasis(geom, basis, restricted=False)
+    # b = qt.PyscfBasis(geom, basis, restricted=False)
 
     def print_diff(diff, rho, name):
         print(f"""
@@ -462,8 +462,8 @@ def run_expval_test():
     name = "HF"
 
     fci = run_expvals_fci(name, basis)
-    ccsd = run_expvals(name, basis, cf.CCSD)
-    qccsd = run_expvals(name, basis, cf.QCCSD)
+    ccsd = run_expvals(name, basis, qt.CCSD)
+    qccsd = run_expvals(name, basis, qt.QCCSD)
 
     from IPython import embed
     embed()

@@ -1,6 +1,6 @@
 import numpy as np
 
-import clusterfock as cf
+import quadratictheory as qt
 import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
 from pyscf.cc import GCCSD as pyscfCCSD
@@ -28,9 +28,9 @@ def angstrom_to_bohr(input_string):
 
 
 def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
-    basis = cf.PyscfBasis(atom=atom["hf"], basis=basis, restricted=restricted)
+    basis = qt.PyscfBasis(atom=atom["hf"], basis=basis, restricted=restricted)
 
-    hf = cf.HF(basis).run(tol=tol)
+    hf = qt.HF(basis).run(tol=tol)
     hf_pyscf = pyscf.scf.HF(basis.mol).run(verbose=0, tol=tol)
 
     print(
@@ -44,13 +44,13 @@ def run_hf(atom, basis, db_results, restricted=False, tol=1e-8):
 
 
 def run_cc(atom, basis, db_results, tol=1e-8):
-    b = cf.PyscfBasis(atom=atom["ccd"], basis=basis, restricted=True)
-    hf = cf.HF(b).run(tol=tol)
+    b = qt.PyscfBasis(atom=atom["ccd"], basis=basis, restricted=True)
+    hf = qt.HF(b).run(tol=tol)
     b.change_basis(hf.C)
     b.from_restricted()
 
-    ccd = cf.CCD(b, intermediates=True).run(tol=tol)
-    ccsd = cf.CCSD(b, intermediates=True).run(tol=tol)
+    ccd = qt.CCD(b, intermediates=True).run(tol=tol)
+    ccsd = qt.CCSD(b, intermediates=True).run(tol=tol)
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
@@ -70,8 +70,8 @@ def run_cc(atom, basis, db_results, tol=1e-8):
         """
     )
 
-    b = cf.PyscfBasis(atom=atom["ccsd"], basis=basis, restricted=True)
-    hf = cf.HF(b).run(tol=tol)
+    b = qt.PyscfBasis(atom=atom["ccsd"], basis=basis, restricted=True)
+    hf = qt.HF(b).run(tol=tol)
     b.change_basis(hf.C)
     b.from_restricted()
 

@@ -1,6 +1,6 @@
-from clusterfock.basis import PyscfBasis
-from clusterfock.mix import RelaxedMixer, DIISMixer
-from clusterfock.hf import HF
+from quadratictheory.basis import PyscfBasis
+from quadratictheory.mix import RelaxedMixer, DIISMixer
+from quadratictheory.hf import HF
 from unittest import TestCase
 
 

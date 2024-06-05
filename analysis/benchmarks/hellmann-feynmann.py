@@ -1,11 +1,11 @@
-import clusterfock as cf
+import quadratictheory as qt
 
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
 
 def run_with_pertubation(sign, geometry, basis, CC, expval, epsilon, component, run_args):
-    b = cf.PyscfBasis(geometry, basis).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis).pyscf_hartree_fock()
     b.from_restricted()
 
     if expval == "r":
@@ -35,7 +35,7 @@ def two_point_energies(geometry, basis, CC, expval, epsilon, component, **kwargs
     e_plus = run_with_pertubation(+1.0, geometry, basis, CC, expval, epsilon, component, run_args)
     e_minus = run_with_pertubation(-1.0, geometry, basis, CC, expval, epsilon, component, run_args)
 
-    b = cf.PyscfBasis(geometry, basis).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis).pyscf_hartree_fock()
     b.from_restricted()
     cc = CC(b).run(**run_args)
 
@@ -55,7 +55,7 @@ def get_expected(geometry, basis, CC, expval, component, **kwargs):
     if expval == "Q":
         assert type(component) in [list, tuple] and 0 <= component[0] <= 2 and 0 <= component[1] <= 2
 
-    b = cf.PyscfBasis(geometry, basis).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis).pyscf_hartree_fock()
     b.from_restricted()
     cc = CC(b).run(**run_args)
 
@@ -73,7 +73,7 @@ def main():
     basis = "sto-3g"
     expval = "Q"
     component = (1,1)
-    CC = cf.QCCSD
+    CC = qt.QCCSD
 
     epsilon = np.logspace(-2, -5, 6)
     # epsilon = np.array([1e-2, 1e-3, 1e-4, 1e-5])

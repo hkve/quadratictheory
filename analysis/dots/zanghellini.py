@@ -1,12 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import clusterfock as cf
+import quadratictheory as qt
 
 def plot_density():
-    basis = cf.basis.HarmonicOscillatorOneDimension(L=20, N=2, restricted=False, omega=0.25, a=0.25, x=(-10, 10, 1000))
+    basis = qt.basis.HarmonicOscillatorOneDimension(L=20, N=2, restricted=False, omega=0.25, a=0.25, x=(-10, 10, 1000))
 
-    hf = cf.HF(basis=basis).run()
+    hf = qt.HF(basis=basis).run()
     rho_hf = basis.density(hf.rho)
     basis.change_basis(hf.C)
 
@@ -14,7 +14,7 @@ def plot_density():
     x = basis.x
     ax.plot(x, rho_hf, label="HF")
     
-    methods = [cf.CCD, cf.CCSD]
+    methods = [qt.CCD, qt.CCSD]
 
     for CC in methods: 
         cc = CC(basis=basis).run(include_l=True, tol=1e-6, vocal=True)
@@ -37,7 +37,7 @@ def plot_time_evolution():
     num_grid_points = 1000
     grid_length = 10
 
-    basis = cf.basis.HarmonicOscillatorOneDimension(L=2*L, N=2, restricted=True, omega=omega, a=eps0, x=(-grid_length, grid_length, num_grid_points))
+    basis = qt.basis.HarmonicOscillatorOneDimension(L=2*L, N=2, restricted=True, omega=omega, a=eps0, x=(-grid_length, grid_length, num_grid_points))
 
     def electric_field(t, basis, freq=electric_field_freq, eps0=eps0):
         return eps0*np.sin(freq*t)*basis.r
@@ -45,12 +45,12 @@ def plot_time_evolution():
     def sampler(basis):
         return {"r": basis.r}
     
-    hf = cf.HF(basis).run()
+    hf = qt.HF(basis).run()
     basis.change_basis(hf.C)
     basis.from_restricted()
 
-    cc = cf.CCSD(basis).run(include_l=True, tol=1e-6)
-    tdcc = cf.td.TimeDependentCoupledCluster(cc, time=(0, 8*np.pi/electric_field_freq, 0.01))
+    cc = qt.CCSD(basis).run(include_l=True, tol=1e-6)
+    tdcc = qt.td.TimeDependentCoupledCluster(cc, time=(0, 8*np.pi/electric_field_freq, 0.01))
     
     tdcc.external_one_body = electric_field
     tdcc.one_body_sampler = sampler

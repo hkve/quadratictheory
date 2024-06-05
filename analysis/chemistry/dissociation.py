@@ -1,5 +1,5 @@
 import numpy as np
-import clusterfock as cf
+import quadratictheory as qt
 from utils.runs import run_fci_single, disassociate_2dof, disassociate_h2o
 from plotting.plot_dissociation import plot, plot_no_error, plot_correlation
 import plotting.plot_utils as pu
@@ -103,7 +103,7 @@ def run_cc(atoms, basis, method, vocal=False, **kwargs):
 
     E = np.zeros(len(atoms))
     for i, atom in enumerate(atoms):
-        b = cf.PyscfBasis(atom, basis, restricted=False).pyscf_hartree_fock(**hf_args)
+        b = qt.PyscfBasis(atom, basis, restricted=False).pyscf_hartree_fock(**hf_args)
 
         cc = method(b)
 
@@ -145,13 +145,13 @@ def calculate_N2_ccd():
     df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
     save("csv/N2_ccd_test.csv", df_fci)
 
-    ccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True, mixer=ccd_mixer)
+    ccd_mixer = qt.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
+    E_ccd = run_cc(atoms, basis, method=qt.CCD, vocal=True, mixer=ccd_mixer)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
     save("csv/N2_ccd_test.csv", df_ccd)
 
-    qccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=7, n_vectors=5)
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True, mixer=qccd_mixer)
+    qccd_mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=7, n_vectors=5)
+    E_qccd = run_cc(atoms, basis, method=qt.QCCD, vocal=True, mixer=qccd_mixer)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/N2_ccd_test.csv", df_qccd)
     
@@ -168,11 +168,11 @@ def calculate_LiH_ccd():
     df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
     save("csv/LiH_ccd.csv", df_fci)
 
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    E_ccd = run_cc(atoms, basis, method=qt.CCD, vocal=True)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
     save("csv/LiH_ccd.csv", df_ccd)
 
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    E_qccd = run_cc(atoms, basis, method=qt.QCCD, vocal=True)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/LiH_ccd.csv", df_qccd)
 
@@ -186,11 +186,11 @@ def calculate_HF_ccd():
     df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
     save("csv/HF_ccd.csv", df_fci)
 
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True)
+    E_ccd = run_cc(atoms, basis, method=qt.CCD, vocal=True)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
     save("csv/HF_ccd.csv", df_ccd)
 
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True)
+    E_qccd = run_cc(atoms, basis, method=qt.QCCD, vocal=True)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/HF_ccd.csv", df_qccd)
 
@@ -206,13 +206,13 @@ def calculate_H2O_ccd():
     # df_fci = pd.DataFrame({"r": distances, "FCI": E_fci})
     # save("csv/H2O_ccd.csv", df_fci)
 
-    ccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
-    E_ccd = run_cc(atoms, basis, method=cf.CCD, vocal=True, mixer=ccd_mixer)
+    ccd_mixer = qt.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=5)
+    E_ccd = run_cc(atoms, basis, method=qt.CCD, vocal=True, mixer=ccd_mixer)
     df_ccd = pd.DataFrame({"r": distances, "CCD": E_ccd})
     save("csv/H2O_ccd.csv", df_ccd)
 
-    qccd_mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
-    E_qccd = run_cc(atoms, basis, method=cf.QCCD, vocal=True, mixer=qccd_mixer)
+    qccd_mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+    E_qccd = run_cc(atoms, basis, method=qt.QCCD, vocal=True, mixer=qccd_mixer)
     df_qccd = pd.DataFrame({"r": distances, "QCCD": E_qccd})
     save("csv/H2O_ccd.csv", df_qccd)       
 
@@ -259,12 +259,12 @@ def calculate_N2_ccsd():
     # df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
     # save("csv/N2_ccsd_TZ.csv", df_cisd)
 
-    # E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
+    # E_ccsd = run_cc(atoms, basis, method=qt.CCSD, vocal=True)
     # df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
     # save("csv/N2_ccsd_TZ.csv", df_ccsd)
 
-    mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=8, n_vectors=8)
-    E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True, mixer=mixer)
+    mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=8, n_vectors=8)
+    E_qccsd = run_cc(atoms, basis, method=qt.QCCSD, vocal=True, mixer=mixer)
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
     save("csv/N2_ccsd_TZ.csv", df_qccsd)       
 
@@ -282,11 +282,11 @@ def calculate_H2O_ccsd():
     df_cisd = pd.DataFrame({"r": distances, "CISD": E_cisd})
     save("csv/H2O_ccsd_TZ.csv", df_cisd)
 
-    E_ccsd = run_cc(atoms, basis, method=cf.CCSD, vocal=True)
+    E_ccsd = run_cc(atoms, basis, method=qt.CCSD, vocal=True)
     df_ccsd = pd.DataFrame({"r": distances, "CCSD": E_ccsd})
     save("csv/H2O_ccsd_TZ.csv", df_ccsd)
 
-    E_qccsd = run_cc(atoms, basis, method=cf.QCCSD, vocal=True)
+    E_qccsd = run_cc(atoms, basis, method=qt.QCCSD, vocal=True)
     df_qccsd = pd.DataFrame({"r": distances, "QCCSD": E_qccsd})
     save("csv/H2O_ccsd_TZ.csv", df_qccsd)       
 
@@ -323,9 +323,9 @@ def main():
 
 def test():
     geom, = disassociate_h2o(4.5)
-    b = cf.PyscfBasis(geom, "cc-pVTZ").pyscf_hartree_fock()
+    b = qt.PyscfBasis(geom, "cc-pVTZ").pyscf_hartree_fock()
 
-    cc = cf.CCSD(b).run(tol=1e-6, include_l=True, vocal=True)
+    cc = qt.CCSD(b).run(tol=1e-6, include_l=True, vocal=True)
 
     print(
         cc.energy()

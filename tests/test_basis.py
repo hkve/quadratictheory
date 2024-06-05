@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
 
-from clusterfock.basis import TestBasis
+from quadratictheory.basis import TestBasis
 
 
 class TestBasisProperties(TestCase):

@@ -1,8 +1,8 @@
 import numpy as np
 from unittest import TestCase
-from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, GCCSD, QCCD, QCCSD, RCCD, RCCSD
-from clusterfock.basis import PyscfBasis
+from quadratictheory.hf import RHF
+from quadratictheory.cc import GCCD, GCCSD, QCCD, QCCSD, RCCD, RCCSD
+from quadratictheory.basis import PyscfBasis
 
 
 class TestCoupledClusterDensities(TestCase):

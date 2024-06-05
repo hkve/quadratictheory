@@ -1,5 +1,5 @@
 import numpy as np
-import clusterfock as cf
+import quadratictheory as qt
 
 from pyscf import lib
 from pyscf import gto, scf, cc, fci, ao2mo
@@ -54,16 +54,16 @@ def run(distances, tols):
     t_prev, l_prev = 0, 0
     for i, r in enumerate(distances):
         atom = displace_water(r,r,r1,r2)
-        basis = cf.PyscfBasis(atom, basis_string, restricted=True)
+        basis = qt.PyscfBasis(atom, basis_string, restricted=True)
 
-        hf = cf.HF(basis)
+        hf = qt.HF(basis)
         hf.run(tol=1e-4)
 
         if hf.converged:
             basis.change_basis(hf.C)
             basis.from_restricted()
 
-            cc = cf.QCCD(basis)
+            cc = qt.QCCD(basis)
             cc.run(tol=tol[i], maxiters=300, vocal=False)
             energy[i] = cc.energy()
             print(f"Done QCCD {r}")

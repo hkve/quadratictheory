@@ -1,7 +1,7 @@
 import numpy as np
 from signals_tdcc import run_cc
 from utils.misc import load_files, dat_path
-import clusterfock as cf
+import quadratictheory as qt
 
 
 def run(dts, omega=2.87, atom_name="he"):
@@ -15,7 +15,7 @@ def run(dts, omega=2.87, atom_name="he"):
     integrators = ["Rk4Integrator", "GaussIntegrator"]
     integrator_args = {}
 
-    METHODS = [cf.CCSD, cf.QCCSD]
+    METHODS = [qt.CCSD, qt.QCCSD]
 
     for i, dt in enumerate(dts):
         print(f"Starting {dt = } ", end="")
@@ -23,8 +23,8 @@ def run(dts, omega=2.87, atom_name="he"):
             print(f" {integrator = } ", end="")
             
             time = (0, t_end, dt)
-            pulse = cf.pulse.Sin2(u, F_str, omega, tprime)
-            sampler = cf.sampler.DipoleSamplerExpanded()
+            pulse = qt.pulse.Sin2(u, F_str, omega, tprime)
+            sampler = qt.sampler.DipoleSamplerExpanded()
 
             if integrator == "Rk4Integrator":
                 integrator_args = {"dt": dt}
@@ -190,7 +190,7 @@ def plot_pulse():
 
     u = np.array([1.0, 0.0, 0.0])
     F_str = 1
-    pulse = cf.pulse.Sin2(u, F_str, omega, tprime)
+    pulse = qt.pulse.Sin2(u, F_str, omega, tprime)
 
     fig, ax = plt.subplots()
 

@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -99,10 +99,10 @@ def run_fci(geometry, basis):
 
 
 def run_ccsd(geometry, basis, quad=False):
-    b = cf.PyscfBasis(geometry, basis).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis).pyscf_hartree_fock()
     b.from_restricted()
 
-    cc = cf.QCCSD(b) if quad else cf.CCSD(b)
+    cc = qt.QCCSD(b) if quad else qt.CCSD(b)
 
     if quad:
         cc.run(tol=1e-4)

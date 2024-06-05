@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import matplotlib.pyplot as plt
 import plot_utils as pl
@@ -27,7 +27,7 @@ def run_imag_timeprop(name, geometry, basis, CC, **kwargs):
     charge = default["charge"]
 
 
-    b = cf.PyscfBasis(geometry, basis, charge=charge).pyscf_hartree_fock(tol=hf_tol)
+    b = qt.PyscfBasis(geometry, basis, charge=charge).pyscf_hartree_fock(tol=hf_tol)
 
     if not restricted:
         b.from_restricted()
@@ -41,7 +41,7 @@ def run_imag_timeprop(name, geometry, basis, CC, **kwargs):
     energy_gs = cc_gs.energy()
 
     cc = CC(b)
-    itdcc = cf.ImaginaryTimeCoupledCluster(cc, cc_gs, time, integrator, integrator_args)
+    itdcc = qt.ImaginaryTimeCoupledCluster(cc, cc_gs, time, integrator, integrator_args)
     itdcc.run_until_convergence(tol=cc_tol, vocal=False)
 
     results = itdcc.results
@@ -193,47 +193,47 @@ def run():
     integrator_args = {"dt": 0.05}
     
     # Run Helium
-    run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", cf.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", cf.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", cf.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,40,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", cf.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,40,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", qt.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", qt.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", qt.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,40,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("he", "he 0 0 0", "cc-pVDZ", qt.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,40,0.05), integrator=integrator, integrator_args=integrator_args)
 
     # Run Beryllium
-    run_imag_timeprop("be", "be 0 0 0", "sto-3g", cf.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    run_imag_timeprop("be", "be 0 0 0", "sto-3g", cf.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("be", "be 0 0 0", "sto-3g", cf.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("be", "be 0 0 0", "sto-3g", cf.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("be", "be 0 0 0", "sto-3g", qt.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("be", "be 0 0 0", "sto-3g", qt.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("be", "be 0 0 0", "sto-3g", qt.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("be", "be 0 0 0", "sto-3g", qt.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
-    run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", cf.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", cf.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", cf.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", cf.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", qt.CCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", qt.QCCD, hf_tol=1e-12, cc_tol=1e-12, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", qt.CCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("be", "be 0 0 0", "cc-pVDZ", qt.QCCSD, hf_tol=1e-12, cc_tol=1e-12, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
 
     # Run Lithium-Hydride
     lih = "Li 0 0 0; H 0 0 3.0708047314"
-    run_imag_timeprop("lih", lih, "sto-3g", cf.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    run_imag_timeprop("lih", lih, "sto-3g", cf.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("lih", lih, "sto-3g", cf.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("lih", lih, "sto-3g", cf.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("lih", lih, "sto-3g", qt.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("lih", lih, "sto-3g", qt.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("lih", lih, "sto-3g", qt.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("lih", lih, "sto-3g", qt.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
 
-    run_imag_timeprop("lih", lih, "cc-pVDZ", cf.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    run_imag_timeprop("lih", lih, "cc-pVDZ", cf.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("lih", lih, "cc-pVDZ", cf.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("lih", lih, "cc-pVDZ", cf.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("lih", lih, "cc-pVDZ", qt.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("lih", lih, "cc-pVDZ", qt.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("lih", lih, "cc-pVDZ", qt.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("lih", lih, "cc-pVDZ", qt.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
     # Run Ch+
     chp = f"C 0.0 0.0 0.0; H 0.0 0.0 2.13713"
-    run_imag_timeprop("chp", chp, "sto-3g", cf.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
-    run_imag_timeprop("chp", chp, "sto-3g", cf.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
-    # run_imag_timeprop("chp", chp, "sto-3g", cf.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("chp", chp, "sto-3g", cf.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("chp", chp, "sto-3g", qt.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
+    run_imag_timeprop("chp", chp, "sto-3g", qt.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
+    # run_imag_timeprop("chp", chp, "sto-3g", qt.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("chp", chp, "sto-3g", qt.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
-    run_imag_timeprop("chp", chp, "cc-pVDZ", cf.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
-    run_imag_timeprop("chp", chp, "cc-pVDZ", cf.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
-    # run_imag_timeprop("chp", chp, "cc-pVDZ", cf.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
-    # run_imag_timeprop("chp", chp, "cc-pVDZ", cf.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    run_imag_timeprop("chp", chp, "cc-pVDZ", qt.CCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
+    run_imag_timeprop("chp", chp, "cc-pVDZ", qt.QCCD, hf_tol=1e-10, cc_tol=1e-10, time=(None,None,0.05), integrator=integrator, integrator_args=integrator_args, charge=1)
+    # run_imag_timeprop("chp", chp, "cc-pVDZ", qt.CCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
+    # run_imag_timeprop("chp", chp, "cc-pVDZ", qt.QCCSD, hf_tol=1e-10, cc_tol=1e-10, time=(0,100,0.05), integrator=integrator, integrator_args=integrator_args)
 
 
 

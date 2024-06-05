@@ -1,6 +1,6 @@
 # https://onlinelibrary.wiley.com/doi/epdf/10.1002/qua.24487
 
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import pathlib as pl
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ import plot_utils as pu
 from IPython import embed
 
 
-class CustomSampler(cf.td.sampler.Sampler):
+class CustomSampler(qt.td.sampler.Sampler):
     def __init__(self, one_body=True, two_body=False, misc=True):
         super().__init__(one_body, two_body, misc)
         self.has_overlap = True
@@ -36,17 +36,17 @@ def run_Luzanov_Li2(quadratic=False):
     integrator = "GaussIntegrator"
     integrator_args = {"s": 3, "maxit": 20, "eps": 1e-6, "method": "A", "mu": 1.75}
     
-    b = cf.PyscfBasis(f"Li 0 0 0; Li 0 0 {r}", basis="6-311G").pyscf_hartree_fock()
+    b = qt.PyscfBasis(f"Li 0 0 0; Li 0 0 {r}", basis="6-311G").pyscf_hartree_fock()
     b.from_restricted()
 
     if quadratic:
-        cc = cf.QCCSD(b).run(tol=1e-8, vocal=True)
+        cc = qt.QCCSD(b).run(tol=1e-8, vocal=True)
     else:
-        cc = cf.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
+        cc = qt.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
 
-    tdcc = cf.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
+    tdcc = qt.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
     
-    tdcc.external_one_body = cf.pulse.Luzanov1(u, E_max, T, omega)
+    tdcc.external_one_body = qt.pulse.Luzanov1(u, E_max, T, omega)
     tdcc.sampler = CustomSampler()
 
     results = tdcc.run(vocal=True)
@@ -75,17 +75,17 @@ def run_Luzanov_H10(quadratic=False):
     integrator = "GaussIntegrator"
     integrator_args = {"s": 3, "maxit": 20, "eps": 1e-6, "method": "A", "mu": 1.75}
     
-    b = cf.PyscfBasis(geometry, basis="sto-3g").pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis="sto-3g").pyscf_hartree_fock()
     b.from_restricted()
 
     if quadratic:
-        cc = cf.QCCSD(b).run(tol=1e-8, vocal=True)
+        cc = qt.QCCSD(b).run(tol=1e-8, vocal=True)
     else:
-        cc = cf.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
+        cc = qt.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
 
-    tdcc = cf.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
+    tdcc = qt.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
     
-    tdcc.external_one_body = cf.pulse.Luzanov2(u, E_max, T, omega)
+    tdcc.external_one_body = qt.pulse.Luzanov2(u, E_max, T, omega)
     tdcc.sampler = CustomSampler()
 
     results = tdcc.run(vocal=True)

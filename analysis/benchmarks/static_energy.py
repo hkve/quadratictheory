@@ -3,7 +3,7 @@ import pandas as pd
 import pathlib as pl
 import json
 
-import clusterfock as cf
+import quadratictheory as qt
 from pyscf import gto, scf, fci, ao2mo
 from pyscf.cc.ccd import CCD
 from pyscf.cc.ccsd import CCSD
@@ -13,7 +13,7 @@ def run_cf_CC(geometry, basis, CC, restricted, **kwargs):
     tol = kwargs.get("tol", 1e-8)
     charge = kwargs.get("charge", 0)
     maxiters = kwargs.get("maxiters", 100)
-    b = cf.PyscfBasis(geometry, basis, restricted=restricted, charge=charge).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geometry, basis, restricted=restricted, charge=charge).pyscf_hartree_fock()
     cc = CC(b)
     
 
@@ -100,9 +100,9 @@ def two_particles(run=False):
         "cc-pVTZ"
     ]
 
-    cc_methods = [cf.CCD, cf.QCCD, cf.CCSD, cf.QCCSD]
+    cc_methods = [qt.CCD, qt.QCCD, qt.CCSD, qt.QCCSD]
 
-    mixer = cf.mix.DIISMixer(n_vectors=10)
+    mixer = qt.mix.DIISMixer(n_vectors=10)
 
     if run:
         for name, geometry in geometries.items():
@@ -144,10 +144,10 @@ def atoms(run=False):
     ]
 
     spin_restrictions = [False, True]
-    ccd_methods = [cf.GCCD, cf.RCCD]
-    ccsd_methods = [cf.GCCSD, cf.RCCSD]
+    ccd_methods = [qt.GCCD, qt.RCCD]
+    ccsd_methods = [qt.GCCSD, qt.RCCSD]
 
-    mixer = cf.mix.DIISMixer(n_vectors=10)
+    mixer = qt.mix.DIISMixer(n_vectors=10)
     
     if run:
         for name, geometry in geometries.items():
@@ -198,7 +198,7 @@ def other_atoms(run=False):
 
     basis = "cc-pVTZ"
 
-    cc_methods = [cf.CCD, cf.CCSD]
+    cc_methods = [qt.CCD, qt.CCSD]
     if run:
         for name, geometry in geometries.items():
             R = equilibrium[name]
@@ -245,8 +245,8 @@ def QCCSD_benchmark_N2(run=False):
         E_qcc = np.zeros_like(distances)
         for i, d in enumerate(distances):
             geometry = f"N 0 0 0; N 0 0 {d}"
-            mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=20, n_vectors=20)
-            E_qcc[i] = run_cf_CC(geometry, basis, cf.QCCSD, False, tol=1e-4, maxiters=200, mixer=mixer)
+            mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=20, n_vectors=20)
+            E_qcc[i] = run_cf_CC(geometry, basis, qt.QCCSD, False, tol=1e-4, maxiters=200, mixer=mixer)
         np.savez(filename_qcc, E_qcc)
 
         E_fci = np.zeros_like(distances)
@@ -307,7 +307,7 @@ def QCCSD_benhmark_Cooper_and_Knowls(run=False):
     if run:
         for i, d in enumerate(r):
             geometry = f"H 0 0 0; F 0 0 {d};"
-            qccsd[i] = run_cf_CC(geometry, basis, cf.QCCSD, restricted=False, tol=1e-4)
+            qccsd[i] = run_cf_CC(geometry, basis, qt.QCCSD, restricted=False, tol=1e-4)
 
         np.savez(filename_HF, qccsd)
     

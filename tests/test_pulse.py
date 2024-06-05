@@ -1,5 +1,5 @@
-from clusterfock import PyscfBasis
-from clusterfock.td.pulse import Sin2, DeltaKick
+from quadratictheory import PyscfBasis
+from quadratictheory.td.pulse import Sin2, DeltaKick
 from unittest import TestCase
 import numpy as np
 

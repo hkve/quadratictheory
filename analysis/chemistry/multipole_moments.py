@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -65,7 +65,7 @@ def run_expvals(name, basis, CC):
     geom = geometries[name]
     charge = charges[name]
 
-    b = cf.PyscfBasis(geom, basis, charge=charge, restricted=False).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geom, basis, charge=charge, restricted=False).pyscf_hartree_fock()
 
     run_kwargs = get_run_kwargs(CC)
     cc = CC(b).run(**run_kwargs)
@@ -85,7 +85,7 @@ def run_expvals_fci(name, basis):
     geom = geometries[name]
     charge = charges[name]
 
-    b = cf.PyscfBasis(geom, basis, charge=charge, restricted=True).pyscf_hartree_fock()
+    b = qt.PyscfBasis(geom, basis, charge=charge, restricted=True).pyscf_hartree_fock()
 
     rho = run_fci_density_matrix(geom, basis)
     r = b.r
@@ -129,8 +129,8 @@ def make_table():
     names = ["HF", "LiH"]
     basis = "cc-pVDZ"
     
-    df_cc = make_CC_table(names, basis, cf.CCSD)
-    df_qcc = make_CC_table(names, basis, cf.QCCSD)
+    df_cc = make_CC_table(names, basis, qt.CCSD)
+    df_qcc = make_CC_table(names, basis, qt.QCCSD)
 
     df_cc = residual(df_cc)
     df_qcc = residual(df_qcc)
@@ -148,9 +148,9 @@ if __name__ == "__main__":
     # )
 
     # print(
-    #     run_expvals(name, basis, cf.CCSD)
+    #     run_expvals(name, basis, qt.CCSD)
     # )
 
     # print(
-    #     run_expvals(name, basis, cf.QCCSD)
+    #     run_expvals(name, basis, qt.QCCSD)
     # )

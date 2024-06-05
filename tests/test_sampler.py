@@ -1,6 +1,6 @@
-from clusterfock import PyscfBasis
-from clusterfock.td.sampler import Sampler, DipoleSampler, OverlapSampler
-from clusterfock import CCD, TimeDependentCoupledCluster
+from quadratictheory import PyscfBasis
+from quadratictheory.td.sampler import Sampler, DipoleSampler, OverlapSampler
+from quadratictheory import CCD, TimeDependentCoupledCluster
 from unittest import TestCase
 
 

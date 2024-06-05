@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import pathlib as pl
 import matplotlib.pyplot as plt
@@ -16,17 +16,17 @@ def run_lie_et_al(quadratic=False):
     integrator = "GaussIntegrator"
     integrator_args = {"s": 3, "maxit": 20, "eps": 1e-6, "method": "A", "mu": 1.75}
     
-    b = cf.PyscfBasis(f"H 0 0 0; H 0 0 {r}", basis="6-311++Gss", restricted=False).pyscf_hartree_fock()
+    b = qt.PyscfBasis(f"H 0 0 0; H 0 0 {r}", basis="6-311++Gss", restricted=False).pyscf_hartree_fock()
 
     if quadratic:
-        cc = cf.QCCSD(b).run(tol=1e-8, vocal=True)
+        cc = qt.QCCSD(b).run(tol=1e-8, vocal=True)
     else:
-        cc = cf.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
+        cc = qt.CCSD(b).run(tol=1e-8, include_l=True, vocal=True)
 
-    tdcc = cf.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
+    tdcc = qt.TimeDependentCoupledCluster(cc, time=(0, t_end, dt), integrator=integrator, integrator_args=integrator_args)
     
-    tdcc.external_one_body = cf.pulse.LieEtAl(u, E_max, omega)
-    tdcc.sampler = cf.sampler.DipoleSampler()
+    tdcc.external_one_body = qt.pulse.LieEtAl(u, E_max, omega)
+    tdcc.sampler = qt.sampler.DipoleSampler()
 
     results = tdcc.run(vocal=True)
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     #     geom += f"H 0 0 {i};"
 
     # print(geom)
-    # b = cf.PyscfBasis(geom, basis="sto-3g").pyscf_hartree_fock()
+    # b = qt.PyscfBasis(geom, basis="sto-3g").pyscf_hartree_fock()
 
     # b.from_restricted()
     # print(b.h.shape)

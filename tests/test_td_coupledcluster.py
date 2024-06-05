@@ -1,13 +1,13 @@
 import numpy as np
 from unittest import TestCase
-from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, GCCSD, QCCD, QCCSD
-from clusterfock.td import TimeDependentCoupledCluster
-from clusterfock.basis import PyscfBasis
+from quadratictheory.hf import RHF
+from quadratictheory.cc import GCCD, GCCSD, QCCD, QCCSD
+from quadratictheory.td import TimeDependentCoupledCluster
+from quadratictheory.basis import PyscfBasis
 
-from clusterfock.td.pulse import Sin2
-from clusterfock.td.pulse import DeltaKick
-from clusterfock.td.sampler import DipoleSampler
+from quadratictheory.td.pulse import Sin2
+from quadratictheory.td.pulse import DeltaKick
+from quadratictheory.td.sampler import DipoleSampler
 
 
 class TestTimeDependentCoupledCluster(TestCase):

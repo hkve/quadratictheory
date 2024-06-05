@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import csv
 import numpy as np
 import pandas as pd
@@ -22,7 +22,7 @@ def run_hf(geometry, basis, restricted=False, **kwargs):
     charge = default["charge"]
     tol = default["tol"]
 
-    b = cf.PyscfBasis(geometry, basis, charge=charge)
+    b = qt.PyscfBasis(geometry, basis, charge=charge)
     b.pyscf_hartree_fock(tol=tol)
 
     if not restricted:
@@ -43,7 +43,7 @@ def run_cc(basis, CC, **kwargs):
         is_SD = True
 
     cc = CC(basis)
-    cc.mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+    cc.mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
     cc.run(**run_kwargs)
 
     W = {"0": 0.0,"S": 0.0,"D": 0.0,"T": 0.0,"Q": 0.0}
@@ -110,13 +110,13 @@ def atom_tests(run=False):
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis)
-            _, W_ccsd, _ = run_cc(b, cf.CCSD)
+            _, W_ccsd, _ = run_cc(b, qt.CCSD)
             W_ccsd["atom"] = atom
             
             append_to_file("CCSD_atoms.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            _, W_qccsd, _ = run_cc(b, cf.QCCSD)
+            _, W_qccsd, _ = run_cc(b, qt.QCCSD)
             W_qccsd["atom"] = atom
             
             append_to_file("QCCSD_atoms.csv", W_qccsd)
@@ -165,13 +165,13 @@ def molecule_tests(run=False):
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis, charge=charge)
-            _, W_ccsd, _ = run_cc(b, cf.CCSD)
+            _, W_ccsd, _ = run_cc(b, qt.CCSD)
             W_ccsd["name"] = atom
             
             append_to_file("CCSD_molecules.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            _, W_qccsd, _ = run_cc(b, cf.QCCSD)
+            _, W_qccsd, _ = run_cc(b, qt.QCCSD)
             W_qccsd["name"] = atom
             
             append_to_file("QCCSD_molecules.csv", W_qccsd)
@@ -218,14 +218,14 @@ def dissociation_lih(run=False):
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis)
-            E, W_ccsd, _ = run_cc(b, cf.CCSD)
+            E, W_ccsd, _ = run_cc(b, qt.CCSD)
             W_ccsd["r"] = r
             W_ccsd["E"] = E
             
             append_to_file("CCSD_lih.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            E, W_qccsd, _ = run_cc(b, cf.QCCSD)
+            E, W_qccsd, _ = run_cc(b, qt.QCCSD)
             W_qccsd["r"] = r
             W_qccsd["E"] = E
 
@@ -308,14 +308,14 @@ def dissociation_hf(run=False):
             print(f"FCI {geom}")
 
             b = run_hf(geom, basis)
-            E, W_ccsd = run_cc(b, cf.CCSD)
+            E, W_ccsd = run_cc(b, qt.CCSD)
             W_ccsd["r"] = r
             W_ccsd["E"] = E
             
             append_to_file("CCSD_dzp.csv", W_ccsd)
             print(f"CCSD {geom}")
 
-            E, W_qccsd = run_cc(b, cf.QCCSD)
+            E, W_qccsd = run_cc(b, qt.QCCSD)
             W_qccsd["r"] = r
             W_qccsd["E"] = E
 
@@ -323,7 +323,7 @@ def dissociation_hf(run=False):
             print(f"QCCSD {geom}")
 
 def size_extensivity():
-    CC = cf.QCCSD
+    CC = qt.QCCSD
     R_e = 1.4378925047
     R = 3*R_e
 

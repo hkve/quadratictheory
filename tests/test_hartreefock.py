@@ -1,7 +1,7 @@
 import numpy as np
 from unittest import TestCase
-from clusterfock.hf import HF
-from clusterfock.basis import PyscfBasis
+from quadratictheory.hf import HF
+from quadratictheory.basis import PyscfBasis
 import pyscf
 
 

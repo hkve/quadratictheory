@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "clusterfock"
+name = "quadratictheory"
 description = "Code made during my master thesis"
 readme = "README.md"
 version = "0.1.0"
@@ -26,7 +26,7 @@ dependencies = [
     # "pyscf-2.3.0",
 
 [project.urls]
-"Homepage" = "https://github.com/hkve/MasterCode"
+"Homepage" = "https://github.com/hkve/quadratictheory"
 
 [tool.black]
 line-length = 100

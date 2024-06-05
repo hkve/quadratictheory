@@ -1,8 +1,8 @@
 import numpy as np
 from unittest import TestCase
-from clusterfock.hf import RHF
-from clusterfock.cc import GCCD, RCCD, GCCSD, RCCSD
-from clusterfock.basis import PyscfBasis
+from quadratictheory.hf import RHF
+from quadratictheory.cc import GCCD, RCCD, GCCSD, RCCSD
+from quadratictheory.basis import PyscfBasis
 
 import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD

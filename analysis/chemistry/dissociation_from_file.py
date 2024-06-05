@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import clusterfock as cf
+import quadratictheory as qt
 
 import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
@@ -21,7 +21,7 @@ def get_dissociation(df):
 
 
 def run_CCD_pyscf(atom, basis, tol=1e-8):
-    basis = cf.PyscfBasis(atom, basis, restricted=True)
+    basis = qt.PyscfBasis(atom, basis, restricted=True)
     hf_pyscf = pyscf.scf.HF(basis.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
 
@@ -30,13 +30,13 @@ def run_CCD_pyscf(atom, basis, tol=1e-8):
 
 
 def run_CCD(atom, basis, tol=1e-8):
-    basis = cf.PyscfBasis(atom, basis, restricted=True)
-    hf = cf.HF(basis).run()
+    basis = qt.PyscfBasis(atom, basis, restricted=True)
+    hf = qt.HF(basis).run()
 
     basis.change_basis(hf.C)
     basis.from_restricted()
 
-    ccd = cf.CCD(basis).run(vocal=False, tol=tol, maxiters=100)
+    ccd = qt.CCD(basis).run(vocal=False, tol=tol, maxiters=100)
 
     energy = 0
     if not ccd.converged:
@@ -57,13 +57,13 @@ def plot_N2():
     for col in ["CCD", "FCI"]:
         ax.scatter(df_diss.R, df_diss[col], label=col)
 
-    cf_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
+    qt_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
     pyscf_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
     for i, r in enumerate(df_diss.R[:-2]):
-        cf_CCD[i] = run_CCD(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
+        qt_CCD[i] = run_CCD(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
         pyscf_CCD[i] = run_CCD_pyscf(atom=f"N 0 0 0; N 0 0 {r}", basis="sto-3g") - E0
 
-    ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
+    ax.scatter(df_diss.R, qt_CCD, label="qt.CCD")
     ax.scatter(df_diss.R, pyscf_CCD, label="pyscf.CCD")
     ax.legend()
     ax.set(xlabel=r"$\Delta R$", ylabel=r"$E(N_2) - 2E(N)$")
@@ -80,13 +80,13 @@ def plot_HF():
     for col in ["CCD", "FCI"]:
         ax.scatter(df_diss.R, df_diss[col], label=col)
 
-    cf_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
+    qt_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
     pyscf_CCD = np.zeros_like(df.R.to_numpy()) * np.nan
     for i, r in enumerate(df_diss.R):
-        cf_CCD[i] = run_CCD(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
+        qt_CCD[i] = run_CCD(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
         pyscf_CCD[i] = run_CCD_pyscf(atom=f"F 0 0 0; H 0 0 {r}", basis="DZ") - E0
 
-    ax.scatter(df_diss.R, cf_CCD, label="cf.CCD")
+    ax.scatter(df_diss.R, qt_CCD, label="qt.CCD")
     ax.scatter(df_diss.R, pyscf_CCD, label="pyscf.CCD")
     ax.legend()
     ax.set(xlabel=r"$\Delta R$", ylabel=r"$E(HF) - E(H) - E(F)$")

@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 from geometries import LiH_ccpVDZ, disassociate_2dof, disassociate_h2o
 from fci_pyscf import fci_pyscf
 
@@ -20,7 +20,7 @@ def run_hf(geometry, basis, restricted=False, **kwargs):
     charge = default["charge"]
     tol = default["tol"]
 
-    b = cf.PyscfBasis(geometry, basis, charge=charge)
+    b = qt.PyscfBasis(geometry, basis, charge=charge)
     b.pyscf_hartree_fock(tol=tol)
 
     if not restricted:
@@ -57,7 +57,7 @@ def run_cc(basis, CC, tol, maxiters, mixer, vocal):
                 W["T"] = cc.triples_weight()
     else:
         print("New attempt")
-        new_mixer = cf.mix.SoftStartDIISMixer(alpha=mixer.alpha + 0.1, start_DIIS_after=mixer.start_DIIS_after+10, n_vectors=mixer.n_vectors+4)
+        new_mixer = qt.mix.SoftStartDIISMixer(alpha=mixer.alpha + 0.1, start_DIIS_after=mixer.start_DIIS_after+10, n_vectors=mixer.n_vectors+4)
         return run_cc(basis, CC, tol, maxiters, mixer, vocal)
 
     return W
@@ -67,7 +67,7 @@ def run_weights_CC(geomtries, basis, CC, **kwargs):
         "vocal": False,
         "hf_tol": 1e-6,
         "cc_tol": 1e-4,
-        "mixer": cf.mix.RelaxedMixer(alpha=0.5),
+        "mixer": qt.mix.RelaxedMixer(alpha=0.5),
         "maxiters": 300
     }
 
@@ -239,8 +239,8 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
     plt.show()
 
 def plot_h2o(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False):
-    mets_map = {"CCD": cf.CCD, "CCSD": cf.CCSD} 
-    qmets_map = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD} 
+    mets_map = {"CCD": qt.CCD, "CCSD": qt.CCSD} 
+    qmets_map = {"QCCD": qt.QCCD, "QCCSD": qt.QCCSD} 
     all_mets = [standard, quad] + ["FCI"]
 
     names = [f"H20_{met}" for met in all_mets]
@@ -262,8 +262,8 @@ def plot_h2o(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fal
     plot_weights(weights, names=all_mets, y_max=1.5, filename=filename, drop_weights=drop_weights)
 
 def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=False):
-    mets_map = {"CCD": cf.CCD, "CCSD": cf.CCSD} 
-    qmets_map = {"QCCD": cf.QCCD, "QCCSD": cf.QCCSD} 
+    mets_map = {"CCD": qt.CCD, "CCSD": qt.CCSD} 
+    qmets_map = {"QCCD": qt.QCCD, "QCCSD": qt.QCCSD} 
     all_mets = [standard, quad] + ["FCI"]
 
     names = [f"N2_{met}" for met in all_mets]
@@ -285,11 +285,11 @@ def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fals
         geoms_qccd_1 = disassociate_2dof("N", "N", distances_qccd_1)
         geoms_qccd_2 = disassociate_2dof("N", "N", distances_qccd_2)
         
-        cc_mixer_1 = cf.mix.RelaxedMixer(alpha=0.5)
-        cc_mixer_2 = cf.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=10)
+        cc_mixer_1 = qt.mix.RelaxedMixer(alpha=0.5)
+        cc_mixer_2 = qt.mix.SoftStartDIISMixer(alpha=0.90, start_DIIS_after=40, n_vectors=10)
         
-        qcc_mixer_1 = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=5)
-        qcc_mixer_2 = cf.mix.SoftStartDIISMixer(alpha=0.9, start_DIIS_after=30, n_vectors=20)
+        qcc_mixer_1 = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=5)
+        qcc_mixer_2 = qt.mix.SoftStartDIISMixer(alpha=0.9, start_DIIS_after=30, n_vectors=20)
 
         # weights_CC_1 = run_weights_CC(geoms_ccd_1, "sto-3g", mets_map[standard], mixer=cc_mixer_1)
         # weights_CC_2 = run_weights_CC(geoms_ccd_2, "sto-3g", mets_map[standard], mixer=cc_mixer_2)
@@ -314,7 +314,7 @@ def plot_n2(run, standard="CCD", quad="QCCD", drop_weights=["T", "Q"], save=Fals
 if __name__ == "__main__":
     # geom = LiH_ccpVDZ["geometry"]
     # R = LiH_ccpVDZ["R"]
-    # weights_CC = run_weights_CC(geom, "cc-pVDZ", cf.QCCSD, vocal=True)
+    # weights_CC = run_weights_CC(geom, "cc-pVDZ", qt.QCCSD, vocal=True)
     # weights_FCI = run_weights_FCI(geom, "cc-pVDZ")
 
     # make_diatom_table(weights_CC, R, weights_FCI)

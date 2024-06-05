@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import csv
 import numpy as np
 import pandas as pd
@@ -16,7 +16,7 @@ def run_hf(geometry, basis, restricted=False, **kwargs):
     charge = default["charge"]
     tol = default["tol"]
 
-    b = cf.PyscfBasis(geometry, basis, charge=charge)
+    b = qt.PyscfBasis(geometry, basis, charge=charge)
     b.pyscf_hartree_fock(tol=tol, max_cycle=500)
 
     if not restricted:
@@ -37,7 +37,7 @@ def run_cc(basis, CC, **kwargs):
         is_SD = True
 
     cc = CC(basis)
-    cc.mixer = cf.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
+    cc.mixer = qt.mix.SoftStartDIISMixer(alpha=0.75, start_DIIS_after=10, n_vectors=10)
     cc.run(**run_kwargs)
 
     W = {"0": 0.0,"S": 0.0,"D": 0.0,"T": 0.0,"Q": 0.0}
@@ -80,8 +80,8 @@ def N2_ccPVTZ(run=False):
     geometries = [f"N 0 0 0; N 0 0 {r}" for r in distances]
     
     if run:
-        calculate_dissociation("dat/N2_CCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.CCSD)
-        calculate_dissociation("dat/N2_QCCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", cf.QCCSD)
+        calculate_dissociation("dat/N2_CCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", qt.CCSD)
+        calculate_dissociation("dat/N2_QCCSD_cc-pVTZ.csv", distances, geometries, "cc-pVTZ", qt.QCCSD)
 
     df_ccsd = pd.read_csv("dat/N2_CCSD_cc-pVTZ.csv")
     df_qccsd = pd.read_csv("dat/N2_QCCSD_cc-pVTZ.csv")

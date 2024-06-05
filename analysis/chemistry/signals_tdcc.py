@@ -1,4 +1,4 @@
-import clusterfock as cf
+import quadratictheory as qt
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -37,9 +37,9 @@ def run_cc(
 
     
     if mol is not None:
-        basis = cf.PyscfBasis(geometry, basis_name, charge=charge, mol=mol)
+        basis = qt.PyscfBasis(geometry, basis_name, charge=charge, mol=mol)
     else:
-        basis = cf.PyscfBasis(geometry, basis_name, charge=charge)
+        basis = qt.PyscfBasis(geometry, basis_name, charge=charge)
 
     basis.pyscf_hartree_fock()
     if not CC.__name__.startswith("R"):
@@ -51,7 +51,7 @@ def run_cc(
 
     cc = CC(basis).run(**cc_run_args)
 
-    tdcc = cf.TimeDependentCoupledCluster(
+    tdcc = qt.TimeDependentCoupledCluster(
         cc, time, integrator=integrator, integrator_args=integrator_args
     )
     tdcc.external_one_body = pulse
@@ -95,8 +95,8 @@ def delta_kick_compare(molecule_name, basis_name, **kwargs):
     integrator_args = kwargs["integrator_args"]
 
     time = (0, t_end, dt)
-    pulse = cf.pulse.DeltaKick(u, F_str, dt)
-    sampler = cf.sampler.DipoleSamplerExpanded()
+    pulse = qt.pulse.DeltaKick(u, F_str, dt)
+    sampler = qt.sampler.DipoleSamplerExpanded()
 
     run_cc(
         molecule_name,
@@ -104,7 +104,7 @@ def delta_kick_compare(molecule_name, basis_name, **kwargs):
         time,
         pulse,
         sampler,
-        cf.CCSD,
+        qt.CCSD,
         integrator,
         integrator_args=integrator_args,
         general_args=kwargs,
@@ -115,7 +115,7 @@ def delta_kick_compare(molecule_name, basis_name, **kwargs):
         time,
         pulse,
         sampler,
-        cf.QCCSD,
+        qt.QCCSD,
         integrator,
         integrator_args=integrator_args,
         general_args=kwargs,
@@ -144,8 +144,8 @@ def sin2_pulse_compare(molecule_name, basis_name, **kwargs):
     integrator_args = kwargs["integrator_args"]
 
     time = (0, t_end, dt)
-    pulse = cf.pulse.Sin2(u, F_str, omega, tprime)
-    sampler = cf.sampler.DipoleSamplerExpanded()
+    pulse = qt.pulse.Sin2(u, F_str, omega, tprime)
+    sampler = qt.sampler.DipoleSamplerExpanded()
 
     run_cc(
         molecule_name,
@@ -153,7 +153,7 @@ def sin2_pulse_compare(molecule_name, basis_name, **kwargs):
         time,
         pulse,
         sampler,
-        cf.CCSD,
+        qt.CCSD,
         integrator,
         integrator_args=integrator_args,
     )
@@ -163,7 +163,7 @@ def sin2_pulse_compare(molecule_name, basis_name, **kwargs):
         time,
         pulse,
         sampler,
-        cf.QCCSD,
+        qt.QCCSD,
         integrator,
         integrator_args=integrator_args,
     )
@@ -184,13 +184,13 @@ def delta_kick_1990_basis(CC):
     integrator_args = default["integrator_args"]
 
     time = (0, t_end, dt)
-    sampler = cf.sampler.DipoleSamplerExpanded()
+    sampler = qt.sampler.DipoleSamplerExpanded()
 
     polarisations = get_symmetries(geometry)
     us = [polarisations["z"], polarisations["y"]]
 
     for u in us:
-        pulse = cf.pulse.DeltaKick(u, F_str, dt)
+        pulse = qt.pulse.DeltaKick(u, F_str, dt)
 
         run_cc(
             name,
@@ -206,8 +206,8 @@ def delta_kick_1990_basis(CC):
 
 def main():
     pass
-    # delta_kick_1990_basis(cf.CCD)
-    # delta_kick_1990_basis(cf.CCSD)
+    # delta_kick_1990_basis(qt.CCD)
+    # delta_kick_1990_basis(qt.CCSD)
     # molecule_name, basis_name = "be", "cc-pVDZ"
     # delta_kick_compare("be", basis_name, charge=0)
     # delta_kick_compare("lih", basis_name, charge=0)
