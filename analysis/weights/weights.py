@@ -230,7 +230,7 @@ def plot_weights(weights, drop_weights=["S", "Q"], **kwargs):
         ylims = (ylims[0], y_max)
         ax.set_ylim(ylims)
 
-    ax.set(xlabel=r"$R$ [au]", ylabel=r"$W_\mu$")
+    ax.set(xlabel=r"$R$ [$a_0$]", ylabel=r"$W_\mu$")
     ax.legend(ncols=legend_cols, loc="upper left")
 
     if filename:

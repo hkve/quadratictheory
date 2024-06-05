@@ -64,7 +64,7 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
     if x_min is not None: ax[0].set_xlim(x_min, x_lims[1])
     if y_max is not None: ax[0].set_ylim(y_lims[0], y_max)
     if y_min is not None and y_max is not None: ax[0].set_ylim(y_min, y_max)
-    if ylabel: ax[0].set(ylabel=r"$E_{bound} - E_{free}$  [au]")
+    if ylabel: ax[0].set(ylabel=r"$E_{bound} - E_{free}$  [$E_h$]")
 
     for i, method in enumerate(methods[1:], start=1):
         ls = get_ls(method, dash_quad)
@@ -78,8 +78,8 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
     ax[1].set(xlim=xlims)
 
     ax[0].legend()
-    ax[1].set(xlabel="R [au]")
-    if ylabel: ax[1].set(ylabel=r"$|E - E_{FCI}|$ [au]")
+    ax[1].set(xlabel="R [$a_0$]")
+    if ylabel: ax[1].set(ylabel=r"$|E - E_{FCI}|$ [$E_h$]")
     
     if save_name: pl.save(save_name)
 
@@ -112,8 +112,8 @@ def plot_no_error(filename, splines=False, x_min=None, y_min=None, y_max=None, *
     if y_min is not None and y_max is not None: ax.set_ylim(y_min, y_max)
 
     ax.legend()    
-    ax.set(xlabel=r"$R$ [au]")
-    ax.set(ylabel=r"Energy  [au]")
+    ax.set(xlabel=r"$R$ [$a_0$]")
+    ax.set(ylabel=r"Energy  [$E_h$]")
 
 
 def plot_correlation(filename, splines=False, x_min=None, y_min=None, y_max=None, **kwargs):
@@ -149,8 +149,8 @@ def plot_correlation(filename, splines=False, x_min=None, y_min=None, y_max=None
     if y_min is not None and y_max is not None: ax.set_ylim(y_min, y_max)
 
     ax.legend()    
-    ax.set(xlabel=r"$R$ [au]")
-    ax.set(ylabel=r"Correlation Energy  [au]")
+    ax.set(xlabel=r"$R$ [$a_0$]")
+    ax.set(ylabel=r"Correlation Energy  [$E_h$]")
 
 def plot_N2():
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])

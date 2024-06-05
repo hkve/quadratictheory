@@ -98,6 +98,59 @@ def optimize(dr, filename):
     drutils.save_to_pickle(eval_seq_eq, new_filename)
     grutils.einsum_raw(dr, new_filename, eval_seq_eq)
 
+# def remove_term_from_str(string, symbol, order):
+#     from IPython import embed
+#     import re 
+
+#     pattern = r"\\lambda\^\{([a-z]{1})\}_\{([a-z]{1})\}"
+#     matches = [(match.group(), match.start()) for match in re.finditer(pattern, string)]
+    
+#     embed()
+
+
+def make_l1_subst_rules(dr):
+    l1 = drutils.make_rk1(dr, "\lambda")
+    o_dumms, v_dumms = drutils.get_indicies(dr, num=4)
+
+    subst_rules = []
+    for p in range(len(o_dumms)):
+        for q in range(len(v_dumms)):
+            i, a = o_dumms[p], v_dumms[q]
+            subst_rules.append(
+                {l1[a,i]: 0}
+            )
+
+    return subst_rules
+
+def make_l2_subst_rules(dr):
+    l2 = drutils.make_rk2(dr, "\lambda")
+    o_dumms, v_dumms = drutils.get_indicies(dr, num=4)
+
+    subst_rules = []
+    for p in range(len(o_dumms)):
+        for q in range(p+1, len(v_dumms)):
+            i, a = o_dumms[p], v_dumms[p]
+            j, b = o_dumms[q], v_dumms[q]
+            subst_rules.append(
+                {l2[a,b,i,j]: 0}
+            )
+
+    return subst_rules
+
+def make_t1_subst_rules(dr):
+    t1 = drutils.make_rk1(dr, "t")
+    o_dumms, v_dumms = drutils.get_indicies(dr, num=4)
+
+    subst_rules = []
+    for p in range(len(o_dumms)):
+        for q in range(len(v_dumms)):
+            i, a = o_dumms[p], v_dumms[q]
+            subst_rules.append(
+                {t1[a,i]: 0}
+            )
+
+    return subst_rules
+
 if __name__ == "__main__":
     dr = drutils.get_particle_hole_drudge(dummy=True)
 
@@ -136,18 +189,41 @@ if __name__ == "__main__":
     #     optimize(dr, filename)
 
     filenames = [
-        # "qccsd_energy_addition",
-        # "qccsd_t1_addition",
-        "qccsd_t2_addition",
-        # "qccsd_l1_addition",
-        # "qccsd_l2_addition",
+        # "TEST_qccsd_t1trans_t1_addition",
+        # "TEST_qccsd_t1trans_t2_addition",
+        # "TEST_qccsd_t1trans_l1_addition",
+        # "TEST_qccsd_t1trans_l2_addition",
+        "qccsd_2b_density"
     ]
 
-    num_terms = [5]
-
+    num_terms = [4]
     for i, filename in enumerate(filenames):
-        latex_eq = latex.texify(dr, filename, num_terms=num_terms[i])
+        # subst_rules_l1 = make_l1_subst_rules(dr)
+        # latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], subst_rules=subst_rules_l1)
 
-        print(f"{filename}\n\n")
-        print(latex_eq)
-        print("\n\n")
+        # print(f"{filename} l1 = 0\n\n")
+        # print(latex_eq)
+        # print("\n\n")
+
+        # subst_rules_l2 = make_l2_subst_rules(dr)
+        # latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], subst_rules=subst_rules_l2)
+
+        # print(f"{filename} l2 = 0\n\n")
+        # print(latex_eq)
+        # print("\n\n")
+
+        # latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], only_lambda_mix=True)
+
+        # print(f"{filename} l1l2 terms \n\n")
+        # print(latex_eq)
+        # print("\n\n")
+
+
+        subst_rules_t1 = make_t1_subst_rules(dr)
+        eqs = drutils.load_from_pickle(dr, filename)
+        for eq in eqs:
+            latex_eq = latex.texify(dr, eq, num_terms=num_terms[i], subst_rules=subst_rules_t1)
+
+            print(f"{eq.lhs} t1 = 0\n\n")
+            print(latex_eq)
+            print("\n\n")

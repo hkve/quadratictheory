@@ -237,7 +237,7 @@ def plot_HF_ccd():
 def plot_H2O_ccd():
     E_free = -74.73731393275897
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(6,8), height_ratios=[6,3])
-    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False)#, save_name="H2O_diss_ccd")
+    plot("csv/H2O_ccd.csv", axes, E0=E_free, splines=True, ylabel=True, x_min=1.20, y_max=0.07, dash_quad=False, save_name="H2O_diss_ccd")
     plt.show()
 
 """

@@ -97,16 +97,50 @@ def texify_weigth(dr, eq, **kwargs):
 
     return latex_str
 
+def zero_out(dr, eq, subst_rules):
+    new_eq = 0
+    for term in eq.local_terms:
+        
+        new_term = term
+        for subst_rule in subst_rules:
+            new_term = new_term.subst(subst_rule)
+
+        new_eq += new_term
+
+    return eq.drudge.einst(new_eq)
+
+def keep_only_lambda_mix(dr, eq):
+    new_eq = 0
+
+    for term in eq.local_terms:        
+        term_str = str(term)
+
+        if r"\lambda^1" in term_str and r"\lambda^2" in term_str:
+            new_eq += term
+
+    return eq.drudge.einst(new_eq)
 
 def texify(dr, filename, **kwargs):
     num_terms = kwargs.pop('num_terms', 0)
+    subst_rules = kwargs.pop('subst_rules', None)
+    only_lambda_mix = kwargs.pop('only_lambda_mix', False)
 
-    eq = drutils.load_from_pickle(dr, filename)
-    
+    if type(filename) == str:
+        eq = drutils.load_from_pickle(dr, filename)
+    else:
+        eq = filename
+
     p = perm._default_general_permutations(dr)
     
     new_eq = perm.permutations(eq, p)
     new_eq = sort_descending(new_eq)
+    
+    if subst_rules:
+        print("kom hit")
+        new_eq = zero_out(dr, new_eq, subst_rules=subst_rules)
+    elif only_lambda_mix:
+        new_eq = keep_only_lambda_mix(dr, eq)
+
     latex_str = pretty(new_eq.latex(), einst=True)
 
     if num_terms > 0:

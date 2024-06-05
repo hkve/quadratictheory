@@ -293,7 +293,7 @@ def list_results(method):
 
 def plot_energy():
     path = "dat"
-    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
+    filename = "ImagTimeProp_QCCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
     
     fig, ax = plt.subplots()
 
@@ -308,7 +308,7 @@ def plot_energy():
 
     ax.plot(t[1:], E_iter, label=r"$\delta E^{(n)}$")
     ax.plot(t, E_diff, label=r"$\delta E$")
-    ax.set(xlabel=r"$\pi_{\pm}$ [au]", ylabel=r"Energy [au]")
+    ax.set(xlabel=r"$\pi_{\pm}$ [a.u.]", ylabel=r"Energy [$E_h$]")
     ax.set_yscale("log")
     ax.legend()
     pl.save("Imag_time_prop_Be_QCCSD_energy")
@@ -317,7 +317,7 @@ def plot_energy():
 def plot_amplitudes():
     orders = [1, 2]
     path = "dat"
-    filename = "ImagTimeProp_CCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
+    filename = "ImagTimeProp_QCCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz"
     
     fig, ax = plt.subplots()
 
@@ -344,26 +344,26 @@ def plot_amplitudes():
     ax.plot(time, l_dot, label=r"$|\!|\dot{\lambda}_1|\!|_F + |\!|\dot{\lambda}_2|\!|_F$", c=pl.colors[3], ls="--")
 
     ax.legend()
-    ax.set(xlabel="$\pi_{\pm}$ [au]")
+    ax.set(xlabel="$\pi_{\pm}$ [a.u.]")
     ax.set_yscale("log")
     pl.save("Imag_time_prop_Be_QCCSD_amplitudes")
     plt.show()
 if __name__ == "__main__":
     # run()
     # plot()
-    # plot_energy()
-    # plot_amplitudes()
+    plot_energy()
+    plot_amplitudes()
     
     # list_results("CCSD")
     # list_results("QCCSD")
 
-    results = np.load("dat/ImagTimeProp_QCCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz")
+    # results = np.load("dat/ImagTimeProp_QCCSD_lih_cc-pVDZ_Rk4Integrator_0.05.npz")
 
-    print(list(results.keys()))
+    # print(list(results.keys()))
 
-    print(
-        results["energy"][-1]
-    )
-    print(
-        results["gs_energy"]
-    )
+    # print(
+    #     results["energy"][-1]
+    # )
+    # print(
+    #     results["gs_energy"]
+    # )

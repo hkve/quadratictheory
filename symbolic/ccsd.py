@@ -194,9 +194,10 @@ def L_densities(dr):
     o_dums, v_dums = drutils.get_indicies(dr, num=4)
     blocks, block_names = drutils.get_tb_density_blocks(dr, o_dums, v_dums)
     rho = _run_blocks(dr, blocks, block_names, T, L)
-    drutils.save_html(dr, "ccsd_2b_density", rho, block_names)
+    # drutils.save_html(dr, "ccsd_2b_density", rho, block_names)
     rho_eqs = drutils.define_tb_density_blocks(dr, rho, block_names, o_dums, v_dums)
-    grutils.einsum_raw(dr, "ccsd_l_2b_density", rho_eqs)
+    drutils.save_to_pickle(rho_eqs, "ccsd_2b_density")
+    # grutils.einsum_raw(dr, "ccsd_l_2b_density", rho_eqs)
 
 @drutils.timeme
 def energy_lambda_contribution_T1_trans(dr):
@@ -235,24 +236,35 @@ def main():
 
     # L_equations_T1_trans(dr)
     # energy_lambda_contribution_T1_trans(dr)
-    num_terms = [0, 6, 4, 6, 4, 6]
-    filenames = [
-        "ccsd_energy_raw",
-        "ccsd_t1_raw",
-        "ccsd_t2_raw",
-        "ccsd_l1_raw",
-        "ccsd_l2_raw",
-        "ccsd_lambda_energy",
-    ]
+    
+    # num_terms = [0, 6, 4, 6, 4, 6]
+    # filenames = [
+    #     "ccsd_energy_raw",
+    #     "ccsd_t1_raw",
+    #     "ccsd_t2_raw",
+    #     "ccsd_l1_raw",
+    #     "ccsd_l2_raw",
+    #     "ccsd_lambda_energy",
+    # ]
 
     import latex
-    for i, filename in enumerate(filenames):
-        eq = latex.texify(dr, filename, num_terms=num_terms[i])
+    # for i, filename in enumerate(filenames):
+    #     eq = latex.texify(dr, filename, num_terms=num_terms[i])
         
-        print(f"This is {filename}\n\n")
-        print(eq)
-        print("\n\n")
+    #     print(f"This is {filename}\n\n")
+    #     print(eq)
+    #     print("\n\n")
     
+    filename = "ccsd_2b_density"
+
+    eqs = drutils.load_from_pickle(dr, filename)
+    num_terms = 5
+    for eq in eqs:
+        eq_str = latex.texify(dr, eq, num_terms=5)
+            
+        print(f"This is {eq.lhs} \n")
+        print(eq_str)
+        print("\n\n")
 
 if __name__ == "__main__":
     main()

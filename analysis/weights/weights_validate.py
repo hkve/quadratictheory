@@ -283,9 +283,9 @@ def dissociation_lih(run=False):
 
             axes[1].plot(df["r"], diff, label=label)
 
-    axes[0].set(ylabel=r"E")
+    axes[0].set(ylabel=r"Energy [$E_h$]")
     axes[0].legend()
-    axes[1].set(xlabel="R [$a_0$]", ylabel=r"$|E - E_{FCI}|$")
+    axes[1].set(xlabel="R [$a_0$]", ylabel=r"$|E - E_{FCI}|$ [$E_h$]")
     axes[1].set_yscale("log")
     axes[1].legend()
     axes[1].set_ylim(1e-5,1e-4)
@@ -394,10 +394,10 @@ def size_extensivity():
     )
     embed()
 if __name__ == "__main__":
-    atom_tests(run=False)
+    # atom_tests(run=False)
     # molecule_tests(run=False)
 
-    # dissociation_lih(run=False)
+    dissociation_lih(run=False)
     # dissociation_hf(run=False)
 
     # size_extensivity()

@@ -56,7 +56,7 @@ def plot():
 
     ax.plot(time, dipole_ccsd, label="CCSD")
     ax.plot(time, dipole_qccsd, label="QCCSD", ls="--", dashes=(4,4))
-    ax.set(xlabel=r"$\omega t$", ylabel=r"$\mu_z (t)$")
+    ax.set(xlabel=r"$\omega t$", ylabel=r"$\mu_z (t)$ [a.u.]")
     ax.legend()
     pu.save("LieEtAl_dipoles")
     plt.show()
@@ -66,7 +66,7 @@ def plot():
 
     ax.plot(time, np.abs(dipole_ccsd-dipole_qccsd))
 
-    ax.set(xlabel=r"$\omega t$", ylabel=r"$\Delta \mu_z (t)$")
+    ax.set(xlabel=r"$\omega t$", ylabel=r"$\Delta \mu_z (t)$ [a.u.]")
     ax.set_yscale("log")
 
     ylims = ax.get_ylim()
@@ -79,15 +79,15 @@ if __name__ == "__main__":
     # run_lie_et_al(quadratic=False)
     # run_lie_et_al(quadratic=True)
 
-    # plot()
+    plot()
 
-    geom = ""
+    # geom = ""
 
-    for i in range(10):
-        geom += f"H 0 0 {i};"
+    # for i in range(10):
+    #     geom += f"H 0 0 {i};"
 
-    print(geom)
-    b = cf.PyscfBasis(geom, basis="sto-3g").pyscf_hartree_fock()
+    # print(geom)
+    # b = cf.PyscfBasis(geom, basis="sto-3g").pyscf_hartree_fock()
 
-    b.from_restricted()
-    print(b.h.shape)
+    # b.from_restricted()
+    # print(b.h.shape)

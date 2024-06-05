@@ -7,6 +7,7 @@ from pyscf.ci.cisd import tn_addrs_signs
 from pyscf import lib
 lib.num_threads(1)
 
+from matplotlib.ticker import StrMethodFormatter
 import plotting.plot_utils as pl
 
 def get_geometry(theta):
@@ -209,12 +210,13 @@ def plot_energy():
     ax[0].plot(thetas, ccsd["energy"], ls="-", marker=".", label="CCSD", c=c[1])
     ax[0].plot(thetas, qccsd["energy"], ls="-", marker=".", label="QCCSD", c=c[2])
     ax[0].legend()
-    ax[0].set(ylabel=r"Energy [au]")
+    ax[0].set(ylabel=r"Energy [$E_h$]")
     
     ax[1].plot(thetas, np.abs(ccsd["energy"]-fci["energy"]), ls="-", marker=".", label="CCSD", c=c[1])
     ax[1].plot(thetas, np.abs(qccsd["energy"]-fci["energy"]), ls="-", marker=".", label="QCCSD", c=c[2])
     ax[1].legend()
-    ax[1].set(xlabel=r"$\theta$", ylabel=r"$|E - E_{FCI}|$ [au]")
+    ax[1].set(xlabel=r"$\theta$", ylabel=r"$|E - E_{FCI}|$ [$E_h$]")
+    ax[1].xaxis.set_major_formatter(StrMethodFormatter(u"{x:.1f}°"))
     pl.save("h4_square_energy_dzps")
     plt.show()
 
@@ -244,6 +246,7 @@ def plot_weigths():
     labels = ["FCI", "CCSD", "QCCSD"]
     plt.figlegend(lines, labels, bbox_to_anchor=(0.89,1.0), ncol=5, labelspacing=0.)
     ax[2].set(xlabel=r"$\theta$")
+    ax[2].xaxis.set_major_formatter(StrMethodFormatter(u"{x:.1f}°"))
     pl.save("h4_square_weigths_dzp")
     plt.show()
 
@@ -257,5 +260,5 @@ def plot_weigths():
 
 if __name__ == "__main__":
     # run()
-    # plot_energy()
+    plot_energy()
     plot_weigths()

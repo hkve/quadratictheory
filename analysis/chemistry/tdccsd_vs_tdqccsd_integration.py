@@ -52,15 +52,15 @@ def plot(dts, omega=2.87, atom_name="he"):
 
     # energy_diff_ccsd_qccsd(dts, omega)
     
-    # energy_diff_after_pulse_off_integrators(dts, "CCD", omega=omega)
-    # energy_diff_after_pulse_off_integrators(dts, "QCCD", omega=omega)
+    energy_diff_after_pulse_off_integrators(dts, "CCSD", omega=omega)
+    energy_diff_after_pulse_off_integrators(dts, "QCCSD", omega=omega)
 
     energy_diff_after_pulse_off_methods(dts, "Rk4Integrator", omega)
     energy_diff_after_pulse_off_methods(dts, "GaussIntegrator", omega)
 
 def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_ccd"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = (2 * np.pi / omega)
 
@@ -92,7 +92,7 @@ def energy_diff_ccsd_qccsd(dts, omega, integrators=["Rk4Integrator", "GaussInteg
 
 def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk4Integrator", "GaussIntegrator"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_ccd"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -123,9 +123,9 @@ def energy_diff_after_pulse_off_integrators(dts, method, omega, integrators=["Rk
     plt.show()
 
 
-def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCD", "QCCD"]):
+def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCSD", "QCCSD"]):
     fig, ax = plt.subplots()
-    path = dat_path() / "he_integrator_test_ccd"
+    path = dat_path() / "he_integrator_long"
 
     cycle_length = 2*np.pi/omega
     ls = {
@@ -152,10 +152,10 @@ def energy_diff_after_pulse_off_methods(dts, integrator, omega, methods=["CCD", 
     ax.plot(np.nan, np.nan, label="CCSD", ls=ls["CCSD"], color="gray")
     ax.plot(np.nan, np.nan, label="QCCSD", ls=ls["QCCSD"], color="gray")
 
-    ax.set(xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$")
+    ax.set(xlabel=r"$\omega t /2 \pi$", ylabel=r"$|E(t) - E(t')|$ [$E_h$]")
     ax.set_yscale("log")
     ax.legend(ncol=3)
-    # pl.save(f"energy_diff_after_pulse_{integrator}")
+    pl.save(f"energy_diff_after_pulse_{integrator}")
     plt.show()
 
 def plot_dipole(dts, integrator, methods=["CCD", "QCCD"]):
