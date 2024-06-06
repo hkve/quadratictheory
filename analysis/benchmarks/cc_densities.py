@@ -2,7 +2,6 @@ from quadratictheory.basis import PyscfBasis
 from quadratictheory.hf import HF
 from quadratictheory.cc import CCD, CCSD
 
-from quantum_systems import construct_pyscf_system_rhf
 from coupled_cluster import CCSD as HyCCSD
 from coupled_cluster import CCD as HyCCD
 
@@ -21,48 +20,17 @@ def run_qt(atom, basis):
 
     return ccd
 
-def run_hyqd(atom, basis):
-    system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom), basis=basis)
-    ccd_hyqd = HyCCD(system)
-    ccd_hyqd.compute_ground_state(t_kwargs={"tol": 1e-8}, l_kwargs={"tol": 1e-8})
-
-    return ccd_hyqd.compute_one_body_density_matrix().real
-
-def ccd(atom, basis, tol=1e-4):
-    ccd = run_qt(atom, basis)
-    rho_qt = ccd.rho_ob
-
-    rho_hyqd = run_hyqd(atom, basis)
-
-    diff = np.abs(rho_qt - rho_hyqd)
-
-    indicies = np.argwhere(diff > tol)
-
-    print(f"For {atom}")
-    print(f"rho_cf_trace = {np.trace(rho_qt)}")
-    print(f"rho_hyqd_trace = {np.trace(rho_hyqd)}")
-    # print(f"Missmatched {len(indicies)}/{rho_qt.size}")
-    # for index in indicies:
-    #     i, j = index
-    #     if i >= j:
-    #         print(f"CF: {rho_qt[i,j]:.4e}, HYQD: {rho_hyqd[i,j]:.4e}, (i,j) = ({i},{j})")
-
 def ccd_expvals(atom, basis):
     b = PyscfBasis(atom, basis, restricted=False)
     hf = HF(b).run()
     b.change_basis(hf.C)
 
     rho_qt = run_qt(atom, basis).rho_ob
-    rho_hyqd = run_hyqd(atom, basis)
 
     r_qt = np.einsum("pq,iqp->i", rho_qt, b.r)
-    r_hyqd = np.einsum("pq,iqp->i", rho_hyqd, b.r)
 
     print(f"For {atom}")
-    print(f"{r_qt = }\n{r_hyqd = }")
-
-def ccsd(atom, basis):
-    pass
+    print(f"{r_qt = }\n")
 
 
 def main():

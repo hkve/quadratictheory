@@ -5,7 +5,6 @@ import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
 from pyscf.cc import GCCSD as pyscfCCSD
 
-from quantum_systems import construct_pyscf_system_rhf
 from coupled_cluster import CCSD as HyCCSD
 from coupled_cluster import CCD as HyCCD
 
@@ -55,17 +54,11 @@ def run_cc(atom, basis, db_results, tol=1e-8):
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccd_pyscf = pyscfCCD(hf_pyscf).run(verbose=0, tol=tol)
 
-    system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom["ccd"]), basis=basis)
-    ccd_hyqd = HyCCSD(system)
-    ccd_hyqd.compute_ground_state(t_kwargs={"tol": tol})
-    E_ccd_hyqd = ccd_hyqd.compute_energy().real
-
     print(
         f"""
         CCD for {b._atom_string} with {b._basis_string}
         clufo  = {ccd.energy():>20.6f}
         pyscf  = {ccd_pyscf.e_tot:>20.6f}
-        hyqd   = {E_ccd_hyqd:>20.6f}
         cccbdb = {db_results['ccd']:>20.6f}
         """
     )
@@ -77,18 +70,12 @@ def run_cc(atom, basis, db_results, tol=1e-8):
 
     hf_pyscf = pyscf.scf.HF(b.mol).run(verbose=0, tol=tol)
     ccsd_pyscf = pyscfCCSD(hf_pyscf).run(verbose=0, tol=tol)
-
-    system = construct_pyscf_system_rhf(molecule=angstrom_to_bohr(atom["ccsd"]), basis=basis)
-    ccsd_hyqd = HyCCSD(system)
-    ccsd_hyqd.compute_ground_state(t_kwargs={"tol": tol})
-    E_ccsd_hyqd = ccsd_hyqd.compute_energy().real
-
+    
     print(
         f"""
         CCSD for {b._atom_string} with {b._basis_string}
         clufo  = {ccsd.energy():>20.6f}
         pyscf  = {ccsd_pyscf.e_tot:>20.6f}
-        hyqd  =  {E_ccsd_hyqd:>20.6f}
         cccbdb = {db_results['ccsd']:>20.6f}
         """
     )
