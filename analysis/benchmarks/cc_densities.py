@@ -2,9 +2,6 @@ from quadratictheory.basis import PyscfBasis
 from quadratictheory.hf import HF
 from quadratictheory.cc import CCD, CCSD
 
-from coupled_cluster import CCSD as HyCCSD
-from coupled_cluster import CCD as HyCCD
-
 from cccbdb_comparison import angstrom_to_bohr
 import numpy as np
 

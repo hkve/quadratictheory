@@ -5,9 +5,6 @@ import pyscf
 from pyscf.cc.ccd import CCD as pyscfCCD
 from pyscf.cc import GCCSD as pyscfCCSD
 
-from coupled_cluster import CCSD as HyCCSD
-from coupled_cluster import CCD as HyCCD
-
 
 def angstrom_to_bohr(input_string):
     c = 1.8897259886
