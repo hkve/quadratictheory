@@ -22,8 +22,10 @@ dependencies = [
     "scipy~=1.11.2",
     "pyscf~=2.3.0",
     "tqdm~=4.64.1",
+    "pytest~=7.4.2",
+    "rk4_integrator@git+https://github.com/HyQD/rk4-integrator#egg=master",
+    "gauss_integrator@git+https://github.com/HyQD/gauss-integrator#egg=master",
 ]
-    # "pyscf-2.3.0",
 
 [project.urls]
 "Homepage" = "https://github.com/hkve/quadratictheory"
