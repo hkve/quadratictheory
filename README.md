@@ -1,4 +1,4 @@
-# ``quadratictheory``
+# Quadratic Coupled Cluster Theory
 We present functionality to perform a variety of coupled cluster (CC) calculation for atomic and molecular systems in the package ``quadratictheory``, interfaced with [``PySCF``](https://pyscf.org/index.html). In particular, the quadratic coupled cluster (QCC) theories of [Troy Van Voorhis and Martin Head-Gordon](https://www.sciencedirect.com/science/article/pii/S0009261400011374?casa_token=iXLM3MZtmbUAAAAA:ggKW7m3vTGZk3w_Y--fxKO9Prhwsgyi_J_CWwiKHsOAPIZYeTny21g-B5_ALLlmw0vqGqU4fng) are implemented, include time evolution.
 
 ## Installation
