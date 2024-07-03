@@ -18,7 +18,7 @@ from quadratictheory.cc.weights.ccsd import (
 from quadratictheory.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from quadratictheory.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
 
-from quadratictheory.cc.densities.l_RCCSD import one_body_density_restricted
+from quadratictheory.cc.densities.l_RCCSD import one_body_density_restricted, two_body_density_restricted
 from quadratictheory.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
 
@@ -212,6 +212,19 @@ class RCCSD(CoupledCluster):
         rho = one_body_density_restricted(rho, t1, t2, l1, l2, o, v)
 
         return rho
+
+    def _calculate_one_body_density(self) -> np.ndarray:
+        basis = self.basis
+        rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
+
+        l1, t1 = self._l[1], self._t[1]
+        l2, t2 = self._l[2], self._t[2]
+        o, v = basis.o, basis.v
+
+        rho = two_body_density_restricted(rho, t1, t2, l1, l2, o, v)
+
+        return rho
+        
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis

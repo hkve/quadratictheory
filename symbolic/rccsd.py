@@ -112,8 +112,14 @@ def _run_blocks(dr, blocks, block_names):
 
 def L_densities(dr, basename):
     # One body
-    o_dums, v_dums = drutils.get_indicies(dr, num=2)
-    blocks, block_names = drutils.get_ob_density_blocks_restricted(dr, o_dums, v_dums)
+    # o_dums, v_dums = drutils.get_indicies(dr, num=2)
+    # blocks, block_names = drutils.get_ob_density_blocks_restricted(dr, o_dums, v_dums)
+    # rho = _run_blocks(dr, blocks, block_names)
+    # drutils.save_html(dr, basename + "_rho_ob", rho, block_names)
+
+    # Two body
+    o_dums, v_dums = drutils.get_indicies(dr, num=4)
+    blocks, block_names = drutils.get_tb_density_blocks_restricted(dr, o_dums, v_dums)
     rho = _run_blocks(dr, blocks, block_names)
     drutils.save_html(dr, basename + "_rho_ob", rho, block_names)
 

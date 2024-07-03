@@ -291,6 +291,21 @@ def get_ob_density_blocks_restricted(dr, o_dums, v_dums):
 
     return blocks, block_names
 
+def get_tb_density_blocks_restricted(dr, o_dums, v_dums):
+    assert len(o_dums) == 4 and len(v_dums) == 4
+
+    i, j, k, l = o_dums
+    a, b, c, d = v_dums
+
+    e_ = get_restricted_secondquant_operator(dr)
+
+    blocks = [
+        ...
+    ]
+
+    block_names = ["oooo", "vvvv", "oovv", "vvoo", "ovov", "ooov", "ovoo", "vvvo", "vovv"]
+
+    return blocks, block_names
 def get_tb_density_blocks(dr, o_dums, v_dums):
     assert len(o_dums) == 4 and len(v_dums) == 4
 
