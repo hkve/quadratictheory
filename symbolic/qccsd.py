@@ -139,7 +139,7 @@ def make_l2_subst_rules(dr):
 
 def make_t1_subst_rules(dr):
     t1 = drutils.make_rk1(dr, "t")
-    o_dumms, v_dumms = drutils.get_indicies(dr, num=4)
+    o_dumms, v_dumms = drutils.get_indicies(dr, num=6)
 
     subst_rules = []
     for p in range(len(o_dumms)):
@@ -191,9 +191,9 @@ if __name__ == "__main__":
     filenames = [
         # "TEST_qccsd_t1trans_t1_addition",
         # "TEST_qccsd_t1trans_t2_addition",
-        # "TEST_qccsd_t1trans_l1_addition",
+        "TEST_qccsd_t1trans_l1_addition",
         # "TEST_qccsd_t1trans_l2_addition",
-        "qccsd_2b_density"
+        # "qccsd_2b_density"
     ]
 
     num_terms = [4]
@@ -205,12 +205,13 @@ if __name__ == "__main__":
         # print(latex_eq)
         # print("\n\n")
 
-        # subst_rules_l2 = make_l2_subst_rules(dr)
-        # latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], subst_rules=subst_rules_l2)
+        subst_rules_l2 = make_l2_subst_rules(dr)
+        print(subst_rules_l2)
+        latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], subst_rules=subst_rules_l2)
 
-        # print(f"{filename} l2 = 0\n\n")
-        # print(latex_eq)
-        # print("\n\n")
+        print(f"{filename} l2 = 0\n\n")
+        print(latex_eq)
+        print("\n\n")
 
         # latex_eq = latex.texify(dr, filename, num_terms=num_terms[i], only_lambda_mix=True)
 
@@ -219,11 +220,11 @@ if __name__ == "__main__":
         # print("\n\n")
 
 
-        subst_rules_t1 = make_t1_subst_rules(dr)
-        eqs = drutils.load_from_pickle(dr, filename)
-        for eq in eqs:
-            latex_eq = latex.texify(dr, eq, num_terms=num_terms[i], subst_rules=subst_rules_t1)
+        # subst_rules_t1 = make_t1_subst_rules(dr)
+        # eqs = drutils.load_from_pickle(dr, filename)
+        # for eq in eqs:
+        #     latex_eq = latex.texify(dr, eq, num_terms=num_terms[i], subst_rules=subst_rules_t1)
 
-            print(f"{eq.lhs} t1 = 0\n\n")
-            print(latex_eq)
-            print("\n\n")
+        #     print(f"{eq.lhs} t1 = 0\n\n")
+        #     print(latex_eq)
+        #     print("\n\n")

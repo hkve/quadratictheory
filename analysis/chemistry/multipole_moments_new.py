@@ -134,7 +134,42 @@ def density_matrix_asymmetry(run=False):
             table[f"{method}2"].append(data["delta_rho_tb"])
 
     table_df = pd.DataFrame(table)
-    table_df.insert(loc=0, column="basis", value=names)
+    table_df.insert(loc=0, column="sys", value=names)
+
+    print(table_df)
+    ### Plot
+    fig, ax = plt.subplots()
+
+    markers = ["." , "s" , "p" , "P" , "*" , "x", "d"]
+
+    table_df.at[table_df['sys'].tolist().index('CH+'),'sys'] = "CH$^+$"
+    table_df.at[table_df['sys'].tolist().index('H2O'),'sys'] = "H$_2$O"
+    table_df.at[table_df['sys'].tolist().index('BeH2'),'sys'] = "BeH$_2$"
+    table_df.at[table_df['sys'].tolist().index('N2'),'sys'] = "N$_2$"
+    print(table_df)
+
+    ax.scatter(None, None, label="One-body", color=pl.colors[1])
+    for i, row in enumerate(table_df.itertuples()):
+        ax.scatter(row.QCCSD1, row.CCSD1, color=pl.colors[1], marker=markers[i])
+        ax.scatter(row.QCCSD2, row.CCSD2, color=pl.colors[0], marker=markers[i])
+
+        ax.scatter(None, None, label=row.sys, marker=markers[i], color="k")
+        if i == 3:
+            ax.scatter(None, None, label="Two-body", color=pl.colors[0])
+
+
+    ax.plot((0,1.2),(0,1.2), color="gray", ls="--", alpha=0.5)
+    ax.plot((0,0.12),(0,1.2), color="gray", ls="--", alpha=0.5)
+    ax.plot((0,0.012),(0,1.2), color="gray", ls="--", alpha=0.5)
+    ax.set(xlim=(1e-5,1.2), ylim=(1e-5,1.2), ylabel="$N_i$ (CCSD)", xlabel="$N_i$ (QCCSD)")
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.legend(ncol=2)
+    fig.savefig("test.pdf", transparent=True)
+    plt.show()
+
+    ###
+
 
     table_df["ratio1"] = table_df["CCSD1"]/table_df["QCCSD1"]
     table_df["ratio2"] = table_df["CCSD2"]/table_df["QCCSD2"]
@@ -144,7 +179,8 @@ def density_matrix_asymmetry(run=False):
     for col in ["ratio1", "ratio2"]:
         table_df[col] = table_df[col].map(lambda x: f"{x:.2f}")      
 
-    print(table_df.to_latex(index=False))
+    # print(table_df.to_latex(index=False))
+
 
 
 def compare_with_fci(run=False):
@@ -187,7 +223,7 @@ def compare_with_fci(run=False):
     # print(table_df.to_latex(index=False))
 
     # Just one
-    expval = "quadropole_e"
+    expval = "dipole"
     table = {"name": [], "basis": [], "CCSD": [], "QCCSD": [], "FCI": []}
     for name in names:
         for basis in basis_sets:
@@ -243,8 +279,10 @@ def partial_expvals(rho, A, o, v, name, fci_reslts=None, vocal=True):
     return oo, vv, ov, vo
 
 def run_density_diff(run=False, show=False):
-    names = ["LiH", "HF"]
+    # names = ["LiH", "HF"]
     basis_sets = ["6-31g", "6-31g*", "cc-pVDZ"]
+    names = ["LiH"]
+    # basis_sets = ["6-31g*", "cc-pVDZ"]
 
     folder = "dat/density"
     if run:
@@ -254,18 +292,18 @@ def run_density_diff(run=False, show=False):
             for basis in basis_sets:
                 b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
                 fci = run_fci_density_matrix(geom, basis)
-                np.savez(f"{folder}/density_FCI_{name}_{basis}", fci)
+                np.savez(f"{folder}/density_FCI_{name}_{basis}_test", fci)
                 print(f"Done FCI {name} {basis}")
 
                 cc = qt.CCSD(b).run(tol=1e-10, include_l=True)
                 ccsd = cc.one_body_density()
-                np.savez(f"{folder}/density_CCSD_{name}_{basis}", ccsd)
+                np.savez(f"{folder}/density_CCSD_{name}_{basis}_test", ccsd)
                 print(f"Done CCSD {name} {basis}")
 
 
                 qcc = qt.QCCSD(b).run(tol=1e-10)
                 qccsd = qcc.one_body_density()
-                np.savez(f"{folder}/density_QCCSD_{name}_{basis}", qccsd)
+                np.savez(f"{folder}/density_QCCSD_{name}_{basis}_test", qccsd)
                 print(f"Done QCCSD {name} {basis}")
 
     if show:
@@ -273,9 +311,9 @@ def run_density_diff(run=False, show=False):
             geom = geometries[name]
             for basis in basis_sets:
                 b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock(tol=1e-10)
-                fci = np.load(f"{folder}/density_FCI_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
-                ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
-                qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}.npz", allow_pickle=True)["arr_0"]
+                fci = np.load(f"{folder}/density_FCI_{name}_{basis}_test.npz", allow_pickle=True)["arr_0"]
+                ccsd = np.load(f"{folder}/density_CCSD_{name}_{basis}_test.npz", allow_pickle=True)["arr_0"]
+                qccsd = np.load(f"{folder}/density_QCCSD_{name}_{basis}_test.npz", allow_pickle=True)["arr_0"]
 
                 diff_cc = ccsd - fci
                 diff_qcc = qccsd - fci
@@ -339,6 +377,7 @@ def run_density_diff(run=False, show=False):
             table["name"].append(name)
 
     df_table = pd.DataFrame(table)
+    print(df_table)
     for method in ["CCSD", "QCCSD"]:
         for block in ["oo", "vv", "ov", "vo"]:
             df_table[f"{method}{block}"] = df_table[f"{method}{block}"].map(lambda x: f"{x:.3f}")
@@ -468,10 +507,199 @@ def run_expval_test():
     from IPython import embed
     embed()
 
+def plot_expvals_differences():
+    names = ["LiH", "HF"]
+    basis_sets = ["6-31g", "6-31g*", "cc-pVDZ"] #["6-31g", "6-31g*"]
+
+    expval = "dipole"
+    table = {"name": [], "basis": [], "CCSD": [], "QCCSD": [], "FCI": []}
+    for name in names:
+        for basis in basis_sets:
+            for method in ["CCSD", "QCCSD", "FCI"]:
+                data = load_json(f"{name}_{basis}_{method.lower()}")
+                if expval == "dipole":
+                    table[f"{method}"].append(data["dipole"][2])
+                if expval == "quadropole_e":
+                    table[f"{method}"].append(data["quadropole_e"][2][2])
+                        
+            table["name"].append(name)
+            table["basis"].append(basis)
+
+    table_df = pd.DataFrame(table)
+    
+    system = "HF"
+
+    df = table_df[table_df["name"] == system]
+    
+    species = df["basis"].to_list()
+
+    ccsd = df["CCSD"] - df["FCI"]
+    qccsd = df["QCCSD"] - df["FCI"]
+    fci = df["FCI"]
+
+    print(fci)
+    exit()
+    data = {
+        "CCSD": ccsd/fci * 100,
+        "QCCSD": qccsd/fci * 100,
+    }
+
+    colors = {
+        "CCSD": "red",
+        "QCCSD": "green",
+    }
+
+    x = np.arange(3)  # the label locations
+    width = 0.25  # the width of the bars
+    multiplier = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for attribute, measurement in data.items():
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, label=attribute, color=colors[attribute],edgecolor="black")
+        ax.bar_label(rects, padding=3, fmt=lambda x: rf"{x:.3f} \%")
+        multiplier += 1
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel(r'Dipole moment relative error to FCI [\%]')
+    ax.set_xticks(x + width/2, species)
+    ax.set_xlabel("Basis set")
+    ax.legend(loc='upper left', ncols=3)
+    # plt.gca().invert_yaxis()
+    # ax.set_ylim(0, 250)
+
+    fig.savefig("test.pdf", transparent=True)
+    plt.show()
+    # print(table_df)
+    # for method in ["CCSD", "QCCSD"]:
+    #     table_df[f"{method}d"] = 1000*(table_df[f"{method}"] - table_df[f"FCI"])
+
+    #     table_df[f"{method}d"] = table_df[f"{method}d"].map(lambda x: f"{x:.3f}")
+
+
+def plot_expvals_differences_partitioned():
+    fci = 0.715342
+    data = {
+        "CCSD": np.array([-0.295, 2.562, -3.426, 2.827])*1e-3/fci * 100,
+        "QCCSD": np.array([-0.287, 2.662, 1.521, 1.017])*1e-3/fci * 100,
+    }
+
+    species = ["$\gamma_{ij}$", "$\gamma_{ab}$", "$\gamma_{ia}$", "$\gamma_{ai}$"]
+
+    print(
+        data["CCSD"].sum(),
+        data["QCCSD"].sum(),
+    )
+
+    x = np.arange(4)  # the label locations
+    width = 0.4  # the width of the bars
+    multiplier = 0
+
+    colors = {
+        "CCSD": "red",
+        "QCCSD": "green",
+    }
+    fig, ax = plt.subplots(layout='constrained')
+
+    for attribute, measurement in data.items():
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, label=attribute, color=colors[attribute],edgecolor="black")
+        ax.bar_label(rects, padding=3, fmt=lambda x: rf"{x:.3f}\%")
+        multiplier += 1
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel(r'Dipole moment relative error to FCI [\%]')
+    ax.set_xticks(x + width/2, species)
+    ax.set_xlabel("Block contribution")
+    ax.legend(loc='lower left', ncols=3)
+    fig.savefig("test.pdf", transparent=True)
+    plt.show()
+
+def plot_expvals_differences_partitioned2():
+    fci = 0.715342
+
+    data = {
+        "oo": np.array([-0.295,-0.287])*1e-3/fci * 100, 
+        "vv": np.array([2.562,2.662])*1e-3/fci * 100,
+        "ov": np.array([-3.426, 1.521])*1e-3/fci * 100,
+        "vo": np.array([2.827, 1.017])*1e-3/fci * 100,
+    }
+
+    species = ["CCSD", "QCCSD", ]
+
+
+    x = np.arange(2)  # the label locations
+    width = 0.25  # the width of the bars
+    multiplier = 0
+
+    colors = {
+        "oo": "red",
+        "vv": "green",
+        "vo": "blue",
+        "ov": "purple",
+    }
+    fig, ax = plt.subplots(layout='constrained')
+
+    for attribute, measurement in data.items():
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, label=attribute, color=colors[attribute],edgecolor="black")
+        ax.bar_label(rects, padding=3, fmt=lambda x: rf"{x:.3f} \%")
+        multiplier += 1
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel(r'Dipole moment relative error to FCI [\%]', fontsize=12)
+    ax.set_xticks(x + width/2, species)
+    ax.set_xlabel("Method")
+    ax.legend(loc='upper left', ncols=3)
+
+    plt.show()
+
+def wtf():
+    name = "HF"
+    geom = geometries[name]
+    basis = "cc-pVDZ"
+
+    b = qt.PyscfBasis(geom, basis, restricted=False).pyscf_hartree_fock()
+
+    ccsd = qt.CCSD(b).run(include_l=True)
+    qccsd = qt.QCCSD(b).run()
+
+    rho_ccsd = ccsd.one_body_density()
+    rho_qccsd = qccsd.one_body_density()
+    rho_fci = run_fci_density_matrix(geom, basis)
+
+    oo_fci, vv_fci, ov_fci, vo_fci = partial_expvals(rho_fci, b.r, b.o, b.v, name, vocal=False)
+            
+    oo, vv, ov, vo = partial_expvals(rho_ccsd, b.r, b.o, b.v, name, vocal=False)
+    
+
+    diff_oo = (oo - oo_fci)*1000
+    diff_vv = (vv - vv_fci)*1000
+    diff_ov = (ov - ov_fci)*1000
+    diff_vo = (vo - vo_fci)*1000
+    
+    print(f"CCSD {name} {basis}, sum = {diff_oo+diff_vv+diff_ov+diff_vo:.3}")
+    print(f"{diff_oo:.3f} & {diff_vv:.3f} & {diff_ov:.3f} & {diff_vo:.3f}")
+
+    oo, vv, ov, vo = partial_expvals(rho_qccsd, b.r, b.o, b.v, name, vocal=False)
+
+    diff_oo = (oo - oo_fci)*1000
+    diff_vv = (vv - vv_fci)*1000
+    diff_ov = (ov - ov_fci)*1000
+    diff_vo = (vo - vo_fci)*1000
+    
+    print(f"QCCSD {name} {basis}, sum = {diff_oo+diff_vv+diff_ov+diff_vo:.3}")
+    print(f"{diff_oo:.3f} & {diff_vv:.3f} & {diff_ov:.3f} & {diff_vo:.3f}")
+    
+
 if __name__ == "__main__":
     # density_matrix_asymmetry(run=False)
     # compare_with_fci(run=False)
+
     # run_density_test()
     # run_expval_test()
 
-    run_density_diff(run=False, show=False)
+    # run_density_diff(run=False, show=False)
+    # plot_expvals_differences()
+    plot_expvals_differences_partitioned()
+
+    # wtf()
+    # run_density_diff(run=False)

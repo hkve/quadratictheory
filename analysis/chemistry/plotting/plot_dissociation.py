@@ -46,7 +46,7 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
 
     for i, method in enumerate(methods):
         ls = get_ls(method, dash_quad)
-        e = df[method].to_numpy() - E0
+        e = df[method].to_numpy()# - E0
         ax[0].scatter(r, e, color=c[i], label=method, marker=m[i])
 
         if splines:
@@ -63,8 +63,9 @@ def plot(filename, ax, E0=None, splines=False, x_min=None, y_min=None, y_max=Non
     ax[0].hlines(0, *x_lims, color="k", ls="--", alpha=0.4)
     if x_min is not None: ax[0].set_xlim(x_min, x_lims[1])
     if y_max is not None: ax[0].set_ylim(y_lims[0], y_max)
-    if y_min is not None and y_max is not None: ax[0].set_ylim(y_min, y_max)
-    if ylabel: ax[0].set(ylabel=r"$E_{bound} - E_{free}$  [$E_h$]")
+    # if y_min is not None and y_max is not None: ax[0].set_ylim(y_min, y_max)
+    ax[0].set_ylim(-107.8,-107.2)
+    if ylabel: ax[0].set(ylabel=r"Energy  [$E_h$]")
 
     for i, method in enumerate(methods[1:], start=1):
         ls = get_ls(method, dash_quad)

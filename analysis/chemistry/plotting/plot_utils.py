@@ -24,7 +24,7 @@ def make_figs_path(filename):
 def save(filename):
     if filename:
         filename = make_figs_path(filename)
-        plt.savefig(filename)
+        plt.savefig(filename, transparent=True)
 
 fancy = True
 

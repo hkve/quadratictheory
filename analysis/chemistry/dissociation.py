@@ -292,10 +292,10 @@ def calculate_H2O_ccsd():
 
 def plot_N2_ccsd():
     plot_no_error("csv/N2_ccsd_TZ.csv", splines=True, y_max=-108.3, x_min=1.25)
-    pu.save("N2_cc-pVDZ_dissociation_energy")
+    pu.save("N2_cc-pVTZ_dissociation_energy")
     plt.show()
     plot_correlation("csv/N2_ccsd_TZ.csv", splines=True)
-    pu.save("N2_cc-pVDZ_dissociation_correlation_energy")
+    pu.save("N2_cc-pVTZ_dissociation_correlation_energy")
     plt.show()
 
 def plot_H2O_ccsd():
@@ -304,7 +304,7 @@ def plot_H2O_ccsd():
 
 def main():
     # calculate_N2_ccd()
-    # plot_N2_ccd()
+    plot_N2_ccd()
 
     # calculate_LiH_ccd()
     # plot_LiH_ccd()
@@ -319,7 +319,7 @@ def main():
     # plot_H2O_ccsd()
 
     # calculate_N2_ccsd()
-    plot_N2_ccsd()
+    # plot_N2_ccsd()
 
 def test():
     geom, = disassociate_h2o(4.5)
