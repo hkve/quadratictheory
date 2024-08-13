@@ -5,6 +5,8 @@ def lambda_amplitudes_intermediates_rccsd(t1, t2, l1, l2, u, f, v, o):
     rhs1 = lambda_amplitudes_intermediates_rccsd_l1(t1, t2, l1, l2, u, f, v, o)
     rhs2 = lambda_amplitudes_intermediates_rccsd_l2(t1, t2, l1, l2, u, f, v, o)
 
+    rhs2 = 0.5*(rhs2 + rhs2.transpose(1,0,3,2))
+
     return rhs1, rhs2
 
 

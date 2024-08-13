@@ -5,6 +5,8 @@ def amplitudes_intermediates_rccsd(t1, t2, u, f, v, o):
     rhs1 = amplitudes_intermediates_rccsd_t1(t1, t2, u, f, v, o)
     rhs2 = amplitudes_intermediates_rccsd_t2(t1, t2, u, f, v, o)
 
+    rhs2 = 0.5*(rhs2 + rhs2.transpose(1,0,3,2))
+
     return rhs1, rhs2
 
 
