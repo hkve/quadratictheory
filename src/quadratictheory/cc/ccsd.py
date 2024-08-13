@@ -213,7 +213,7 @@ class RCCSD(CoupledCluster):
 
         return rho
 
-    def _calculate_one_body_density(self) -> np.ndarray:
+    def _calculate_two_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)
 
@@ -222,6 +222,7 @@ class RCCSD(CoupledCluster):
         o, v = basis.o, basis.v
 
         rho = two_body_density_restricted(rho, t1, t2, l1, l2, o, v)
+        raise NotImplementedError
 
         return rho
         
