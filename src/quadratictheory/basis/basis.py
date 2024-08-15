@@ -211,6 +211,7 @@ class Basis(ABC):
         obj.calculate_fock_matrix()
 
         cached_operators = self._check_cached_operators()
+
         for operator in cached_operators:
             obj.__dict__[operator] = obj._change_basis_one_body(
                 obj.__dict__[operator], C
@@ -239,6 +240,10 @@ class Basis(ABC):
         self.C = self._add_spin_one_body(self.C)
         if self.f is not None:
             self.f = self._add_spin_one_body(self.f)
+
+        cached_operators = self._check_cached_operators()
+        for operator in cached_operators:
+            self.__dict__[operator] = self._add_spin_one_body(self.__dict__[operator])
 
         self._L = 2 * self._L
         self.N = 2 * self.N
@@ -281,6 +286,12 @@ class Basis(ABC):
         return E_OB + E_TB + self._energy_shift
 
     def custom_hf_guess(self, C=None):
+        """
+        If custom HF guess should be applied.
+
+        Parameters:
+            C (ndarray): The (L,L) array used for the custum initial guess
+        """
         if C is None:
             return self._custom_hf_guess
         else:
