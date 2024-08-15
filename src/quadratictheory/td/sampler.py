@@ -26,19 +26,23 @@ class Sampler:
     def misc(self, tdcc) -> dict:
         return {}
 
+
 class ImagTimeSampler(Sampler):
     def __init__(self, one_body=False, two_body=False, misc=True):
         super().__init__(one_body, two_body, misc)
 
     def misc(self, tdcc) -> dict:
         cc, cc_gs = tdcc.cc, tdcc.cc_gs
-        
+
         t_norms = {}
         l_norms = {}
         rhs_t_norms = {}
         rhs_l_norms = {}
 
-        rhs_t_norms_, rhs_l_norms_ = cc._t_rhs_timedependent(cc._t, cc._l).norm(), cc._l_rhs_timedependent(cc._t, cc._l).norm()
+        rhs_t_norms_, rhs_l_norms_ = (
+            cc._t_rhs_timedependent(cc._t, cc._l).norm(),
+            cc._l_rhs_timedependent(cc._t, cc._l).norm(),
+        )
         for order in cc._t.orders:
             t_norms[f"delta_t{order}"] = np.linalg.norm(cc_gs._t[order] - cc._t[order])
             l_norms[f"delta_l{order}"] = np.linalg.norm(cc_gs._l[order] - cc._l[order])

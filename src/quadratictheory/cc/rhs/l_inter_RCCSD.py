@@ -5,7 +5,7 @@ def lambda_amplitudes_intermediates_rccsd(t1, t2, l1, l2, u, f, v, o):
     rhs1 = lambda_amplitudes_intermediates_rccsd_l1(t1, t2, l1, l2, u, f, v, o)
     rhs2 = lambda_amplitudes_intermediates_rccsd_l2(t1, t2, l1, l2, u, f, v, o)
 
-    return rhs1, 0.5*rhs2
+    return rhs1, 0.5 * rhs2
 
 
 def lambda_amplitudes_intermediates_rccsd_l1(t1, t2, l1, l2, u, f, v, o):

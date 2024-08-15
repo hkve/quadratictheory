@@ -4,6 +4,7 @@ import numpy as np
 import pyscf
 from pyscf import lib
 
+
 class PyscfBasis(Basis):
     def __init__(self, atom: str, basis: str, restricted: bool = True, dtype=float, **kwargs):
         defaults = {"center": True, "charge": 0, "mol": None}
@@ -63,17 +64,17 @@ class PyscfBasis(Basis):
         default = {
             "tol": 1e-6,
             "max_cycle": 50,
-            "init_guess": "minao", 
+            "init_guess": "minao",
         }
         default.update(kwargs)
 
         # Make and setup mean field object
         self.mf = pyscf.scf.RHF(self.mol)
-        
+
         self.mf.conv_tol_grad = default["tol"]
         self.mf.max_cycle = default["max_cycle"]
         self.mf.init_guess = default["init_guess"]
-        
+
         self.mf.run(verbose=0)
         self.C = self.mf.mo_coeff
 
@@ -93,24 +94,26 @@ class PyscfBasis(Basis):
     @cached_property
     def rr(self) -> np.ndarray:
         L = self.L
-        if not self.restricted: L //= 2
-        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
-        
+        if not self.restricted:
+            L //= 2
+        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3, 3, L, L)
+
         return self._new_one_body_operator(rr)
 
     @cached_property
     def Q(self) -> np.ndarray:
         L = self.L
-        if not self.restricted: L //= 2
+        if not self.restricted:
+            L //= 2
 
-        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3,3,L,L)
+        rr = self.mol.intor("int1e_rr", comp=9, hermi=0).reshape(3, 3, L, L)
         r2 = np.einsum("iipq->pq", rr)
         delta_ij_r2 = np.einsum("ij,pq->ijpq", np.eye(3), r2)
 
-        Q = 0.5*(3*rr - delta_ij_r2) 
+        Q = 0.5 * (3 * rr - delta_ij_r2)
 
         return self._new_one_body_operator(Q)
-    
+
     def r_nuc(self) -> np.ndarray:
         Z = self.mol.atom_charges()
         r = self.mol.atom_coords() - self.origin
@@ -122,16 +125,16 @@ class PyscfBasis(Basis):
     def Q_nuc(self) -> np.ndarray:
         Z = self.mol.atom_charges()
         r = self.mol.atom_coords() - self.origin
-        
-        r2 = np.linalg.norm(r, axis=1)**2
-        
+
+        r2 = np.linalg.norm(r, axis=1) ** 2
+
         delta = np.eye(3)
 
         rr = np.einsum("l,lx,ly->xy", Z, r, r)
         delta_ij_r2 = np.einsum("l,xy,l->xy", Z, delta, r2)
-        
-        Q =  0.5*(3*rr - delta_ij_r2)
-        
+
+        Q = 0.5 * (3 * rr - delta_ij_r2)
+
         return Q
 
     def density(self, rho, r=None):

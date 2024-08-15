@@ -209,4 +209,4 @@ def lambda_amplitudes_intermediates_rccd(t2, l2, u, f, v, o):
 
     r2 += 4 * np.einsum("jiba->abij", u[o, o, v, v], optimize=True)
 
-    return 0.5*r2
+    return 0.5 * r2

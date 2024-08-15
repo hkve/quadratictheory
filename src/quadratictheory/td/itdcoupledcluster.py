@@ -11,6 +11,7 @@ from scipy.integrate import ode
 from rk4_integrator.rk4 import Rk4Integrator
 from gauss_integrator.gauss import GaussIntegrator
 
+
 class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
     def __init__(
         self,
@@ -20,14 +21,13 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         integrator="Rk4Integrator",
         integrator_args={},
     ):
-    
         super().__init__(cc=cc, time=time, integrator=integrator, integrator_args=integrator_args)
         self.sampler = sampler.ImagTimeSampler()
         self.cc_gs = cc_gs
 
     def run(self, vocal: bool = False) -> dict:
         cc, basis = self.cc, self.basis
-        
+
         cc._t.initialize_zero()
         cc._l.initialize_zero()
         cc._t_info = {"run": True, "converged": True, "iters": 0}
@@ -73,10 +73,10 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         self.results = self._construct_results(time_points)
 
         return self.results
-    
+
     def run_until_convergence(self, tol: float, vocal: bool = False):
         cc, basis = self.cc, self.basis
-        
+
         cc._t.initialize_zero()
         cc._l.initialize_zero()
         cc._t_info = {"run": True, "converged": True, "iters": 0}
@@ -110,7 +110,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
             l_norm = cc._l_rhs_timedependent(cc._t, cc._l).norm()
 
             converged = self._check_convergence(t_norm, l_norm, tol)
-            
+
             if vocal:
                 print(f"t = {integrator.t:.2f}, converged = {converged}, {t_norm = }, {l_norm = }")
 
@@ -121,7 +121,6 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         self.results = self._construct_results(time_points)
 
         return self.results
-   
 
     def rhs(self, t: float, y: np.ndarray) -> np.ndarray:
         """
@@ -142,13 +141,12 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         cc._t.from_flat(y[self.t_slice])
         cc._l.from_flat(y[self.l_slice])
 
-        t_dot = -1.0*cc._t_rhs_timedependent(cc._t, cc._l)
-        l_dot = -1.0*cc._l_rhs_timedependent(cc._t, cc._l)
+        t_dot = -1.0 * cc._t_rhs_timedependent(cc._t, cc._l)
+        l_dot = -1.0 * cc._l_rhs_timedependent(cc._t, cc._l)
 
         y_dot, _, _ = merge_to_flat(t_dot, l_dot)
 
         return y_dot
-
 
     def _check_convergence(self, t_norms, l_norms, tol):
         t_norm_max = max([v for v in t_norms.values()])
@@ -157,6 +155,7 @@ class ImaginaryTimeCoupledCluster(TimeDependentCoupledCluster):
         norm_max = max([t_norm_max, l_norm_max])
 
         return norm_max < tol
+
     @property
     def external_one_body(self):
         raise NotImplementedError(f"{self.__class__.__name__} is a ground state solver!")

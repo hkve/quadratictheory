@@ -11,13 +11,24 @@ from quadratictheory.cc.rhs.l_inter_QCCSD import lambda_amplitudes_intermediates
 from quadratictheory.cc.energies.e_qccsd import energy_qccsd
 from quadratictheory.cc.energies.e_inter_qccsd import energy_intermediates_qccsd
 from quadratictheory.cc.weights.ccsd import (
-    reference_ccsd, ket_singles_ccsd, bra_singles_ccsd, ket_doubles_ccsd, bra_doubles_ccsd
+    reference_ccsd,
+    ket_singles_ccsd,
+    bra_singles_ccsd,
+    ket_doubles_ccsd,
+    bra_doubles_ccsd,
 )
 from quadratictheory.cc.weights.qccsd import (
-    reference_addition_qccsd, bra_singles_addition_qccsd, bra_doubles_addition_qccsd, triples_weigth_qccsd, quadruple_weigth_qccsd
+    reference_addition_qccsd,
+    bra_singles_addition_qccsd,
+    bra_doubles_addition_qccsd,
+    triples_weigth_qccsd,
+    quadruple_weigth_qccsd,
 )
 from quadratictheory.cc.densities.l_CCSD import one_body_density, two_body_density
-from quadratictheory.cc.densities.l_QCCSD import one_body_density_addition, two_body_density_addition
+from quadratictheory.cc.densities.l_QCCSD import (
+    one_body_density_addition,
+    two_body_density_addition,
+)
 
 
 class QCCSD(QuadraticCoupledCluster):
@@ -116,7 +127,12 @@ class QCCSD(QuadraticCoupledCluster):
         rhs_l = self._next_l_iteration(t, l)
 
         mixing_term = np.einsum("ai,bj->abij", rhs_l[1], l[1])
-        mixing_term = mixing_term - mixing_term.transpose(0, 1, 3, 2) - mixing_term.transpose(1,0, 2, 3) + mixing_term.transpose(1, 0, 3, 2)
+        mixing_term = (
+            mixing_term
+            - mixing_term.transpose(0, 1, 3, 2)
+            - mixing_term.transpose(1, 0, 2, 3)
+            + mixing_term.transpose(1, 0, 3, 2)
+        )
         rhs_l.add(2, -mixing_term)
 
         return rhs_l
@@ -157,24 +173,28 @@ class QCCSD(QuadraticCoupledCluster):
 
     def _overlap(self, t0, l0, t, l):
         return 0
-    
+
     def _if_missing_use_stored(self, t1, t2, l1, l2):
-        if t1 is None: t1 = self._t[1]
-        if t2 is None: t2 = self._t[2]
-        if l1 is None: l1 = self._l[1]
-        if l2 is None: l2 = self._l[2]
+        if t1 is None:
+            t1 = self._t[1]
+        if t2 is None:
+            t2 = self._t[2]
+        if l1 is None:
+            l1 = self._l[1]
+        if l2 is None:
+            l2 = self._l[2]
 
         return t1, t2, l1, l2
 
     def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
         det = reference_ccsd(t1, t2, l1, l2)
         det += reference_addition_qccsd(t1, t2, l1, l2)
- 
+
         return det
-    
+
     def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
         ket = ket_singles_ccsd(t1, t2, l1, l2)
         bra = bra_singles_ccsd(t1, t2, l1, l2)
         bra += bra_singles_addition_qccsd(t1, t2, l1, l2)
@@ -182,19 +202,19 @@ class QCCSD(QuadraticCoupledCluster):
         return np.multiply(bra, ket)
 
     def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        ket =  ket_doubles_ccsd(t1, t2, l1, l2)
-        bra =  bra_doubles_ccsd(t1, t2, l1, l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
+        ket = ket_doubles_ccsd(t1, t2, l1, l2)
+        bra = bra_doubles_ccsd(t1, t2, l1, l2)
         bra += bra_doubles_addition_qccsd(t1, t2, l1, l2)
 
         return np.multiply(bra, ket)
-    
+
     def triples_weight(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
 
         return triples_weigth_qccsd(t1, t2, l1, l2)
-    
+
     def quadruple_weight(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
 
         return quadruple_weigth_qccsd(t1, t2, l1, l2)

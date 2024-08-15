@@ -24,6 +24,7 @@ from quadratictheory.td import ImaginaryTimeCoupledCluster
 from quadratictheory.td import pulse
 from quadratictheory.td import sampler
 
+
 def HF(basis: Basis):
     return RHF(basis) if basis.restricted else GHF(basis)
 

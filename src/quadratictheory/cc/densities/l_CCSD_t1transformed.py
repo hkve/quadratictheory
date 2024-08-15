@@ -128,6 +128,7 @@ def two_body_density_ovoo(rho, t2, l1, l2, o, v):
 
     return rho
 
+
 def two_body_density_vovv(rho, t2, l1, l2, o, v):
     rho[v, o, v, v] -= np.einsum("aj,bcij->aibc", l1, t2, optimize=True)
 

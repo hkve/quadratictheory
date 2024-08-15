@@ -12,13 +12,20 @@ from quadratictheory.cc.rhs.ccsd_Gauss_Stanton import ccsd_t_Gauss_Stanton, ccsd
 from quadratictheory.cc.densities.l_CCSD import one_body_density, two_body_density
 from quadratictheory.cc.energies.e_inter_ccsd import td_energy_addition
 from quadratictheory.cc.weights.ccsd import (
-    reference_ccsd, ket_singles_ccsd, bra_singles_ccsd, ket_doubles_ccsd, bra_doubles_ccsd
+    reference_ccsd,
+    ket_singles_ccsd,
+    bra_singles_ccsd,
+    ket_doubles_ccsd,
+    bra_doubles_ccsd,
 )
 
 from quadratictheory.cc.rhs.t_inter_RCCSD import amplitudes_intermediates_rccsd
 from quadratictheory.cc.rhs.l_inter_RCCSD import lambda_amplitudes_intermediates_rccsd
 
-from quadratictheory.cc.densities.l_RCCSD import one_body_density_restricted, two_body_density_restricted
+from quadratictheory.cc.densities.l_RCCSD import (
+    one_body_density_restricted,
+    two_body_density_restricted,
+)
 from quadratictheory.cc.energies.e_inter_rccsd import td_energy_addition_restricted
 
 
@@ -140,34 +147,39 @@ class GCCSD(CoupledCluster):
         psit -= 0.25 * np.einsum("abij,abij->", l0[2], t0[2])
 
         return psit * psitilde_t
-    
+
     def _if_missing_use_stored(self, t1, t2, l1, l2):
-        if not t1: t1 = self._t[1]
-        if not t2: t2 = self._t[2]
-        if not l1: l1 = self._l[1]
-        if not l2: l2 = self._l[2]
+        if not t1:
+            t1 = self._t[1]
+        if not t2:
+            t2 = self._t[2]
+        if not l1:
+            l1 = self._l[1]
+        if not l2:
+            l2 = self._l[2]
 
         return t1, t2, l1, l2
 
     def reference_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
-        
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
+
         return reference_ccsd(t1, t2, l1, l2)
-    
+
     def singles_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
         bra = bra_singles_ccsd(t1, t2, l1, l2)
         ket = ket_singles_ccsd(t1, t2, l1, l2)
 
         return np.multiply(bra, ket)
 
     def doubles_weights(self, t1=None, t2=None, l1=None, l2=None):
-        t1, t2, l1, l2 = self._if_missing_use_stored(t1,t2,l1,l2)
+        t1, t2, l1, l2 = self._if_missing_use_stored(t1, t2, l1, l2)
         bra = bra_doubles_ccsd(t1, t2, l1, l2)
-        ket = ket_doubles_ccsd(t1, t2,l1,l2)
+        ket = ket_doubles_ccsd(t1, t2, l1, l2)
 
         return np.multiply(bra, ket)
-    
+
+
 class RCCSD(CoupledCluster):
     def __init__(self, basis: Basis, intermediates=True):
         assert basis.restricted, f"Restricted CCSD requires restricted basis"
@@ -200,7 +212,7 @@ class RCCSD(CoupledCluster):
         f = self._f
 
         return self.td_energy_addition(t1, t2, l1, l2, u, f, o, v)
-    
+
     def _calculate_one_body_density(self) -> np.ndarray:
         basis = self.basis
         rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
@@ -225,7 +237,6 @@ class RCCSD(CoupledCluster):
         raise NotImplementedError
 
         return rho
-        
 
     def _next_t_iteration(self, t: CoupledClusterParameter) -> CoupledClusterParameter:
         basis = self.basis

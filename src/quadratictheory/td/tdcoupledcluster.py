@@ -164,7 +164,7 @@ class TimeDependentCoupledCluster:
         # Adds time dependent hamiltonian to fock matrix if present
         if self._has_td_one_body:
             external_contribution = self.external_one_body(t, basis)
-            
+
             # If T1-transform, pass it to CC class seperatly since it needs to be transformed as well
             # Else add it to CC storage of Fock matrix
             if cc.transforms_basis:
@@ -184,19 +184,13 @@ class TimeDependentCoupledCluster:
 
         t_amplitudes = {f"t{order}": cc._t[order] for order in cc._t.orders}
         l_amplitudes = {f"l{order}": cc._l[order] for order in cc._l.orders}
-        
-        np.savez(
-           filename,
-            **{**t_amplitudes, **l_amplitudes}
-        )
+
+        np.savez(filename, **{**t_amplitudes, **l_amplitudes})
 
     def load_amplitudes(self, filename: str):
         cc = self.cc
 
-        amplitudes = np.load(
-            filename,
-            allow_pickle=True
-        )
+        amplitudes = np.load(filename, allow_pickle=True)
 
         for order in cc._t.orders:
             amp = amplitudes[f"t{order}"]
@@ -282,7 +276,7 @@ class TimeDependentCoupledCluster:
         self._td_one_body = func_ob
 
         if self.cc.transforms_basis:
-            self.cc._has_td_one_body = self._has_td_one_body # Only needs to be done for transform
+            self.cc._has_td_one_body = self._has_td_one_body  # Only needs to be done for transform
 
     @property
     def sampler(self):

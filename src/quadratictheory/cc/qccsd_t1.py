@@ -5,12 +5,13 @@ from quadratictheory.cc.parameter import CoupledClusterParameter
 
 from quadratictheory.cc.rhs.t1transform_t_inter_QCCSD import (
     t1_transform_t1_intermediates_qccsd,
-    t1_transform_t2_intermediates_qccsd
+    t1_transform_t2_intermediates_qccsd,
 )
 
 from quadratictheory.cc.rhs.t1transform_l_inter_QCCSD import t1_transform_l_intermediates_qccsd
 
-from quadratictheory.cc.energies.e_inter_qccsd_t1transformed import t1transformed_qccsd_energy  
+from quadratictheory.cc.energies.e_inter_qccsd_t1transformed import t1transformed_qccsd_energy
+
 # from quadratictheory.cc.rhs.t_CCSD import amplitudes_ccsd
 # from quadratictheory.cc.rhs.l_CCSD import lambda_amplitudes_ccsd
 # from quadratictheory.cc.rhs.t_inter_CCD import amplitudes_intermediates_ccd
@@ -27,12 +28,13 @@ from quadratictheory.cc.energies.e_inter_qccsd_t1transformed import t1transforme
 # from quadratictheory.cc.densities.l_CCSD_t1transformed import one_body_density, two_body_density
 # from quadratictheory.cc.energies.e_inter_ccsd_t1transformed import td_energy_addition
 
+
 class QCCSD_T1(QuadCoupledCluster_T1):
     def __init__(self, basis: Basis, intermediates: bool = True, copy=False):
         assert not basis.restricted, "T1-transformed CCSD can not deal with restricted basis"
 
-        t_orders = [1,2]
-        l_orders = [1,2]
+        t_orders = [1, 2]
+        l_orders = [1, 2]
         super().__init__(basis, t_orders, l_orders, copy=copy)
 
         self.t1_rhs = t1_transform_t1_intermediates_qccsd
@@ -65,13 +67,15 @@ class QCCSD_T1(QuadCoupledCluster_T1):
             v=basis.v,
             o=basis.o,
         )
-        
+
         rhs = CoupledClusterParameter(t.orders, t.N, t.M, dtype=t.dtype)
         rhs.initialize_dicts({1: rhs1, 2: rhs2})
 
         return rhs
 
-    def _next_l_iteration(self, t: CoupledClusterParameter, l: CoupledClusterParameter) -> CoupledClusterParameter:
+    def _next_l_iteration(
+        self, t: CoupledClusterParameter, l: CoupledClusterParameter
+    ) -> CoupledClusterParameter:
         basis = self.basis
         M, N = basis.M, basis.N
 
@@ -90,7 +94,6 @@ class QCCSD_T1(QuadCoupledCluster_T1):
 
         return rhs
 
-
     def _evaluate_cc_energy(self) -> float:
         basis = self.basis
         o, v = basis.o, basis.v
@@ -99,7 +102,7 @@ class QCCSD_T1(QuadCoupledCluster_T1):
         l1, l2 = self._l[1], self._l[2]
 
         return self.energy_expression(t2, l1, l2, u, f, o, v)
-    
+
     # def _calculate_one_body_density(self) -> np.ndarray:
     #     basis = self.basis
     #     rho = np.zeros((basis.L, basis.L), dtype=basis.dtype)
@@ -112,7 +115,7 @@ class QCCSD_T1(QuadCoupledCluster_T1):
     #     rho = one_body_density(rho, t2, l1, l2, o, v)
 
     #     return rho
-    
+
     # def _calculate_two_body_density(self) -> np.ndarray:
     #     basis = self.basis
     #     rho = np.zeros((basis.L, basis.L, basis.L, basis.L), dtype=basis.dtype)

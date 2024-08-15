@@ -8,6 +8,7 @@ from quadratictheory.cc.qccsd import QCCSD
 from quadratictheory.cc.ccsd_t1 import GCCSD_T1
 from quadratictheory.cc.qccsd_t1 import QCCSD_T1
 
+
 def CCD(basis: Basis, intermediates=True):
     return RCCD(basis) if basis.restricted else GCCD(basis, intermediates)
 

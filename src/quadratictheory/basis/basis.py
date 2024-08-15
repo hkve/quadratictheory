@@ -178,7 +178,6 @@ class Basis(ABC):
         for operator in cached_operators:
             new_basis.__dict__[operator] = self.__dict__[operator].copy()
 
-
         return new_basis
 
     def change_basis(self, C: np.ndarray, inplace: bool = True, inverse: bool = False) -> Basis:
@@ -213,9 +212,7 @@ class Basis(ABC):
         cached_operators = self._check_cached_operators()
 
         for operator in cached_operators:
-            obj.__dict__[operator] = obj._change_basis_one_body(
-                obj.__dict__[operator], C
-            )
+            obj.__dict__[operator] = obj._change_basis_one_body(obj.__dict__[operator], C)
 
         return obj
 
@@ -319,7 +316,8 @@ class Basis(ABC):
         member_keys = list(self.__dict__.keys())
 
         cached_operators = [
-            name for name, value in inspect.getmembers(type(self))
+            name
+            for name, value in inspect.getmembers(type(self))
             if isinstance(value, functools.cached_property) and name in member_keys
         ]
 
