@@ -16,7 +16,7 @@ energy_ccsd = ccsd.energy()
 basis.from_restricted(inplace=True)
 
 # Perform QCCSD calculation (general scheme only)
-qccsd = qt.QCCSD(basis).run(tol=1e-6).run(vocal=True)
+qccsd = qt.QCCSD(basis).run(tol=1e-6, vocal=True)
 energy_qccsd = qccsd.energy()
 
 print(f"{energy_ccsd = :.5f}\n{energy_qccsd = :.5f}")

@@ -41,7 +41,7 @@ energy_ccsd = ccsd.energy()
 basis.from_restricted(inplace=True)
 
 # Perform QCCSD calculation (general scheme only)
-qccsd = qt.QCCSD(basis).run(tol=1e-6).run(vocal=True)
+qccsd = qt.QCCSD(basis).run(tol=1e-6, vocal=True)
 energy_qccsd = qccsd.energy()
 ```
 In this example, we compute the ground state of LiH with QCCSD. Under a sinusoidal laser pulse, the LiH system is propagated for 1 a.u., where we compute the energy and dipole moment.
