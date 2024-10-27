@@ -234,7 +234,6 @@ class RCCSD(CoupledCluster):
         o, v = basis.o, basis.v
 
         rho = two_body_density_restricted(rho, t1, t2, l1, l2, o, v)
-        raise NotImplementedError
 
         return rho
 
